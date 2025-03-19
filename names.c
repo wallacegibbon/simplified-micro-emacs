@@ -126,9 +126,6 @@ struct name_bind names[] = {
 	{"search-forward", forwsearch},
 	{"search-reverse", backsearch},
 	{"select-buffer", usebuffer},
-#if CRYPT
-	{"set-encryption-key", set_encryption_key},
-#endif
 	{"set-fill-column", setfillcol},
 	{"set-mark", setmark},
 	{"shell-command", spawn},

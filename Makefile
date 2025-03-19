@@ -16,13 +16,13 @@ uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 
 PROGRAM=em
 
-SRC=ansi.c basic.c buffer.c crypt.c display.c \
+SRC=ansi.c basic.c buffer.c display.c \
 	file.c fileio.c ibmpc.c input.c isearch.c line.c lock.c main.c \
 	pklock.c posix.c random.c region.c search.c spawn.c tcap.c \
 	termio.c vmsvt.c vt52.c window.c word.c names.c globals.c version.c \
 	usage.c wrapper.c utf8.c util.c
 
-OBJ=ansi.o basic.o buffer.o crypt.o display.o \
+OBJ=ansi.o basic.o buffer.o display.o \
 	file.o fileio.o ibmpc.o input.o isearch.o line.o lock.o main.o \
 	pklock.o posix.o random.o region.o search.o spawn.o tcap.o \
 	termio.o vmsvt.o vt52.o window.o word.o names.o globals.o version.o \
@@ -128,7 +128,6 @@ depend: ${SRC}
 ansi.o: ansi.c estruct.h edef.h
 basic.o: basic.c estruct.h edef.h
 buffer.o: buffer.c estruct.h edef.h
-crypt.o: crypt.c estruct.h edef.h
 display.o: display.c estruct.h edef.h utf8.h
 file.o: file.c estruct.h edef.h
 fileio.o: fileio.c estruct.h edef.h

@@ -250,10 +250,6 @@ int get_char(void);
 int uneat(void);
 void reeat(int c);
 
-/* crypt.c */
-int set_encryption_key(int f, int n);
-void myencrypt(char *bptr, unsigned len);
-
 /* lock.c */
 int lockchk(char *fname);
 int lockrel(void);

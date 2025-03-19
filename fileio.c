@@ -81,22 +81,8 @@ int ffclose(void)
 int ffputline(char *buf, int nbuf)
 {
 	int i;
-#if CRYPT
-	char c;			/* character to translate */
-
-	if (cryptflag) {
-		for (i = 0; i < nbuf; ++i) {
-			c = buf[i] & 0xff;
-			myencrypt(&c, 1);
-			fputc(c, ffp);
-		}
-	} else
-		for (i = 0; i < nbuf; ++i)
-			fputc(buf[i] & 0xFF, ffp);
-#else
 	for (i = 0; i < nbuf; ++i)
 		fputc(buf[i] & 0xFF, ffp);
-#endif
 
 	fputc('\n', ffp);
 
@@ -191,12 +177,8 @@ int ffgetline(void)
 			return FIOEOF;
 	}
 
-	/* terminate and decrypt the string */
+	/* terminate the string */
 	fline[i] = 0;
-#if CRYPT
-	if (cryptflag)
-		myencrypt(fline, strlen(fline));
-#endif
 	return FIOSUC;
 }
 
