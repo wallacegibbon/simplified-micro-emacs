@@ -56,10 +56,10 @@
 /* Make global definitions not external. */
 #define	maindef
 
-#include "estruct.h" /* Global structures and defines. */
-#include "edef.h"    /* Global definitions. */
-#include "efunc.h"   /* Function declarations and name table. */
-#include "ebind.h"   /* Default key bindings. */
+#include "estruct.h"
+#include "edef.h"
+#include "efunc.h"
+#include "line.h"
 #include "version.h"
 
 /* For MSDOS, increase the default stack space. */

@@ -1,22 +1,16 @@
-/* ebind.h
- *
- *	Initial default key to function bindings
- *
- *	Modified by Petri Kutvonen
- */
-
-#ifndef __EBIND_H
-#define __EBIND_H
-
-#include "line.h"
-
 /*
  * Command table.
  * This table  is *roughly* in ASCII order, left to right across the
  * characters of the command. This explains the funny location of the
  * control-X commands.
  */
-struct key_tab keytab[NBINDS] = {
+
+#include "estruct.h"
+#include "edef.h"
+#include "efunc.h"
+#include "line.h"
+
+struct key_tab keytab[] = {
 	{CONTROL | 'A', gotobol},
 	{CONTROL | 'B', backchar},
 	{CONTROL | 'D', forwdel},
@@ -193,5 +187,3 @@ struct key_tab keytab[NBINDS] = {
 
 	{0, NULL}
 };
-
-#endif

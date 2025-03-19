@@ -223,7 +223,6 @@
 
 /* Internal constants. */
 
-#define	NBINDS	256		/* max # of bound keys */
 #define NFILEN  256		/* # of bytes, file name */
 #define NBUFN   16		/* # of bytes, buffer name */
 #define NLINE   256		/* # of bytes, input line */
