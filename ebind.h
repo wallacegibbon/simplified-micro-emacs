@@ -45,13 +45,6 @@ struct key_tab keytab[NBINDS] = {
 	{CONTROL | ']', metafn},
 	{CTLX | CONTROL | 'B', listbuffers},
 	{CTLX | CONTROL | 'C', quit},
-#if PKCODE & AEDIT
-	{CTLX | CONTROL | 'A', detab},
-#endif
-#if AEDIT
-	{CTLX | CONTROL | 'D', detab},
-	{CTLX | CONTROL | 'E', entab},
-#endif
 	{CTLX | CONTROL | 'F', filefind},
 	{CTLX | CONTROL | 'I', insfile},
 	{CTLX | CONTROL | 'L', lowerregion},
@@ -127,6 +120,7 @@ struct key_tab keytab[NBINDS] = {
 	{META | 'G', gotoline},
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
+	{META | 'X', namedcmd},
 #if WORDPRO
 	{META | 'N', gotoeop},
 	{META | 'P', gotobop},

@@ -76,8 +76,6 @@ int setccol(int pos);
 int twiddle(int f, int n);
 int quote(int f, int n);
 int insert_tab(int f, int n);
-int detab(int f, int n);
-int entab(int f, int n);
 int trim(int f, int n);
 int openline(int f, int n);
 int insert_newline(int f, int n);
@@ -165,6 +163,7 @@ int tgetc(void);
 int get1key(void);
 int getcmd(void);
 int getstring(char *prompt, char *buf, int nbuf, int eolchar);
+int namedcmd(int f, int n);
 void outstring(char *s);
 void ostring(char *s);
 

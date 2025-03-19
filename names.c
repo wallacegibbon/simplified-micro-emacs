@@ -44,15 +44,9 @@ struct name_bind names[] = {
 	{"delete-previous-character", backdel},
 	{"delete-previous-word", delbword},
 	{"delete-window", delwind},
-#if AEDIT
-	{"detab-line", detab},
-#endif
 	{"end-macro", ctlxrp},
 	{"end-of-file", gotoeob},
 	{"end-of-line", gotoeol},
-#if AEDIT
-	{"entab-line", entab},
-#endif
 	{"exchange-point-and-mark", swapmark},
 	{"execute-macro", ctlxe},
 	{"execute-program", execprg},

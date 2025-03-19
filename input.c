@@ -748,6 +748,27 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 }
 
 /*
+ * Execute a named command even if it is not bound.
+ */
+int namedcmd(int f, int n)
+{
+	fn_t kfunc;	/* ptr to the requexted function to bind to */
+
+	/* prompt the user to type a named command */
+	mlwrite(": ");
+
+	/* and now get the function name to execute */
+	kfunc = getname();
+	if (kfunc == NULL) {
+		mlwrite("(No such function)");
+		return FALSE;
+	}
+
+	/* and then execute the command */
+	return kfunc(f, n);
+}
+
+/*
  * output a string of characters
  *
  * char *s;		string to output
