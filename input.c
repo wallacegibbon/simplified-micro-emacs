@@ -476,13 +476,15 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 		/* get a character from the user */
 		c = get1key();
 
-		/* If it is a <ret>, change it to a <NL> */
+		if (c != eolchar) {
+			/* If it is a <ret>, change it to a <NL> */
 #if	PKCODE
-		if (c == (CONTROL | 0x4d) && !quotef)
+			if (c == (CONTROL | 0x4d) && !quotef)
 #else
-		if (c == (CONTROL | 0x4d))
+			if (c == (CONTROL | 0x4d))
 #endif
-			c = CONTROL | 0x40 | '\n';
+				c = CONTROL | 0x40 | '\n';
+		}
 
 		/* if they hit the line terminate, wrap it up */
 		if (c == eolchar && quotef == FALSE) {

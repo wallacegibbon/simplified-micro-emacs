@@ -126,9 +126,7 @@ struct name_bind names[] = {
 	{"hunt-backward", backhunt},
 	{"help", help},
 	{"i-shell", spawncli},
-#if	ISRCH
 	{"incremental-search", fisearch},
-#endif
 	{"insert-file", insfile},
 	{"insert-space", insspace},
 	{"insert-string", istring},
@@ -174,9 +172,7 @@ struct name_bind names[] = {
 	{"resize-window", resize},
 	{"restore-window", restwnd},
 	{"replace-string", sreplace},
-#if	ISRCH
 	{"reverse-incremental-search", risearch},
-#endif
 #if	PROC
 	{"run", execproc},
 #endif

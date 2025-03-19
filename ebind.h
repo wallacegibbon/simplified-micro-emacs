@@ -21,8 +21,10 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CONTROL | 'B', backchar}
 	,
+	/*
 	{CONTROL | 'C', insspace}
 	,
+	*/
 	{CONTROL | 'D', forwdel}
 	,
 	{CONTROL | 'E', gotoeol}
@@ -51,9 +53,9 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CONTROL | 'Q', quote}
 	,
-	{CONTROL | 'R', backsearch}
+	{CONTROL | 'R', risearch}
 	,
-	{CONTROL | 'S', forwsearch}
+	{CONTROL | 'S', fisearch}
 	,
 	{CONTROL | 'T', twiddle}
 	,
@@ -176,12 +178,6 @@ struct key_tab keytab[NBINDS] = {
 	{CTLX | 'Q', quote}
 	,			/* alternative  */
 #endif
-#if	ISRCH
-	{CTLX | 'R', risearch}
-	,
-	{CTLX | 'S', fisearch}
-	,
-#endif
 	{CTLX | 'W', resize}
 	,
 	{CTLX | 'X', nextbuffer}
@@ -241,6 +237,8 @@ struct key_tab keytab[NBINDS] = {
 	{META | '<', gotobob}
 	,
 	{META | '~', unmark}
+	,
+	{META | '%', qreplace}
 	,
 #if	APROP
 	{META | 'A', apro}

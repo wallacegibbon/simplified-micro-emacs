@@ -19,7 +19,7 @@ typedef int (*fn_t)(int, int);
 /* Initialized global external declarations. */
 
 extern int fillcol;		/* Fill column                  */
-extern int kbdm[];		/* Holds kayboard macro data    */
+extern int kbdm[];		/* Holds keyboard macro data    */
 extern char pat[];		/* Search pattern               */
 extern char rpat[];		/* Replacement pattern          */
 extern char *execstr;		/* pointer to string to execute */
@@ -54,6 +54,7 @@ extern int lbound;		/* leftmost column of current line
 				   being displayed */
 extern int taboff;		/* tab offset for display       */
 extern int metac;		/* current meta character */
+extern int enterc;		/* current enter character */
 extern int ctlxc;		/* current control X prefix char */
 extern int reptc;		/* current universal repeat char */
 extern int abortc;		/* current abort command char   */

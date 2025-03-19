@@ -1219,7 +1219,7 @@ int istring(int f, int n)
 
 	/* ask for string to insert */
 	status =
-	    mlreplyt("String to insert<META>: ", tstring, NPAT, metac);
+	    mlreplyt("String to insert<CR>: ", tstring, NPAT, enterc);
 	if (status != TRUE)
 		return status;
 
@@ -1247,7 +1247,7 @@ int ovstring(int f, int n)
 
 	/* ask for string to insert */
 	status =
-	    mlreplyt("String to overwrite<META>: ", tstring, NPAT, metac);
+	    mlreplyt("String to overwrite<CR>: ", tstring, NPAT, enterc);
 	if (status != TRUE)
 		return status;
 

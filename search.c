@@ -617,14 +617,14 @@ static int readpattern(char *prompt, char *apat, int srch)
 	strcpy(tpat, prompt);	/* copy prompt to output string */
 	strcat(tpat, " (");	/* build new prompt string */
 	expandp(&apat[0], &tpat[strlen(tpat)], NPAT / 2);	/* add old pattern */
-	strcat(tpat, ")<Meta>: ");
+	strcat(tpat, ")<CR>: ");
 
 	/* Read a pattern.  Either we get one,
-	 * or we just get the META charater, and use the previous pattern.
+	 * or we just get the CR charater, and use the previous pattern.
 	 * Then, if it's the search string, make a reversed pattern.
 	 * *Then*, make the meta-pattern, if we are defined that way.
 	 */
-	if ((status = mlreplyt(tpat, tpat, NPAT, metac)) == TRUE) {
+	if ((status = mlreplyt(tpat, tpat, NPAT, enterc)) == TRUE) {
 		strcpy(apat, tpat);
 		if (srch) {	/* If we are doing the search string. */
 			/* Reverse string copy, and remember
@@ -726,17 +726,17 @@ int qreplace(int f, int n)
  */
 static int replaces(int kind, int f, int n)
 {
-	int status;	/* success flag on pattern inputs */
-	int rlength;	/* length of replacement string */
-	int numsub;	/* number of substitutions */
-	int nummatch;	/* number of found matches */
+	int status;		/* success flag on pattern inputs */
+	int rlength;		/* length of replacement string */
+	int numsub;		/* number of substitutions */
+	int nummatch;		/* number of found matches */
 	int nlflag;		/* last char of search string a <NL>? */
 	int nlrepl;		/* was a replace done on the last line? */
 	char c;			/* input char for query */
 	char tpat[NPAT];	/* temporary to hold search pattern */
-	struct line *origline;		/* original "." position */
+	struct line *origline;	/* original "." position */
 	int origoff;		/* and offset (for . query option) */
-	struct line *lastline;		/* position of last replace and */
+	struct line *lastline;	/* position of last replace and */
 	int lastoff;		/* offset (for 'u' query option) */
 
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
