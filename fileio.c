@@ -31,7 +31,7 @@ int ffropen(char *fn)
  */
 int ffwopen(char *fn)
 {
-#if     VMS
+#if VMS
 	int fd;
 
 	if ((fd = creat(fn, 0666, "rfm=var", "rat=cr")) < 0
@@ -61,7 +61,7 @@ int ffclose(void)
 	fputc(26, ffp);		/* add a ^Z at the end of the file */
 #endif
 
-#if     V7 | USG | BSD | (MSDOS & (MSC | TURBO))
+#if V7 | USG | BSD | (MSDOS & (MSC | TURBO))
 	if (fclose(ffp) != FALSE) {
 		mlwrite("Error closing file");
 		return FIOERR;

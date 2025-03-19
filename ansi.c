@@ -13,7 +13,7 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if     ANSI
+#if ANSI
 
 #define NROW    25		/* Screen size. */
 #define NCOL    80		/* Edit if you want to. */
@@ -201,7 +201,7 @@ void ansiparm(int n)
 
 void ansiopen(void)
 {
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	char *cp;
 
 	if ((cp = getenv("TERM")) == NULL) {

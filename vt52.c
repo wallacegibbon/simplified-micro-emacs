@@ -17,7 +17,7 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if     VT52
+#if VT52
 
 #define NROW    24		/* Screen size. */
 #define NCOL    80		/* Edit if you want to. */
@@ -138,7 +138,7 @@ void vt52beep()
 
 void vt52open()
 {
-#if     V7 | BSD
+#if V7 | BSD
 	char *cp;
 	char *getenv();
 

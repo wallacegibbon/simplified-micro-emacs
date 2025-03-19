@@ -12,7 +12,7 @@
 #include "edef.h"
 #include "efunc.h"
 
-#if     VMS
+#if VMS
 #define EFN     0		/* Event flag. */
 
 #include <ssdef.h>	/* Random headers. */
@@ -25,7 +25,7 @@ extern int newmode[3];		/* In "termio.c" */
 extern short iochan;		/* In "termio.c" */
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 #include <signal.h>
 #ifdef SIGWINCH
 extern int chg_width, chg_height;
@@ -45,7 +45,7 @@ void sizesignal(int);
  */
 int spawncli(int f, int n)
 {
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	char *cp;
 #endif
 
@@ -53,7 +53,7 @@ int spawncli(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if     VMS
+#if VMS
 	movecursor(term.t_nrow, 0);	/* In last line. */
 	mlputs("(Starting DCL)\r\n");
 	TTflush();		/* Ignore "ttcol". */
@@ -65,7 +65,7 @@ int spawncli(int f, int n)
 	sleep(1);
 	return TRUE;
 #endif
-#if     MSDOS & (MSC | TURBO)
+#if MSDOS & (MSC | TURBO)
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
 	TTkclose();
@@ -74,7 +74,7 @@ int spawncli(int f, int n)
 	sgarbf = TRUE;
 	return TRUE;
 #endif
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
 	TTclose();		/* stty to old settings */
@@ -88,7 +88,10 @@ int spawncli(int f, int n)
 		system("exec /bin/sh");
 #endif
 	sgarbf = TRUE;
-	sleep(2);
+
+	/* ?? what is this sleep for ?? (2025/03/19) */
+	//sleep(2);
+
 	TTopen();
 	TTkopen();
 #ifdef SIGWINCH
@@ -142,7 +145,7 @@ int spawn(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if     VMS
+#if VMS
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	movecursor(term.t_nrow, 0);
@@ -156,7 +159,7 @@ int spawn(int f, int n)
 	sgarbf = TRUE;
 	return s;
 #endif
-#if     MSDOS
+#if MSDOS
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	movecursor(term.t_nrow, 0);
@@ -171,7 +174,7 @@ int spawn(int f, int n)
 	sgarbf = TRUE;
 	return TRUE;
 #endif
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
@@ -208,7 +211,7 @@ int execprg(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if     VMS
+#if VMS
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
@@ -220,7 +223,7 @@ int execprg(int f, int n)
 	return s;
 #endif
 
-#if     MSDOS
+#if MSDOS
 	if ((s = mlreply("$", line, NLINE)) != TRUE)
 		return s;
 	movecursor(term.t_nrow, 0);
@@ -236,7 +239,7 @@ int execprg(int f, int n)
 	return TRUE;
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTputc('\n');		/* Already have '\r' */
@@ -268,7 +271,7 @@ int pipecmd(int f, int n)
 
 	static char filnam[NSTRING] = "command";
 
-#if     MSDOS
+#if MSDOS
 	char *tmp;
 	FILE *fp;
 	int len;
@@ -292,7 +295,7 @@ int pipecmd(int f, int n)
 	}
 #endif
 
-#if     VMS
+#if VMS
 	mlwrite("Not available under VMS");
 	return FALSE;
 #endif
@@ -324,7 +327,7 @@ int pipecmd(int f, int n)
 
 			return FALSE;
 	}
-#if     MSDOS
+#if MSDOS
 	strcat(line, " >>");
 	strcat(line, filnam);
 	movecursor(term.t_nrow, 0);
@@ -340,7 +343,7 @@ int pipecmd(int f, int n)
 	}
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	TTflush();
 	TTclose();		/* stty to old modes */
 	TTkclose();
@@ -400,7 +403,7 @@ int filter_buffer(int f, int n)
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
 
-#if     VMS
+#if VMS
 	mlwrite("Not available under VMS");
 	return FALSE;
 #endif
@@ -420,7 +423,7 @@ int filter_buffer(int f, int n)
 		strcpy(bp->b_fname, tmpnam);
 		return FALSE;
 	}
-#if     MSDOS
+#if MSDOS
 	strcat(line, " <fltinp >fltout");
 	movecursor(term.t_nrow - 1, 0);
 	TTkclose();
@@ -430,7 +433,7 @@ int filter_buffer(int f, int n)
 	s = TRUE;
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	TTputc('\n');		/* Already have '\r' */
 	TTflush();
 	TTclose();		/* stty to old modes */
@@ -463,7 +466,7 @@ int filter_buffer(int f, int n)
 	return TRUE;
 }
 
-#if     VMS
+#if VMS
 /*
  * Run a command. The "cmd" is a pointer to a command string, or NULL if you
  * want to run a copy of DCL in the subjob (this is how the standard routine

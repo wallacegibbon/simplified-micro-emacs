@@ -14,7 +14,7 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if     VMS
+#if VMS
 #include <stsdef.h>
 #include <ssdef.h>
 #include <descrip.h>
@@ -36,7 +36,7 @@ int newmode[3];			/* New TTY mode bits */
 short iochan;			/* TTY I/O channel */
 #endif
 
-#if     MSDOS & (MSC | TURBO)
+#if MSDOS & (MSC | TURBO)
 union REGS rg;			/* cpu register for use of DOS calls */
 int nxtchar = -1;		/* character held from type ahead */
 #endif
@@ -99,7 +99,7 @@ char tobuf[TBUFSIZ];		/* terminal output buffer */
  */
 void ttopen(void)
 {
-#if     VMS
+#if VMS
 	struct dsc$descriptor idsc;
 	struct dsc$descriptor odsc;
 	char oname[40];
@@ -148,7 +148,7 @@ void ttopen(void)
 
 #endif
 
-#if     MSDOS & (TURBO | (PKCODE & MSC))
+#if MSDOS & (TURBO | (PKCODE & MSC))
 	/* kill the CONTROL-break interupt */
 	rg.h.ah = 0x33;		/* control-break check dos call */
 	rg.h.al = 1;		/* set the current state */
@@ -177,7 +177,7 @@ void ttopen(void)
 	kbdpoll = FALSE;
 #endif
 
-#if     V7 | BSD
+#if V7 | BSD
 	gtty(0, &ostate);	/* save old state */
 	gtty(0, &nstate);	/* get base of new state */
 #if XONXOFF
@@ -224,7 +224,7 @@ void ttopen(void)
  */
 void ttclose(void)
 {
-#if     VMS
+#if VMS
 	int status;
 	int iosb[1];
 
@@ -237,7 +237,7 @@ void ttclose(void)
 	if (status != SS$_NORMAL)
 		exit(status);
 #endif
-#if     MSDOS & (TURBO | (PKCODE & MSC))
+#if MSDOS & (TURBO | (PKCODE & MSC))
 	/* restore the CONTROL-break interupt */
 	rg.h.ah = 0x33;		/* control-break check dos call */
 	rg.h.al = 1;		/* set the current state */
@@ -254,7 +254,7 @@ void ttclose(void)
 	fcntl(0, F_SETFL, kbdflgs);
 #endif
 
-#if     V7 | BSD
+#if V7 | BSD
 	stty(0, &ostate);
 	ioctl(0, TIOCSETC, &otchars);	/* Place old character into K */
 #if BSD & PKCODE
@@ -271,7 +271,7 @@ void ttclose(void)
  */
 void ttputc(c)
 {
-#if     VMS
+#if VMS
 	if (nobuf >= NOBUF)
 		ttflush();
 	obuf[nobuf++] = c;
@@ -281,7 +281,7 @@ void ttputc(c)
 	bdos(6, c, 0);
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 	fputc(c, stdout);
 #endif
 }
@@ -292,7 +292,7 @@ void ttputc(c)
  */
 int ttflush(void)
 {
-#if     VMS
+#if VMS
 	int status;
 	int iosb[2];
 
@@ -308,10 +308,10 @@ int ttflush(void)
 	return status;
 #endif
 
-#if     MSDOS
+#if MSDOS
 #endif
 
-#if     V7 | USG | BSD
+#if V7 | USG | BSD
 /*
  * Add some terminal output success checking, sometimes an orphaned
  * process may be left looping on SunOS 4.1.
@@ -341,7 +341,7 @@ int ttflush(void)
  */
 ttgetc()
 {
-#if     VMS
+#if VMS
 	int status;
 	int iosb[2];
 	int term[2];
@@ -390,7 +390,7 @@ ttgetc()
 	return c & 255;
 #endif
 
-#if     V7 | BSD
+#if V7 | BSD
 	return 255 & fgetc(stdin);	/* 8BIT P.K. */
 #endif
 

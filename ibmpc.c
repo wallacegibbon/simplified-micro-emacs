@@ -14,7 +14,7 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if     IBMPC
+#if IBMPC
 #if PKCODE
 #define NROW	50
 #else
@@ -126,7 +126,7 @@ struct terminal term = {
 	ibmfcol,
 	ibmbcol
 #endif
-#if     SCROLLCODE
+#if SCROLLCODE
 	,
 	ibmscroll_reg
 #endif

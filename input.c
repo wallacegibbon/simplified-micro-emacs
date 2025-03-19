@@ -15,7 +15,7 @@
 #include "wrapper.h"
 
 #if PKCODE
-#if     MSDOS && TURBO
+#if MSDOS && TURBO
 #include <dir.h>
 #endif
 #endif
@@ -445,7 +445,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	int quotef;	/* are we quoting the next char? */
 #if COMPLC
 	int ffile, ocpos, nskip = 0, didtry = 0;
-#if     MSDOS
+#if MSDOS
 	struct ffblk ffblk;
 	char *fcp;
 #endif

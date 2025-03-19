@@ -102,7 +102,7 @@ struct terminal term = {
 	    , tcapfcol,
 	tcapbcol
 #endif
-#if     SCROLLCODE
+#if SCROLLCODE
 	    , NULL		/* set dynamically at open time */
 #endif
 };
