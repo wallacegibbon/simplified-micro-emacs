@@ -9,17 +9,17 @@
  *	modified by Petri Kutvonen
  */
 
-#include	<stdio.h>	/* Standard I/O package         */
-#include	"estruct.h"	/* Emacs' structures            */
-#include	"edef.h"	/* Emacs' definitions           */
+#include	<stdio.h>	/* Standard I/O package */
+#include	"estruct.h"	/* Emacs' structures */
+#include	"edef.h"	/* Emacs' definitions */
 
-#if	VMSVT
+#if VMSVT
 
-#include	 <descrip.h>	/* Descriptor definitions       */
+#include	 <descrip.h>	/* Descriptor definitions */
 
-/*  These would normally come from iodef.h and ttdef.h  */
-#define IO$_SENSEMODE	0x27	/* Sense mode of terminal       */
-#define TT$_UNKNOWN	0x00	/* Unknown terminal             */
+/*  These would normally come from iodef.h and ttdef.h */
+#define IO$_SENSEMODE	0x27	/* Sense mode of terminal */
+#define TT$_UNKNOWN	0x00	/* Unknown terminal */
 #define TT$_VT100	96
 
 /** Forward references **/
@@ -56,37 +56,37 @@ static char *scroll_forward, *scroll_reverse;
 
 /* Dispatch table. All hard fields just point into the terminal I/O code. */
 struct terminal term = {
-#if	PKCODE
+#if PKCODE
 	MAXROW,
 #else
 	24 - 1,			/* Max number of rows allowable */
 #endif
 				/* Filled in */ -1,
-				/* Current number of rows used  */
-	MAXCOL,			/* Max number of columns        */
+				/* Current number of rows used */
+	MAXCOL,			/* Max number of columns */
 				/* Filled in */ 0,
-				/* Current number of columns    */
+				/* Current number of columns */
 	64,			/* Min margin for extended lines */
-	8,			/* Size of scroll region        */
+	8,			/* Size of scroll region */
 	100,			/* # times thru update to pause */
-	vmsopen,		/* Open terminal at the start   */
-	ttclose,		/* Close terminal at end        */
-	vmskopen,		/* Open keyboard                */
-	vmskclose,		/* Close keyboard               */
-	ttgetc,			/* Get character from keyboard  */
-	ttputc,			/* Put character to display     */
-	ttflush,		/* Flush output buffers         */
-	vmsmove,		/* Move cursor, origin 0        */
-	vmseeol,		/* Erase to end of line         */
-	vmseeop,		/* Erase to end of page         */
-	vmsbeep,		/* Beep                         */
-	vmsrev,			/* Set reverse video state      */
-	vmscres			/* Change screen resolution     */
-#if	COLOR
-	    , vmsfcol,		/* Set forground color          */
-	vmsbcol			/* Set background color         */
+	vmsopen,		/* Open terminal at the start */
+	ttclose,		/* Close terminal at end */
+	vmskopen,		/* Open keyboard */
+	vmskclose,		/* Close keyboard */
+	ttgetc,			/* Get character from keyboard */
+	ttputc,			/* Put character to display */
+	ttflush,		/* Flush output buffers */
+	vmsmove,		/* Move cursor, origin 0 */
+	vmseeol,		/* Erase to end of line */
+	vmseeop,		/* Erase to end of page */
+	vmsbeep,		/* Beep */
+	vmsrev,			/* Set reverse video state */
+	vmscres			/* Change screen resolution */
+#if COLOR
+	    , vmsfcol,		/* Set forground color */
+	vmsbcol			/* Set background color */
 #endif
-#if	SCROLLCODE
+#if SCROLLCODE
 	    , NULL
 #endif
 };
@@ -97,7 +97,7 @@ struct terminal term = {
  *  Nothing returned
  ***/
 ttputs(string)
-char *string;			/* String to write              */
+char *string;			/* String to write */
 {
 	if (string)
 		while (*string != '\0')
@@ -111,8 +111,8 @@ char *string;			/* String to write              */
  *  Nothing returned
  ***/
 vmsmove(row, col)
-int row;			/* Row position                 */
-int col;			/* Column position              */
+int row;			/* Row position */
+int col;			/* Column position */
 {
 	char buffer[32];
 	int ret_length;
@@ -129,22 +129,22 @@ int col;			/* Column position              */
 	arg_list[1] = row + 1;
 	arg_list[2] = col + 1;
 
-	if ((smg$get_term_data(	/* Get terminal data            */
-				      &termtype,	/* Terminal table address       */
-				      &request_code,	/* Request code                 */
-				      &max_buffer_length,	/* Maximum buffer length        */
-				      &ret_length,	/* Return length                */
-				      buffer,	/* Capability data buffer       */
+	if ((smg$get_term_data(	/* Get terminal data */
+				      &termtype,	/* Terminal table address */
+				      &request_code,	/* Request code */
+				      &max_buffer_length,	/* Maximum buffer length */
+				      &ret_length,	/* Return length */
+				      buffer,	/* Capability data buffer */
 				      arg_list)
 
-	     /* Argument list array              */
-	     /* We'll know soon enough if this doesn't work         */
+	     /* Argument list array */
+	     /* We'll know soon enough if this doesn't work */
 	     &1) == 0) {
 		ttputs("OOPS");
 		return;
 	}
 
-	/* Send out resulting sequence                          */
+	/* Send out resulting sequence */
 	i = ret_length;
 	cp = buffer;
 	while (i-- > 0)
@@ -173,8 +173,8 @@ vmsscroll_reg(from, to, howmany)
 }
 
 vmsscrollregion(top, bot)
-int top;			/* Top position                 */
-int bot;			/* Bottom position              */
+int top;			/* Top position */
+int bot;			/* Bottom position */
 {
 	char buffer[32];
 	int ret_length;
@@ -191,23 +191,23 @@ int bot;			/* Bottom position              */
 	arg_list[1] = top + 1;
 	arg_list[2] = bot + 1;
 
-	if ((smg$get_term_data(	/* Get terminal data            */
-				      &termtype,	/* Terminal table address       */
-				      &request_code,	/* Request code                 */
-				      &max_buffer_length,	/* Maximum buffer length        */
-				      &ret_length,	/* Return length                */
-				      buffer,	/* Capability data buffer       */
+	if ((smg$get_term_data(	/* Get terminal data */
+				      &termtype,	/* Terminal table address */
+				      &request_code,	/* Request code */
+				      &max_buffer_length,	/* Maximum buffer length */
+				      &ret_length,	/* Return length */
+				      buffer,	/* Capability data buffer */
 				      arg_list)
 
-	     /* Argument list array              */
-	     /* We'll know soon enough if this doesn't work         */
+	     /* Argument list array */
+	     /* We'll know soon enough if this doesn't work */
 	     &1) == 0) {
 		ttputs("OOPS");
 		return;
 	}
 
 	ttputc(0);
-	/* Send out resulting sequence                          */
+	/* Send out resulting sequence */
 	i = ret_length;
 	cp = buffer;
 	while (i-- > 0)
@@ -221,7 +221,7 @@ int bot;			/* Bottom position              */
  *  Nothing returned
  ***/
 vmsrev(status)
-int status;			/* TRUE if setting reverse      */
+int status;			/* TRUE if setting reverse */
 {
 	if (status)
 		ttputs(begin_reverse);
@@ -241,7 +241,7 @@ vmscres()
 }
 
 
-#if	COLOR
+#if COLOR
 /***
  *  vmsfcol  -  Set the forground color (not implimented)
  *
@@ -301,7 +301,7 @@ vmsbeep()
  *		NULL	No escape sequence available
  ***/
 char *vmsgetstr(request_code)
-int request_code;		/* Request code                 */
+int request_code;		/* Request code */
 {
 	char *result;
 	static char seq_storage[1024];
@@ -315,26 +315,26 @@ int request_code;		/* Request code                 */
 
 	/* Get terminal commands sequence from master table */
 
-	if ((smg$get_term_data(	/* Get terminal data            */
-				      &termtype,	/* Terminal table address       */
-				      &request_code,	/* Request code                 */
-				      &max_buffer_length,	/* Maximum buffer length     */
-				      &ret_length,	/* Return length                */
-				      buffer,	/* Capability data buffer       */
+	if ((smg$get_term_data(	/* Get terminal data */
+				      &termtype,	/* Terminal table address */
+				      &request_code,	/* Request code */
+				      &max_buffer_length,	/* Maximum buffer length */
+				      &ret_length,	/* Return length */
+				      buffer,	/* Capability data buffer */
 				      arg_list)
 
 
-	     /* Argument list array              */
+	     /* Argument list array */
 	     /* If this doesn't work, try again with no arguments */
-	     &1) == 0 && (smg$get_term_data(	/* Get terminal data            */
-						   &termtype,	/* Terminal table address       */
-						   &request_code,	/* Request code                 */
-						   &max_buffer_length,	/* Maximum buffer length     */
-						   &ret_length,	/* Return length                */
+	     &1) == 0 && (smg$get_term_data(	/* Get terminal data */
+						   &termtype,	/* Terminal table address */
+						   &request_code,	/* Request code */
+						   &max_buffer_length,	/* Maximum buffer length */
+						   &ret_length,	/* Return length */
 						   buffer)
 
 
-			  /* Capability data buffer   */
+			  /* Capability data buffer */
 			  /* Return NULL pointer if capability is not available */
 			  &1) == 0)
 		return NULL;
@@ -361,19 +361,19 @@ int request_code;		/* Request code                 */
 
 
 /** I/O information block definitions **/
-struct iosb {			/* I/O status block                     */
-	short i_cond;		/* Condition value                      */
-	short i_xfer;		/* Transfer count                       */
-	long i_info;		/* Device information                   */
+struct iosb {			/* I/O status block */
+	short i_cond;		/* Condition value */
+	short i_xfer;		/* Transfer count */
+	long i_info;		/* Device information */
 };
-struct termchar {		/* Terminal characteristics             */
-	char t_class;		/* Terminal class                       */
-	char t_type;		/* Terminal type                        */
-	short t_width;		/* Terminal width in characters         */
-	long t_mandl;		/* Terminal's mode and length           */
-	long t_extend;		/* Extended terminal characteristics    */
+struct termchar {		/* Terminal characteristics */
+	char t_class;		/* Terminal class */
+	char t_type;		/* Terminal type */
+	short t_width;		/* Terminal width in characters */
+	long t_mandl;		/* Terminal's mode and length */
+	long t_extend;		/* Extended terminal characteristics */
 };
-static struct termchar tc;	/* Terminal characteristics             */
+static struct termchar tc;	/* Terminal characteristics */
 
 /***
  *  vmsgtty - Get terminal type from system control block
@@ -393,15 +393,15 @@ vmsgtty()
 		exit(status);
 
 	/* Get terminal characteristics */
-	status = sys$qiow(	/* Queue and wait               */
-				 0,	/* Wait on event flag zero      */
-				 fd,	/* Channel to input terminal    */
-				 IO$_SENSEMODE,	/* Get current characteristic   */
-				 &iostatus,	/* Status after operation       */
-				 0, 0,	/* No AST service               */
+	status = sys$qiow(	/* Queue and wait */
+				 0,	/* Wait on event flag zero */
+				 fd,	/* Channel to input terminal */
+				 IO$_SENSEMODE,	/* Get current characteristic */
+				 &iostatus,	/* Status after operation */
+				 0, 0,	/* No AST service */
 				 &tc,	/* Terminal characteristics buf */
-				 sizeof(tc),	/* Size of the buffer           */
-				 0, 0, 0, 0);	/* P3-P6 unused                 */
+				 sizeof(tc),	/* Size of the buffer */
+				 0, 0, 0, 0);	/* P3-P6 unused */
 
 	/* De-assign the input device */
 	if ((sys$dassgn(fd) & 1) == 0)
@@ -432,8 +432,8 @@ vmsopen()
 		exit(3);
 	}
 
-	/* Access the system terminal definition table for the          */
-	/* information of the terminal type returned by IO$_SENSEMODE   */
+	/* Access the system terminal definition table for the */
+	/* information of the terminal type returned by IO$_SENSEMODE */
 	if ((smg$init_term_table_by_type(&tc.t_type, &termtype) & 1) == 0)
 		return -1;
 

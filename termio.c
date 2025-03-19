@@ -22,47 +22,47 @@
 #include        <ttdef.h>
 #include	<tt2def.h>
 
-#define NIBUF   128		/* Input buffer size            */
-#define NOBUF   1024		/* MM says bug buffers win!     */
-#define EFN     0		/* Event flag                   */
+#define NIBUF   128		/* Input buffer size */
+#define NOBUF   1024		/* MM says bug buffers win! */
+#define EFN     0		/* Event flag */
 
-char obuf[NOBUF];		/* Output buffer                */
-int nobuf;			/* # of bytes in above          */
-char ibuf[NIBUF];		/* Input buffer                 */
-int nibuf;			/* # of bytes in above          */
-int ibufi;			/* Read index                   */
-int oldmode[3];			/* Old TTY mode bits            */
-int newmode[3];			/* New TTY mode bits            */
-short iochan;			/* TTY I/O channel              */
+char obuf[NOBUF];		/* Output buffer */
+int nobuf;			/* # of bytes in above */
+char ibuf[NIBUF];		/* Input buffer */
+int nibuf;			/* # of bytes in above */
+int ibufi;			/* Read index */
+int oldmode[3];			/* Old TTY mode bits */
+int newmode[3];			/* New TTY mode bits */
+short iochan;			/* TTY I/O channel */
 #endif
 
 #if     MSDOS & (MSC | TURBO)
 union REGS rg;			/* cpu register for use of DOS calls */
-int nxtchar = -1;		/* character held from type ahead    */
+int nxtchar = -1;		/* character held from type ahead */
 #endif
 
-#if	USG			/* System V */
+#if USG			/* System V */
 #include	<signal.h>
 #include	<termio.h>
 #include	<fcntl.h>
-int kbdflgs;			/* saved keyboard fd flags      */
-int kbdpoll;			/* in O_NDELAY mode                     */
-int kbdqp;			/* there is a char in kbdq      */
-char kbdq;			/* char we've already read      */
+int kbdflgs;			/* saved keyboard fd flags */
+int kbdpoll;			/* in O_NDELAY mode */
+int kbdqp;			/* there is a char in kbdq */
+char kbdq;			/* char we've already read */
 struct termio otermio;		/* original terminal characteristics */
 struct termio ntermio;		/* charactoristics to use inside */
-#if	XONXOFF
+#if XONXOFF
 #define XXMASK	0016000
 #endif
 #endif
 
-#if	V7 | BSD
+#if V7 | BSD
 #include        <sgtty.h>	/* for stty/gtty functions */
 #include	<signal.h>
 struct sgttyb ostate;		/* saved tty state */
 struct sgttyb nstate;		/* values for editor mode */
 struct tchars otchars;		/* Saved terminal special character set */
-#if	XONXOFF
+#if XONXOFF
 struct tchars ntchars = { 0xff, 0xff, 0x11, 0x13, 0xff, 0xff };
 
 				/* A lot of nothing and XON/XOFF */
@@ -71,7 +71,7 @@ struct tchars ntchars = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 				/* A lot of nothing */
 #endif
-#if	BSD & PKCODE
+#if BSD & PKCODE
 struct ltchars oltchars;	/* Saved terminal local special character set */
 struct ltchars nltchars = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
@@ -80,14 +80,14 @@ struct ltchars nltchars = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 #if BSD
 #include <sys/ioctl.h>		/* to get at the typeahead */
-extern int rtfrmshell();	/* return from suspended shell */
+int rtfrmshell();		/* return from suspended shell */
 #define	TBUFSIZ	128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
 #endif
 #endif
 
-#if	__hpux | SVR4
-extern int rtfrmshell();	/* return from suspended shell */
+#if __hpux | SVR4
+int rtfrmshell();		/* return from suspended shell */
 #define TBUFSIZ 128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
 #endif
@@ -134,7 +134,7 @@ void ttopen(void)
 		exit(status);
 	newmode[0] = oldmode[0];
 	newmode[1] = oldmode[1] | TT$M_NOECHO;
-#if	XONXOFF
+#if XONXOFF
 #else
 	newmode[1] &= ~(TT$M_TTSYNC | TT$M_HOSTSYNC);
 #endif
@@ -156,10 +156,10 @@ void ttopen(void)
 	intdos(&rg, &rg);	/* go for it! */
 #endif
 
-#if	USG
+#if USG
 	ioctl(0, TCGETA, &otermio);	/* save old settings */
 	ntermio.c_iflag = 0;	/* setup new settings */
-#if	XONXOFF
+#if XONXOFF
 	ntermio.c_iflag = otermio.c_iflag & XXMASK;	/* save XON/XOFF P.K. */
 #endif
 	ntermio.c_oflag = 0;
@@ -168,7 +168,7 @@ void ttopen(void)
 	ntermio.c_line = otermio.c_line;
 	ntermio.c_cc[VMIN] = 1;
 	ntermio.c_cc[VTIME] = 0;
-#if	PKCODE
+#if PKCODE
 	ioctl(0, TCSETAW, &ntermio);	/* and activate them */
 #else
 	ioctl(0, TCSETA, &ntermio);	/* and activate them */
@@ -180,7 +180,7 @@ void ttopen(void)
 #if     V7 | BSD
 	gtty(0, &ostate);	/* save old state */
 	gtty(0, &nstate);	/* get base of new state */
-#if	XONXOFF
+#if XONXOFF
 	nstate.sg_flags |= (CBREAK | TANDEM);
 #else
 	nstate.sg_flags |= RAW;
@@ -189,11 +189,11 @@ void ttopen(void)
 	stty(0, &nstate);	/* set mode */
 	ioctl(0, TIOCGETC, &otchars);	/* Save old characters */
 	ioctl(0, TIOCSETC, &ntchars);	/* Place new character into K */
-#if	BSD & PKCODE
+#if BSD & PKCODE
 	ioctl(0, TIOCGLTC, &oltchars);	/* Save old local characters */
 	ioctl(0, TIOCSLTC, &nltchars);	/* New local characters */
 #endif
-#if	BSD
+#if BSD
 	/* provide a smaller terminal output buffer so that
 	   the type ahead detection works better (more often) */
 	setbuffer(stdout, &tobuf[0], TBUFSIZ);
@@ -202,7 +202,7 @@ void ttopen(void)
 #endif
 #endif
 
-#if	__hpux | SVR4
+#if __hpux | SVR4
 	/* provide a smaller terminal output buffer so that
 	   the type ahead detection works better (more often) */
 	setvbuf(stdout, &tobuf[0], _IOFBF, TBUFSIZ);
@@ -212,7 +212,7 @@ void ttopen(void)
 #endif				/* __hpux */
 
 	/* on all screens we are not sure of the initial position
-	   of the cursor                                        */
+	   of the cursor */
 	ttrow = 999;
 	ttcol = 999;
 }
@@ -245,8 +245,8 @@ void ttclose(void)
 	intdos(&rg, &rg);	/* go for it! */
 #endif
 
-#if	USG
-#if	PKCODE
+#if USG
+#if PKCODE
 	ioctl(0, TCSETAW, &otermio);	/* restore terminal settings */
 #else
 	ioctl(0, TCSETA, &otermio);	/* restore terminal settings */
@@ -257,7 +257,7 @@ void ttclose(void)
 #if     V7 | BSD
 	stty(0, &ostate);
 	ioctl(0, TIOCSETC, &otchars);	/* Place old character into K */
-#if	BSD & PKCODE
+#if BSD & PKCODE
 	ioctl(0, TIOCSLTC, &oltchars);	/* Place old local character into K */
 #endif
 #endif
@@ -277,7 +277,7 @@ void ttputc(c)
 	obuf[nobuf++] = c;
 #endif
 
-#if	MSDOS & ~IBMPC
+#if MSDOS & ~IBMPC
 	bdos(6, c, 0);
 #endif
 
@@ -370,10 +370,10 @@ ttgetc()
 			nibuf = (iosb[0] >> 16) + (iosb[1] >> 16);
 		}
 	}
-	return ibuf[ibufi++] & 0xFF;	/* Allow multinational  */
+	return ibuf[ibufi++] & 0xFF;	/* Allow multinational */
 #endif
 
-#if	MSDOS & (MSC | TURBO)
+#if MSDOS & (MSC | TURBO)
 	int c;			/* character read */
 
 	/* if a char already is ready, return it */
@@ -394,7 +394,7 @@ ttgetc()
 	return 255 & fgetc(stdin);	/* 8BIT P.K. */
 #endif
 
-#if	USG
+#if USG
 	if (kbdqp)
 		kbdqp = FALSE;
 	else {
@@ -407,35 +407,35 @@ ttgetc()
 #endif
 }
 
-#if	TYPEAH
+#if TYPEAH
 /* typahead:	Check to see if any characters are already in the
 		keyboard buffer
 */
 
 typahead()
 {
-#if	MSDOS & (MSC | TURBO)
+#if MSDOS & (MSC | TURBO)
 	if (kbhit() != 0)
 		return TRUE;
 	else
 		return FALSE;
 #endif
 
-#if	BSD
+#if BSD
 	int x;			/* holds # of pending chars */
 
 	return (ioctl(0, FIONREAD, &x) < 0) ? 0 : x;
 #endif
 
-#if	PKCODE & VMS
+#if PKCODE & VMS
 	return ibufi < nibuf;
 #endif
 
-#if	USG
+#if USG
 	if (!kbdqp) {
 		if (!kbdpoll && fcntl(0, F_SETFL, kbdflgs | O_NDELAY) < 0)
 			return FALSE;
-#if	PKCODE
+#if PKCODE
 		kbdpoll = 1;
 #endif
 		kbdqp = (1 == read(0, &kbdq, 1));

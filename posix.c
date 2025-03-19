@@ -31,8 +31,8 @@
 #define XCASE 0000004
 #endif
 
-static int kbdflgs;			/* saved keyboard fd flags      */
-static int kbdpoll;			/* in O_NDELAY mode             */
+static int kbdflgs;			/* saved keyboard fd flags */
+static int kbdpoll;			/* in O_NDELAY mode */
 
 static struct termios otermios;		/* original terminal characteristics */
 static struct termios ntermios;		/* charactoristics to use inside */
@@ -84,7 +84,7 @@ void ttopen(void)
 	kbdpoll = FALSE;
 
 	/* on all screens we are not sure of the initial position
-	   of the cursor                                        */
+	   of the cursor */
 	ttrow = 999;
 	ttcol = 999;
 }

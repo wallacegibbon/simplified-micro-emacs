@@ -84,7 +84,7 @@ extern unsigned _stklen = 32766;
 #include <signal.h>
 static void emergencyexit(int);
 #ifdef SIGWINCH
-extern void sizesignal(int);
+void sizesignal(int);
 #endif
 #endif
 
@@ -118,21 +118,21 @@ int main(int argc, char **argv)
 	int saveflag;		/* temp store for lastflag */
 	int errflag;		/* C error processing? */
 	char bname[NBUFN];	/* buffer name of file to read */
-#if	CRYPT
+#if CRYPT
 	int cryptflag;		/* encrypting on the way in? */
 	char ekey[NPAT];	/* startup encryption key */
 #endif
 	int newc;
 
-#if	PKCODE & VMS
+#if PKCODE & VMS
 	(void) umask(-1); /* Use old protection (this is at wrong place). */
 #endif
 
-#if	PKCODE & BSD
+#if PKCODE & BSD
 	sleep(1); /* Time for window manager. */
 #endif
 
-#if	UNIX
+#if UNIX
 #ifdef SIGWINCH
 	signal(SIGWINCH, sizesignal);
 #endif
@@ -158,14 +158,14 @@ int main(int argc, char **argv)
 	firstfile = TRUE;	/* no file to edit yet */
 	startflag = FALSE;	/* startup file not executed yet */
 	errflag = FALSE;	/* not doing C error parsing */
-#if	CRYPT
+#if CRYPT
 	cryptflag = FALSE;	/* no encryption by default */
 #endif
 
 	/* Parse the command line */
 	for (carg = 1; carg < argc; ++carg) {
 		/* Process Switches */
-#if	PKCODE
+#if PKCODE
 		if (argv[carg][0] == '+') {
 			gotoflag = TRUE;
 			gline = atoi(&argv[carg][1]);
@@ -187,14 +187,14 @@ int main(int argc, char **argv)
 				gotoflag = TRUE;
 				gline = atoi(&argv[carg][2]);
 				break;
-#if	CRYPT
+#if CRYPT
 			case 'k':	/* -k<key> for code key */
 			case 'K':
 				cryptflag = TRUE;
 				strcpy(ekey, &argv[carg][2]);
 				break;
 #endif
-#if	PKCODE
+#if PKCODE
 			case 'n':	/* -n accept null chars */
 			case 'N':
 				nullflag = TRUE;
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 			/* set the modes appropriatly */
 			if (viewflag)
 				bp->b_mode |= MDVIEW;
-#if	CRYPT
+#if CRYPT
 			if (cryptflag) {
 				bp->b_mode |= MDCRYPT;
 				myencrypt((char *) NULL, 0);
@@ -256,7 +256,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-#if	UNIX
+#if UNIX
 	signal(SIGHUP, emergencyexit);
 	signal(SIGTERM, emergencyexit);
 #endif
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
 		c = getcmd();
 	}
 #else
-	/* Fix up the screen    */
+	/* Fix up the screen */
 	update(FALSE);
 
 	/* get the next command from the keyboard */
@@ -336,8 +336,8 @@ int main(int argc, char **argv)
 	if (mpresf != FALSE) {
 		mlerase();
 		update(FALSE);
-#if	CLRMSG
-		if (c == ' ')	/* ITS EMACS does this  */
+#if CLRMSG
+		if (c == ' ')	/* ITS EMACS does this */
 			goto loop;
 #endif
 	}
@@ -373,7 +373,7 @@ int main(int argc, char **argv)
 
 	/* do ^U repeat argument processing */
 
-	if (c == reptc) {	/* ^U, start argument   */
+	if (c == reptc) {	/* ^U, start argument */
 		f = TRUE;
 		n = 4;		/* with argument of 4 */
 		mflag = 0;	/* that can be discarded. */
@@ -435,31 +435,31 @@ void edinit(char *bname)
 	struct buffer *bp;
 	struct window *wp;
 
-	bp = bfind(bname, TRUE, 0);	/* First buffer         */
-	blistp = bfind("*List*", TRUE, BFINVS);	/* Buffer list buffer   */
-	wp = (struct window *)malloc(sizeof(struct window));	/* First window         */
+	bp = bfind(bname, TRUE, 0);	/* First buffer */
+	blistp = bfind("*List*", TRUE, BFINVS);	/* Buffer list buffer */
+	wp = (struct window *)malloc(sizeof(struct window));	/* First window */
 	if (bp == NULL || wp == NULL || blistp == NULL)
 		exit(1);
-	curbp = bp;		/* Make this current    */
+	curbp = bp;		/* Make this current */
 	wheadp = wp;
 	curwp = wp;
-	wp->w_wndp = NULL;	/* Initialize window    */
+	wp->w_wndp = NULL;	/* Initialize window */
 	wp->w_bufp = bp;
-	bp->b_nwnd = 1;		/* Displayed.           */
+	bp->b_nwnd = 1;		/* Displayed. */
 	wp->w_linep = bp->b_linep;
 	wp->w_dotp = bp->b_linep;
 	wp->w_doto = 0;
 	wp->w_markp = NULL;
 	wp->w_marko = 0;
 	wp->w_toprow = 0;
-#if	COLOR
+#if COLOR
 	/* initalize colors to global defaults */
 	wp->w_fcolor = gfcolor;
 	wp->w_bcolor = gbcolor;
 #endif
-	wp->w_ntrows = term.t_nrow - 1;	/* "-1" for mode line.  */
+	wp->w_ntrows = term.t_nrow - 1;	/* "-1" for mode line. */
 	wp->w_force = 0;
-	wp->w_flag = WFMODE | WFHARD;	/* Full.                */
+	wp->w_flag = WFMODE | WFHARD;	/* Full. */
 }
 
 /*
@@ -492,29 +492,29 @@ int execute(int c, int f, int n)
 	    (curwp->w_bufp->b_mode & MDVIEW) == FALSE)
 		execute(META | SPEC | 'W', FALSE, 1);
 
-#if	PKCODE
-	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting.      */
-#if	IBMPC
+#if PKCODE
+	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
+#if IBMPC
 	    || (c >= 0x80 && c <= 0xFE)) {
 #else
-#if	VMS || BSD || USG	/* 8BIT P.K. */
+#if VMS || BSD || USG	/* 8BIT P.K. */
 	    || (c >= 0xA0 && c <= 0x10FFFF)) {
 #else
 	    ) {
 #endif
 #endif
 #else
-	if ((c >= 0x20 && c <= 0xFF)) {	/* Self inserting.      */
+	if ((c >= 0x20 && c <= 0xFF)) {	/* Self inserting. */
 #endif
-		if (n <= 0) {	/* Fenceposts.          */
+		if (n <= 0) {	/* Fenceposts. */
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;
 		}
-		thisflag = 0;	/* For the future.      */
+		thisflag = 0;	/* For the future. */
 
 		/* if we are in overwrite mode, not at eol,
 		   and next char is not a tab or we are at a tab stop,
-		   delete a char forword                        */
+		   delete a char forword */
 		if (curwp->w_bufp->b_mode & MDOVER &&
 		    curwp->w_doto < curwp->w_dotp->l_used &&
 		    (lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
@@ -529,7 +529,7 @@ int execute(int c, int f, int n)
 		else
 			status = linsert(n, c);
 
-#if	CFENCE
+#if CFENCE
 		/* check for CMODE fence matching */
 		if ((c == '}' || c == ')' || c == ']') &&
 		    (curbp->b_mode & MDCMOD) != 0)
@@ -549,8 +549,8 @@ int execute(int c, int f, int n)
 		return status;
 	}
 	TTbeep();
-	mlwrite("(Key not bound)");	/* complain             */
-	lastflag = 0;		/* Fake last flags.     */
+	mlwrite("(Key not bound)");	/* complain */
+	lastflag = 0;		/* Fake last flags. */
 	return FALSE;
 }
 
@@ -568,12 +568,12 @@ int quickexit(int f, int n)
 
 	bp = bheadp;
 	while (bp != NULL) {
-		if ((bp->b_flag & BFCHG) != 0	/* Changed.             */
-		    && (bp->b_flag & BFTRUNC) == 0	/* Not truncated P.K.   */
-		    && (bp->b_flag & BFINVS) == 0) {	/* Real.                */
+		if ((bp->b_flag & BFCHG) != 0	/* Changed. */
+		    && (bp->b_flag & BFTRUNC) == 0	/* Not truncated P.K. */
+		    && (bp->b_flag & BFINVS) == 0) {	/* Real. */
 			curbp = bp;	/* make that buffer cur */
 			mlwrite("(Saving %s)", bp->b_fname);
-#if	PKCODE
+#if PKCODE
 #else
 			mlwrite("\n");
 #endif
@@ -584,7 +584,7 @@ int quickexit(int f, int n)
 		}
 		bp = bp->b_bufp;	/* on to the next buffer */
 	}
-	quit(f, n);		/* conditionally quit   */
+	quit(f, n);		/* conditionally quit */
 	return TRUE;
 }
 
@@ -602,12 +602,12 @@ int quit(int f, int n)
 {
 	int s;
 
-	if (f != FALSE		/* Argument forces it.  */
-	    || anycb() == FALSE	/* All buffers clean.   */
-	    /* User says it's OK.   */
+	if (f != FALSE		/* Argument forces it. */
+	    || anycb() == FALSE	/* All buffers clean. */
+	    /* User says it's OK. */
 	    || (s =
 		mlyesno("Modified buffers exist. Leave anyway")) == TRUE) {
-#if	(FILOCK && BSD) || SVR4
+#if (FILOCK && BSD) || SVR4
 		if (lockrel() != TRUE) {
 			TTputc('\n');
 			TTputc('\r');
@@ -737,7 +737,7 @@ int unarg(int f, int n)
 
 /*****		Compiler specific Library functions	****/
 
-#if	RAMSIZE
+#if RAMSIZE
 /*	These routines will allow me to track memory usage by placing
 	a layer on top of the standard system malloc() and free() calls.
 	with this code defined, the environment variable, $RAM, will
@@ -761,7 +761,7 @@ unsigned nbytes;		/* # of bytes to allocate */
 	mp = malloc(nbytes);
 	if (mp) {
 		envram += nbytes;
-#if	RAMSHOW
+#if RAMSHOW
 		dspram();
 #endif
 	}
@@ -781,20 +781,20 @@ char *mp;			/* chunk of RAM to release */
 		lp = ((unsigned *) mp) - 1;
 		envram -= (long) *lp - 2;
 		free(mp);
-#if	RAMSHOW
+#if RAMSHOW
 		dspram();
 #endif
 	}
 }
 
-#if	RAMSHOW
+#if RAMSHOW
 dspram()
 {				/* display the amount of RAM currently malloced */
 	char mbuf[20];
 	char *sp;
 
 	TTmove(term.t_nrow - 1, 70);
-#if	COLOR
+#if COLOR
 	TTforg(7);
 	TTbacg(0);
 #endif
@@ -813,7 +813,7 @@ dspram()
 	own used memory
 */
 
-#if	CLEAN
+#if CLEAN
 
 /*
  * cexit()

@@ -70,7 +70,7 @@ int nextwind(int f, int n)
 		}
 
 		/* if the argument is negative, it is the nth window
-		   from the bottom of the screen                        */
+		   from the bottom of the screen */
 		if (n < 0)
 			n = nwindows + n + 1;
 
@@ -325,7 +325,7 @@ int splitwind(int f, int n)
 		return FALSE;
 	}
 	wp = xmalloc(sizeof(struct window));
-	++curbp->b_nwnd;	/* Displayed twice.     */
+	++curbp->b_nwnd;	/* Displayed twice. */
 	wp->w_bufp = curbp;
 	wp->w_dotp = curwp->w_dotp;
 	wp->w_doto = curwp->w_doto;
@@ -333,13 +333,13 @@ int splitwind(int f, int n)
 	wp->w_marko = curwp->w_marko;
 	wp->w_flag = 0;
 	wp->w_force = 0;
-#if	COLOR
+#if COLOR
 	/* set the colors of the new window */
 	wp->w_fcolor = gfcolor;
 	wp->w_bcolor = gbcolor;
 #endif
-	ntru = (curwp->w_ntrows - 1) / 2;	/* Upper size           */
-	ntrl = (curwp->w_ntrows - 1) - ntru;	/* Lower size           */
+	ntru = (curwp->w_ntrows - 1) / 2;	/* Upper size */
+	ntrl = (curwp->w_ntrows - 1) - ntru;	/* Lower size */
 	lp = curwp->w_linep;
 	ntrd = 0;
 	while (lp != curwp->w_dotp) {
@@ -349,14 +349,14 @@ int splitwind(int f, int n)
 	lp = curwp->w_linep;
 	if (((f == FALSE) && (ntrd <= ntru)) || ((f == TRUE) && (n == 1))) {
 		/* Old is upper window. */
-		if (ntrd == ntru)	/* Hit mode line.       */
+		if (ntrd == ntru)	/* Hit mode line. */
 			lp = lforw(lp);
 		curwp->w_ntrows = ntru;
 		wp->w_wndp = curwp->w_wndp;
 		curwp->w_wndp = wp;
 		wp->w_toprow = curwp->w_toprow + ntru + 1;
 		wp->w_ntrows = ntrl;
-	} else {		/* Old is lower window  */
+	} else {		/* Old is lower window */
 		wp1 = NULL;
 		wp2 = wheadp;
 		while (wp2 != curwp) {
@@ -370,14 +370,14 @@ int splitwind(int f, int n)
 		wp->w_wndp = curwp;
 		wp->w_toprow = curwp->w_toprow;
 		wp->w_ntrows = ntru;
-		++ntru;		/* Mode line.           */
+		++ntru;		/* Mode line. */
 		curwp->w_toprow += ntru;
 		curwp->w_ntrows = ntrl;
 		while (ntru--)
 			lp = lforw(lp);
 	}
 	curwp->w_linep = lp;	/* Adjust the top lines */
-	wp->w_linep = lp;	/* if necessary.        */
+	wp->w_linep = lp;	/* if necessary. */
 	curwp->w_flag |= WFMODE | WFHARD;
 	wp->w_flag |= WFMODE | WFHARD;
 	return TRUE;
@@ -410,13 +410,13 @@ int enlargewind(int f, int n)
 		mlwrite("Impossible change");
 		return FALSE;
 	}
-	if (curwp->w_wndp == adjwp) {	/* Shrink below.        */
+	if (curwp->w_wndp == adjwp) {	/* Shrink below. */
 		lp = adjwp->w_linep;
 		for (i = 0; i < n && lp != adjwp->w_bufp->b_linep; ++i)
 			lp = lforw(lp);
 		adjwp->w_linep = lp;
 		adjwp->w_toprow += n;
-	} else {		/* Shrink above.        */
+	} else {		/* Shrink above. */
 		lp = curwp->w_linep;
 		for (i = 0; i < n && lback(lp) != curbp->b_linep; ++i)
 			lp = lback(lp);
@@ -425,7 +425,7 @@ int enlargewind(int f, int n)
 	}
 	curwp->w_ntrows += n;
 	adjwp->w_ntrows -= n;
-#if	SCROLLCODE
+#if SCROLLCODE
 	curwp->w_flag |= WFMODE | WFHARD | WFINS;
 	adjwp->w_flag |= WFMODE | WFHARD | WFKILLS;
 #else
@@ -461,14 +461,14 @@ int shrinkwind(int f, int n)
 		mlwrite("Impossible change");
 		return FALSE;
 	}
-	if (curwp->w_wndp == adjwp) {	/* Grow below.          */
+	if (curwp->w_wndp == adjwp) {	/* Grow below. */
 		lp = adjwp->w_linep;
 		for (i = 0; i < n && lback(lp) != adjwp->w_bufp->b_linep;
 		     ++i)
 			lp = lback(lp);
 		adjwp->w_linep = lp;
 		adjwp->w_toprow -= n;
-	} else {		/* Grow above.          */
+	} else {		/* Grow above. */
 		lp = curwp->w_linep;
 		for (i = 0; i < n && lp != curbp->b_linep; ++i)
 			lp = lforw(lp);
@@ -477,7 +477,7 @@ int shrinkwind(int f, int n)
 	}
 	curwp->w_ntrows -= n;
 	adjwp->w_ntrows += n;
-#if	SCROLLCODE
+#if SCROLLCODE
 	curwp->w_flag |= WFMODE | WFHARD | WFKILLS;
 	adjwp->w_flag |= WFMODE | WFHARD | WFINS;
 #else
@@ -519,10 +519,10 @@ struct window *wpopup(void)
 {
 	struct window *wp;
 
-	if (wheadp->w_wndp == NULL	/* Only 1 window        */
-	    && splitwind(FALSE, 0) == FALSE)	/* and it won't split   */
+	if (wheadp->w_wndp == NULL	/* Only 1 window */
+	    && splitwind(FALSE, 0) == FALSE)	/* and it won't split */
 		return NULL;
-	wp = wheadp;		/* Find window to use   */
+	wp = wheadp;		/* Find window to use */
 	while (wp != NULL && wp == curwp)
 		wp = wp->w_wndp;
 	return wp;

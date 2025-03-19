@@ -5,12 +5,12 @@
  *
  *	modified by Petri Kutvonen
  */
-#ifndef EPATH_H_
-#define EPATH_H_
+#ifndef __EPATH_H
+#define __EPATH_H
 
 /*	possible names and paths of help files under different OSs	*/
 static char *pathname[] =
-#if	MSDOS
+#if MSDOS
 {
 	"emacs.rc",
 	"emacs.hlp",
@@ -22,22 +22,22 @@ static char *pathname[] =
 };
 #endif
 
-#if	V7 | BSD | USG
+#if V7 | BSD | USG
 {
 	".emacsrc", "emacs.hlp",
-#if	PKCODE
+#if PKCODE
 	    "/usr/global/lib/", "/usr/local/bin/", "/usr/local/lib/",
 #endif
 "/usr/local/", "/usr/lib/", ""};
 #endif
 
-#if	VMS
+#if VMS
 {
 	"emacs.rc", "emacs.hlp", "",
-#if	PKCODE
+#if PKCODE
 	    "sys$login:", "emacs_dir:",
 #endif
 "sys$sysdevice:[vmstools]"};
 #endif
 
-#endif  /* EPATH_H_ */
+#endif

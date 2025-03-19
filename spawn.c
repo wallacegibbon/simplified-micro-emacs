@@ -13,27 +13,27 @@
 #include "efunc.h"
 
 #if     VMS
-#define EFN     0		/* Event flag.          */
+#define EFN     0		/* Event flag. */
 
-#include        <ssdef.h>	/* Random headers.      */
+#include        <ssdef.h>	/* Random headers. */
 #include        <stsdef.h>
 #include        <descrip.h>
 #include        <iodef.h>
 
-extern int oldmode[3];		/* In "termio.c"        */
-extern int newmode[3];		/* In "termio.c"        */
-extern short iochan;		/* In "termio.c"        */
+extern int oldmode[3];		/* In "termio.c" */
+extern int newmode[3];		/* In "termio.c" */
+extern short iochan;		/* In "termio.c" */
 #endif
 
 #if     V7 | USG | BSD
 #include        <signal.h>
 #ifdef SIGWINCH
 extern int chg_width, chg_height;
-extern void sizesignal(int);
+void sizesignal(int);
 #endif
 #endif
 
-#if	MSDOS & (MSC | TURBO)
+#if MSDOS & (MSC | TURBO)
 #include	<process.h>
 #endif
 
@@ -54,9 +54,9 @@ int spawncli(int f, int n)
 		return resterr();
 
 #if     VMS
-	movecursor(term.t_nrow, 0);	/* In last line.        */
+	movecursor(term.t_nrow, 0);	/* In last line. */
 	mlputs("(Starting DCL)\r\n");
-	TTflush();		/* Ignore "ttcol".      */
+	TTflush();		/* Ignore "ttcol". */
 	sgarbf = TRUE;
 	sys(NULL);
 	sleep(1);
@@ -66,7 +66,7 @@ int spawncli(int f, int n)
 	return TRUE;
 #endif
 #if     MSDOS & (MSC | TURBO)
-	movecursor(term.t_nrow, 0);	/* Seek to last line.   */
+	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
 	TTkclose();
 	shellprog("");
@@ -75,14 +75,14 @@ int spawncli(int f, int n)
 	return TRUE;
 #endif
 #if     V7 | USG | BSD
-	movecursor(term.t_nrow, 0);	/* Seek to last line.   */
+	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
 	TTclose();		/* stty to old settings */
 	TTkclose();		/* Close "keyboard" */
 	if ((cp = getenv("SHELL")) != NULL && *cp != '\0')
 		system(cp);
 	else
-#if	BSD
+#if BSD
 		system("exec /bin/csh");
 #else
 		system("exec /bin/sh");
@@ -105,7 +105,7 @@ int spawncli(int f, int n)
 #endif
 }
 
-#if	BSD | __hpux | SVR4
+#if BSD | __hpux | SVR4
 
 int bktoshell(int f, int n)
 {				/* suspend MicroEMACS and wait to wake up */
@@ -147,9 +147,9 @@ int spawn(int f, int n)
 		return s;
 	movecursor(term.t_nrow, 0);
 	TTflush();
-	s = sys(line);		/* Run the command.     */
+	s = sys(line);		/* Run the command. */
 	if (clexec == FALSE) {
-		mlputs("\r\n\n(End)");	/* Pause.               */
+		mlputs("\r\n\n(End)");	/* Pause. */
 		TTflush();
 		tgetc();
 	}
@@ -175,14 +175,14 @@ int spawn(int f, int n)
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
-	TTclose();		/* stty to old modes    */
+	TTclose();		/* stty to old modes */
 	TTkclose();
 	system(line);
-	fflush(stdout);		/* to be sure P.K.      */
+	fflush(stdout);		/* to be sure P.K. */
 	TTopen();
 
 	if (clexec == FALSE) {
-		mlputs("(End)");	/* Pause.               */
+		mlputs("(End)");	/* Pause. */
 		TTflush();
 		while ((s = tgetc()) != '\r' && s != ' ');
 		mlputs("\r\n");
@@ -212,8 +212,8 @@ int execprg(int f, int n)
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
-	s = sys(line);		/* Run the command.     */
-	mlputs("\r\n\n(End)");	/* Pause.               */
+	s = sys(line);		/* Run the command. */
+	mlputs("\r\n\n(End)");	/* Pause. */
 	TTflush();
 	tgetc();
 	sgarbf = TRUE;
@@ -239,14 +239,14 @@ int execprg(int f, int n)
 #if     V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
-	TTputc('\n');		/* Already have '\r'    */
+	TTputc('\n');		/* Already have '\r' */
 	TTflush();
-	TTclose();		/* stty to old modes    */
+	TTclose();		/* stty to old modes */
 	TTkclose();
 	system(line);
-	fflush(stdout);		/* to be sure P.K.      */
+	fflush(stdout);		/* to be sure P.K. */
 	TTopen();
-	mlputs("(End)");	/* Pause.               */
+	mlputs("(End)");	/* Pause. */
 	TTflush();
 	while ((s = tgetc()) != '\r' && s != ' ');
 	sgarbf = TRUE;
@@ -278,7 +278,7 @@ int pipecmd(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if	MSDOS
+#if MSDOS
 	if ((tmp = getenv("TMP")) == NULL
 	    && (tmp = getenv("TEMP")) == NULL)
 		strcpy(filnam, "command");
@@ -307,7 +307,7 @@ int pipecmd(int f, int n)
 		wp = wheadp;
 		while (wp != NULL) {
 			if (wp->w_bufp == bp) {
-#if	PKCODE
+#if PKCODE
 				if (wp == curwp)
 					delwind(FALSE, 1);
 				else
@@ -342,7 +342,7 @@ int pipecmd(int f, int n)
 
 #if     V7 | USG | BSD
 	TTflush();
-	TTclose();		/* stty to old modes    */
+	TTclose();		/* stty to old modes */
 	TTkclose();
 	strcat(line, ">");
 	strcat(line, filnam);
@@ -397,8 +397,8 @@ int filter_buffer(int f, int n)
 	if (restflag)
 		return resterr();
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 
 #if     VMS
 	mlwrite("Not available under VMS");
@@ -431,9 +431,9 @@ int filter_buffer(int f, int n)
 #endif
 
 #if     V7 | USG | BSD
-	TTputc('\n');		/* Already have '\r'    */
+	TTputc('\n');		/* Already have '\r' */
 	TTflush();
-	TTclose();		/* stty to old modes    */
+	TTclose();		/* stty to old modes */
 	TTkclose();
 	strcat(line, " <fltinp >fltout");
 	system(line);
@@ -482,8 +482,8 @@ int sys(char *cmd)
 			  oldmode, sizeof(oldmode), 0, 0, 0, 0);
 	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
 		return FALSE;
-	cdscp = NULL;		/* Assume DCL.          */
-	if (cmd != NULL) {	/* Build descriptor.    */
+	cdscp = NULL;		/* Assume DCL. */
+	if (cmd != NULL) {	/* Build descriptor. */
 		cdsc.dsc$a_pointer = cmd;
 		cdsc.dsc$w_length = strlen(cmd);
 		cdsc.dsc$b_dtype = DSC$K_DTYPE_T;
@@ -497,13 +497,13 @@ int sys(char *cmd)
 			  newmode, sizeof(newmode), 0, 0, 0, 0);
 	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
 		return FALSE;
-	if ((substatus & STS$M_SUCCESS) == 0)	/* Command failed.      */
+	if ((substatus & STS$M_SUCCESS) == 0)	/* Command failed. */
 		return FALSE;
 	return TRUE;
 }
 #endif
 
-#if	MSDOS & (TURBO | MSC)
+#if MSDOS & (TURBO | MSC)
 
 /*
  * SHELLPROG: Execute a command in a subshell
@@ -519,23 +519,23 @@ int shellprog(char *cmd)
 	char comline[NSTRING];	/* constructed command line */
 
 	/*  detect current switch character and set us up to use it */
-	regs.h.ah = 0x37;	/*  get setting data  */
-	regs.h.al = 0x00;	/*  get switch character  */
+	regs.h.ah = 0x37;	/*  get setting data */
+	regs.h.al = 0x00;	/*  get switch character */
 	intdos(&regs, &regs);
 	swchar = (char) regs.h.dl;
 
-	/*  get name of system shell  */
+	/*  get name of system shell */
 	if ((shell = getenv("COMSPEC")) == NULL) {
-		return FALSE;	/*  No shell located  */
+		return FALSE;	/*  No shell located */
 	}
 
 	/* trim leading whitespace off the command */
 	while (*cmd == ' ' || *cmd == '\t')	/*  find out if null command */
 		cmd++;
 
-	/**  If the command line is not empty, bring up the shell  **/
-	/**  and execute the command.  Otherwise, bring up the     **/
-	/**  shell in interactive mode.   **/
+	/**  If the command line is not empty, bring up the shell **/
+	/**  and execute the command.  Otherwise, bring up the **/
+	/**  shell in interactive mode. **/
 
 	if (*cmd) {
 		strcpy(comline, shell);
@@ -563,7 +563,7 @@ int execprog(char *cmd)
 	char f2[38];		/* FCB2 area (not initialized */
 	char prog[NSTRING];	/* program filespec */
 	char tail[NSTRING];	/* command tail with length byte */
-	union REGS regs;	/* parameters for dos call  */
+	union REGS regs;	/* parameters for dos call */
 	struct SREGS segreg;	/* segment registers for dis call */
 	struct pblock {		/* EXEC parameter block */
 		short envptr;	/* 2 byte pointer to environment string */
@@ -611,14 +611,14 @@ int execprog(char *cmd)
 	regs.x.dx = (unsigned int) (prog);
 	segreg.es = ((unsigned long) (&pblock) >> 16);	/* set up param block ptr */
 	regs.x.bx = (unsigned int) (&pblock);
-#if	TURBO | MSC
+#if TURBO | MSC
 	intdosx(&regs, &regs, &segreg);
 	if (regs.x.cflag == 0) {
 		regs.h.ah = 0x4d;	/* get child process return code */
 		intdos(&regs, &regs);	/* go do it */
 		rval = regs.x.ax;	/* save child's return code */
 	} else
-#if	MSC
+#if MSC
 		rval = -1;
 #else
 		rval = -_doserrno;	/* failed child call */

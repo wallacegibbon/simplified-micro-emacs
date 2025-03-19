@@ -10,7 +10,7 @@
 #include "edef.h"
 #include "efunc.h"
 
-#if	BSD | SVR4
+#if BSD | SVR4
 #include <sys/errno.h>
 
 static char *lname[NLOCKS];		/* names of all locked files */

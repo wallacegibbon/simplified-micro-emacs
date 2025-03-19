@@ -25,13 +25,13 @@ int killregion(int f, int n)
 	int s;
 	struct region region;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if ((s = getregion(&region)) != TRUE)
 		return s;
-	if ((lastflag & CFKILL) == 0)	/* This is a kill type  */
+	if ((lastflag & CFKILL) == 0)	/* This is a kill type */
 		kdelete();	/* command, so do magic */
-	thisflag |= CFKILL;	/* kill buffer stuff.   */
+	thisflag |= CFKILL;	/* kill buffer stuff. */
 	curwp->w_dotp = region.r_linep;
 	curwp->w_doto = region.r_offset;
 	return ldelete(region.r_size, TRUE);
@@ -52,18 +52,18 @@ int copyregion(int f, int n)
 
 	if ((s = getregion(&region)) != TRUE)
 		return s;
-	if ((lastflag & CFKILL) == 0)	/* Kill type command.   */
+	if ((lastflag & CFKILL) == 0)	/* Kill type command. */
 		kdelete();
 	thisflag |= CFKILL;
-	linep = region.r_linep;	/* Current line.        */
-	loffs = region.r_offset;	/* Current offset.      */
+	linep = region.r_linep;	/* Current line. */
+	loffs = region.r_offset;	/* Current offset. */
 	while (region.r_size--) {
-		if (loffs == llength(linep)) {	/* End of line.         */
+		if (loffs == llength(linep)) {	/* End of line. */
 			if ((s = kinsert('\n')) != TRUE)
 				return s;
 			linep = lforw(linep);
 			loffs = 0;
-		} else {	/* Middle of line.      */
+		} else {	/* Middle of line. */
 			if ((s = kinsert(lgetc(linep, loffs))) != TRUE)
 				return s;
 			++loffs;
@@ -89,8 +89,8 @@ int lowerregion(int f, int n)
 	int s;
 	struct region region;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if ((s = getregion(&region)) != TRUE)
 		return s;
 	lchange(WFHARD);
@@ -126,8 +126,8 @@ int upperregion(int f, int n)
 	int s;
 	struct region region;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if ((s = getregion(&region)) != TRUE)
 		return s;
 	lchange(WFHARD);

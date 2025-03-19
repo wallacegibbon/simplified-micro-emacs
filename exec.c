@@ -286,7 +286,7 @@ int storemac(int f, int n)
 	return TRUE;
 }
 
-#if	PROC
+#if PROC
 /*
  * storeproc:
  *	Set up a procedure buffer and flag to store all
@@ -436,7 +436,7 @@ int dobuf(struct buffer *bp)
 	char *eline;		/* text of line to execute */
 	char tkn[NSTRING];	/* buffer to evaluate an expresion in */
 
-#if	DEBUGM
+#if DEBUGM
 	char *sp;		/* temp for building debug string */
 	char *ep;	/* ptr to end of outline */
 #endif
@@ -551,7 +551,7 @@ int dobuf(struct buffer *bp)
 		if (*eline == ';' || *eline == 0)
 			goto onward;
 
-#if	DEBUGM
+#if DEBUGM
 		/* if $debug == TRUE, every line to execute
 		   gets echoed and a key needs to be pressed to continue
 		   ^G will abort the command */
@@ -857,7 +857,7 @@ int execfile(int f, int n)
 	     mlreply("File to execute: ", fname, NSTRING - 1)) != TRUE)
 		return status;
 
-#if	1
+#if 1
 	/* look up the path for the file */
 	fspec = flook(fname, FALSE);	/* used to by TRUE, P.K. */
 

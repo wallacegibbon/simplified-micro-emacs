@@ -19,7 +19,7 @@
 int help(int f, int n)
 {				/* give me some help!!!!
 				   bring up a fake buffer and read the help file
-				   into it with view mode                 */
+				   into it with view mode */
 	struct window *wp;	/* scaning pointer to windows */
 	struct buffer *bp;	/* buffer pointer to help */
 	char *fname = NULL;	/* ptr to file returned by flook() */
@@ -250,7 +250,7 @@ int unbindchar(int c)
  * into it with view mode
  */
 int desbind(int f, int n)
-#if	APROP
+#if APROP
 {
 	buildlist(TRUE, "");
 	return TRUE;
@@ -299,7 +299,7 @@ int buildlist(int type, char *mstring)
 	mlwrite("(Building binding list)");
 
 	/* disconect the current buffer */
-	if (--curbp->b_nwnd == 0) {	/* Last use.            */
+	if (--curbp->b_nwnd == 0) {	/* Last use. */
 		curbp->b_dotp = curwp->w_dotp;
 		curbp->b_doto = curwp->w_doto;
 		curbp->b_markp = curwp->w_markp;
@@ -327,7 +327,7 @@ int buildlist(int type, char *mstring)
 		strcpy(outseq, nptr->n_name);
 		cpos = strlen(outseq);
 
-#if	APROP
+#if APROP
 		/* if we are executing an apropos command..... */
 		if (type == FALSE &&
 		    /* and current string doesn't include the search string */
@@ -380,7 +380,7 @@ int buildlist(int type, char *mstring)
 	return TRUE;
 }
 
-#if	APROP
+#if APROP
 
 /*
  * does source include sub?
@@ -482,7 +482,7 @@ char *flook(char *fname, int hflag)
 	int i;		/* index */
 	static char fspec[NSTRING];	/* full path spec to search */
 
-#if	ENVFUNC
+#if ENVFUNC
 
 	if (hflag) {
 		home = getenv("HOME");
@@ -506,7 +506,7 @@ char *flook(char *fname, int hflag)
 		ffclose();
 		return fname;
 	}
-#if	ENVFUNC
+#if ENVFUNC
 	/* get the PATH variable */
 	path = getenv("PATH");
 	if (path != NULL)

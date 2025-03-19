@@ -1,12 +1,11 @@
-#ifndef VERSION_H_
-#define VERSION_H_
+#ifndef __VERSION_H
+#define __VERSION_H
 
 #define PROGRAM_NAME "em"
-#define PROGRAM_NAME_LONG "uEmacs/Pk"
+#define PROGRAM_NAME_LONG "Simplified Micro Emacs"
 
-#define	VERSION	"4.0.15"
+#define	VERSION	"0.0.1"
 
-/* Print the version string. */
 void version(void);
 
-#endif  /* VERSION_H_ */
+#endif

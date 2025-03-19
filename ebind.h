@@ -5,8 +5,8 @@
  *	Modified by Petri Kutvonen
  */
 
-#ifndef EBIND_H_
-#define EBIND_H_
+#ifndef __EBIND_H
+#define __EBIND_H
 
 #include "line.h"
 
@@ -76,21 +76,21 @@ struct key_tab keytab[NBINDS] = {
 	{CTLX | CONTROL | 'B', listbuffers}
 	,
 	{CTLX | CONTROL | 'C', quit}
-	,			/* Hard quit.           */
-#if	PKCODE & AEDIT
+	,			/* Hard quit. */
+#if PKCODE & AEDIT
 	{CTLX | CONTROL | 'A', detab}
 	,
 #endif
-#if	PKCODE
+#if PKCODE
 	{CTLX | CONTROL | 'D', filesave}
-	,			/* alternative          */
+	,			/* alternative */
 #else
-#if	AEDIT
+#if AEDIT
 	{CTLX | CONTROL | 'D', detab}
 	,
 #endif
 #endif
-#if	AEDIT
+#if AEDIT
 	{CTLX | CONTROL | 'E', entab}
 	,
 #endif
@@ -112,7 +112,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CTLX | CONTROL | 'S', filesave}
 	,
-#if	AEDIT
+#if AEDIT
 	{CTLX | CONTROL | 'T', trim}
 	,
 #endif
@@ -156,7 +156,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CTLX | 'C', spawncli}
 	,
-#if	BSD | __hpux | SVR4
+#if BSD | __hpux | SVR4
 	{CTLX | 'D', bktoshell}
 	,
 #endif
@@ -174,9 +174,9 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CTLX | 'P', prevwind}
 	,
-#if	PKCODE
+#if PKCODE
 	{CTLX | 'Q', quote}
-	,			/* alternative  */
+	,			/* alternative */
 #endif
 	{CTLX | 'W', resize}
 	,
@@ -184,19 +184,19 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CTLX | 'Z', enlargewind}
 	,
-#if	WORDPRO
+#if WORDPRO
 	{META | CONTROL | 'C', wordcount}
 	,
 #endif
-#if	PKCODE
+#if PKCODE
 	{META | CONTROL | 'D', newsize}
 	,
 #endif
-#if	PROC
+#if PROC
 	{META | CONTROL | 'E', execproc}
 	,
 #endif
-#if	CFENCE
+#if CFENCE
 	{META | CONTROL | 'F', getfence}
 	,
 #endif
@@ -218,7 +218,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | CONTROL | 'V', scrnextdw}
 	,
-#if	WORDPRO
+#if WORDPRO
 	{META | CONTROL | 'W', killpara}
 	,
 #endif
@@ -240,7 +240,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | '%', qreplace}
 	,
-#if	APROP
+#if APROP
 	{META | 'A', apro}
 	,
 #endif
@@ -250,7 +250,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | 'D', delfword}
 	,
-#if	CRYPT
+#if CRYPT
 	{META | 'E', set_encryption_key}
 	,
 #endif
@@ -258,8 +258,8 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | 'G', gotoline}
 	,
-#if	PKCODE
-#if	WORDPRO
+#if PKCODE
+#if WORDPRO
 	{META | 'J', justpara}
 	,
 #endif
@@ -270,7 +270,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | 'M', setgmode}
 	,
-#if	WORDPRO
+#if WORDPRO
 	{META | 'N', gotoeop}
 	,
 	{META | 'P', gotobop}
@@ -280,11 +280,11 @@ struct key_tab keytab[NBINDS] = {
 #endif
 	{META | 'R', sreplace}
 	,
-#if	PKCODE
+#if PKCODE
 	{META | 'S', forwsearch}
-	,			/* alternative P.K.     */
+	,			/* alternative P.K. */
 #else
-#if	BSD
+#if BSD
 	{META | 'S', bktoshell}
 	,
 #endif
@@ -302,7 +302,7 @@ struct key_tab keytab[NBINDS] = {
 	{META | 0x7F, delbword}
 	,
 
-#if	MSDOS
+#if MSDOS
 	{SPEC | CONTROL | '_', forwhunt}
 	,
 	{SPEC | CONTROL | 'S', backhunt}
@@ -331,7 +331,7 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{SPEC | 116, forwword}
 	,
-#if	WORDPRO
+#if WORDPRO
 	{SPEC | 132, gotobop}
 	,
 	{SPEC | 118, gotoeop}
@@ -373,9 +373,9 @@ struct key_tab keytab[NBINDS] = {
 #endif
 #endif
 
-#if	VT220
+#if VT220
 	{SPEC | '1', fisearch}
-	,			/* VT220 keys   */
+	,			/* VT220 keys */
 	{SPEC | '2', yank}
 	,
 	{SPEC | '3', killregion}
@@ -420,4 +420,4 @@ struct key_tab keytab[NBINDS] = {
 	{0, NULL}
 };
 
-#endif  /* EBIND_H_ */
+#endif

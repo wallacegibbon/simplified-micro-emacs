@@ -119,8 +119,8 @@ int upperword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	while (n--) {
@@ -130,7 +130,7 @@ int upperword(int f, int n)
 		}
 		while (inword() != FALSE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
-#if	PKCODE
+#if PKCODE
 			if (islower(c)) {
 #else
 			if (c >= 'a' && c <= 'z') {
@@ -155,8 +155,8 @@ int lowerword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	while (n--) {
@@ -166,7 +166,7 @@ int lowerword(int f, int n)
 		}
 		while (inword() != FALSE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
-#if	PKCODE
+#if PKCODE
 			if (isupper(c)) {
 #else
 			if (c >= 'A' && c <= 'Z') {
@@ -192,8 +192,8 @@ int capword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	while (n--) {
@@ -203,7 +203,7 @@ int capword(int f, int n)
 		}
 		if (inword() != FALSE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
-#if	PKCODE
+#if PKCODE
 			if (islower(c)) {
 #else
 			if (c >= 'a' && c <= 'z') {
@@ -216,7 +216,7 @@ int capword(int f, int n)
 				return FALSE;
 			while (inword() != FALSE) {
 				c = lgetc(curwp->w_dotp, curwp->w_doto);
-#if	PKCODE
+#if PKCODE
 				if (isupper(c)) {
 #else
 				if (c >= 'A' && c <= 'Z') {
@@ -377,7 +377,7 @@ int inword(void)
 	if (curwp->w_doto == llength(curwp->w_dotp))
 		return FALSE;
 	c = lgetc(curwp->w_dotp, curwp->w_doto);
-#if	PKCODE
+#if PKCODE
 	if (isletter(c))
 #else
 	if (c >= 'a' && c <= 'z')
@@ -390,7 +390,7 @@ int inword(void)
 	return FALSE;
 }
 
-#if	WORDPRO
+#if WORDPRO
 /*
  * Fill the current paragraph according to the current
  * fill column
@@ -399,24 +399,24 @@ int inword(void)
  */
 int fillpara(int f, int n)
 {
-	unicode_t c;		/* current char during scan    */
-	unicode_t wbuf[NSTRING];/* buffer for current word      */
-	int wordlen;	/* length of current word       */
+	unicode_t c;		/* current char during scan */
+	unicode_t wbuf[NSTRING];/* buffer for current word */
+	int wordlen;	/* length of current word */
 	int clength;	/* position on line during fill */
-	int i;		/* index during word copy       */
-	int newlength;	/* tentative new line length    */
+	int i;		/* index during word copy */
+	int newlength;	/* tentative new line length */
 	int eopflag;	/* Are we at the End-Of-Paragraph? */
 	int firstflag;	/* first word? (needs no space) */
 	struct line *eopline;	/* pointer to line just past EOP */
-	int dotflag;	/* was the last char a period?  */
+	int dotflag;	/* was the last char a period? */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (fillcol == 0) {	/* no fill column set */
 		mlwrite("No fill column set");
 		return FALSE;
 	}
-#if	PKCODE
+#if PKCODE
 	justflag = FALSE;
 #endif
 
@@ -490,7 +490,7 @@ int fillpara(int f, int n)
 	return TRUE;
 }
 
-#if	PKCODE
+#if PKCODE
 /* Fill the current paragraph according to the current
  * fill column and cursor position
  *
@@ -498,19 +498,19 @@ int fillpara(int f, int n)
  */
 int justpara(int f, int n)
 {
-	unicode_t c;		/* current char durring scan    */
-	unicode_t wbuf[NSTRING];/* buffer for current word      */
-	int wordlen;	/* length of current word       */
+	unicode_t c;		/* current char durring scan */
+	unicode_t wbuf[NSTRING];/* buffer for current word */
+	int wordlen;	/* length of current word */
 	int clength;	/* position on line during fill */
-	int i;		/* index during word copy       */
-	int newlength;	/* tentative new line length    */
+	int i;		/* index during word copy */
+	int newlength;	/* tentative new line length */
 	int eopflag;	/* Are we at the End-Of-Paragraph? */
 	int firstflag;	/* first word? (needs no space) */
 	struct line *eopline;	/* pointer to line just past EOP */
 	int leftmarg;		/* left marginal */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (fillcol == 0) {	/* no fill column set */
 		mlwrite("No fill column set");
 		return FALSE;
@@ -685,7 +685,7 @@ int wordcount(int f, int n)
 
 		/* and tabulate it */
 		wordflag = (
-#if	PKCODE
+#if PKCODE
 				   (isletter(ch)) ||
 #else
 				   (ch >= 'a' && ch <= 'z') ||

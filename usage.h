@@ -1,6 +1,6 @@
-#ifndef USAGE_H_
-#define USAGE_H_
+#ifndef __USAGE_H
+#define __USAGE_H
 
-extern void die(const char* err, ...);
+void die(const char* err, ...);
 
-#endif  /* USAGE_H_ */
+#endif

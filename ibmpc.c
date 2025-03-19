@@ -10,88 +10,89 @@
 
 #define	termdef	1		/* don't define "term" external */
 
-#include        <stdio.h>
-#include	"estruct.h"
-#include        "edef.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
 
 #if     IBMPC
-#if	PKCODE
+#if PKCODE
 #define NROW	50
 #else
-#define NROW	43		/* Max Screen size.             */
+#define NROW	43		/* Max Screen size. */
 #endif
-#define NCOL    80		/* Edit if you want to.         */
-#define	MARGIN	8		/* size of minimim margin and   */
+#define NCOL    80		/* Edit if you want to. */
+#define	MARGIN	8		/* size of minimim margin and */
 #define	SCRSIZ	64		/* scroll size for extended lines */
 #define	NPAUSE	200		/* # times thru update to pause */
-#define BEL     0x07		/* BEL character.               */
-#define ESC     0x1B		/* ESC character.               */
-#define	SPACE	32		/* space character              */
+#define BEL     0x07		/* BEL character. */
+#define ESC     0x1B		/* ESC character. */
+#define	SPACE	32		/* space character */
 
-#define	SCADC	0xb8000000L	/* CGA address of screen RAM    */
-#define	SCADM	0xb0000000L	/* MONO address of screen RAM   */
-#define SCADE	0xb8000000L	/* EGA address of screen RAM    */
+#define	SCADC	0xb8000000L	/* CGA address of screen RAM */
+#define	SCADM	0xb0000000L	/* MONO address of screen RAM */
+#define SCADE	0xb8000000L	/* EGA address of screen RAM */
 
-#define MONOCRSR 0x0B0D		/* monochrome cursor        */
-#define CGACRSR 0x0607		/* CGA cursor               */
-#define EGACRSR 0x0709		/* EGA cursor               */
+#define MONOCRSR 0x0B0D		/* monochrome cursor */
+#define CGACRSR 0x0607		/* CGA cursor */
+#define EGACRSR 0x0709		/* EGA cursor */
 
-#define	CDCGA	0		/* color graphics card          */
-#define	CDMONO	1		/* monochrome text card         */
-#define	CDEGA	2		/* EGA color adapter            */
-#if	PKCODE
+#define	CDCGA	0		/* color graphics card */
+#define	CDMONO	1		/* monochrome text card */
+#define	CDEGA	2		/* EGA color adapter */
+#if PKCODE
 #define	CDVGA	3
 #endif
-#define	CDSENSE	9		/* detect the card type         */
+#define	CDSENSE	9		/* detect the card type */
 
-#if	PKCODE
+#if PKCODE
 #define NDRIVE	4
 #else
-#define NDRIVE	3		/* number of screen drivers     */
+#define NDRIVE	3		/* number of screen drivers */
 #endif
 
-int dtype = -1;			/* current display type         */
-char drvname[][8] = {		/* screen resolution names      */
+int dtype = -1;			/* current display type */
+char drvname[][8] = {		/* screen resolution names */
 	"CGA", "MONO", "EGA"
-#if	PKCODE
-	    , "VGA"
+#if PKCODE
+	,
+	"VGA"
 #endif
 };
-long scadd;			/* address of screen ram        */
-int *scptr[NROW];		/* pointer to screen lines      */
-unsigned int sline[NCOL];	/* screen line image            */
-int egaexist = FALSE;		/* is an EGA card available?    */
+long scadd;			/* address of screen ram */
+int *scptr[NROW];		/* pointer to screen lines */
+unsigned int sline[NCOL];	/* screen line image */
+int egaexist = FALSE;		/* is an EGA card available? */
 extern union REGS rg;		/* cpu register for use of DOS calls */
 
-extern int ttopen();		/* Forward references.          */
-extern int ttgetc();
-extern int ttputc();
-extern int ttflush();
-extern int ttclose();
-extern int ibmmove();
-extern int ibmeeol();
-extern int ibmeeop();
-extern int ibmbeep();
-extern int ibmopen();
-extern int ibmrev();
-extern int ibmcres();
-extern int ibmclose();
-extern int ibmputc();
-extern int ibmkopen();
-extern int ibmkclose();
+void ttopen();
+void ibmopen();
+void ibmclose();
+void ibmkopen();
+void ibmkclose();
+int ttgetc();
+int ttputc();
+void ttflush();
+void ttclose();
+void ibmmove();
+void ibmeeol();
+void ibmeeop();
+void ibmbeep();
+void ibmrev();
+int ibmcres();
+int ibmputc();
 
-#if	COLOR
-extern int ibmfcol();
-extern int ibmbcol();
-extern int ibmscroll_reg();
+#if COLOR
+int ibmfcol();
+int ibmbcol();
+void ibmscroll_reg();
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */
 int ctrans[] =			/* ansi to ibm color translation table */
-#if	PKCODE
-{ 0, 4, 2, 6, 1, 5, 3, 7, 15 };
+#if PKCODE
+	{ 0, 4, 2, 6, 1, 5, 3, 7, 15 };
 #else
-{ 0, 4, 2, 6, 1, 5, 3, 7 };
+	{ 0, 4, 2, 6, 1, 5, 3, 7 };
 #endif
 #endif
 
@@ -120,29 +121,25 @@ struct terminal term = {
 	ibmbeep,
 	ibmrev,
 	ibmcres
-#if	COLOR
-	    , ibmfcol,
+#if COLOR
+	,
+	ibmfcol,
 	ibmbcol
 #endif
 #if     SCROLLCODE
-	    , ibmscroll_reg
+	,
+	ibmscroll_reg
 #endif
 };
 
-#if	COLOR
-/* Set the current output color.
- *
- * @color: color to set.
- */
+#if COLOR
+/* Set the current output color. */
 void ibmfcol(int color)
 {
 	cfcolor = ctrans[color];
 }
 
-/* Set the current background color.
- *
- * @color: color to set.
- */
+/* Set the current background color. */
 void ibmbcol(int color)
 {
 	cbcolor = ctrans[color];
@@ -164,7 +161,7 @@ void ibmeeol(void)
 	unsigned int *lnptr;	/* pointer to the destination line */
 	int i;
 	int ccol;		/* current column cursor lives */
-	int crow;		/*         row  */
+	int crow;		/*         row */
 
 	/* find the current cursor position */
 	rg.h.ah = 3;		/* read cursor position function code */
@@ -174,7 +171,7 @@ void ibmeeol(void)
 	crow = rg.h.dh;		/* and row */
 
 	/* build the attribute byte and setup the screen pointer */
-#if	COLOR
+#if COLOR
 	if (dtype != CDMONO)
 		attr = (((cbcolor & 15) << 4) | (cfcolor & 15)) << 8;
 	else
@@ -204,7 +201,7 @@ void ibmputc(int ch)
 {
 	rg.h.ah = 14;		/* write char to screen with current attrs */
 	rg.h.al = ch;
-#if	COLOR
+#if COLOR
 	if (dtype != CDMONO)
 		rg.h.bl = cfcolor;
 	else
@@ -224,7 +221,7 @@ void ibmeeop(void)
 	rg.x.cx = 0;		/* upper left corner of scroll */
 	rg.x.dx = (term.t_nrow << 8) | (term.t_ncol - 1);
 	/* lower right corner of scroll */
-#if	COLOR
+#if COLOR
 	if (dtype != CDMONO)
 		attr =
 		    ((ctrans[gbcolor] & 15) << 4) | (ctrans[gfcolor] & 15);
@@ -299,14 +296,14 @@ void ibmopen(void)
 
 void ibmclose(void)
 {
-#if	COLOR
+#if COLOR
 	ibmfcol(7);
 	ibmbcol(0);
 #endif
 	/* if we had the EGA open... close it */
 	if (dtype == CDEGA)
 		egaclose();
-#if	PKCODE
+#if PKCODE
 	if (dtype == CDVGA)
 		egaclose();
 #endif
@@ -351,7 +348,7 @@ static int scinit(int type)
 	/* if we had the EGA open... close it */
 	if (dtype == CDEGA)
 		egaclose();
-#if	PKCODE
+#if PKCODE
 	if (dtype == CDVGA)
 		egaclose();
 #endif
@@ -430,13 +427,13 @@ void egaopen(void)
 	int86(16, &rg, &rg);
 
 	rg.h.ah = 17;		/* set char. generator function code */
-	rg.h.al = 18;		/*  to 8 by 8 double dot ROM         */
-	rg.h.bl = 0;		/* block 0                           */
+	rg.h.al = 18;		/*  to 8 by 8 double dot ROM */
+	rg.h.bl = 0;		/* block 0 */
 	int86(16, &rg, &rg);
 
-	rg.h.ah = 18;		/* alternate select function code    */
-	rg.h.al = 0;		/* clear AL for no good reason       */
-	rg.h.bl = 32;		/* alt. print screen routine         */
+	rg.h.ah = 18;		/* alternate select function code */
+	rg.h.al = 0;		/* clear AL for no good reason */
+	rg.h.bl = 32;		/* alt. print screen routine */
 	int86(16, &rg, &rg);
 
 	rg.h.ah = 1;		/* set cursor size function code */
@@ -468,7 +465,7 @@ void scwrite(int row, char *outstr, int forg, int bacg)
 	int i;
 
 	/* build the attribute byte and setup the screen pointer */
-#if	COLOR
+#if COLOR
 	if (dtype != CDMONO)
 		attr = (((ctrans[bacg] & 15) << 4) | (ctrans[forg] & 15)) << 8;
 	else

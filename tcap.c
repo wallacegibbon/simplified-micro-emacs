@@ -82,7 +82,7 @@ struct terminal term = {
 	SCRSIZ,
 	NPAUSE,
 	tcapopen,
-#if	PKCODE
+#if PKCODE
 	tcapclose,
 #else
 	ttclose,
@@ -98,7 +98,7 @@ struct terminal term = {
 	tcapbeep,
 	tcaprev,
 	tcapcres
-#if	COLOR
+#if COLOR
 	    , tcapfcol,
 	tcapbcol
 #endif
@@ -130,7 +130,7 @@ static void tcapopen(void)
 			exit(1);
 		}
 
-		/* Get screen size from system, or else from termcap.  */
+		/* Get screen size from system, or else from termcap. */
 		getscreensize(&int_col, &int_row);
 		term.t_nrow = int_row - 1;
 		term.t_ncol = int_col;
@@ -168,7 +168,7 @@ static void tcapopen(void)
 		SO = tgetstr("so", &p);
 		if (SO != NULL)
 			revexist = TRUE;
-#if	PKCODE
+#if PKCODE
 		if (tgetnum("sg") > 0) {	/* can reverse be used? P.K. */
 			revexist = FALSE;
 			SE = NULL;
@@ -214,7 +214,7 @@ static void tcapopen(void)
 	ttopen();
 }
 
-#if	PKCODE
+#if PKCODE
 static void tcapclose(void)
 {
 	putpad(tgoto(CM, 0, term.t_nrow));
@@ -226,7 +226,7 @@ static void tcapclose(void)
 
 static void tcapkopen(void)
 {
-#if	PKCODE
+#if PKCODE
 	putpad(TI);
 	ttflush();
 	ttrow = 999;
@@ -238,7 +238,7 @@ static void tcapkopen(void)
 
 static void tcapkclose(void)
 {
-#if	PKCODE
+#if PKCODE
 	putpad(TE);
 	ttflush();
 #endif

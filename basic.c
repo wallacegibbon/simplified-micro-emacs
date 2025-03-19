@@ -153,10 +153,11 @@ int gotoline(int f, int n)
 		}
 		n = atoi(arg);
 	}
-        /* Handle the case where the user may be passed something like this:
-         * em filename +
-         * In this case we just go to the end of the buffer.
-         */
+        /*
+	 * Handle the case where the user may be passed something like this:
+	 * em filename +
+	 * In this case we just go to the end of the buffer.
+	 */
 	if (n == 0)
 		return gotoeob(f, n);
 
@@ -269,7 +270,7 @@ int backline(int f, int n)
 	return TRUE;
 }
 
-#if	WORDPRO
+#if WORDPRO
 static int is_new_para(void)
 {
 	int i, len;
@@ -315,7 +316,7 @@ int gotobop(int f, int n)
 		curwp->w_doto = 0;	/* and go to the B-O-Line */
 
 		/* and scan back until we hit a <NL><NL> or <NL><TAB>
-		   or a <NL><SPACE>                                     */
+		   or a <NL><SPACE> */
 		while (lback(curwp->w_dotp) != curbp->b_linep) {
 			if (is_new_para())
 				break;
@@ -355,7 +356,7 @@ int gotoeop(int f, int n)
 			curwp->w_dotp = lforw(curwp->w_dotp);
 
 		/* and scan forword until we hit a <NL><NL> or <NL><TAB>
-		   or a <NL><SPACE>                                     */
+		   or a <NL><SPACE> */
 		while (curwp->w_dotp != curbp->b_linep) {
 			if (is_new_para())
 				break;

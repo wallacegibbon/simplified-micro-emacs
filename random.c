@@ -74,7 +74,7 @@ int showcpos(int f, int n)
 	if (curwp->w_dotp == curbp->b_linep) {
 		predlines = numlines;
 		predchars = numchars;
-#if	PKCODE
+#if PKCODE
 		curchar = 0;
 #endif
 	}
@@ -156,7 +156,7 @@ int setccol(int pos)
 {
 	int c;		/* character being scanned */
 	int i;		/* index into current line */
-	int col;	/* current cursor column   */
+	int col;	/* current cursor column */
 	int llen;	/* length of line in bytes */
 
 	col = 0;
@@ -198,8 +198,8 @@ int twiddle(int f, int n)
 	int cl;
 	int cr;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	dotp = curwp->w_dotp;
 	doto = curwp->w_doto;
 	if (doto == llength(dotp) && --doto < 0)
@@ -225,8 +225,8 @@ int quote(int f, int n)
 	int s;
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	c = tgetc();
 	if (n < 0)
 		return FALSE;
@@ -261,7 +261,7 @@ int insert_tab(int f, int n)
 	return linsert(tabsize - (getccol(FALSE) % tabsize), ' ');
 }
 
-#if	AEDIT
+#if AEDIT
 /*
  * change tabs to spaces
  *
@@ -271,8 +271,8 @@ int detab(int f, int n)
 {
 	int inc;	/* increment to next line [sgn(n)] */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 
 	if (f == FALSE)
 		n = 1;
@@ -316,8 +316,8 @@ int entab(int f, int n)
 	int ccol;	/* current cursor column */
 	char cchar;	/* current character */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 
 	if (f == FALSE)
 		n = 1;
@@ -337,7 +337,7 @@ int entab(int f, int n)
 					fspace = -1;
 				else {
 					/* there is a bug here dealing with mixed space/tabed
-					   lines.......it will get fixed                */
+					   lines.......it will get fixed */
 					backchar(TRUE, ccol - fspace);
 					ldelete((long) (ccol - fspace),
 						FALSE);
@@ -390,8 +390,8 @@ int trim(int f, int n)
 	int length;	/* current length */
 	int inc;	/* increment to next line [sgn(n)] */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 
 	if (f == FALSE)
 		n = 1;
@@ -432,18 +432,18 @@ int openline(int f, int n)
 	int i;
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	if (n == 0)
 		return TRUE;
-	i = n;			/* Insert newlines.     */
+	i = n;			/* Insert newlines. */
 	do {
 		s = lnewline();
 	} while (s == TRUE && --i);
 	if (s == TRUE)		/* Then back up overtop */
-		s = backchar(f, n);	/* of them all.         */
+		s = backchar(f, n);	/* of them all. */
 	return s;
 }
 
@@ -455,8 +455,8 @@ int insert_newline(int f, int n)
 {
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 
@@ -527,7 +527,7 @@ int cinsert(void)
 	return TRUE;
 }
 
-#if	NBRACE
+#if NBRACE
 /*
  * insert a brace into the text here...we are in CMODE
  *
@@ -697,8 +697,8 @@ int deblank(int f, int n)
 	struct line *lp2;
 	long nld;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	lp1 = curwp->w_dotp;
 	while (llength(lp1) == 0 && (lp2 = lback(lp1)) != curbp->b_linep)
 		lp1 = lp2;
@@ -727,8 +727,8 @@ int indent(int f, int n)
 	int c;
 	int i;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	while (n--) {
@@ -757,11 +757,11 @@ int indent(int f, int n)
  */
 int forwdel(int f, int n)
 {
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return backdel(f, -n);
-	if (f != FALSE) {	/* Really a kill.       */
+	if (f != FALSE) {	/* Really a kill. */
 		if ((lastflag & CFKILL) == 0)
 			kdelete();
 		thisflag |= CFKILL;
@@ -779,11 +779,11 @@ int backdel(int f, int n)
 {
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return forwdel(f, -n);
-	if (f != FALSE) {	/* Really a kill.       */
+	if (f != FALSE) {	/* Really a kill. */
 		if ((lastflag & CFKILL) == 0)
 			kdelete();
 		thisflag |= CFKILL;
@@ -806,10 +806,10 @@ int killtext(int f, int n)
 	struct line *nextp;
 	long chunk;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if ((lastflag & CFKILL) == 0)	/* Clear kill buffer if */
-		kdelete();	/* last wasn't a kill.  */
+		kdelete();	/* last wasn't a kill. */
 	thisflag |= CFKILL;
 	if (f == FALSE) {
 		chunk = llength(curwp->w_dotp) - curwp->w_doto;
@@ -855,7 +855,7 @@ int setemode(int f, int n)
  */
 int delmode(int f, int n)
 {
-#if	PKCODE
+#if PKCODE
 	return adjustmode(FALSE, FALSE);
 #else
 	adjustmode(FALSE, FALSE);
@@ -869,7 +869,7 @@ int delmode(int f, int n)
  */
 int setgmode(int f, int n)
 {
-#if	PKCODE
+#if PKCODE
 	return adjustmode(TRUE, TRUE);
 #else
 	adjustmode(TRUE, TRUE);
@@ -883,7 +883,7 @@ int setgmode(int f, int n)
  */
 int delgmode(int f, int n)
 {
-#if	PKCODE
+#if PKCODE
 	return adjustmode(FALSE, TRUE);
 #else
 	adjustmode(FALSE, TRUE);
@@ -901,8 +901,8 @@ int adjustmode(int kind, int global)
 	char *scan;	/* scanning pointer to convert prompt */
 	int i;		/* loop index */
 	int status;	/* error return on input */
-#if	COLOR
-	int uflag;	/* was modename uppercase?      */
+#if COLOR
+	int uflag;	/* was modename uppercase? */
 #endif
 	char prompt[50];	/* string to prompt user with */
 	char cbuf[NPAT];	/* buffer to recieve mode name into */
@@ -927,7 +927,7 @@ int adjustmode(int kind, int global)
 	/* make it uppercase */
 
 	scan = cbuf;
-#if	COLOR
+#if COLOR
 	uflag = (*scan >= 'A' && *scan <= 'Z');
 #endif
 	while (*scan != 0) {
@@ -937,25 +937,25 @@ int adjustmode(int kind, int global)
 	}
 
 	/* test it first against the colors we know */
-#if	PKCODE & IBMPC
+#if PKCODE & IBMPC
 	for (i = 0; i <= NCOLORS; i++) {
 #else
 	for (i = 0; i < NCOLORS; i++) {
 #endif
 		if (strcmp(cbuf, cname[i]) == 0) {
 			/* finding the match, we set the color */
-#if	COLOR
+#if COLOR
 			if (uflag) {
 				if (global)
 					gfcolor = i;
-#if	PKCODE == 0
+#if PKCODE == 0
 				else
 #endif
 					curwp->w_fcolor = i;
 			} else {
 				if (global)
 					gbcolor = i;
-#if	PKCODE == 0
+#if PKCODE == 0
 				else
 #endif
 					curwp->w_bcolor = i;
@@ -1039,7 +1039,7 @@ int writemsg(int f, int n)
 	return TRUE;
 }
 
-#if	CFENCE
+#if CFENCE
 /*
  * the cursor is moved to a matching fence
  *

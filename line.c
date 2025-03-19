@@ -102,10 +102,10 @@ void lchange(int flag)
 {
 	struct window *wp;
 
-	if (curbp->b_nwnd != 1)	/* Ensure hard.     */
+	if (curbp->b_nwnd != 1)	/* Ensure hard. */
 		flag = WFHARD;
-	if ((curbp->b_flag & BFCHG) == 0) {	/* First change, so     */
-		flag |= WFMODE;	/* update mode lines.   */
+	if ((curbp->b_flag & BFCHG) == 0) {	/* First change, so */
+		flag |= WFMODE;	/* update mode lines. */
 		curbp->b_flag |= BFCHG;
 	}
 	wp = wheadp;
@@ -173,19 +173,19 @@ static int linsert_byte(int n, int c)
 	int i;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	lchange(WFEDIT);
-	lp1 = curwp->w_dotp;	/* Current line         */
-	if (lp1 == curbp->b_linep) {	/* At the end: special  */
+	lp1 = curwp->w_dotp;	/* Current line */
+	if (lp1 == curbp->b_linep) {	/* At the end: special */
 		if (curwp->w_doto != 0) {
 			mlwrite("bug: linsert");
 			return FALSE;
 		}
-		if ((lp2 = lalloc(n)) == NULL)	/* Allocate new line        */
+		if ((lp2 = lalloc(n)) == NULL)	/* Allocate new line */
 			return FALSE;
-		lp3 = lp1->l_bp;	/* Previous line        */
-		lp3->l_fp = lp2;	/* Link in              */
+		lp3 = lp1->l_bp;	/* Previous line */
+		lp3->l_fp = lp2;	/* Link in */
 		lp2->l_fp = lp1;
 		lp1->l_bp = lp2;
 		lp2->l_bp = lp3;
@@ -195,8 +195,8 @@ static int linsert_byte(int n, int c)
 		curwp->w_doto = n;
 		return TRUE;
 	}
-	doto = curwp->w_doto;	/* Save for later.      */
-	if (lp1->l_used + n > lp1->l_size) {	/* Hard: reallocate     */
+	doto = curwp->w_doto;	/* Save for later. */
+	if (lp1->l_used + n > lp1->l_size) {	/* Hard: reallocate */
 		if ((lp2 = lalloc(lp1->l_used + n)) == NULL)
 			return FALSE;
 		cp1 = &lp1->l_text[0];
@@ -211,17 +211,17 @@ static int linsert_byte(int n, int c)
 		lp1->l_fp->l_bp = lp2;
 		lp2->l_bp = lp1->l_bp;
 		free((char *) lp1);
-	} else {		/* Easy: in place       */
-		lp2 = lp1;	/* Pretend new line     */
+	} else {		/* Easy: in place */
+		lp2 = lp1;	/* Pretend new line */
 		lp2->l_used += n;
 		cp2 = &lp1->l_text[lp1->l_used];
 		cp1 = cp2 - n;
 		while (cp1 != &lp1->l_text[doto])
 			*--cp2 = *--cp1;
 	}
-	for (i = 0; i < n; ++i)	/* Add the characters       */
+	for (i = 0; i < n; ++i)	/* Add the characters */
 		lp2->l_text[doto + i] = c;
-	wp = wheadp;		/* Update windows       */
+	wp = wheadp;		/* Update windows */
 	while (wp != NULL) {
 		if (wp->w_linep == lp1)
 			wp->w_linep = lp2;
@@ -313,18 +313,18 @@ int lnewline(void)
 	int doto;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 #if SCROLLCODE
 	lchange(WFHARD | WFINS);
 #else
 	lchange(WFHARD);
 #endif
-	lp1 = curwp->w_dotp;	/* Get the address and  */
-	doto = curwp->w_doto;	/* offset of "."        */
-	if ((lp2 = lalloc(doto)) == NULL)	/* New first half line      */
+	lp1 = curwp->w_dotp;	/* Get the address and */
+	doto = curwp->w_doto;	/* offset of "." */
+	if ((lp2 = lalloc(doto)) == NULL)	/* New first half line */
 		return FALSE;
-	cp1 = &lp1->l_text[0];	/* Shuffle text around  */
+	cp1 = &lp1->l_text[0];	/* Shuffle text around */
 	cp2 = &lp2->l_text[0];
 	while (cp1 != &lp1->l_text[doto])
 		*cp2++ = *cp1++;
@@ -336,7 +336,7 @@ int lnewline(void)
 	lp1->l_bp = lp2;
 	lp2->l_bp->l_fp = lp2;
 	lp2->l_fp = lp1;
-	wp = wheadp;		/* Windows              */
+	wp = wheadp;		/* Windows */
 	while (wp != NULL) {
 		if (wp->w_linep == lp1)
 			wp->w_linep = lp2;
@@ -399,17 +399,17 @@ int ldelete(long n, int kflag)
 	int chunk;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	while (n != 0) {
 		dotp = curwp->w_dotp;
 		doto = curwp->w_doto;
-		if (dotp == curbp->b_linep)	/* Hit end of buffer.       */
+		if (dotp == curbp->b_linep)	/* Hit end of buffer. */
 			return FALSE;
-		chunk = dotp->l_used - doto;	/* Size of chunk.       */
+		chunk = dotp->l_used - doto;	/* Size of chunk. */
 		if (chunk > n)
 			chunk = n;
-		if (chunk == 0) {	/* End of line, merge.  */
+		if (chunk == 0) {	/* End of line, merge. */
 #if SCROLLCODE
 			lchange(WFHARD | WFKILLS);
 #else
@@ -422,9 +422,9 @@ int ldelete(long n, int kflag)
 			continue;
 		}
 		lchange(WFEDIT);
-		cp1 = &dotp->l_text[doto];	/* Scrunch text.        */
+		cp1 = &dotp->l_text[doto];	/* Scrunch text. */
 		cp2 = cp1 + chunk;
-		if (kflag != FALSE) {	/* Kill?                */
+		if (kflag != FALSE) {	/* Kill? */
 			while (cp1 != cp2) {
 				if (kinsert(*cp1) == FALSE)
 					return FALSE;
@@ -435,7 +435,7 @@ int ldelete(long n, int kflag)
 		while (cp2 != &dotp->l_text[dotp->l_used])
 			*cp1++ = *cp2++;
 		dotp->l_used -= chunk;
-		wp = wheadp;	/* Fix windows          */
+		wp = wheadp;	/* Fix windows */
 		while (wp != NULL) {
 			if (wp->w_dotp == dotp && wp->w_doto >= doto) {
 				wp->w_doto -= chunk;
@@ -522,12 +522,12 @@ int ldelnewline(void)
 	struct line *lp3;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	lp1 = curwp->w_dotp;
 	lp2 = lp1->l_fp;
-	if (lp2 == curbp->b_linep) {	/* At the buffer end.   */
-		if (lp1->l_used == 0)	/* Blank line.              */
+	if (lp2 == curbp->b_linep) {	/* At the buffer end. */
+		if (lp1->l_used == 0)	/* Blank line. */
 			lfree(lp1);
 		return TRUE;
 	}
@@ -657,8 +657,8 @@ int yank(int f, int n)
 	char *sp;	/* pointer into string to insert */
 	struct kill *kp;		/* pointer into kill buffer */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
 	/* make sure there is something to yank */

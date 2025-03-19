@@ -14,13 +14,13 @@
 #include "efunc.h"
 #include "wrapper.h"
 
-#if	PKCODE
+#if PKCODE
 #if     MSDOS && TURBO
 #include	<dir.h>
 #endif
 #endif
 
-#if	PKCODE && (UNIX || (MSDOS && TURBO))
+#if PKCODE && (UNIX || (MSDOS && TURBO))
 #define	COMPLC	1
 #else
 #define COMPLC	0
@@ -265,7 +265,7 @@ int tgetc(void)
 		/* at the end of last repitition? */
 		if (--kbdrep < 1) {
 			kbdmode = STOP;
-#if	VISMAC == 0
+#if VISMAC == 0
 			/* force a screen update after all is done */
 			update(FALSE);
 #endif
@@ -310,8 +310,8 @@ int get1key(void)
 	/* get a keystroke */
 	c = tgetc();
 
-#if	MSDOS
-	if (c == 0) {		/* Apply SPEC prefix    */
+#if MSDOS
+	if (c == 0) {		/* Apply SPEC prefix */
 		c = tgetc();
 		if (c >= 0x00 && c <= 0x1F)	/* control key? */
 			c = CONTROL | (c + '@');
@@ -319,7 +319,7 @@ int get1key(void)
 	}
 #endif
 
-	if (c >= 0x00 && c <= 0x1F)	/* C0 control -> C-     */
+	if (c >= 0x00 && c <= 0x1F)	/* C0 control -> C- */
 		c = CONTROL | (c + '@');
 	return c;
 }
@@ -393,7 +393,7 @@ handle_CSI:
 			c = CONTROL | (c + '@');
 		return META | c;
 	}
-#if	PKCODE
+#if PKCODE
 	else if (c == metac) {
 		c = get1key();
 #if VT220
@@ -411,7 +411,7 @@ handle_CSI:
 #endif
 
 
-#if	VT220
+#if VT220
       proc_ctlxc:
 #endif
 	/* process CTLX prefix */
@@ -443,13 +443,13 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	int cpos;	/* current character position in string */
 	int c;
 	int quotef;	/* are we quoting the next char? */
-#if	COMPLC
+#if COMPLC
 	int ffile, ocpos, nskip = 0, didtry = 0;
 #if     MSDOS
 	struct ffblk ffblk;
 	char *fcp;
 #endif
-#if	UNIX
+#if UNIX
 	static char tmp[] = "/tmp/meXXXXXX";
 	FILE *tmpf = NULL;
 #endif
@@ -468,7 +468,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	mlwrite(prompt);
 
 	for (;;) {
-#if	COMPLC
+#if COMPLC
 		if (!didtry)
 			nskip = -1;
 		didtry = 0;
@@ -478,7 +478,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 
 		if (c != eolchar) {
 			/* If it is a <ret>, change it to a <NL> */
-#if	PKCODE
+#if PKCODE
 			if (c == (CONTROL | 0x4d) && !quotef)
 #else
 			if (c == (CONTROL | 0x4d))
@@ -544,12 +544,12 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 			}
 			TTflush();
 
-#if	COMPLC
+#if COMPLC
 		} else if ((c == 0x09 || c == ' ') && quotef == FALSE
 			   && ffile) {
 			/* TAB, complete file name */
 			char ffbuf[255];
-#if	MSDOS
+#if MSDOS
 			char sffbuf[128];
 			int lsav = -1;
 #endif
@@ -571,7 +571,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				}
 				if (buf[cpos] == '*' || buf[cpos] == '?')
 					iswild = 1;
-#if	MSDOS
+#if MSDOS
 				if (lsav < 0 && (buf[cpos] == '\\' ||
 						 buf[cpos] == '/' ||
 						 buf[cpos] == ':'
@@ -582,7 +582,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 			TTflush();
 			if (nskip < 0) {
 				buf[ocpos] = 0;
-#if	UNIX
+#if UNIX
 				if (tmpf != NULL)
 					fclose(tmpf);
 				strcpy(tmp, "/tmp/meXXXXXX");
@@ -597,20 +597,20 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				system(ffbuf);
 				tmpf = fopen(tmp, "r");
 #endif
-#if	MSDOS
+#if MSDOS
 				strcpy(sffbuf, buf);
 				if (!iswild)
 					strcat(sffbuf, "*.*");
 #endif
 				nskip = 0;
 			}
-#if	UNIX
+#if UNIX
 			c = ' ';
 			for (n = nskip; n > 0; n--)
 				while ((c = getc(tmpf)) != EOF
 				       && c != ' ');
 #endif
-#if	MSDOS
+#if MSDOS
 			if (nskip == 0) {
 				strcpy(ffbuf, sffbuf);
 				c = findfirst(ffbuf, &ffblk,
@@ -624,11 +624,11 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				TTbeep();
 				nskip = 0;
 			}
-#if	UNIX
+#if UNIX
 			while ((c = getc(tmpf)) != EOF && c != '\n'
 			       && c != ' ' && c != '*')
 #endif
-#if	MSDOS
+#if MSDOS
 				if (c == '*')
 					fcp = sffbuf;
 				else {
@@ -642,7 +642,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				if (cpos < nbuf - 1)
 					buf[cpos++] = c;
 			}
-#if	UNIX
+#if UNIX
 			if (c == '*')
 				TTbeep();
 #endif
@@ -665,7 +665,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				++ttcol;
 			}
 			TTflush();
-#if	UNIX
+#if UNIX
 			rewind(tmpf);
 			unlink(tmp);
 #endif

@@ -49,28 +49,30 @@ static int cmd_reexecute = -1;		/* > 0 if re-executing command */
  */
 int risearch(int f, int n)
 {
-	struct line *curline;		/* Current line on entry              */
-	int curoff;		/* Current offset on entry            */
+	struct line *curline;
+	int curoff;
 
 	/* remember the initial . on entry: */
 
-	curline = curwp->w_dotp;	/* Save the current line pointer      */
-	curoff = curwp->w_doto;	/* Save the current offset            */
+	curline = curwp->w_dotp;
+	curoff = curwp->w_doto;
 
 	/* do the search */
 
-	if (!(isearch(f, -n))) {	/* Call ISearch backwards       *//* If error in search:                */
-		curwp->w_dotp = curline;	/* Reset the line pointer             */
-		curwp->w_doto = curoff;	/*  and the offset to original value  */
-		curwp->w_flag |= WFMOVE;	/* Say we've moved                    */
-		update(FALSE);	/* And force an update                */
-		mlwrite("(search failed)");	/* Say we died                        */
-#if	PKCODE
+	if (!(isearch(f, -n))) { /* Call ISearch backwards */
+		/* If error in search: */
+		curwp->w_dotp = curline;
+		curwp->w_doto = curoff;
+		curwp->w_flag |= WFMOVE;
+		update(FALSE); /* force an update */
+		mlwrite("(search failed)");
+#if PKCODE
 		matchlen = strlen(pat);
 #endif
-	} else
-		mlerase();	/* If happy, just erase the cmd line  */
-#if	PKCODE
+	} else {
+		mlerase();	/* If happy, just erase the cmd line */
+	}
+#if PKCODE
 	matchlen = strlen(pat);
 #endif
 	return TRUE;
@@ -81,28 +83,30 @@ int risearch(int f, int n)
  */
 int fisearch(int f, int n)
 {
-	struct line *curline;		/* Current line on entry              */
-	int curoff;		/* Current offset on entry            */
+	struct line *curline;
+	int curoff;
 
 	/* remember the initial . on entry: */
 
-	curline = curwp->w_dotp;	/* Save the current line pointer      */
-	curoff = curwp->w_doto;	/* Save the current offset            */
+	curline = curwp->w_dotp;
+	curoff = curwp->w_doto;
 
 	/* do the search */
 
-	if (!(isearch(f, n))) {	/* Call ISearch forwards        *//* If error in search:                */
-		curwp->w_dotp = curline;	/* Reset the line pointer             */
-		curwp->w_doto = curoff;	/*  and the offset to original value  */
-		curwp->w_flag |= WFMOVE;	/* Say we've moved                    */
-		update(FALSE);	/* And force an update                */
-		mlwrite("(search failed)");	/* Say we died                        */
-#if	PKCODE
+	if (!(isearch(f, n))) {	/* Call ISearch forwards */
+		/* If error in search: */
+		curwp->w_dotp = curline;
+		curwp->w_doto = curoff;
+		curwp->w_flag |= WFMOVE;
+		update(FALSE);	/* force an update */
+		mlwrite("(search failed)");
+#if PKCODE
 		matchlen = strlen(pat);
 #endif
-	} else
-		mlerase();	/* If happy, just erase the cmd line  */
-#if	PKCODE
+	} else {
+		mlerase();	/* If happy, just erase the cmd line */
+	}
+#if PKCODE
 	matchlen = strlen(pat);
 #endif
 	return TRUE;
@@ -138,10 +142,10 @@ int isearch(int f, int n)
 {
 	int status;		/* Search status */
 	int col;		/* prompt column */
-	int cpos;		/* character number in search string  */
+	int cpos;		/* character number in search string */
 	int c;			/* current input character */
 	int expc;		/* function expanded input char */
-	char pat_save[NPAT];	/* Saved copy of the old pattern str  */
+	char pat_save[NPAT];	/* Saved copy of the old pattern str */
 	struct line *curline;	/* Current line on entry */
 	int curoff;		/* Current offset on entry */
 	int init_direction;	/* The initial search direction */
@@ -149,12 +153,12 @@ int isearch(int f, int n)
 	/* Initialize starting conditions */
 
 	cmd_reexecute = -1;	/* We're not re-executing (yet?) */
-	cmd_offset = 0;		/* Start at the beginning of the buff */
-	cmd_buff[0] = '\0';	/* Init the command buffer */
-	strncpy(pat_save, pat, NPAT);	/* Save the old pattern string */
-	curline = curwp->w_dotp;	/* Save the current line pointer */
-	curoff = curwp->w_doto;	/* Save the current offset */
-	init_direction = n;	/* Save the initial search direction */
+	cmd_offset = 0;
+	cmd_buff[0] = '\0';
+	strncpy(pat_save, pat, NPAT - 1);
+	curline = curwp->w_dotp;
+	curoff = curwp->w_doto;
+	init_direction = n;
 
 	/* This is a good place to start a re-execution: */
 
@@ -163,25 +167,30 @@ start_over:
 	/* ask the user for the text of a pattern */
 	col = promptpattern("ISearch: ");
 
-	cpos = 0;		/* Start afresh               */
-	status = TRUE;		/* Assume everything's cool   */
+	cpos = 0;		/* Start afresh */
+	status = TRUE;		/* Assume everything's cool */
 
 	/*
-	   Get the first character in the pattern.  If we get an initial Control-S
-	   or Control-R, re-use the old search string and find the first occurrence
+	   Get the first character in the pattern.
+	   If we get an initial C-S or C-R,
+	   re-use the old search string and find the first occurrence
 	 */
 
-	c = ectoc(expc = get_char());	/* Get the first character    */
-	if ((c == IS_FORWARD) || (c == IS_REVERSE) || (c == IS_VMSFORW)) {	/* Reuse old search string?   */
-		for (cpos = 0; pat[cpos] != 0; cpos++)	/* Yup, find the length           */
-			col = echo_char(pat[cpos], col);	/*  and re-echo the string    */
+	c = ectoc(expc = get_char());
+
+	/* Reuse old search string? */
+	if ((c == IS_FORWARD) || (c == IS_REVERSE) || (c == IS_VMSFORW)) {
+		/* Yup, find the length */
+		for (cpos = 0; pat[cpos] != 0; cpos++)
+			col = echo_char(pat[cpos], col);
+
 		if (c == IS_REVERSE) {
 			n = -1;
 			backchar(TRUE, 1);	/* Be defensive about EOB */
 		} else {
 			n = 1;
 		}
-		status = scanmore(pat, n);	/* Do the search              */
+		status = scanmore(pat, n);
 		c = ectoc(expc = get_char());
 	}
 
@@ -218,14 +227,17 @@ start_over:
 		case IS_RUBOUT:
 			if (cmd_offset <= 1)
 				return TRUE;
-			--cmd_offset;	/* Back up over the Rubout    */
-			cmd_buff[--cmd_offset] = '\0';	/* Yes, delete last char   */
-			curwp->w_dotp = curline;	/* Reset the line pointer     */
-			curwp->w_doto = curoff;	/*  and the offset            */
-			n = init_direction;	/* Reset the search direction */
-			strncpy(pat, pat_save, NPAT);	/* Restore the old search str */
-			cmd_reexecute = 0;	/* Start the whole mess over  */
-			goto start_over;	/* Let it take care of itself */
+			--cmd_offset; /* Back up over the Rubout */
+			cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
+			curwp->w_dotp = curline;
+			curwp->w_doto = curoff;
+			n = init_direction;
+
+			/* Restore the old search str */
+			strncpy(pat, pat_save, NPAT);
+
+			cmd_reexecute = 0;
+			goto start_over;
 
 			/* Presumably a quasi-normal character comes here */
 
@@ -240,7 +252,7 @@ start_over:
 			}
 		}
 
-		/* I guess we got something to search for, so search for it           */
+		/* I guess we got something to search for, so search for it */
 
 		pat[cpos++] = c;
 		if (cpos >= NPAT) {
@@ -276,34 +288,40 @@ start_over:
  */
 int checknext(char chr, char *patrn, int dir)	/* Check next character in search string */
 {
-	struct line *curline;	/* current line during scan           */
-	int curoff;	/* position within current line       */
-	int buffchar;	/* character at current position      */
-	int status;		/* how well things go                 */
+	struct line *curline;
+	int curoff; /* position within current line */
+	int buffchar; /* character at current position */
+	int status;
 
 
 	/* setup the local scan pointer to current "." */
 
-	curline = curwp->w_dotp;		/* Get the current line structure     */
-	curoff = curwp->w_doto;			/* Get the offset within that line    */
+	curline = curwp->w_dotp;
+	curoff = curwp->w_doto;
 
-	if (dir > 0) {				/* If searching forward                 */
-		if (curoff == llength(curline)) {		/* If at end of line                    */
-			curline = lforw(curline);		/* Skip to the next line              */
+	if (dir > 0) { /* If searching forward */
+		if (curoff == llength(curline)) { /* If at end of line */
+			curline = lforw(curline);
+
+			/* Abort if at end of buffer */
 			if (curline == curbp->b_linep)
-				return FALSE;			/* Abort if at end of buffer          */
-			curoff = 0;				/* Start at the beginning of the line */
-			buffchar = '\n';			/* And say the next char is NL        */
-		} else
-			buffchar = lgetc(curline, curoff++);	/* Get the next char         */
-		if ((status = eq(buffchar, chr)) != 0) {	/* Is it what we're looking for?      */
-			curwp->w_dotp = curline;		/* Yes, set the buffer's point        */
-			curwp->w_doto = curoff;			/*  to the matched character          */
-			curwp->w_flag |= WFMOVE;		/* Say that we've moved               */
+				return FALSE;
+
+			curoff = 0; /* Start at the beginning of the line */
+			buffchar = '\n'; /* And say the next char is NL */
+		} else {
+			buffchar = lgetc(curline, curoff++);
 		}
-		return status;		/* And return the status              */
-	} else					/* Else, if reverse search:       */
-		return match_pat(patrn);	/* See if we're in the right place    */
+		/* Is it what we're looking for? */
+		if ((status = eq(buffchar, chr)) != 0) {
+			curwp->w_dotp = curline;
+			curwp->w_doto = curoff;
+			curwp->w_flag |= WFMOVE;
+		}
+		return status;
+	} else { /* Else, if reverse search: */
+		return match_pat(patrn); /* See if we're in the right place */
+	}
 }
 
 /*
@@ -318,22 +336,23 @@ int checknext(char chr, char *patrn, int dir)	/* Check next character in search 
  * char *patrn;			string to scan for
  * int dir;			direction to search
  */
-int scanmore(char *patrn, int dir)	/* search forward or back for a pattern           */
+int scanmore(char *patrn, int dir)	/* search forward or back for a pattern */
 {
-	int sts;		/* search status                      */
+	int sts;		/* search status */
 
-	if (dir < 0) {		/* reverse search?              */
+	if (dir < 0) {		/* reverse search? */
 		rvstrcpy(tap, patrn);	/* Put reversed string in tap */
 		sts = scanner(tap, REVERSE, PTBEG);
-	} else
-		sts = scanner(patrn, FORWARD, PTEND);	/* Nope. Go forward   */
-
-	if (!sts) {
-		TTputc(BELL);	/* Feep if search fails       */
-		TTflush();	/* see that the feep feeps    */
+	} else {
+		sts = scanner(patrn, FORWARD, PTEND);	/* Nope. Go forward */
 	}
 
-	return sts;		/* else, don't even try       */
+	if (!sts) {
+		TTputc(BELL);	/* Feep if search fails */
+		TTflush();	/* see that the feep feeps */
+	}
+
+	return sts;		/* else, don't even try */
 }
 
 /*
@@ -347,31 +366,31 @@ int scanmore(char *patrn, int dir)	/* search forward or back for a pattern      
  *
  * char *patrn;			String to match to buffer
  */
-int match_pat(char *patrn)	/* See if the pattern string matches string at "."   */
+int match_pat(char *patrn)	/* See if the pattern string matches string at "." */
 {
-	int i;		/* Generic loop index/offset          */
-	int buffchar;	/* character at current position      */
-	struct line *curline;	/* current line during scan           */
-	int curoff;	/* position within current line       */
+	int i;		/* Generic loop index/offset */
+	int buffchar;	/* character at current position */
+	struct line *curline;	/* current line during scan */
+	int curoff;	/* position within current line */
 
 	/* setup the local scan pointer to current "." */
 
-	curline = curwp->w_dotp;	/* Get the current line structure     */
-	curoff = curwp->w_doto;	/* Get the offset within that line    */
+	curline = curwp->w_dotp;	/* Get the current line structure */
+	curoff = curwp->w_doto;	/* Get the offset within that line */
 
 	/* top of per character compare loop: */
 
-	for (i = 0; i < strlen(patrn); i++) {	/* Loop for all characters in patrn   */
-		if (curoff == llength(curline)) {	/* If at end of line                    */
-			curline = lforw(curline);	/* Skip to the next line              */
+	for (i = 0; i < strlen(patrn); i++) {	/* Loop for all characters in patrn */
+		if (curoff == llength(curline)) {	/* If at end of line */
+			curline = lforw(curline);	/* Skip to the next line */
 			curoff = 0;	/* Start at the beginning of the line */
 			if (curline == curbp->b_linep)
-				return FALSE;	/* Abort if at end of buffer          */
-			buffchar = '\n';	/* And say the next char is NL        */
+				return FALSE;	/* Abort if at end of buffer */
+			buffchar = '\n';	/* And say the next char is NL */
 		} else
-			buffchar = lgetc(curline, curoff++);	/* Get the next char         */
-		if (!eq(buffchar, patrn[i]))	/* Is it what we're looking for?      */
-			return FALSE;	/* Nope, just punt it then            */
+			buffchar = lgetc(curline, curoff++);	/* Get the next char */
+		if (!eq(buffchar, patrn[i]))	/* Is it what we're looking for? */
+			return FALSE;	/* Nope, just punt it then */
 	}
 	return TRUE;		/* Everything matched? Let's celebrate */
 }
@@ -403,10 +422,10 @@ int promptpattern(char *prompt)
  */
 static int echo_char(int c, int col)
 {
-	movecursor(term.t_nrow, col);	/* Position the cursor        */
-	if ((c < ' ') || (c == 0x7F)) {	/* Control character?           */
+	movecursor(term.t_nrow, col);	/* Position the cursor */
+	if ((c < ' ') || (c == 0x7F)) {	/* Control character? */
 		switch (c) {	/* Yes, dispatch special cases */
-		case '\n':	/* Newline                    */
+		case '\n':	/* Newline */
 			TTputc('<');
 			TTputc('N');
 			TTputc('L');
@@ -414,7 +433,7 @@ static int echo_char(int c, int col)
 			col += 3;
 			break;
 
-		case '\t':	/* Tab                        */
+		case '\t':	/* Tab */
 			TTputc('<');
 			TTputc('T');
 			TTputc('A');
@@ -423,21 +442,21 @@ static int echo_char(int c, int col)
 			col += 4;
 			break;
 
-		case 0x7F:	/* Rubout:                    */
-			TTputc('^');	/* Output a funny looking     */
-			TTputc('?');	/*  indication of Rubout      */
-			col++;	/* Count the extra char       */
+		case 0x7F:	/* Rubout: */
+			TTputc('^');	/* Output a funny looking */
+			TTputc('?');	/*  indication of Rubout */
+			col++;	/* Count the extra char */
 			break;
 
-		default:	/* Vanilla control char       */
-			TTputc('^');	/* Yes, output prefix         */
-			TTputc(c + 0x40);	/* Make it "^X"               */
-			col++;	/* Count this char            */
+		default:	/* Vanilla control char */
+			TTputc('^');	/* Yes, output prefix */
+			TTputc(c + 0x40);	/* Make it "^X" */
+			col++;	/* Count this char */
 		}
 	} else
 		TTputc(c);	/* Otherwise, output raw char */
-	TTflush();		/* Flush the output           */
-	return ++col;		/* return the new column no   */
+	TTflush();		/* Flush the output */
+	return ++col;		/* return the new column no */
 }
 
 /*
@@ -448,26 +467,26 @@ static int echo_char(int c, int col)
  */
 int get_char(void)
 {
-	int c;			/* A place to get a character         */
+	int c;			/* A place to get a character */
 
 	/* See if we're re-executing: */
 
-	if (cmd_reexecute >= 0)	/* Is there an offset?                    */
+	if (cmd_reexecute >= 0)	/* Is there an offset? */
 		if ((c = cmd_buff[cmd_reexecute++]) != 0)
-			return c;	/* Yes, return any character          */
+			return c;	/* Yes, return any character */
 
-	/* We're not re-executing (or aren't any more).  Try for a real char      */
+	/* We're not re-executing (or aren't any more).  Try for a real char */
 
-	cmd_reexecute = -1;	/* Say we're in real mode again       */
-	update(FALSE);		/* Pretty up the screen               */
-	if (cmd_offset >= CMDBUFLEN - 1) {	/* If we're getting too big ...         */
-		mlwrite("? command too long");	/* Complain loudly and bitterly       */
-		return abortc;	/* And force a quit                   */
+	cmd_reexecute = -1;	/* Say we're in real mode again */
+	update(FALSE);		/* Pretty up the screen */
+	if (cmd_offset >= CMDBUFLEN - 1) {	/* If we're getting too big ... */
+		mlwrite("? command too long");	/* Complain loudly and bitterly */
+		return abortc;	/* And force a quit */
 	}
-	c = get1key();		/* Get the next character             */
-	cmd_buff[cmd_offset++] = c;	/* Save the char for next time        */
-	cmd_buff[cmd_offset] = '\0';	/* And terminate the buffer           */
-	return c;		/* Return the character               */
+	c = get1key();		/* Get the next character */
+	cmd_buff[cmd_offset++] = c;	/* Save the char for next time */
+	cmd_buff[cmd_offset] = '\0';	/* And terminate the buffer */
+	return c;		/* Return the character */
 }
 
 /*
@@ -481,17 +500,17 @@ int uneat(void)
 {
 	int c;
 
-	term.t_getchar = saved_get_char;	/* restore the routine address        */
-	c = eaten_char;		/* Get the re-eaten char              */
-	eaten_char = -1;	/* Clear the old char                 */
-	return c;		/* and return the last char           */
+	term.t_getchar = saved_get_char;	/* restore the routine address */
+	c = eaten_char;		/* Get the re-eaten char */
+	eaten_char = -1;	/* Clear the old char */
+	return c;		/* and return the last char */
 }
 
 void reeat(int c)
 {
-	if (eaten_char != -1)	/* If we've already been here             */
-		return /*(NULL) */ ;	/* Don't do it again                  */
-	eaten_char = c;		/* Else, save the char for later      */
-	saved_get_char = term.t_getchar;	/* Save the char get routine          */
-	term.t_getchar = uneat;	/* Replace it with ours               */
+	if (eaten_char != -1)	/* If we've already been here */
+		return /*(NULL) */ ;	/* Don't do it again */
+	eaten_char = c;		/* Else, save the char for later */
+	saved_get_char = term.t_getchar;	/* Save the char get routine */
+	term.t_getchar = uneat;	/* Replace it with ours */
 }

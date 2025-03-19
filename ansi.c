@@ -15,37 +15,37 @@
 
 #if     ANSI
 
-#define NROW    25		/* Screen size.                 */
-#define NCOL    80		/* Edit if you want to.         */
+#define NROW    25		/* Screen size. */
+#define NCOL    80		/* Edit if you want to. */
 
-#if	PKCODE
+#if PKCODE
 #define	MROW	64
 #endif
 #define	NPAUSE	100		/* # times thru update to pause */
-#define	MARGIN	8		/* size of minimim margin and   */
+#define	MARGIN	8		/* size of minimim margin and */
 #define	SCRSIZ	64		/* scroll size for extended lines */
-#define BEL     0x07		/* BEL character.               */
-#define ESC     0x1B		/* ESC character.               */
+#define BEL     0x07		/* BEL character. */
+#define ESC     0x1B		/* ESC character. */
 
-extern int ttopen();		/* Forward references.          */
-extern int ttgetc();
-extern int ttputc();
-extern int ttflush();
-extern int ttclose();
-extern int ansimove();
-extern int ansieeol();
-extern int ansieeop();
-extern int ansibeep();
-extern int ansiopen();
-extern int ansirev();
-extern int ansiclose();
-extern int ansikopen();
-extern int ansikclose();
-extern int ansicres();
+void ttopen();
+void ttclose();
+void ansiopen();
+void ansiclose();
+void ansikopen();
+void ansikclose();
+int ttgetc();
+int ttputc();
+void ttflush();
+void ansimove();
+void ansieeol();
+void ansieeop();
+void ansibeep();
+void ansirev();
+void ansicres();
 
-#if	COLOR
-extern int ansifcol();
-extern int ansibcol();
+#if COLOR
+int ansifcol();
+int ansibcol();
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */
@@ -57,7 +57,7 @@ int cbcolor = -1;		/* current background color */
  * "termio" code.
  */
 struct terminal term = {
-#if	PKCODE
+#if PKCODE
 	MROW - 1,
 #else
 	NROW - 1,
@@ -81,20 +81,19 @@ struct terminal term = {
 	ansibeep,
 	ansirev,
 	ansicres
-#if	COLOR
-	    , ansifcol,
+#if COLOR
+	,
+	ansifcol,
 	ansibcol
 #endif
-#if	SCROLLCODE
-	    , NULL
+#if SCROLLCODE
+	,
+	NULL
 #endif
 };
 
-#if	COLOR
-ansifcol(color)
-    /* set the current output color */
-int color;			/* color to set */
-
+#if COLOR
+void ansifcol(int color)
 {
 	if (color == cfcolor)
 		return;
@@ -120,7 +119,7 @@ void ansibcol(int color)
 }
 #endif
 
-ansimove(row, col)
+void ansimove(int row, int col)
 {
 	ttputc(ESC);
 	ttputc('[');
@@ -139,7 +138,7 @@ void ansieeol(void)
 
 void ansieeop(void)
 {
-#if	COLOR
+#if COLOR
 	ansifcol(gfcolor);
 	ansibcol(gbcolor);
 #endif
@@ -153,7 +152,7 @@ void ansieeop(void)
  */
 void ansirev(int state)
 {
-#if	COLOR
+#if COLOR
 	int ftmp, btmp;		/* temporaries for colors */
 #endif
 
@@ -161,7 +160,7 @@ void ansirev(int state)
 	ttputc('[');
 	ttputc(state ? '7' : '0');
 	ttputc('m');
-#if	COLOR
+#if COLOR
 	if (state == FALSE) {
 		ftmp = cfcolor;
 		btmp = cbcolor;
@@ -221,7 +220,7 @@ void ansiopen(void)
 
 void ansiclose(void)
 {
-#if	COLOR
+#if COLOR
 	ansifcol(7);
 	ansibcol(0);
 #endif

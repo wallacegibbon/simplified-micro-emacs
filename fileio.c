@@ -57,7 +57,7 @@ int ffclose(void)
 	}
 	eofflag = FALSE;
 
-#if	MSDOS & CTRLZ
+#if MSDOS & CTRLZ
 	fputc(26, ffp);		/* add a ^Z at the end of the file */
 #endif
 
@@ -81,7 +81,7 @@ int ffclose(void)
 int ffputline(char *buf, int nbuf)
 {
 	int i;
-#if	CRYPT
+#if CRYPT
 	char c;			/* character to translate */
 
 	if (cryptflag) {
@@ -136,7 +136,7 @@ int ffgetline(void)
 			return FIOMEM;
 
 	/* read the line in */
-#if	PKCODE
+#if PKCODE
 	if (!nullflag) {
 		if (fgets(fline, NSTRING, ffp) == (char *) NULL) {	/* EOF ? */
 			i = 0;
@@ -158,7 +158,7 @@ int ffgetline(void)
 	i = 0;
 	while ((c = fgetc(ffp)) != EOF && c != '\n') {
 #endif
-#if	PKCODE
+#if PKCODE
 		if (c) {
 #endif
 			fline[i++] = c;
@@ -172,7 +172,7 @@ int ffgetline(void)
 				free(fline);
 				fline = tmpline;
 			}
-#if	PKCODE
+#if PKCODE
 		}
 		c = fgetc(ffp);
 #endif
@@ -193,7 +193,7 @@ int ffgetline(void)
 
 	/* terminate and decrypt the string */
 	fline[i] = 0;
-#if	CRYPT
+#if CRYPT
 	if (cryptflag)
 		myencrypt(fline, strlen(fline));
 #endif

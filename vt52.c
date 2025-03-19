@@ -19,33 +19,33 @@
 
 #if     VT52
 
-#define NROW    24		/* Screen size.                 */
-#define NCOL    80		/* Edit if you want to.         */
-#define	MARGIN	8		/* size of minimim margin and   */
+#define NROW    24		/* Screen size. */
+#define NCOL    80		/* Edit if you want to. */
+#define	MARGIN	8		/* size of minimim margin and */
 #define	SCRSIZ	64		/* scroll size for extended lines */
 #define	NPAUSE	100		/* # times thru update to pause */
-#define BIAS    0x20		/* Origin 0 coordinate bias.    */
-#define ESC     0x1B		/* ESC character.               */
-#define BEL     0x07		/* ascii bell character         */
+#define BIAS    0x20		/* Origin 0 coordinate bias. */
+#define ESC     0x1B		/* ESC character. */
+#define BEL     0x07		/* ascii bell character */
 
-extern int ttopen();		/* Forward references.          */
-extern int ttgetc();
-extern int ttputc();
-extern int ttflush();
-extern int ttclose();
-extern int vt52move();
-extern int vt52eeol();
-extern int vt52eeop();
-extern int vt52beep();
-extern int vt52open();
-extern int vt52rev();
-extern int vt52cres();
-extern int vt52kopen();
-extern int vt52kclose();
+void ttopen();
+void ttclose();
+void vt52open();
+void vt52kopen();
+void vt52kclose();
+int ttgetc();
+int ttputc();
+void ttflush();
+void vt52move();
+void vt52eeol();
+void vt52eeop();
+void vt52beep();
+void vt52rev();
+int vt52cres();
 
 #if COLOR
-extern int vt52fcol();
-extern int vt52bcol();
+int vt52fcol();
+int vt52bcol();
 #endif
 
 /*
@@ -73,16 +73,18 @@ struct terminal term = {
 	&vt52beep,
 	&vt52rev,
 	&vt52cres
-#if	COLOR
-	    , &vt52fcol,
+#if COLOR
+	,
+	&vt52fcol,
 	&vt52bcol
 #endif
-#if	SCROLLCODE
-	    , NULL
+#if SCROLLCODE
+	,
+	NULL
 #endif
 };
 
-vt52move(row, col)
+void vt52move(int row, int col)
 {
 	ttputc(ESC);
 	ttputc('Y');
@@ -90,42 +92,43 @@ vt52move(row, col)
 	ttputc(col + BIAS);
 }
 
-vt52eeol()
+void vt52eeol(void)
 {
 	ttputc(ESC);
 	ttputc('K');
 }
 
-vt52eeop()
+void vt52eeop(void)
 {
 	ttputc(ESC);
 	ttputc('J');
 }
 
-vt52rev(status)
-    /* set the reverse video state */
-int status;			/* TRUE = reverse video, FALSE = normal video */
-
+/* TRUE = reverse video, FALSE = normal video */
+void vt52rev(int status)
 {
 	/* can't do this here, so we won't */
 }
 
-vt52cres()
-{				/* change screen resolution - (not here though) */
+/* change screen resolution - (not here though) */
+int vt52cres()
+{
 	return TRUE;
 }
 
-#if	COLOR
-vt52fcol()
-{				/* set the forground color [NOT IMPLIMENTED] */
+#if COLOR
+/* set the forground color [NOT IMPLIMENTED] */
+int vt52fcol()
+{
 }
 
-vt52bcol()
-{				/* set the background color [NOT IMPLIMENTED] */
+/* set the background color [NOT IMPLIMENTED] */
+int vt52bcol()
+{
 }
 #endif
 
-vt52beep()
+void vt52beep()
 {
 #ifdef  BEL
 	ttputc(BEL);
@@ -133,7 +136,7 @@ vt52beep()
 #endif
 }
 
-vt52open()
+void vt52open()
 {
 #if     V7 | BSD
 	char *cp;
@@ -151,11 +154,11 @@ vt52open()
 	ttopen();
 }
 
-vt52kopen()
+void vt52kopen()
 {
 }
 
-vt52kclose()
+void vt52kclose()
 {
 }
 

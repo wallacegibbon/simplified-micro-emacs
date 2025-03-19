@@ -50,9 +50,9 @@ char *dolock(char *fname)
 
 	strcat(strcpy(lname, fname), ".lock~");
 
-	/* check that we are not being cheated, qname must point to     */
-	/* a regular file - even this code leaves a small window of     */
-	/* vulnerability but it is rather hard to exploit it            */
+	/* check that we are not being cheated, qname must point to */
+	/* a regular file - even this code leaves a small window of */
+	/* vulnerability but it is rather hard to exploit it */
 
 #if defined(S_IFLNK)
 	if (lstat(lname, &sbuf) == 0)

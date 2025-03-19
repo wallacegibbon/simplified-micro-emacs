@@ -5,8 +5,8 @@
  *	written 1986 by Daniel Lawrence
  *	modified by Petri Kutvonen
  */
-#ifndef EVAR_H_
-#define EVAR_H_
+#ifndef __EVAR_H
+#define __EVAR_H
 
 /* Max #chars in a var name. */
 #define	NVSIZE	10
@@ -206,4 +206,4 @@ static struct user_function funcs[] = {
 #define	UFBNOT		37
 #define	UFXLATE		38
 
-#endif  /* EVAR_H_ */
+#endif

@@ -54,8 +54,8 @@ int insfile(int f, int n)
 
 	if (restflag)		/* don't allow this command if restricted */
 		return resterr();
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
 	if ((s = mlreply("Insert file: ", fname, NFILEN)) != TRUE)
 		return s;
 	if ((s = ifile(fname)) != TRUE)
@@ -108,7 +108,7 @@ int viewfile(int f, int n)
 	return s;
 }
 
-#if	CRYPT
+#if CRYPT
 static int resetkey(void)
 {				/* reset the encryption key if needed */
 	int s;		/* return status */
@@ -155,7 +155,7 @@ int getfile(char *fname, int lockfl)
 	int s;
 	char bname[NBUFN];	/* buffer name to put file */
 
-#if	MSDOS
+#if MSDOS
 	mklower(fname);		/* msdos isn't case sensitive */
 #endif
 	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
@@ -173,13 +173,13 @@ int getfile(char *fname, int lockfl)
 			return TRUE;
 		}
 	}
-	makename(bname, fname);	/* New buffer name.     */
+	makename(bname, fname);	/* New buffer name. */
 	while ((bp = bfind(bname, FALSE, 0)) != NULL) {
 		/* old buffer name conflict code */
 		s = mlreply("Buffer name: ", bname, NBUFN);
-		if (s == ABORT)	/* ^G to just quit      */
+		if (s == ABORT)	/* ^G to just quit */
 			return s;
-		if (s == FALSE) {	/* CR to clobber it     */
+		if (s == FALSE) {	/* CR to clobber it */
 			makename(bname, fname);
 			break;
 		}
@@ -188,16 +188,16 @@ int getfile(char *fname, int lockfl)
 		mlwrite("Cannot create buffer");
 		return FALSE;
 	}
-	if (--curbp->b_nwnd == 0) {	/* Undisplay.           */
+	if (--curbp->b_nwnd == 0) {	/* Undisplay. */
 		curbp->b_dotp = curwp->w_dotp;
 		curbp->b_doto = curwp->w_doto;
 		curbp->b_markp = curwp->w_markp;
 		curbp->b_marko = curwp->w_marko;
 	}
-	curbp = bp;		/* Switch to it.        */
+	curbp = bp;		/* Switch to it. */
 	curwp->w_bufp = bp;
 	curbp->b_nwnd++;
-	s = readin(fname, lockfl);	/* Read it in.          */
+	s = readin(fname, lockfl);	/* Read it in. */
 	cknewwindow();
 	return s;
 }
@@ -225,7 +225,7 @@ int readin(char *fname, int lockfl)
 	int nline;
 	char mesg[NSTRING];
 
-#if	(FILOCK && BSD) || SVR4
+#if (FILOCK && BSD) || SVR4
 	if (lockfl && lockchk(fname) == ABORT)
 #if PKCODE
 	{
@@ -238,13 +238,13 @@ int readin(char *fname, int lockfl)
 		return ABORT;
 #endif
 #endif
-#if	CRYPT
+#if CRYPT
 	s = resetkey();
 	if (s != TRUE)
 		return s;
 #endif
-	bp = curbp;		/* Cheap.               */
-	if ((s = bclear(bp)) != TRUE)	/* Might be old.        */
+	bp = curbp;		/* Cheap. */
+	if ((s = bclear(bp)) != TRUE)	/* Might be old. */
 		return s;
 	bp->b_flag &= ~(BFINVS | BFCHG);
 	mystrscpy(bp->b_fname, fname, NFILEN);
@@ -252,10 +252,10 @@ int readin(char *fname, int lockfl)
 	/* let a user macro get hold of things...if he wants */
 	execute(META | SPEC | 'R', FALSE, 1);
 
-	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open.      */
+	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open. */
 		goto out;
 
-	if (s == FIOFNF) {	/* File not found.      */
+	if (s == FIOFNF) {	/* File not found. */
 		mlwrite("(New file)");
 		goto out;
 	}
@@ -266,10 +266,10 @@ int readin(char *fname, int lockfl)
 	while ((s = ffgetline()) == FIOSUC) {
 		nbytes = strlen(fline);
 		if ((lp1 = lalloc(nbytes)) == NULL) {
-			s = FIOMEM;	/* Keep message on the  */
-			break;	/* display.             */
+			s = FIOMEM;	/* Keep message on the */
+			break;	/* display. */
 		}
-#if	PKCODE
+#if PKCODE
 		if (nline > MAXNLINE) {
 			s = FIOMEM;
 			break;
@@ -284,7 +284,7 @@ int readin(char *fname, int lockfl)
 			lputc(lp1, i, fline[i]);
 		++nline;
 	}
-	ffclose();		/* Ignore errors.       */
+	ffclose();		/* Ignore errors. */
 	strcpy(mesg, "(");
 	if (s == FIOERR) {
 		strcat(mesg, "I/O ERROR, ");
@@ -311,7 +311,7 @@ int readin(char *fname, int lockfl)
 			wp->w_flag |= WFMODE | WFHARD;
 		}
 	}
-	if (s == FIOERR || s == FIOFNF)	/* False if error.      */
+	if (s == FIOERR || s == FIOFNF)	/* False if error. */
 		return FALSE;
 	return TRUE;
 }
@@ -333,7 +333,7 @@ void makename(char *bname, char *fname)
 		++cp1;
 
 #if     VMS
-#if	PKCODE
+#if PKCODE
 	while (cp1 != &fname[0] && cp1[-1] != ':' && cp1[-1] != ']'
 	       && cp1[-1] != '>')
 #else
@@ -402,7 +402,7 @@ int filewrite(int f, int n)
 	if ((s = writeout(fname)) == TRUE) {
 		strcpy(curbp->b_fname, fname);
 		curbp->b_flag &= ~BFCHG;
-		wp = wheadp;	/* Update mode lines.   */
+		wp = wheadp;	/* Update mode lines. */
 		while (wp != NULL) {
 			if (wp->w_bufp == curbp)
 				wp->w_flag |= WFMODE;
@@ -425,11 +425,11 @@ int filesave(int f, int n)
 	struct window *wp;
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if      */
-		return rdonly();	/* we are in read only mode     */
-	if ((curbp->b_flag & BFCHG) == 0)	/* Return, no changes.  */
+	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
+		return rdonly();	/* we are in read only mode */
+	if ((curbp->b_flag & BFCHG) == 0)	/* Return, no changes. */
 		return TRUE;
-	if (curbp->b_fname[0] == 0) {	/* Must have a name.    */
+	if (curbp->b_fname[0] == 0) {	/* Must have a name. */
 		mlwrite("No file name");
 		return FALSE;
 	}
@@ -444,7 +444,7 @@ int filesave(int f, int n)
 
 	if ((s = writeout(curbp->b_fname)) == TRUE) {
 		curbp->b_flag &= ~BFCHG;
-		wp = wheadp;	/* Update mode lines.   */
+		wp = wheadp;	/* Update mode lines. */
 		while (wp != NULL) {
 			if (wp->w_bufp == curbp)
 				wp->w_flag |= WFMODE;
@@ -468,7 +468,7 @@ int writeout(char *fn)
 	struct line *lp;
 	int nline;
 
-#if	CRYPT
+#if CRYPT
 	s = resetkey();
 	if (s != TRUE)
 		return s;
@@ -478,25 +478,25 @@ int writeout(char *fn)
 		return FALSE;
 	}
 	mlwrite("(Writing...)");	/* tell us were writing */
-	lp = lforw(curbp->b_linep);	/* First line.          */
-	nline = 0;		/* Number of lines.     */
+	lp = lforw(curbp->b_linep);	/* First line. */
+	nline = 0;		/* Number of lines. */
 	while (lp != curbp->b_linep) {
 		if ((s = ffputline(&lp->l_text[0], llength(lp))) != FIOSUC)
 			break;
 		++nline;
 		lp = lforw(lp);
 	}
-	if (s == FIOSUC) {	/* No write error.      */
+	if (s == FIOSUC) {	/* No write error. */
 		s = ffclose();
-		if (s == FIOSUC) {	/* No close error.      */
+		if (s == FIOSUC) {	/* No close error. */
 			if (nline == 1)
 				mlwrite("(Wrote 1 line)");
 			else
 				mlwrite("(Wrote %d lines)", nline);
 		}
-	} else			/* Ignore close error   */
-		ffclose();	/* if a write error.    */
-	if (s != FIOSUC)	/* Some sort of error.  */
+	} else			/* Ignore close error */
+		ffclose();	/* if a write error. */
+	if (s != FIOSUC)	/* Some sort of error. */
 		return FALSE;
 	return TRUE;
 }
@@ -524,7 +524,7 @@ int filename(int f, int n)
 		strcpy(curbp->b_fname, "");
 	else
 		strcpy(curbp->b_fname, fname);
-	wp = wheadp;		/* Update mode lines.   */
+	wp = wheadp;		/* Update mode lines. */
 	while (wp != NULL) {
 		if (wp->w_bufp == curbp)
 			wp->w_flag |= WFMODE;
@@ -551,18 +551,18 @@ int ifile(char *fname)
 	int nline;
 	char mesg[NSTRING];
 
-	bp = curbp;		/* Cheap.               */
-	bp->b_flag |= BFCHG;	/* we have changed      */
+	bp = curbp;		/* Cheap. */
+	bp->b_flag |= BFCHG;	/* we have changed */
 	bp->b_flag &= ~BFINVS;	/* and are not temporary */
-	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open.      */
+	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open. */
 		goto out;
-	if (s == FIOFNF) {	/* File not found.      */
+	if (s == FIOFNF) {	/* File not found. */
 		mlwrite("(No such file)");
 		return FALSE;
 	}
 	mlwrite("(Inserting file)");
 
-#if	CRYPT
+#if CRYPT
 	s = resetkey();
 	if (s != TRUE)
 		return s;
@@ -577,8 +577,8 @@ int ifile(char *fname)
 	while ((s = ffgetline()) == FIOSUC) {
 		nbytes = strlen(fline);
 		if ((lp1 = lalloc(nbytes)) == NULL) {
-			s = FIOMEM;	/* Keep message on the  */
-			break;	/* display.             */
+			s = FIOMEM;	/* Keep message on the */
+			break;	/* display. */
 		}
 		lp0 = curwp->w_dotp;	/* line previous to insert */
 		lp2 = lp0->l_fp;	/* line after insert */
@@ -595,7 +595,7 @@ int ifile(char *fname)
 			lputc(lp1, i, fline[i]);
 		++nline;
 	}
-	ffclose();		/* Ignore errors.       */
+	ffclose();		/* Ignore errors. */
 	curwp->w_markp = lforw(curwp->w_markp);
 	strcpy(mesg, "(");
 	if (s == FIOERR) {
@@ -623,7 +623,7 @@ int ifile(char *fname)
 	curbp->b_markp = curwp->w_markp;
 	curbp->b_marko = curwp->w_marko;
 
-	if (s == FIOERR)	/* False if error.      */
+	if (s == FIOERR)	/* False if error. */
 		return FALSE;
 	return TRUE;
 }

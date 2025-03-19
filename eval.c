@@ -36,9 +36,9 @@ void varinit(void)
  */
 char *gtfun(char *fname)
 {
-	int fnum;	/* index to function to eval */
-	int status;	/* return status */
-	char *tsp;	/* temporary string pointer */
+	int fnum;		/* index to function to eval */
+	int status;		/* return status */
+	char *tsp;		/* temporary string pointer */
 	char arg1[NSTRING];	/* value of first argument */
 	char arg2[NSTRING];	/* value of second argument */
 	char arg3[NSTRING];	/* value of third argument */
@@ -143,7 +143,7 @@ char *gtfun(char *fname)
 	case UFSINDEX:
 		return itoa(sindex(arg1, arg2));
 	case UFENV:
-#if	ENVFUNC
+#if ENVFUNC
 		tsp = getenv(arg1);
 		return tsp == NULL ? "" : tsp;
 #else
@@ -168,7 +168,8 @@ char *gtfun(char *fname)
 		return xlat(arg1, arg2, arg3);
 	}
 
-	exit(-11);		/* never should get here */
+	exit(-11);
+	return "";
 }
 
 /*
@@ -193,7 +194,7 @@ char *gtusr(char *vname)
 	return errorm;
 }
 
-extern char *getkill(void);
+char *getkill(void);
 
 /*
  * gtenv()
@@ -211,7 +212,7 @@ char *gtenv(char *vname)
 
 	/* return errorm on a bad reference */
 	if (vnum == ARRAY_SIZE(envars))
-#if	ENVFUNC
+#if ENVFUNC
 	{
 		char *ename = getenv(vname);
 
@@ -294,7 +295,7 @@ char *gtenv(char *vname)
 	case EVTPAUSE:
 		return itoa(term.t_pause);
 	case EVPENDING:
-#if	TYPEAH
+#if TYPEAH
 		return ltos(typahead());
 #else
 		return falsem;
@@ -357,7 +358,7 @@ char *getkill(void)
 int setvar(int f, int n)
 {
 	int status;	/* status return */
-#if	DEBUGM
+#if DEBUGM
 	char *sp;	/* temp string pointer */
 	char *ep;	/* ptr to end of outline */
 #endif
@@ -396,7 +397,7 @@ int setvar(int f, int n)
 	/* and set the appropriate value */
 	status = svar(&vd, value);
 
-#if	DEBUGM
+#if DEBUGM
 	/* if $debug == TRUE, every assignment will echo a statment to
 	   that effect here. */
 
@@ -622,7 +623,7 @@ int svar(struct variable_description *var, char *value)
 		case EVSEARCH:
 			strcpy(pat, value);
 			rvstrcpy(tap, pat);
-#if	MAGIC
+#if MAGIC
 			mcclear();
 #endif
 			break;
