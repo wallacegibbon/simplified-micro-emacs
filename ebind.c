@@ -114,7 +114,6 @@ struct key_tab keytab[] = {
 	{META | 'G', gotoline},
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
-	{META | 'X', namedcmd},
 #if WORDPRO
 	{META | 'N', gotoeop},
 	{META | 'P', gotobop},
@@ -127,6 +126,7 @@ struct key_tab keytab[] = {
 	{META | 'U', upperword},
 	{META | 'V', backpage},
 	{META | 'W', copyregion},
+	{META | 'X', namedcmd},
 	{META | 'Z', quickexit},
 	{META | 0x7F, delbword},
 
