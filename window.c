@@ -1,4 +1,4 @@
-/*	window.c
+/* window.c
  *
  *      Window management. Some of the functions are internal, and some are
  *      attached to keys that the user actually types.

@@ -1,4 +1,4 @@
-/*	FILEIO.C
+/* FILEIO.C
  *
  * The routines in this file read and write ASCII files from the disk. All of
  * the knowledge about files are here.
@@ -6,10 +6,10 @@
  *	modified by Petri Kutvonen
  */
 
-#include        <stdio.h>
-#include	"estruct.h"
-#include        "edef.h"
-#include	"efunc.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
+#include "efunc.h"
 
 static FILE *ffp;			/* File pointer, all functions. */
 static int eofflag;			/* end-of-file flag */

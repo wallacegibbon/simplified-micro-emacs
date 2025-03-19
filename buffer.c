@@ -1,4 +1,4 @@
-/*	buffer.c
+/* buffer.c
  *
  *	Buffer management.
  *	Some of the functions are internal,
@@ -9,7 +9,7 @@
  *	modified by Petri Kutvonen
  */
 
-#include        <stdio.h>
+#include <stdio.h>
 
 #include "estruct.h"
 #include "edef.h"

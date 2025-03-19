@@ -1,4 +1,4 @@
-/*	posix.c
+/* posix.c
  *
  *      The functions in this file negotiate with the operating system for
  *      characters, and write characters in a barely buffered fashion on the

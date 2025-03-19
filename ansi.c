@@ -1,4 +1,4 @@
-/*	ANSI.C
+/* ANSI.C
  *
  * The routines in this file provide support for ANSI style terminals
  * over a serial line. The serial I/O services are provided by routines in
@@ -9,9 +9,9 @@
 
 #define	termdef	1		/* don't define "term" external */
 
-#include        <stdio.h>
-#include	"estruct.h"
-#include        "edef.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
 
 #if     ANSI
 

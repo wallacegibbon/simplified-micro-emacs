@@ -1,4 +1,4 @@
-/*	word.c
+/* word.c
  *
  *      The routines in this file implement commands that work word or a
  *      paragraph at a time.  There are all sorts of word mode commands.  If I
@@ -243,7 +243,7 @@ int capword(int f, int n)
 int delfword(int f, int n)
 {
 	struct line *dotp;	/* original cursor line */
-	int doto;	/*      and row */
+	int doto;	/* and row */
 	int c;		/* temp char */
 	long size;		/* # of chars to delete */
 

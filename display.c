@@ -1,4 +1,4 @@
-/*	display.c
+/* display.c
  *
  *      The functions in this file handle redisplay. There are two halves, the
  *      ones that update the virtual display screen, and the ones that make the
@@ -221,12 +221,12 @@ static void vtputc(int c)
  */
 static void vteeol(void)
 {
-/*  struct video *vp;	*/
+/* struct video *vp; */
 	unicode_t *vcp = vscreen[vtrow]->v_text;
 
-/*  vp = vscreen[vtrow];	*/
+/* vp = vscreen[vtrow]; */
 	while (vtcol < term.t_ncol)
-/*	vp->v_text[vtcol++] = ' ';	*/
+/* vp->v_text[vtcol++] = ' '; */
 		vcp[vtcol++] = ' ';
 }
 
@@ -872,7 +872,7 @@ static void updext(void)
  * RAINBOW version of this routine uses fast video.
  */
 #if MEMMAP
-/*	UPDATELINE specific code for the IBM-PC and other compatables */
+/* UPDATELINE specific code for the IBM-PC and other compatables */
 
 static int updateline(int row, struct video *vp1, struct video *vp2)
 {
@@ -917,7 +917,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 static int updateline(int row, struct video *vp1, struct video *vp2)
 {
 #if RAINBOW
-/*	UPDATELINE specific code for the DEC rainbow 100 micro	*/
+/* UPDATELINE specific code for the DEC rainbow 100 micro */
 
 	unicode_t *cp1;
 	unicode_t *cp2;
@@ -939,7 +939,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 	while (--nch);
 	*flags &= ~VFCHG;
 #else
-/*	UPDATELINE code for all other versions		*/
+/* UPDATELINE code for all other versions */
 
 	unicode_t *cp1;
 	unicode_t *cp2;

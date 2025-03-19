@@ -1,14 +1,14 @@
-/*	CRYPT.C
+/* CRYPT.C
  *
  *	Encryption routines
  *
  *	written by Dana Hoggatt and Daniel Lawrence
  */
 
-#include	<stdio.h>
-#include	"estruct.h"
-#include	"edef.h"
-#include        "efunc.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
+#include "efunc.h"
 
 #if CRYPT
 
@@ -201,9 +201,9 @@ void myencrypt(char *bptr, unsigned len)
 
 static int mod95(int val)
 {
-	/*  The mathematical MOD does not match the computer MOD */
+	/* The mathematical MOD does not match the computer MOD */
 
-	/*  Yes, what I do here may look strange, but it gets the
+	/* Yes, what I do here may look strange, but it gets the
 	   job done, and portably at that. */
 
 	while (val >= 9500)

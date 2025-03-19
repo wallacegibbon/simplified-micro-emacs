@@ -1,4 +1,4 @@
-/*	basic.c
+/* basic.c
  *
  * The routines in this file move the cursor around on the screen. They
  * compute a new value for the cursor, then adjust ".". The display code

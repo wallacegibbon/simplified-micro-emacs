@@ -1,4 +1,4 @@
-/*	tcap.c
+/* tcap.c
  *
  *	Unix V7 SysV and BS4 Termcap video driver
  *

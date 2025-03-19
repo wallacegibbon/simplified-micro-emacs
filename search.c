@@ -1,4 +1,4 @@
-/*	search.c
+/* search.c
  *
  * The functions in this file implement commands that search in the forward
  * and backward directions.  There are no special characters in the search

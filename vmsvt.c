@@ -1,4 +1,4 @@
-/*	VMSVT.C
+/* VMSVT.C
  *
  *	Advanced VMS terminal driver
  *
@@ -9,15 +9,15 @@
  *	modified by Petri Kutvonen
  */
 
-#include	<stdio.h>	/* Standard I/O package */
-#include	"estruct.h"	/* Emacs' structures */
-#include	"edef.h"	/* Emacs' definitions */
+#include <stdio.h>	/* Standard I/O package */
+#include "estruct.h"	/* Emacs' structures */
+#include "edef.h"	/* Emacs' definitions */
 
 #if VMSVT
 
-#include	 <descrip.h>	/* Descriptor definitions */
+#include <descrip.h>	/* Descriptor definitions */
 
-/*  These would normally come from iodef.h and ttdef.h */
+/* These would normally come from iodef.h and ttdef.h */
 #define IO$_SENSEMODE	0x27	/* Sense mode of terminal */
 #define TT$_UNKNOWN	0x00	/* Unknown terminal */
 #define TT$_VT100	96
@@ -309,7 +309,7 @@ int request_code;		/* Request code */
 	static int arg_list[2] = { 1, 1 };
 	int max_buffer_length, ret_length;
 
-	/*  Precompute buffer length */
+	/* Precompute buffer length */
 
 	max_buffer_length = (seq_storage + sizeof(seq_storage)) - buffer;
 

@@ -1,4 +1,4 @@
-/*	edef.h
+/* edef.h
  *
  *	Global variable definitions
  *

@@ -121,7 +121,7 @@ struct line *matchline = NULL;
 int matchoff = 0;
 
 /* directive name table:
-	This holds the names of all the directives....	*/
+	This holds the names of all the directives.... */
 
 char *dname[] = {
 	"if", "else", "endif",
@@ -131,6 +131,6 @@ char *dname[] = {
 };
 
 #if DEBUGM
-/*	vars needed for macro debugging output	*/
+/* vars needed for macro debugging output */
 char outline[NSTRING];		/* global string to hold debug line text */
 #endif

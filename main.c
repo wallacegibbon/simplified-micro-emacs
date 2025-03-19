@@ -676,7 +676,7 @@ int ctlxe(int f, int n)
 		return TRUE;
 	kbdrep = n;		/* remember how many times to execute */
 	kbdmode = PLAY;		/* start us in play mode */
-	kbdptr = &kbdm[0];	/*    at the beginning */
+	kbdptr = &kbdm[0];	/* at the beginning */
 	return TRUE;
 }
 
@@ -738,7 +738,7 @@ int unarg(int f, int n)
 /*****		Compiler specific Library functions	****/
 
 #if RAMSIZE
-/*	These routines will allow me to track memory usage by placing
+/* These routines will allow me to track memory usage by placing
 	a layer on top of the standard system malloc() and free() calls.
 	with this code defined, the environment variable, $RAM, will
 	report on the number of bytes allocated via malloc.
@@ -808,7 +808,7 @@ dspram()
 #endif
 #endif
 
-/*	On some primitave operation systems, and when emacs is used as
+/* On some primitave operation systems, and when emacs is used as
 	a subprogram to a larger project, emacs needs to de-alloc its
 	own used memory
 */

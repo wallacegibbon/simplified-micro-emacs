@@ -1,4 +1,4 @@
-/*	EPATH.H
+/* EPATH.H
  *
  *	This file contains certain info needed to locate the
  *	initialization (etc) files on a system dependent basis
@@ -8,7 +8,7 @@
 #ifndef __EPATH_H
 #define __EPATH_H
 
-/*	possible names and paths of help files under different OSs	*/
+/* possible names and paths of help files under different OSs */
 static char *pathname[] =
 #if MSDOS
 {

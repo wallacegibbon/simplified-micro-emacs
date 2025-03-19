@@ -1,4 +1,4 @@
-/*	file.c
+/* file.c
  *
  *	The routines in this file handle the reading, writing
  *	and lookup of disk files.  All of details about the

@@ -1,4 +1,4 @@
-/*	random.c
+/* random.c
  *
  *      This file contains the command processing functions for a number of
  *      random commands. There is no functional grouping here, for sure.

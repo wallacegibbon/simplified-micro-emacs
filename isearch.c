@@ -1,4 +1,4 @@
-/*	isearch.c
+/* isearch.c
  *
  * The functions in this file implement commands that perform incremental
  * searches in the forward and backward directions.  This "ISearch" command
@@ -444,7 +444,7 @@ static int echo_char(int c, int col)
 
 		case 0x7F:	/* Rubout: */
 			TTputc('^');	/* Output a funny looking */
-			TTputc('?');	/*  indication of Rubout */
+			TTputc('?');	/* indication of Rubout */
 			col++;	/* Count the extra char */
 			break;
 

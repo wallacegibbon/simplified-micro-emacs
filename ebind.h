@@ -1,4 +1,4 @@
-/*	ebind.h
+/* ebind.h
  *
  *	Initial default key to function bindings
  *
@@ -24,7 +24,7 @@ struct key_tab keytab[NBINDS] = {
 	/*
 	{CONTROL | 'C', insspace}
 	,
-	*/
+ */
 	{CONTROL | 'D', forwdel}
 	,
 	{CONTROL | 'E', gotoeol}
@@ -413,9 +413,9 @@ struct key_tab keytab[NBINDS] = {
 
 	/* special internal bindings */
 	{ SPEC | META | 'W', wrapword },	/* called on word wrap */
-	{ SPEC | META | 'C', nullproc },	/*  every command input */
-	{ SPEC | META | 'R', nullproc },	/*  on file read */
-	{ SPEC | META | 'X', nullproc },	/*  on window change P.K. */
+	{ SPEC | META | 'C', nullproc },	/* every command input */
+	{ SPEC | META | 'R', nullproc },	/* on file read */
+	{ SPEC | META | 'X', nullproc },	/* on window change P.K. */
 
 	{0, NULL}
 };

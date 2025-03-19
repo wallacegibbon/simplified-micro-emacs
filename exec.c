@@ -1,4 +1,4 @@
-/*	exec.c
+/* exec.c
  *
  *	This file is for functions dealing with execution of
  *	commands, command lines, buffers, files and startup files.

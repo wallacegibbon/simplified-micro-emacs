@@ -1,4 +1,4 @@
-/*	efunc.h
+/* efunc.h
  *
  *	Function declarations and names.
  *

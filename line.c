@@ -1,4 +1,4 @@
-/*	line.c
+/* line.c
  *
  * The functions in this file are a general set of line management utilities.
  * They are the only routines that touch the text. They also touch the buffer

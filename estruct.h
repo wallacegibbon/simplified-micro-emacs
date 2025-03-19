@@ -1,4 +1,4 @@
-/*      ESTRUCT.H
+/* ESTRUCT.H
  *
  *      Structure and preprocessor defines
  *
@@ -73,7 +73,7 @@
 
 #ifndef	AUTOCONF
 
-/*	Compiler definitions			*/
+/* Compiler definitions */
 #define	UNIX	0		/* a random UNIX compiler */
 #define	MSC	0		/* MicroSoft C compiler, versions 3 up */
 #define	TURBO	1		/* Turbo C/MSDOS */
@@ -86,19 +86,19 @@
 
 #endif				/*autoconf */
 
-/*	Debugging options	*/
+/* Debugging options */
 
 #define	RAMSIZE	0		/* dynamic RAM memory usage tracking */
 #define	RAMSHOW	0		/* auto dynamic RAM reporting */
 
 #ifndef	AUTOCONF
 
-/*   Special keyboard definitions */
+/* Special keyboard definitions */
 
 #define VT220	0		/* Use keypad escapes P.K. */
 #define VT100   0		/* Handle VT100 style keypad. */
 
-/*	Terminal Output definitions		*/
+/* Terminal Output definitions */
 
 #define ANSI    0		/* ANSI escape sequences */
 #define	VMSVT	0		/* various VMS terminal entries */
@@ -119,7 +119,7 @@
 
 #endif /* Autoconf. */
 
-/*	Configuration options	*/
+/* Configuration options */
 
 #define CVMVAS  1  /* arguments to page forward/back in pages */
 #define	CLRMSG	0  /* space clears the message line with no insert */
@@ -182,26 +182,26 @@
 #include <mem.h>
 #undef peek
 #undef poke
-#define       peek(a,b,c,d)   movedata(a,b,FP_SEG(c),FP_OFF(c),d)
-#define       poke(a,b,c,d)   movedata(FP_SEG(c),FP_OFF(c),a,b,d)
+#define peek(a, b, c, d) movedata(a, b, FP_SEG(c), FP_OFF(c), d)
+#define poke(a, b, c, d) movedata(FP_SEG(c), FP_OFF(c), a, b, d)
 #endif
 
 #if VMS
-#define	atoi	xatoi
-#define	abs	xabs
-#define	getname	xgetname
+#define	atoi xatoi
+#define	abs xabs
+#define getname xgetname
 #endif
 
 #if MSDOS & MSC
-#include	<dos.h>
-#include	<memory.h>
-#define	peek(a,b,c,d)	movedata(a,b,FP_SEG(c),FP_OFF(c),d)
-#define	poke(a,b,c,d)	movedata(FP_SEG(c),FP_OFF(c),a,b,d)
-#define	movmem(a, b, c)		memcpy(b, a, c)
+#include <dos.h>
+#include <memory.h>
+#define	peek(a, b, c, d) movedata(a, b, FP_SEG(c), FP_OFF(c), d)
+#define	poke(a, b, c, d) movedata(FP_SEG(c), FP_OFF(c), a, b, d)
+#define	movmem(a, b, c)  memcpy(b, a, c)
 #endif
 
 #if VMS
-#define	unlink(a)	delete(a)
+#define	unlink(a) delete(a)
 #endif
 
 /* Define some ability flags. */
@@ -254,10 +254,10 @@
 #define	FAILED	3		/* not-quite fatal false return */
 
 #define	STOP	0		/* keyboard macro not in use */
-#define	PLAY	1		/*                playing */
-#define	RECORD	2		/*                recording */
+#define	PLAY	1		/* playing */
+#define	RECORD	2		/* recording */
 
-/*	Directive definitions	*/
+/* Directive definitions */
 
 #define	DIF		0
 #define DELSE		1
@@ -302,7 +302,7 @@
 
 #define	INTWIDTH	sizeof(int) * 3
 
-/*	Macro argument token types					*/
+/* Macro argument token types */
 
 #define	TKNUL	0		/* end-of-string */
 #define	TKARG	1		/* interactive argument */
@@ -316,7 +316,7 @@
 #define	TKSTR	9		/* quoted string literal */
 #define	TKCMD	10		/* command name */
 
-/*	Internal defined functions					*/
+/* Internal defined functions */
 
 #define	nextab(a)	(a & ~tabmask) + (tabmask+1)
 #ifdef	abs
@@ -382,14 +382,14 @@
 
 #endif
 
-/*	Dynamic RAM tracking and reporting redefinitions	*/
+/* Dynamic RAM tracking and reporting redefinitions */
 
 #if RAMSIZE
 #define	malloc	allocate
 #define	free	release
 #endif
 
-/*	De-allocate memory always on exit (if the operating system or
+/* De-allocate memory always on exit (if the operating system or
 	main program can not
 */
 
@@ -470,7 +470,7 @@ struct buffer {
 #define BFCHG   0x02		/* Changed since last write */
 #define	BFTRUNC	0x04		/* buffer was truncated when read */
 
-/*	mode flags	*/
+/* mode flags */
 #define	NUMMODES	10	/* # of defined modes */
 
 #define	MDWRAP	0x0001		/* word wrap */
@@ -532,8 +532,8 @@ struct terminal {
 #endif
 };
 
-/*	TEMPORARY macros for terminal I/O  (to be placed in a machine
-					    dependant place later)	*/
+/* TEMPORARY macros for terminal I/O  (to be placed in a machine
+					    dependant place later) */
 
 #define	TTopen		(*term.t_open)
 #define	TTclose		(*term.t_close)

@@ -1,4 +1,4 @@
-/*	ibmpc.c
+/* ibmpc.c
  *
  * The routines in this file provide support for the IBM-PC and other
  * compatible terminals. It goes directly to the graphics RAM to do
@@ -161,7 +161,7 @@ void ibmeeol(void)
 	unsigned int *lnptr;	/* pointer to the destination line */
 	int i;
 	int ccol;		/* current column cursor lives */
-	int crow;		/*         row */
+	int crow;		/* row */
 
 	/* find the current cursor position */
 	rg.h.ah = 3;		/* read cursor position function code */
@@ -427,7 +427,7 @@ void egaopen(void)
 	int86(16, &rg, &rg);
 
 	rg.h.ah = 17;		/* set char. generator function code */
-	rg.h.al = 18;		/*  to 8 by 8 double dot ROM */
+	rg.h.al = 18;		/* to 8 by 8 double dot ROM */
 	rg.h.bl = 0;		/* block 0 */
 	int86(16, &rg, &rg);
 

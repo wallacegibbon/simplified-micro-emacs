@@ -1,4 +1,4 @@
-/*	region.c
+/* region.c
  *
  *      The routines in this file deal with the region, that magic space
  *      between "." and mark. Some functions are commands. Some functions are

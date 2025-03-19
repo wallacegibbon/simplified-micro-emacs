@@ -1,4 +1,4 @@
-/*	vt52.c
+/* vt52.c
  *
  * The routines in this file
  * provide support for VT52 style terminals
@@ -13,9 +13,9 @@
 
 #define	termdef	1		/* don't define "term" external */
 
-#include        <stdio.h>
-#include        "estruct.h"
-#include	"edef.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
 
 #if     VT52
 

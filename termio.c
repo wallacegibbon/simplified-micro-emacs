@@ -1,5 +1,5 @@
 
-/*	TERMIO.C
+/* TERMIO.C
  *
  * The functions in this file negotiate with the operating system for
  * characters, and write characters in a barely buffered fashion on the display.
@@ -10,17 +10,17 @@
 
 #ifndef POSIX
 
-#include        <stdio.h>
-#include	"estruct.h"
-#include        "edef.h"
+#include <stdio.h>
+#include "estruct.h"
+#include "edef.h"
 
 #if     VMS
-#include        <stsdef.h>
-#include        <ssdef.h>
-#include        <descrip.h>
-#include        <iodef.h>
-#include        <ttdef.h>
-#include	<tt2def.h>
+#include <stsdef.h>
+#include <ssdef.h>
+#include <descrip.h>
+#include <iodef.h>
+#include <ttdef.h>
+#include <tt2def.h>
 
 #define NIBUF   128		/* Input buffer size */
 #define NOBUF   1024		/* MM says bug buffers win! */
@@ -42,9 +42,9 @@ int nxtchar = -1;		/* character held from type ahead */
 #endif
 
 #if USG			/* System V */
-#include	<signal.h>
-#include	<termio.h>
-#include	<fcntl.h>
+#include <signal.h>
+#include <termio.h>
+#include <fcntl.h>
 int kbdflgs;			/* saved keyboard fd flags */
 int kbdpoll;			/* in O_NDELAY mode */
 int kbdqp;			/* there is a char in kbdq */
@@ -57,8 +57,8 @@ struct termio ntermio;		/* charactoristics to use inside */
 #endif
 
 #if V7 | BSD
-#include        <sgtty.h>	/* for stty/gtty functions */
-#include	<signal.h>
+#include <sgtty.h>	/* for stty/gtty functions */
+#include <signal.h>
 struct sgttyb ostate;		/* saved tty state */
 struct sgttyb nstate;		/* values for editor mode */
 struct tchars otchars;		/* Saved terminal special character set */

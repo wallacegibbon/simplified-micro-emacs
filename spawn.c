@@ -1,4 +1,4 @@
-/*	spaw.c
+/* spaw.c
  *
  *	Various operating system access commands.
  *
@@ -15,10 +15,10 @@
 #if     VMS
 #define EFN     0		/* Event flag. */
 
-#include        <ssdef.h>	/* Random headers. */
-#include        <stsdef.h>
-#include        <descrip.h>
-#include        <iodef.h>
+#include <ssdef.h>	/* Random headers. */
+#include <stsdef.h>
+#include <descrip.h>
+#include <iodef.h>
 
 extern int oldmode[3];		/* In "termio.c" */
 extern int newmode[3];		/* In "termio.c" */
@@ -26,7 +26,7 @@ extern short iochan;		/* In "termio.c" */
 #endif
 
 #if     V7 | USG | BSD
-#include        <signal.h>
+#include <signal.h>
 #ifdef SIGWINCH
 extern int chg_width, chg_height;
 void sizesignal(int);
@@ -34,7 +34,7 @@ void sizesignal(int);
 #endif
 
 #if MSDOS & (MSC | TURBO)
-#include	<process.h>
+#include <process.h>
 #endif
 
 /*
@@ -518,19 +518,19 @@ int shellprog(char *cmd)
 	union REGS regs;	/* parameters for dos call */
 	char comline[NSTRING];	/* constructed command line */
 
-	/*  detect current switch character and set us up to use it */
-	regs.h.ah = 0x37;	/*  get setting data */
-	regs.h.al = 0x00;	/*  get switch character */
+	/* detect current switch character and set us up to use it */
+	regs.h.ah = 0x37;	/* get setting data */
+	regs.h.al = 0x00;	/* get switch character */
 	intdos(&regs, &regs);
 	swchar = (char) regs.h.dl;
 
-	/*  get name of system shell */
+	/* get name of system shell */
 	if ((shell = getenv("COMSPEC")) == NULL) {
-		return FALSE;	/*  No shell located */
+		return FALSE;	/* No shell located */
 	}
 
 	/* trim leading whitespace off the command */
-	while (*cmd == ' ' || *cmd == '\t')	/*  find out if null command */
+	while (*cmd == ' ' || *cmd == '\t')	/* find out if null command */
 		cmd++;
 
 	/**  If the command line is not empty, bring up the shell **/

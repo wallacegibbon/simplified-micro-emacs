@@ -1,4 +1,4 @@
-/*	EVAR.H
+/* EVAR.H
  *
  *	Environment and user variable definitions
  *

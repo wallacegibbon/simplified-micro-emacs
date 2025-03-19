@@ -1,4 +1,4 @@
-/*	bind.c
+/* bind.c
  *
  *	This file is for functions having to do with key bindings,
  *	descriptions, help commands and startup file.

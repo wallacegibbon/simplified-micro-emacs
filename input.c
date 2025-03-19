@@ -1,4 +1,4 @@
-/*	input.c
+/* input.c
  *
  *	Various input routines
  *
@@ -16,7 +16,7 @@
 
 #if PKCODE
 #if     MSDOS && TURBO
-#include	<dir.h>
+#include <dir.h>
 #endif
 #endif
 
@@ -248,8 +248,8 @@ fn_t getname(void)
 	}
 }
 
-/*	tgetc:	Get a key from the terminal driver, resolve any keyboard
-		macro action					*/
+/* tgetc:	Get a key from the terminal driver, resolve any keyboard
+		macro action */
 
 int tgetc(void)
 {
@@ -299,9 +299,9 @@ int tgetc(void)
 	return c;
 }
 
-/*	GET1KEY:	Get one keystroke. The only prefixs legal here
+/* GET1KEY:	Get one keystroke. The only prefixs legal here
 			are the SPEC and CONTROL prefixes.
-								*/
+ */
 
 int get1key(void)
 {
@@ -324,9 +324,9 @@ int get1key(void)
 	return c;
 }
 
-/*	GETCMD:	Get a command from the keyboard. Process all applicable
+/* GETCMD:	Get a command from the keyboard. Process all applicable
 		prefix keys
-							*/
+ */
 int getcmd(void)
 {
 	int c;			/* fetched keystroke */
@@ -434,10 +434,10 @@ handle_CSI:
 	return c;
 }
 
-/*	A more generalized prompt/reply function allowing the caller
+/* A more generalized prompt/reply function allowing the caller
 	to specify the proper terminator. If the terminator is not
 	a return ('\n') it will echo as "<NL>"
-							*/
+ */
 int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 {
 	int cpos;	/* current character position in string */
