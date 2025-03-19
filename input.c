@@ -57,6 +57,33 @@ int mlyesno(char *prompt)
 }
 
 /*
+ * nextarg:
+ *	get the next argument
+ *
+ * char *prompt;		prompt to use if we must be interactive
+ * char *buffer;		buffer to put token into
+ * int size;			size of the buffer
+ * int terminator;		terminating char to be used on interactive fetch
+ */
+int nextarg(char *prompt, char *buffer, int size, int terminator)
+{
+	/* if we are interactive, go get it! */
+	if (clexec == FALSE)
+		return getstring(prompt, buffer, size, terminator);
+
+	/* grab token and advance past */
+	/*
+	execstr = token(execstr, buffer, size);
+	*/
+
+	/* evaluate it */
+	/*
+	getval(buffer, buffer, size);
+	*/
+	return TRUE;
+}
+
+/*
  * Write a prompt into the message line, then read back a response. Keep
  * track of the physical position of the cursor. If we are in a keyboard
  * macro throw the prompt away, and return the remembered response. This
@@ -101,6 +128,26 @@ int ctoec(int c)
 }
 
 /*
+ * match fname to a function in the names table
+ * and return any match or NULL if none
+ *
+ * char *fname;		name to attempt to match
+ */
+int (*fncmatch(char *fname)) (int, int)
+{
+	struct name_bind *ffp;	/* pointer to entry in name binding table */
+
+	/* scan through the table, returning any match */
+	ffp = &names[0];
+	while (ffp->n_func != NULL) {
+		if (strcmp(fname, ffp->n_name) == 0)
+			return ffp->n_func;
+		++ffp;
+	}
+	return NULL;
+}
+
+/*
  * get a command name from the command line. Command completion means
  * that pressing a <SPACE> will attempt to complete an unfinished command
  * name if it is unique.
@@ -119,11 +166,13 @@ fn_t getname(void)
 	cpos = 0;
 
 	/* if we are executing a command line get the next arg and match it */
+	/*
 	if (clexec) {
 		if (macarg(buf) != TRUE)
 			return NULL;
 		return fncmatch(&buf[0]);
 	}
+	*/
 
 	/* build a name string from the keyboard */
 	while (TRUE) {

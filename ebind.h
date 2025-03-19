@@ -126,8 +126,6 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{CTLX | CONTROL | 'Z', shrinkwind}
 	,
-	{CTLX | '?', deskey}
-	,
 	{CTLX | '!', spawn}
 	,
 	{CTLX | '@', pipecmd}
@@ -149,8 +147,6 @@ struct key_tab keytab[NBINDS] = {
 	{CTLX | '1', onlywind}
 	,
 	{CTLX | '2', splitwind}
-	,
-	{CTLX | 'A', setvar}
 	,
 	{CTLX | 'B', usebuffer}
 	,
@@ -192,17 +188,11 @@ struct key_tab keytab[NBINDS] = {
 	{META | CONTROL | 'D', newsize}
 	,
 #endif
-#if PROC
-	{META | CONTROL | 'E', execproc}
-	,
-#endif
 #if CFENCE
 	{META | CONTROL | 'F', getfence}
 	,
 #endif
 	{META | CONTROL | 'H', delbword}
-	,
-	{META | CONTROL | 'K', unbindkey}
 	,
 	{META | CONTROL | 'L', reposition}
 	,
@@ -226,8 +216,6 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | ' ', setmark}
 	,
-	{META | '?', help}
-	,
 	{META | '!', reposition}
 	,
 	{META | '.', setmark}
@@ -240,10 +228,6 @@ struct key_tab keytab[NBINDS] = {
 	,
 	{META | '%', qreplace}
 	,
-#if APROP
-	{META | 'A', apro}
-	,
-#endif
 	{META | 'B', backword}
 	,
 	{META | 'C', capword}
@@ -264,8 +248,6 @@ struct key_tab keytab[NBINDS] = {
 	,
 #endif
 #endif
-	{META | 'K', bindtokey}
-	,
 	{META | 'L', lowerword}
 	,
 	{META | 'M', setgmode}
@@ -294,8 +276,6 @@ struct key_tab keytab[NBINDS] = {
 	{META | 'V', backpage}
 	,
 	{META | 'W', copyregion}
-	,
-	{META | 'X', namedcmd}
 	,
 	{META | 'Z', quickexit}
 	,
@@ -401,8 +381,6 @@ struct key_tab keytab[NBINDS] = {
 	{SPEC | 'e', forwline}
 	,
 	{SPEC | 'f', gotobob}
-	,
-	{SPEC | 'h', help}
 	,
 	{SPEC | 'i', cex}
 	,

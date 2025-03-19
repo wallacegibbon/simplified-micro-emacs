@@ -108,7 +108,6 @@ int main(int argc, char **argv)
 	struct buffer *bp;	/* temp buffer pointer */
 	int firstfile;	/* first file flag */
 	int carg;	/* current arg to scan */
-	int startflag;	/* startup executed flag */
 	struct buffer *firstbp = NULL;	/* ptr to first buffer in cmd line */
 	int basec;		/* c stripped of meta character */
 	int viewflag;		/* are we starting in view mode? */
@@ -116,7 +115,6 @@ int main(int argc, char **argv)
 	int gline = 0;		/* if so, what line? */
 	int searchflag;		/* Do we need to search at start? */
 	int saveflag;		/* temp store for lastflag */
-	int errflag;		/* C error processing? */
 	char bname[NBUFN];	/* buffer name of file to read */
 #if CRYPT
 	int cryptflag;		/* encrypting on the way in? */
@@ -150,14 +148,11 @@ int main(int argc, char **argv)
 	/* Initialize the editor. */
 	vtinit();		/* Display */
 	edinit("main");		/* Buffers, windows */
-	varinit();		/* user variables */
 
 	viewflag = FALSE;	/* view mode defaults off in command line */
 	gotoflag = FALSE;	/* set to off to begin with */
 	searchflag = FALSE;	/* set to off to begin with */
 	firstfile = TRUE;	/* no file to edit yet */
-	startflag = FALSE;	/* startup file not executed yet */
-	errflag = FALSE;	/* not doing C error parsing */
 #if CRYPT
 	cryptflag = FALSE;	/* no encryption by default */
 #endif
@@ -173,11 +168,6 @@ int main(int argc, char **argv)
 #endif
 		if (argv[carg][0] == '-') {
 			switch (argv[carg][1]) {
-				/* Process Startup macroes */
-			case 'a':	/* process error file */
-			case 'A':
-				errflag = TRUE;
-				break;
 			case 'e':	/* -e for Edit file */
 			case 'E':
 				viewflag = FALSE;
@@ -218,13 +208,6 @@ int main(int argc, char **argv)
 				break;
 			}
 
-		} else if (argv[carg][0] == '@') {
-
-			/* Process Startup macroes */
-			if (startup(&argv[carg][1]) == TRUE)
-				/* don't execute emacs.rc */
-				startflag = TRUE;
-
 		} else {
 
 			/* Process an input file */
@@ -260,20 +243,6 @@ int main(int argc, char **argv)
 	signal(SIGHUP, emergencyexit);
 	signal(SIGTERM, emergencyexit);
 #endif
-
-	/* if we are C error parsing... run it! */
-	if (errflag) {
-		if (startup("error.cmd") == TRUE)
-			startflag = TRUE;
-	}
-
-	/* if invoked with no other startup files,
-	   run the system startup file here */
-	if (startflag == FALSE) {
-		startup("");
-		startflag = TRUE;
-	}
-	discmd = TRUE;		/* P.K. */
 
 	/* if there are any files to read, read the first one! */
 	bp = bfind("main", FALSE, 0);
@@ -460,6 +429,26 @@ void edinit(char *bname)
 	wp->w_ntrows = term.t_nrow - 1;	/* "-1" for mode line. */
 	wp->w_force = 0;
 	wp->w_flag = WFMODE | WFHARD;	/* Full. */
+}
+
+/*
+ * This function looks a key binding up in the binding table
+ *
+ * int c;		key to find what is bound to it
+ */
+int (*getbind(int c))(int, int)
+{
+	struct key_tab *ktp;
+
+	ktp = &keytab[0];  /* Look in key table. */
+	while (ktp->k_fp != NULL) {
+		if (ktp->k_code == c)
+			return ktp->k_fp;
+		++ktp;
+	}
+
+	/* no such binding */
+	return NULL;
 }
 
 /*
@@ -750,12 +739,9 @@ int unarg(int f, int n)
 #undef	malloc
 #undef	free
 
-char *allocate(nbytes)
-			    /* allocate nbytes and track */
-unsigned nbytes;		/* # of bytes to allocate */
-
+char *allocate(unsigned int nbytes)
 {
-	char *mp;		/* ptr returned from malloc */
+	char *mp;
 	char *malloc();
 
 	mp = malloc(nbytes);
@@ -769,17 +755,14 @@ unsigned nbytes;		/* # of bytes to allocate */
 	return mp;
 }
 
-release(mp)
-    /* release malloced memory and track */
-char *mp;			/* chunk of RAM to release */
-
+void release(char *mp)
 {
-	unsigned *lp;		/* ptr to the long containing the block size */
+	unsigned int *lp;
 
 	if (mp) {
 		/* update amount of ram currently malloced */
-		lp = ((unsigned *) mp) - 1;
-		envram -= (long) *lp - 2;
+		lp = ((unsigned *)mp) - 1;
+		envram -= (long)*lp - 2;
 		free(mp);
 #if RAMSHOW
 		dspram();
@@ -788,8 +771,9 @@ char *mp;			/* chunk of RAM to release */
 }
 
 #if RAMSHOW
-dspram()
-{				/* display the amount of RAM currently malloced */
+/* display the amount of RAM currently malloced */
+void dspram()
+{
 	char mbuf[20];
 	char *sp;
 

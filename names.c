@@ -14,14 +14,10 @@ struct name_bind names[] = {
 	{"abort-command", ctrlg},
 	{"add-mode", setemode},
 	{"add-global-mode", setgmode},
-#if APROP
-	{"apropos", apro},
-#endif
 	{"backward-character", backchar},
 	{"begin-macro", ctlxlp},
 	{"beginning-of-file", gotobob},
 	{"beginning-of-line", gotobol},
-	{"bind-to-key", bindtokey},
 	{"buffer-position", showcpos},
 	{"case-region-lower", lowerregion},
 	{"case-region-upper", upperregion},
@@ -48,8 +44,6 @@ struct name_bind names[] = {
 	{"delete-previous-character", backdel},
 	{"delete-previous-word", delbword},
 	{"delete-window", delwind},
-	{"describe-bindings", desbind},
-	{"describe-key", deskey},
 #if AEDIT
 	{"detab-line", detab},
 #endif
@@ -60,54 +54,7 @@ struct name_bind names[] = {
 	{"entab-line", entab},
 #endif
 	{"exchange-point-and-mark", swapmark},
-	{"execute-buffer", execbuf},
-	{"execute-command-line", execcmd},
-	{"execute-file", execfile},
 	{"execute-macro", ctlxe},
-	{"execute-macro-1", cbuf1},
-	{"execute-macro-2", cbuf2},
-	{"execute-macro-3", cbuf3},
-	{"execute-macro-4", cbuf4},
-	{"execute-macro-5", cbuf5},
-	{"execute-macro-6", cbuf6},
-	{"execute-macro-7", cbuf7},
-	{"execute-macro-8", cbuf8},
-	{"execute-macro-9", cbuf9},
-	{"execute-macro-10", cbuf10},
-	{"execute-macro-11", cbuf11},
-	{"execute-macro-12", cbuf12},
-	{"execute-macro-13", cbuf13},
-	{"execute-macro-14", cbuf14},
-	{"execute-macro-15", cbuf15},
-	{"execute-macro-16", cbuf16},
-	{"execute-macro-17", cbuf17},
-	{"execute-macro-18", cbuf18},
-	{"execute-macro-19", cbuf19},
-	{"execute-macro-20", cbuf20},
-	{"execute-macro-21", cbuf21},
-	{"execute-macro-22", cbuf22},
-	{"execute-macro-23", cbuf23},
-	{"execute-macro-24", cbuf24},
-	{"execute-macro-25", cbuf25},
-	{"execute-macro-26", cbuf26},
-	{"execute-macro-27", cbuf27},
-	{"execute-macro-28", cbuf28},
-	{"execute-macro-29", cbuf29},
-	{"execute-macro-30", cbuf30},
-	{"execute-macro-31", cbuf31},
-	{"execute-macro-32", cbuf32},
-	{"execute-macro-33", cbuf33},
-	{"execute-macro-34", cbuf34},
-	{"execute-macro-35", cbuf35},
-	{"execute-macro-36", cbuf36},
-	{"execute-macro-37", cbuf37},
-	{"execute-macro-38", cbuf38},
-	{"execute-macro-39", cbuf39},
-	{"execute-macro-40", cbuf40},
-	{"execute-named-command", namedcmd},
-#if PROC
-	{"execute-procedure", execproc},
-#endif
 	{"execute-program", execprg},
 	{"exit-emacs", quit},
 #if WORDPRO
@@ -124,7 +71,6 @@ struct name_bind names[] = {
 	{"handle-tab", insert_tab},
 	{"hunt-forward", forwhunt},
 	{"hunt-backward", backhunt},
-	{"help", help},
 	{"i-shell", spawncli},
 	{"incremental-search", fisearch},
 	{"insert-file", insfile},
@@ -173,9 +119,6 @@ struct name_bind names[] = {
 	{"restore-window", restwnd},
 	{"replace-string", sreplace},
 	{"reverse-incremental-search", risearch},
-#if PROC
-	{"run", execproc},
-#endif
 	{"save-file", filesave},
 	{"save-window", savewnd},
 	{"scroll-next-up", scrnextup},
@@ -183,7 +126,6 @@ struct name_bind names[] = {
 	{"search-forward", forwsearch},
 	{"search-reverse", backsearch},
 	{"select-buffer", usebuffer},
-	{"set", setvar},
 #if CRYPT
 	{"set-encryption-key", set_encryption_key},
 #endif
@@ -192,10 +134,6 @@ struct name_bind names[] = {
 	{"shell-command", spawn},
 	{"shrink-window", shrinkwind},
 	{"split-current-window", splitwind},
-	{"store-macro", storemac},
-#if PROC
-	{"store-procedure", storeproc},
-#endif
 #if BSD | __hpux | SVR4
 	{"suspend-emacs", bktoshell},
 #endif
@@ -203,7 +141,6 @@ struct name_bind names[] = {
 #if AEDIT
 	{"trim-line", trim},
 #endif
-	{"unbind-key", unbindkey},
 	{"universal-argument", unarg},
 	{"unmark-buffer", unmark},
 	{"update-screen", upscreen},

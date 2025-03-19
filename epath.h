@@ -12,7 +12,6 @@
 static char *pathname[] =
 #if MSDOS
 {
-	"emacs.rc",
 	"emacs.hlp",
 	"\\sys\\public\\",
 	"\\usr\\bin\\",
@@ -24,20 +23,22 @@ static char *pathname[] =
 
 #if V7 | BSD | USG
 {
-	".emacsrc", "emacs.hlp",
+	"emacs.hlp",
 #if PKCODE
-	    "/usr/global/lib/", "/usr/local/bin/", "/usr/local/lib/",
+	"/usr/global/lib/", "/usr/local/bin/", "/usr/local/lib/",
 #endif
-"/usr/local/", "/usr/lib/", ""};
+	"/usr/local/", "/usr/lib/", ""
+};
 #endif
 
 #if VMS
 {
-	"emacs.rc", "emacs.hlp", "",
+	"emacs.hlp", "",
 #if PKCODE
-	    "sys$login:", "emacs_dir:",
+	"sys$login:", "emacs_dir:",
 #endif
-"sys$sysdevice:[vmstools]"};
+	"sys$sysdevice:[vmstools]"
+};
 #endif
 
 #endif

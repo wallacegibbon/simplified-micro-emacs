@@ -93,11 +93,8 @@ struct terminal term = {
 
 /***
  *  ttputs  -  Send a string to ttputc
- *
- *  Nothing returned
  ***/
-ttputs(string)
-char *string;			/* String to write */
+void ttputs(char *string)
 {
 	if (string)
 		while (*string != '\0')
@@ -107,12 +104,8 @@ char *string;			/* String to write */
 
 /***
  *  vmsmove  -  Move the cursor (0 origin)
- *
- *  Nothing returned
  ***/
-vmsmove(row, col)
-int row;			/* Row position */
-int col;			/* Column position */
+void vmsmove(int row, int col)
 {
 	char buffer[32];
 	int ret_length;
@@ -153,7 +146,7 @@ int col;			/* Column position */
 
 #if SCROLLCODE
 
-vmsscroll_reg(from, to, howmany)
+void vmsscroll_reg(from, to, howmany)
 {
 	int i;
 	if (to == from)
@@ -172,9 +165,7 @@ vmsscroll_reg(from, to, howmany)
 	vmsscrollregion(-1, -1);
 }
 
-vmsscrollregion(top, bot)
-int top;			/* Top position */
-int bot;			/* Bottom position */
+void vmsscrollregion(int top, int bot)
 {
 	char buffer[32];
 	int ret_length;
@@ -217,11 +208,8 @@ int bot;			/* Bottom position */
 
 /***
  *  vmsrev  -  Set the reverse video status
- *
- *  Nothing returned
  ***/
-vmsrev(status)
-int status;			/* TRUE if setting reverse */
+void vmsrev(int status)
 {
 	if (status)
 		ttputs(begin_reverse);
@@ -231,10 +219,8 @@ int status;			/* TRUE if setting reverse */
 
 /***
  *  vmscres  -  Change screen resolution (which it doesn't)
- *
- *  Nothing returned
  ***/
-vmscres()
+void vmscres()
 {
 	/* But it could.  For vt100/vt200s, one could switch from
 	   80 and 132 columns modes */
@@ -244,29 +230,23 @@ vmscres()
 #if COLOR
 /***
  *  vmsfcol  -  Set the forground color (not implimented)
- *
- *  Nothing returned
  ***/
-vmsfcol()
+void vmsfcol()
 {
 }
 
 /***
  *  vmsbcol  -  Set the background color (not implimented)
- *
- *  Nothing returned
  ***/
-vmsbcol()
+void vmsbcol()
 {
 }
 #endif
 
 /***
  *  vmseeol  -  Erase to end of line
- *
- *  Nothing returned
  ***/
-vmseeol()
+void vmseeol()
 {
 	ttputs(erase_to_end_line);
 }
@@ -274,10 +254,8 @@ vmseeol()
 
 /***
  *  vmseeop  -  Erase to end of page (clear screen)
- *
- *  Nothing returned
  ***/
-vmseeop()
+void vmseeop()
 {
 	ttputs(erase_whole_display);
 }
@@ -285,10 +263,8 @@ vmseeop()
 
 /***
  *  vmsbeep  -  Ring the bell
- *
- *  Nothing returned
  ***/
-vmsbeep()
+void vmsbeep()
 {
 	ttputc('\007');
 }
@@ -300,8 +276,7 @@ vmsbeep()
  *  Returns:	Escape sequence
  *		NULL	No escape sequence available
  ***/
-char *vmsgetstr(request_code)
-int request_code;		/* Request code */
+char *vmsgetstr(int request_code)
 {
 	char *result;
 	static char seq_storage[1024];
@@ -366,6 +341,7 @@ struct iosb {			/* I/O status block */
 	short i_xfer;		/* Transfer count */
 	long i_info;		/* Device information */
 };
+
 struct termchar {		/* Terminal characteristics */
 	char t_class;		/* Terminal class */
 	char t_type;		/* Terminal type */
@@ -373,14 +349,13 @@ struct termchar {		/* Terminal characteristics */
 	long t_mandl;		/* Terminal's mode and length */
 	long t_extend;		/* Extended terminal characteristics */
 };
+
 static struct termchar tc;	/* Terminal characteristics */
 
 /***
  *  vmsgtty - Get terminal type from system control block
- *
- *  Nothing returned
  ***/
-vmsgtty()
+void vmsgtty()
 {
 	short fd;
 	int status;
@@ -417,10 +392,8 @@ vmsgtty()
 
 /***
  *  vmsopen  -  Get terminal type and open terminal
- *
- *  Nothing returned
  ***/
-vmsopen()
+void vmsopen()
 {
 	/* Get terminal type */
 	vmsgtty();
@@ -469,20 +442,16 @@ vmsopen()
 
 /***
  *  vmskopen  -  Open keyboard (not used)
- *
- *  Nothing returned
  ***/
-vmskopen()
+void vmskopen()
 {
 }
 
 
 /***
  *  vmskclose  -  Close keyboard (not used)
- *
- *  Nothing returned
  ***/
-vmskclose()
+void vmskclose()
 {
 }
 
