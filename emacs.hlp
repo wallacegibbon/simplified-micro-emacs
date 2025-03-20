@@ -40,7 +40,7 @@ Find file .............   ^X ^F         Quick exit ............ Meta  Z
 View file .............   ^X ^V         Exit emacs ............   ^X ^C
 Insert file ...........   ^X ^I
 Change file name ......   ^X  N         Filter buffer .........   ^X  #
-Save file .............   ^X ^D
+Save file .............   ^X ^S
 Read file .............   ^X ^R
 Write file ............   ^X ^W         Execute file .......... not bound  
 -------------------------------------------------------------------------------
