@@ -148,11 +148,8 @@
 
 #endif /* Autoconf. */
 
-#define	WORDPRO	1  /* Advanced word processing features */
-#define	APROP	1  /* Add code for Apropos command */
 #define MAGIC	1  /* include regular expression matching? */
 #define	AEDIT	1  /* advanced editing options: en/detabbing */
-#define	PROC	1  /* named procedures */
 #define	CLEAN	0  /* de-alloc memory on exit */
 
 #define ASCII	1  /* always using ASCII char sequences for now */

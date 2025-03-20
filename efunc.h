@@ -19,10 +19,6 @@ int capword(int f, int n);
 int delfword(int f, int n);
 int delbword(int f, int n);
 int inword(void);
-int fillpara(int f, int n);
-int justpara(int f, int n);
-int killpara(int f, int n);
-int wordcount(int f, int n);
 
 /* window.c */
 int reposition(int f, int n);
@@ -46,7 +42,6 @@ int newwidth(int f, int n);
 int getwpos(void);
 void cknewwindow(void);
 struct window *wpopup(void);  /* Pop up window creation. */
-
 
 /* basic.c */
 int gotobol(int f, int n);

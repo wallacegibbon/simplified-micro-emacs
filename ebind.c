@@ -82,9 +82,6 @@ struct key_tab keytab[] = {
 	{CTLX | 'W', resize},
 	{CTLX | 'X', nextbuffer},
 	{CTLX | 'Z', enlargewind},
-#if WORDPRO
-	{META | CONTROL | 'C', wordcount},
-#endif
 #if CFENCE
 	{META | CONTROL | 'F', getfence},
 #endif
@@ -96,9 +93,6 @@ struct key_tab keytab[] = {
 	{META | CONTROL | 'S', newsize},
 	{META | CONTROL | 'T', newwidth},
 	{META | CONTROL | 'V', scrnextdw},
-#if WORDPRO
-	{META | CONTROL | 'W', killpara},
-#endif
 	{META | CONTROL | 'Z', scrnextup},
 	{META | ' ', setmark},
 	{META | '!', reposition},
@@ -114,11 +108,6 @@ struct key_tab keytab[] = {
 	{META | 'G', gotoline},
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
-#if WORDPRO
-	{META | 'N', gotoeop},
-	{META | 'P', gotobop},
-	{META | 'Q', fillpara},
-#endif
 	{META | 'R', sreplace},
 #if BSD
 	{META | 'S', bktoshell},
@@ -145,10 +134,6 @@ struct key_tab keytab[] = {
 	{SPEC | 83, forwdel},
 	{SPEC | 115, backword},
 	{SPEC | 116, forwword},
-#if WORDPRO
-	{SPEC | 132, gotobop},
-	{SPEC | 118, gotoeop},
-#endif /* WORDPRO */
 #if PKCODE
 	{SPEC | 117, gotoeob},
 	{SPEC | 119, gotobob},
