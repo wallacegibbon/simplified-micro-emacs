@@ -42,44 +42,8 @@ static int cmd_buff[CMDBUFLEN];	/* Save the command args here */
 static int cmd_offset;			/* Current offset into command buff */
 static int cmd_reexecute = -1;		/* > 0 if re-executing command */
 
-
 /*
- * Subroutine to do incremental reverse search.  It actually uses the
- * same code as the normal incremental search, as both can go both ways.
- */
-int risearch(int f, int n)
-{
-	struct line *curline;
-	int curoff;
-
-	/* remember the initial . on entry: */
-
-	curline = curwp->w_dotp;
-	curoff = curwp->w_doto;
-
-	/* do the search */
-
-	if (!(isearch(f, -n))) { /* Call ISearch backwards */
-		/* If error in search: */
-		curwp->w_dotp = curline;
-		curwp->w_doto = curoff;
-		curwp->w_flag |= WFMOVE;
-		update(FALSE); /* force an update */
-		mlwrite("(search failed)");
-#if PKCODE
-		matchlen = strlen(pat);
-#endif
-	} else {
-		mlerase();	/* If happy, just erase the cmd line */
-	}
-#if PKCODE
-	matchlen = strlen(pat);
-#endif
-	return TRUE;
-}
-
-/*
- * Again, but for the forward direction
+ * Subroutine to do incremental search.
  */
 int fisearch(int f, int n)
 {
@@ -110,6 +74,11 @@ int fisearch(int f, int n)
 	matchlen = strlen(pat);
 #endif
 	return TRUE;
+}
+
+int risearch(int f, int n)
+{
+	return fisearch(f, -n);
 }
 
 /*
