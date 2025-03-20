@@ -178,6 +178,11 @@ start_over:
 
 	c = ectoc(expc = get_char());
 
+	if (c == IS_REVERSE) {
+		/* Make sure the search doesn't match where we already are */
+		forwchar(TRUE, 1);
+	}
+
 	/* Reuse old search string? */
 	if ((c == IS_FORWARD) || (c == IS_REVERSE) || (c == IS_VMSFORW)) {
 		/* Yup, find the length */
