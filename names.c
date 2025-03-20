@@ -102,7 +102,6 @@ struct name_bind names[] = {
 	{"search-forward", forwsearch},
 	{"search-reverse", backsearch},
 	{"select-buffer", usebuffer},
-	{"set-fill-column", setfillcol},
 	{"set-mark", setmark},
 	{"shell-command", spawn},
 	{"shrink-window", shrinkwind},

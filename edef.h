@@ -18,7 +18,6 @@ typedef int (*fn_t)(int, int);
 
 /* Initialized global external declarations. */
 
-extern int fillcol;		/* Fill column */
 extern int kbdm[];		/* Holds keyboard macro data */
 extern char pat[];		/* Search pattern */
 extern char rpat[];		/* Replacement pattern */

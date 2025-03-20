@@ -73,7 +73,6 @@ struct key_tab keytab[] = {
 	{CTLX | 'D', bktoshell},
 #endif
 	{CTLX | 'E', ctlxe},
-	{CTLX | 'F', setfillcol},
 	{CTLX | 'K', killbuffer},
 	{CTLX | 'M', setemode},
 	{CTLX | 'N', filename},

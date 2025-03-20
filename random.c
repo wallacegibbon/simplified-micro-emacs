@@ -16,16 +16,6 @@
 int tabsize; /* Tab size (0: use real tabs) */
 
 /*
- * Set fill column to n.
- */
-int setfillcol(int f, int n)
-{
-	fillcol = n;
-	mlwrite("(Fill column is %d)", n);
-	return TRUE;
-}
-
-/*
  * Display the current position of the cursor, in origin 1 X-Y coordinates,
  * the character that is under the cursor (in hex), and the fraction of the
  * text that is before the cursor. The displayed column is not the current
@@ -346,19 +336,9 @@ int insert_newline(int f, int n)
 		return FALSE;
 
 	/* if we are in C mode and this is a default <NL> */
-	if (n == 1 && (curbp->b_mode & MDCMOD) &&
-	    curwp->w_dotp != curbp->b_linep)
+	if (n == 1 && (curbp->b_mode & MDCMOD)
+			&& curwp->w_dotp != curbp->b_linep)
 		return cinsert();
-
-	/*
-	 * If a newline was typed, fill column is defined, the argument is non-
-	 * negative, wrap mode is enabled, and we are now past fill column,
-	 * and we are not read-only, perform word wrap.
-	 */
-	if ((curwp->w_bufp->b_mode & MDWRAP) && fillcol > 0 &&
-	    getccol(FALSE) > fillcol &&
-	    (curwp->w_bufp->b_mode & MDVIEW) == FALSE)
-		execute(META | SPEC | 'W', FALSE, 1);
 
 	/* insert some lines */
 	while (n--) {
@@ -371,13 +351,14 @@ int insert_newline(int f, int n)
 	return TRUE;
 }
 
+/* insert a newline and indentation for C */
 int cinsert(void)
-{				/* insert a newline and indentation for C */
-	char *cptr;	/* string pointer into text to copy */
-	int tptr;	/* index to scan into line */
-	int bracef;	/* was there a brace at the end of line? */
-	int i;
+{
+	char *cptr;		/* string pointer into text to copy */
+	int tptr;		/* index to scan into line */
+	int bracef;		/* was there a brace at the end of line? */
 	char ichar[NSTRING];	/* buffer to hold indent of last line */
+	int i;
 
 	/* grab a pointer to text to copy indentation from */
 	cptr = &curwp->w_dotp->l_text[0];

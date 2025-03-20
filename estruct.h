@@ -463,16 +463,15 @@ struct buffer {
 #define	BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define	NUMMODES	9
+#define	NUMMODES	8
 
-#define	MDWRAP	0x0001		/* word wrap */
-#define	MDCMOD	0x0002		/* C indentation and fence match */
-#define	MDSPELL	0x0004		/* spell error parcing */
-#define	MDEXACT	0x0008		/* Exact matching for searches */
-#define	MDVIEW	0x0010		/* read-only buffer */
-#define MDOVER	0x0020		/* overwrite mode */
-#define MDMAGIC	0x0040		/* regular expresions in search */
-#define	MDASAVE	0x0100		/* auto-save mode */
+#define	MDCMOD	0x0001		/* C indentation and fence match */
+#define	MDSPELL	0x0002		/* spell error parcing */
+#define	MDEXACT	0x0004		/* Exact matching for searches */
+#define	MDVIEW	0x0008		/* read-only buffer */
+#define	MDOVER	0x0010		/* overwrite mode */
+#define	MDMAGIC	0x0020		/* regular expresions in search */
+#define	MDASAVE	0x0040		/* auto-save mode */
 
 /*
  * The starting position of a region, and the size of the region in

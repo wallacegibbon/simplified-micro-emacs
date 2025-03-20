@@ -449,30 +449,18 @@ int execute(int c, int f, int n)
 		return status;
 	}
 
-	/*
-	 * If a space was typed, fill column is defined, the argument is non-
-	 * negative, wrap mode is enabled, and we are now past fill column,
-	 * and we are not read-only, perform word wrap.
-	 */
-	if (c == ' ' && (curwp->w_bufp->b_mode & MDWRAP) && fillcol > 0 &&
-	    n >= 0 && getccol(FALSE) > fillcol &&
-	    (curwp->w_bufp->b_mode & MDVIEW) == FALSE)
-		execute(META | SPEC | 'W', FALSE, 1);
-
 #if PKCODE
 	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
 #if IBMPC
 	    || (c >= 0x80 && c <= 0xFE)) {
-#else
-#if VMS || BSD || USG	/* 8BIT P.K. */
+#elif VMS || BSD || USG	/* 8BIT P.K. */
 	    || (c >= 0xA0 && c <= 0x10FFFF)) {
 #else
 	    ) {
 #endif
-#endif
 #else
 	if ((c >= 0x20 && c <= 0xFF)) {	/* Self inserting. */
-#endif
+#endif /* PKCODE */
 		if (n <= 0) {	/* Fenceposts. */
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;

@@ -3,7 +3,6 @@
 
 /* initialized global definitions */
 
-int fillcol = 72;		/* Current fill column */
 int kbdm[NKBDM];		/* Macro */
 char *execstr = NULL;		/* pointer to string to execute */
 char golabel[NPAT] = "";	/* current line to go to */
@@ -17,17 +16,15 @@ int flickcode = FALSE;		/* do flicker supression? */
  * the NUMMODES macro, too.
  */
 
-char *modename[] = {		/* name of modes */
-	"WRAP", "CMODE", "SPELL", "EXACT", "VIEW", "OVER",
-	"MAGIC", "ASAVE", "UTF-8"
+char *modename[] = {
+	"CMODE", "SPELL", "EXACT", "VIEW", "OVER", "MAGIC", "ASAVE", "UTF-8"
 };
 
-char *mode2name[] = {		/* name of modes */
-	"Wrap", "Cmode", "Spell", "Exact", "View", "Over",
-	"Magic", "Asave", "utf-8"
+char *mode2name[] = {
+	"CMode", "Spell", "Exact", "View", "Over", "Magic", "Asave", "utf-8"
 };
 
-char modecode[] = "WCSEVOMAU";	/* letters to represent modes */
+char modecode[] = "CSEVOMAU";	/* letters to represent modes */
 
 int gmode = 0;			/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
