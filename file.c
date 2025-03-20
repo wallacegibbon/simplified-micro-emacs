@@ -262,7 +262,7 @@ int readin(char *fname, int lockfl)
 	strcat(mesg, ")");
 	mlwrite(mesg);
 
-      out:
+out:
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_bufp == curbp) {
 			wp->w_linep = lforw(curbp->b_linep);
@@ -563,7 +563,7 @@ int ifile(char *fname)
 	strcat(mesg, ")");
 	mlwrite(mesg);
 
-      out:
+out:
 	/* advance to the next line and mark the window for changes */
 	curwp->w_dotp = lforw(curwp->w_dotp);
 	curwp->w_flag |= WFHARD | WFMODE;

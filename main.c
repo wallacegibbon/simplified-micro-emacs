@@ -247,7 +247,7 @@ int main(int argc, char **argv)
 	/* Setup to process commands. */
 	lastflag = 0;  /* Fake last flags. */
 
-      loop:
+loop:
 	/* Execute the "command" macro...normally null. */
 	saveflag = lastflag;  /* Preserve lastflag through this. */
 	execute(META | SPEC | 'C', FALSE, 1);

@@ -11,15 +11,19 @@ int execlevel = 0;		/* execution IF level */
 int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
+
 char *modename[] = {		/* name of modes */
 	"WRAP", "CMODE", "SPELL", "EXACT", "VIEW", "OVER",
 	"MAGIC", "ASAVE", "UTF-8"
 };
+
 char *mode2name[] = {		/* name of modes */
 	"Wrap", "Cmode", "Spell", "Exact", "View", "Over",
 	"Magic", "Asave", "utf-8"
 };
+
 char modecode[] = "WCSEVOMYAU";	/* letters to represent modes */
+
 int gmode = 0;			/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
 #if PKCODE & IBMPC
@@ -41,9 +45,9 @@ int vtrow = 0;			/* Row location of SW cursor */
 int vtcol = 0;			/* Column location of SW cursor */
 int ttrow = HUGE;		/* Row location of HW cursor */
 int ttcol = HUGE;		/* Column location of HW cursor */
-int lbound = 0;			/* leftmost column of current line
-				   being displayed */
+int lbound = 0;			/* leftmost column of current line being displayed */
 int taboff = 0;			/* tab offset for display */
+
 int metac = CONTROL | '[';	/* current meta character */
 int ctlxc = CONTROL | 'X';	/* current control X prefix char */
 int reptc = CONTROL | 'U';	/* current universal repeat char */
@@ -52,15 +56,19 @@ int enterc = CONTROL | 'M';	/* current enter/CR char */
 
 int quotec = 0x11;		/* quote char during mlreply() */
 int tabmask = 0x07;		/* tabulator mask */
+
 char *cname[] = {		/* names of colors */
 	"BLACK", "RED", "GREEN", "YELLOW", "BLUE",
 	"MAGENTA", "CYAN", "WHITE"
 #if PKCODE & IBMPC
-	    , "HIGH"
+	,
+	"HIGH"
 #endif
 };
-struct kill *kbufp = NULL;		/* current kill buffer chunk pointer */
-struct kill *kbufh = NULL;		/* kill buffer header pointer */
+
+struct kill *kbufp = NULL;	/* current kill buffer chunk pointer */
+struct kill *kbufh = NULL;	/* kill buffer header pointer */
+
 int kused = KBLOCK;		/* # of bytes used in kill buffer */
 struct window *swindow = NULL;	/* saved window pointer */
 int *kbdptr;			/* current position in keyboard buf */
@@ -96,10 +104,10 @@ int thisflag;			/* Flags, this command */
 int lastflag;			/* Flags, last command */
 int curgoal;			/* Goal for C-P, C-N */
 struct window *curwp;		/* Current window */
-struct buffer *curbp;			/* Current buffer */
+struct buffer *curbp;		/* Current buffer */
 struct window *wheadp;		/* Head of list of windows */
-struct buffer *bheadp;			/* Head of list of buffers */
-struct buffer *blistp;			/* Buffer for C-X C-B */
+struct buffer *bheadp;		/* Head of list of buffers */
+struct buffer *blistp;		/* Buffer for C-X C-B */
 
 char sres[NBUFN];		/* current screen resolution */
 char pat[NPAT];			/* Search pattern */

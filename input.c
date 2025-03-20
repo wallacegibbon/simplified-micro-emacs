@@ -282,7 +282,7 @@ fn_t getname(void)
 
 			/* no match.....beep and onward */
 			TTbeep();
-		      onward:;
+onward:
 			TTflush();
 /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 		} else {

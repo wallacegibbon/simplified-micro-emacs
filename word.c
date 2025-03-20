@@ -363,7 +363,9 @@ int delbword(int f, int n)
 	}
 	if (forwchar(FALSE, 1) == FALSE)
 		return FALSE;
-      bckdel:return ldelchar(size, TRUE);
+
+bckdel:
+	return ldelchar(size, TRUE);
 }
 
 /*

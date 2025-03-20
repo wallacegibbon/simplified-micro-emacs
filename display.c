@@ -730,8 +730,7 @@ static int scrolls(int inserts)
 			count = 1;
 			for (j = match + 1, k = from + 1;
 			     j < rows && k < rows; j++, k++) {
-				if (inserts ? texttest(j, k) :
-				    texttest(k, j))
+				if (inserts ? texttest(j, k) : texttest(k, j))
 					count++;
 				else
 					break;

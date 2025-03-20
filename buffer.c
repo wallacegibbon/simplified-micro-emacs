@@ -188,7 +188,8 @@ int namebuffer(int f, int n)
 	char bufn[NBUFN];	/* buffer to hold buffer name */
 
 	/* prompt for and get the new buffer name */
-      ask:if (mlreply("Change buffer name to: ", bufn, NBUFN) !=
+ask:
+	if (mlreply("Change buffer name to: ", bufn, NBUFN) !=
 	    TRUE)
 		return FALSE;
 

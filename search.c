@@ -493,7 +493,7 @@ static int amatch(struct magic *mcptr, int direct, struct line **pcwline, int *p
 	/* A SUCCESSFULL MATCH!!!
 	 * Reset the "." pointers.
 	 */
-      success:
+success:
 	*pcwline = curline;
 	*pcwoff = curoff;
 
@@ -575,7 +575,8 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 			return TRUE;
 
 		}
-	      fail:;		/* continue to search */
+fail:
+		;/* continue to search */
 	}
 
 	return FALSE;		/* We could not find a match */
@@ -811,24 +812,20 @@ static int replaces(int kind, int f, int n)
 
 		++nummatch;	/* Increment # of matches */
 
-		/* Check if we are on the last line.
-		 */
+		/* Check if we are on the last line. */
 		nlrepl = (lforw(curwp->w_dotp) == curwp->w_bufp->b_linep);
 
-		/* Check for query.
-		 */
+		/* Check for query. */
 		if (kind) {
-			/* Get the query.
-			 */
-		      pprompt:mlwrite(&tpat[0], &pat[0],
-				&rpat[0]);
-		      qprompt:
+			/* Get the query. */
+pprompt:
+			mlwrite(&tpat[0], &pat[0], &rpat[0]);
+qprompt:
 			update(TRUE);	/* show the proposed place to change */
 			c = tgetc();	/* and input */
 			mlwrite("");	/* and clear it */
 
-			/* And respond appropriately.
-			 */
+			/* And respond appropriately. */
 			switch (c) {
 #if PKCODE
 			case 'Y':
@@ -853,12 +850,9 @@ static int replaces(int kind, int f, int n)
 			case 'U':
 #endif
 			case 'u':	/* undo last and re-prompt */
-
-				/* Restore old position.
-				 */
+				/* Restore old position. */
 				if (lastline == NULL) {
-					/* There is nothing to undo.
-					 */
+					/* There is nothing to undo. */
 					TTbeep();
 					goto pprompt;
 				}
@@ -867,8 +861,7 @@ static int replaces(int kind, int f, int n)
 				lastline = NULL;
 				lastoff = 0;
 
-				/* Delete the new string.
-				 */
+				/* Delete the new string. */
 				backchar(FALSE, rlength);
 #if PKCODE
 				matchline = curwp->w_dotp;
@@ -902,8 +895,7 @@ static int replaces(int kind, int f, int n)
 				TTbeep();
 
 			case '?':	/* help me */
-				mlwrite
-				    ("(Y)es, (N)o, (!)Do rest, (U)ndo last, (^G)Abort, (.)Abort back, (?)Help: ");
+				mlwrite("(Y)es, (N)o, (!)Do rest, (U)ndo last, (^G)Abort, (.)Abort back, (?)Help: ");
 				goto qprompt;
 
 			}	/* end of switch */
@@ -929,8 +921,6 @@ static int replaces(int kind, int f, int n)
 		numsub++;	/* increment # of substitutions */
 	}
 
-	/* And report the results.
-	 */
 	mlwrite("%d substitutions", numsub);
 	return TRUE;
 }
@@ -982,8 +972,7 @@ int expandp(char *srcstr, char *deststr, int maxlength)
 {
 	unsigned char c;	/* current char to translate */
 
-	/* Scan through the string.
-	 */
+	/* Scan through the string. */
 	while ((c = *srcstr++) != 0) {
 		if (c == '\n') {	/* it's a newline */
 			*deststr++ = '<';
@@ -1167,19 +1156,18 @@ static int mcstr(void)
 				magical = TRUE;
 			}
 		default:
-		      litcase:mcptr->mc_type =
-			    LITCHAR;
+litcase:
+			mcptr->mc_type = LITCHAR;
 			mcptr->u.lchar = pchr;
 			does_closure = (pchr != '\n');
 			break;
-		}		/* End of switch. */
+		}
 		mcptr++;
 		patptr++;
 		mj++;
-	}			/* End of while. */
+	}
 
-	/* Close off the meta-string.
-	 */
+	/* Close off the meta-string. */
 	mcptr->mc_type = MCNIL;
 
 	/* Set up the reverse array, if the status is good.  Please note the
