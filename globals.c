@@ -12,6 +12,11 @@ int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
+/**
+ * CAUTION: when you add/remove modes, you should change
+ * the NUMMODES macro, too.
+ */
+
 char *modename[] = {		/* name of modes */
 	"WRAP", "CMODE", "SPELL", "EXACT", "VIEW", "OVER",
 	"MAGIC", "ASAVE", "UTF-8"
@@ -22,7 +27,7 @@ char *mode2name[] = {		/* name of modes */
 	"Magic", "Asave", "utf-8"
 };
 
-char modecode[] = "WCSEVOMYAU";	/* letters to represent modes */
+char modecode[] = "WCSEVOMAU";	/* letters to represent modes */
 
 int gmode = 0;			/* global editor mode */
 int gflags = GFREAD;		/* global control flag */

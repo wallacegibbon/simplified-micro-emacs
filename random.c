@@ -271,9 +271,9 @@ int insert_tab(int f, int n)
 int trim(int f, int n)
 {
 	struct line *lp;	/* current line pointer */
-	int offset;	/* original line offset position */
-	int length;	/* current length */
-	int inc;	/* increment to next line [sgn(n)] */
+	int offset;		/* original line offset position */
+	int length;		/* current length */
+	int inc;		/* increment to next line [sgn(n)] */
 
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
@@ -545,9 +545,8 @@ int insbrace(int n, int c)
 #endif
 
 int inspound(void)
-{				/* insert a # into the text here...we are in CMODE */
-	int ch;	/* last character before input */
-	int i;
+{
+	int ch, i;
 
 	/* if we are at the beginning of the line, no go */
 	if (curwp->w_doto == 0)
