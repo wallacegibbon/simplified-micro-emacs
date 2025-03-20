@@ -178,23 +178,13 @@ start_over:
 
 	c = ectoc(expc = get_char());
 
-	if (c == IS_REVERSE) {
-		/* Make sure the search doesn't match where we already are */
-		forwchar(TRUE, 1);
-	}
-
 	/* Reuse old search string? */
 	if ((c == IS_FORWARD) || (c == IS_REVERSE) || (c == IS_VMSFORW)) {
 		/* Yup, find the length */
 		for (cpos = 0; pat[cpos] != 0; cpos++)
 			col = echo_char(pat[cpos], col);
 
-		if (c == IS_REVERSE) {
-			n = -1;
-			backchar(TRUE, 1);	/* Be defensive about EOB */
-		} else {
-			n = 1;
-		}
+		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 		c = ectoc(expc = get_char());
 	}
@@ -213,10 +203,7 @@ start_over:
 		case IS_REVERSE:
 		case IS_FORWARD:
 		case IS_VMSFORW:
-			if (c == IS_REVERSE)
-				n = -1;
-			else
-				n = 1;
+			n = (c == IS_REVERSE) ? -1 : 1;
 			status = scanmore(pat, n);
 			c = ectoc(expc = get_char());
 			continue;
@@ -343,7 +330,7 @@ int checknext(char chr, char *patrn, int dir)	/* Check next character in search 
  */
 int scanmore(char *patrn, int dir)	/* search forward or back for a pattern */
 {
-	int sts;		/* search status */
+	int sts;
 
 	if (dir < 0) {		/* reverse search? */
 		rvstrcpy(tap, patrn);	/* Put reversed string in tap */
@@ -368,36 +355,34 @@ int scanmore(char *patrn, int dir)	/* search forward or back for a pattern */
  * This isn't used for forward searches, because forward searches leave "."
  * at the end of the search string (instead of in front), so all that needs to
  * be done is match the last char input.
- *
- * char *patrn;			String to match to buffer
  */
-int match_pat(char *patrn)	/* See if the pattern string matches string at "." */
+int match_pat(char *patrn)
 {
-	int i;		/* Generic loop index/offset */
-	int buffchar;	/* character at current position */
-	struct line *curline;	/* current line during scan */
-	int curoff;	/* position within current line */
+	struct line *curline;
+	int curoff;
+	int buffchar, i;
 
 	/* setup the local scan pointer to current "." */
 
-	curline = curwp->w_dotp;	/* Get the current line structure */
-	curoff = curwp->w_doto;	/* Get the offset within that line */
+	curline = curwp->w_dotp;
+	curoff = curwp->w_doto;
 
 	/* top of per character compare loop: */
 
-	for (i = 0; i < strlen(patrn); i++) {	/* Loop for all characters in patrn */
+	for (i = 0; i < strlen(patrn); i++) {
 		if (curoff == llength(curline)) {	/* If at end of line */
 			curline = lforw(curline);	/* Skip to the next line */
-			curoff = 0;	/* Start at the beginning of the line */
+			curoff = 0;
 			if (curline == curbp->b_linep)
 				return FALSE;	/* Abort if at end of buffer */
-			buffchar = '\n';	/* And say the next char is NL */
-		} else
+			buffchar = '\n';
+		} else {
 			buffchar = lgetc(curline, curoff++);	/* Get the next char */
+		}
 		if (!eq(buffchar, patrn[i]))	/* Is it what we're looking for? */
 			return FALSE;	/* Nope, just punt it then */
 	}
-	return TRUE;		/* Everything matched? Let's celebrate */
+	return TRUE; /* Everything matched? */
 }
 
 /*
@@ -472,7 +457,7 @@ static int echo_char(int c, int col)
  */
 int get_char(void)
 {
-	int c;			/* A place to get a character */
+	int c;
 
 	/* See if we're re-executing: */
 
@@ -486,12 +471,12 @@ int get_char(void)
 	update(FALSE);		/* Pretty up the screen */
 	if (cmd_offset >= CMDBUFLEN - 1) {	/* If we're getting too big ... */
 		mlwrite("? command too long");	/* Complain loudly and bitterly */
-		return abortc;	/* And force a quit */
+		return abortc;
 	}
-	c = get1key();		/* Get the next character */
+	c = get1key();
 	cmd_buff[cmd_offset++] = c;	/* Save the char for next time */
 	cmd_buff[cmd_offset] = '\0';	/* And terminate the buffer */
-	return c;		/* Return the character */
+	return c;
 }
 
 /*
@@ -505,17 +490,20 @@ int uneat(void)
 {
 	int c;
 
-	term.t_getchar = saved_get_char;	/* restore the routine address */
+	term.t_getchar = saved_get_char;
 	c = eaten_char;		/* Get the re-eaten char */
 	eaten_char = -1;	/* Clear the old char */
-	return c;		/* and return the last char */
+	return c;
 }
 
 void reeat(int c)
 {
 	if (eaten_char != -1)	/* If we've already been here */
-		return /*(NULL) */ ;	/* Don't do it again */
-	eaten_char = c;		/* Else, save the char for later */
-	saved_get_char = term.t_getchar;	/* Save the char get routine */
-	term.t_getchar = uneat;	/* Replace it with ours */
+		return;
+
+	eaten_char = c;
+
+	/* Save the char get routine, Replace it with ours */
+	saved_get_char = term.t_getchar;
+	term.t_getchar = uneat;
 }
