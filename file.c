@@ -108,6 +108,16 @@ int viewfile(int f, int n)
 	return s;
 }
 
+void mklower(char *str)
+{
+	while (*str) {
+		int ch = *str;
+		if (ch >= 'A' && ch <= 'Z')
+			*str = ch - 'A' + 'a';
+		str++;
+	}
+}
+
 /*
  * getfile()
  *

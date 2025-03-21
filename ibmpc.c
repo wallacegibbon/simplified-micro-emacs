@@ -458,7 +458,7 @@ void egaclose(void)
  * @forg:   forground color of string to write.
  * @bacg:   background color.
  */
-void scwrite(int row, char *outstr, int forg, int bacg)
+void scwrite(int row, unicode_t *outstr, int forg, int bacg)
 {
 	unsigned int attr;	/* attribute byte mask to place in RAM */
 	unsigned int *lnptr;	/* pointer to the destination line */

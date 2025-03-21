@@ -1,4 +1,4 @@
-/* spaw.c
+/* spawn.c
  *
  *	Various operating system access commands.
  *

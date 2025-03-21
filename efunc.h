@@ -9,6 +9,8 @@
  *	modified by Petri Kutvonen
  */
 
+#include "utf8.h"
+
 /* word.c */
 int wrapword(int f, int n);
 int backword(int f, int n);
@@ -255,4 +257,4 @@ char *dolock(char *fname);
 char *undolock(char *fname);
 
 /* ibmpc.c */
-void scwrite(int row, char *outstr, int forg, int bacg);
+void scwrite(int row, unicode_t *outstr, int forg, int bacg);

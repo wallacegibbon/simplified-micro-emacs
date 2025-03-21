@@ -66,8 +66,10 @@ static void modeline(struct window *wp);
 static void mlputi(int i, int r);
 static void mlputli(long l, int r);
 static void mlputf(int s);
-static int newscreensize(int h, int w);
 
+#ifdef SIGWINCH
+static int newscreensize(int h, int w);
+#endif
 #if RAINBOW
 static void putline(int row, int col, char *buf);
 #endif
@@ -902,6 +904,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 #endif
 	vp1->v_flag &= ~(VFCHG | VFCOL);	/* flag this line as changed */
 
+	return TRUE;
 }
 
 #else
@@ -1062,8 +1065,8 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 	TTrev(FALSE);
 #endif
 	vp1->v_flag &= ~VFCHG;	/* flag this line as updated */
-	return TRUE;
 #endif
+	return TRUE;
 }
 #endif
 
