@@ -89,8 +89,6 @@ struct key_tab keytab[] = {
 	{META | CONTROL | 'M', delgmode},
 	{META | CONTROL | 'N', namebuffer},
 	{META | CONTROL | 'R', qreplace},
-	{META | CONTROL | 'S', newsize},
-	{META | CONTROL | 'T', newwidth},
 	{META | CONTROL | 'V', scrnextdw},
 	{META | CONTROL | 'Z', scrnextup},
 	{META | ' ', setmark},

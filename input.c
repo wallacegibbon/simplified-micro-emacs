@@ -479,14 +479,12 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	int ffile, ocpos, nskip = 0, didtry = 0;
 	static char tmp[] = "/tmp/meXXXXXX";
 	FILE *tmpf = NULL;
-#endif
 	ffile = (strcmp(prompt, "Find file: ") == 0
 		 || strcmp(prompt, "View file: ") == 0
 		 || strcmp(prompt, "Insert file: ") == 0
 		 || strcmp(prompt, "Write file: ") == 0
 		 || strcmp(prompt, "Read file: ") == 0
 		 || strcmp(prompt, "File to execute: ") == 0);
-#endif
 
 	cpos = 0;
 	quotef = FALSE;

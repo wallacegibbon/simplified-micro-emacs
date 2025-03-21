@@ -55,8 +55,6 @@
 #endif				/*autoconf */
 
 #ifndef	AUTOCONF
-
-/* Compiler definitions */
 #define	UNIX	0		/* a random UNIX compiler */
 #else
 #define	UNIX	(V7 | BSD | USG)

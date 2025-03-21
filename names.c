@@ -25,8 +25,6 @@ struct name_bind names[] = {
 	{"case-word-lower", lowerword},
 	{"case-word-upper", upperword},
 	{"change-file-name", filename},
-	{"change-screen-size", newsize},
-	{"change-screen-width", newwidth},
 	{"clear-and-redraw", redraw},
 	{"clear-message-line", clrmes},
 	{"copy-region", copyregion},
