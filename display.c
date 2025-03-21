@@ -1098,13 +1098,14 @@ static void modeline(struct window *wp)
 		firstm = FALSE;
 		strcat(tline, "Truncated");
 	}
-	for (i = 0; i < NUMMODES; i++)	/* add in the mode flags */
-		if (wp->w_bufp->b_mode & (1 << i)) {
+	for (i = 0; i < sizeof(modecode) - 1; i++) {
+		if (wp->w_bufp->b_mode & modevalue[i]) {
 			if (firstm != TRUE)
 				strcat(tline, " ");
 			firstm = FALSE;
 			strcat(tline, modename[i]);
 		}
+	}
 	strcat(tline, ") ");
 
 	cp = &tline[0];

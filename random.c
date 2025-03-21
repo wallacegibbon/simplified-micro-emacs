@@ -251,8 +251,6 @@ int insert_tab(int f, int n)
 	return linsert(tabsize - (getccol(FALSE) % tabsize), ' ');
 }
 
-#if AEDIT
-
 /*
  * trim trailing whitespace from the point to eol
  *
@@ -295,7 +293,6 @@ int trim(int f, int n)
 	thisflag &= ~CFCPCN;	/* flag that this resets the goal column */
 	return TRUE;
 }
-#endif
 
 /*
  * Open up some blank space. The basic plan is to insert a bunch of newlines,
@@ -832,7 +829,7 @@ int adjustmode(int kind, int global)
 
 	/* test it against the modes we know */
 
-	for (i = 0; i < NUMMODES; i++) {
+	for (i = 0; i < sizeof(modecode) - 1; i++) {
 		if (strcmp(cbuf, modename[i]) == 0) {
 			int val = modevalue[i];
 			/* finding a match, we process it */

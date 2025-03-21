@@ -19,20 +19,24 @@ typedef int (*fn_t)(int, int);
 /* Initialized global external declarations. */
 
 extern int kbdm[];		/* Holds keyboard macro data */
+
 extern char pat[];		/* Search pattern */
 extern char rpat[];		/* Replacement pattern */
-extern char *execstr;		/* pointer to string to execute */
+
 extern char golabel[];		/* current line to go to */
-extern int execlevel;		/* execution IF level */
+
 extern int eolexist;		/* does clear to EOL exist? */
 extern int revexist;		/* does reverse video exist? */
-extern int flickcode;		/* do flicker supression? */
-extern const char *modename[];	/* text names of modes */
-extern const int modevalue[];	/* value of modes */
-extern char modecode[];		/* letters to represent modes */
+
+#define	NUMMODES	6
+extern const char *modename[NUMMODES];	/* text names of modes */
+extern const int modevalue[NUMMODES];	/* value of modes */
+extern char modecode[NUMMODES];	/* letters to represent modes */
+
 extern struct key_tab keytab[];	/* key bind to functions table */
 extern struct name_bind names[];/* name to function table */
 extern struct key_tab keytab[];	/* key to function table */
+
 extern int gmode;		/* global editor mode */
 extern int gflags;		/* global control flag */
 extern int gfcolor;		/* global forgrnd color (white) */
@@ -41,17 +45,15 @@ extern int gasave;		/* global ASAVE size */
 extern int gacount;		/* count until next ASAVE */
 extern int sgarbf;		/* State of screen unknown */
 extern int mpresf;		/* Stuff in message line */
-extern int clexec;		/* command line execution flag */
-extern int mstore;		/* storing text to macro flag */
 extern int discmd;		/* display command flag */
 extern int disinp;		/* display input characters */
-extern struct buffer *bstore;	/* buffer to store macro text to */
 extern int vtrow;		/* Row location of SW cursor */
 extern int vtcol;		/* Column location of SW cursor */
 extern int ttrow;		/* Row location of HW cursor */
 extern int ttcol;		/* Column location of HW cursor */
 extern int lbound;		/* leftmost column of current line displayed */
 extern int taboff;		/* tab offset for display */
+
 extern int metac;		/* current meta character */
 extern int enterc;		/* current enter character */
 extern int ctlxc;		/* current control X prefix char */
@@ -59,16 +61,23 @@ extern int reptc;		/* current universal repeat char */
 extern int abortc;		/* current abort command char */
 
 extern int quotec;		/* quote char during mlreply() */
+
 extern int tabmask;
+
 extern char *cname[];		/* names of colors */
+
 extern struct kill *kbufp;	/* current kill buffer chunk pointer */
 extern struct kill *kbufh;	/* kill buffer header pointer */
+
 extern int kused;		/* # of bytes used in KB */
+
 extern struct window *swindow;	/* saved window pointer */
+
 extern int *kbdptr;		/* current position in keyboard buf */
 extern int *kbdend;		/* ptr to end of the keyboard */
 extern int kbdmode;		/* current keyboard macro mode */
 extern int kbdrep;		/* number of repetitions */
+
 extern int restflag;		/* restricted use? */
 extern int lastkey;		/* last keystoke */
 extern int seed;		/* random number seed */
@@ -83,10 +92,7 @@ extern int saveflag;		/* Flags, saved with the $target var */
 extern char *fline;		/* dynamic return line */
 extern int flen;		/* current length of fline */
 extern int rval;		/* return value of a subprocess */
-#if PKCODE
-extern int nullflag;
-extern int justflag;		/* justify, don't fill */
-#endif
+
 extern int overlap;		/* line overlap in forw/back page */
 extern int scrollcount;		/* number of lines to scroll */
 

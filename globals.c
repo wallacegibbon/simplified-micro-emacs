@@ -4,17 +4,10 @@
 /* initialized global definitions */
 
 int kbdm[NKBDM];		/* Macro */
-char *execstr = NULL;		/* pointer to string to execute */
 char golabel[NPAT] = "";	/* current line to go to */
-int execlevel = 0;		/* execution IF level */
 int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
-
-/**
- * CAUTION:
- * When you add/remove modes, you should change the NUMMODES macro, too.
- */
 
 const int modevalue[] = {
 	MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE, MDUTF8
@@ -34,11 +27,8 @@ int gasave = 256;		/* global ASAVE size */
 int gacount = 256;		/* count until next ASAVE */
 int sgarbf = TRUE;		/* TRUE if screen is garbage */
 int mpresf = FALSE;		/* TRUE if message in last line */
-int clexec = FALSE;		/* command line execution flag */
-int mstore = FALSE;		/* storing text to macro flag */
 int discmd = TRUE;		/* display command flag */
 int disinp = TRUE;		/* display input characters */
-struct buffer *bstore = NULL;	/* buffer to store macro text to */
 int vtrow = 0;			/* Row location of SW cursor */
 int vtcol = 0;			/* Column location of SW cursor */
 int ttrow = HUGE;		/* Row location of HW cursor */
@@ -82,10 +72,7 @@ int saveflag = 0;		/* Flags, saved with the $target var */
 char *fline = NULL;		/* dynamic return line */
 int flen = 0;			/* current length of fline */
 int rval = 0;			/* return value of a subprocess */
-#if PKCODE
-int nullflag = FALSE;		/* accept null characters */
-int justflag = FALSE;		/* justify, don't fill */
-#endif
+
 int overlap = 0;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
 

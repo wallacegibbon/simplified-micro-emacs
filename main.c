@@ -161,12 +161,6 @@ int main(int argc, char **argv)
 				gotoflag = TRUE;
 				gline = atoi(&argv[carg][2]);
 				break;
-#if PKCODE
-			case 'n':	/* -n accept null chars */
-			case 'N':
-				nullflag = TRUE;
-				break;
-#endif
 			case 'r':	/* -r restrictive use */
 			case 'R':
 				restflag = TRUE;

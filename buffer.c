@@ -299,7 +299,7 @@ int makelist(int iflag)
 	*cp1++ = ' ';
 
 	/* output the mode codes */
-	for (i = 0; i < NUMMODES; i++)
+	for (i = 0; i < sizeof(modecode) - 1; i++)
 		if (gmode & (1 << i))
 			*cp1++ = modecode[i];
 		else
@@ -338,7 +338,7 @@ int makelist(int iflag)
 		*cp1++ = ' ';	/* space */
 
 		/* output the mode codes */
-		for (i = 0; i < NUMMODES; i++) {
+		for (i = 0; i < sizeof(modecode) - 1; i++) {
 			if (bp->b_mode & (1 << i))
 				*cp1++ = modecode[i];
 			else

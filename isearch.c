@@ -366,10 +366,7 @@ int promptpattern(char *prompt)
 	expandp(pat, &tpat[strlen(tpat)], NPAT / 2);	/* add old pattern */
 	strcat(tpat, ")<CR>: ");
 
-	/* check to see if we are executing a command line */
-	if (!clexec) {
-		mlwrite(tpat);
-	}
+	mlwrite(tpat);
 	return strlen(tpat);
 }
 

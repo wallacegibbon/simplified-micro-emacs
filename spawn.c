@@ -138,11 +138,11 @@ int spawn(int f, int n)
 	movecursor(term.t_nrow, 0);
 	TTflush();
 	s = sys(line);		/* Run the command. */
-	if (clexec == FALSE) {
-		mlputs("\r\n\n(End)");	/* Pause. */
-		TTflush();
-		tgetc();
-	}
+
+	mlputs("\r\n\n(End)");	/* Pause. */
+	TTflush();
+	tgetc();
+
 	sgarbf = TRUE;
 	return s;
 #endif
@@ -156,12 +156,11 @@ int spawn(int f, int n)
 	fflush(stdout);		/* to be sure P.K. */
 	TTopen();
 
-	if (clexec == FALSE) {
-		mlputs("(End)");	/* Pause. */
-		TTflush();
-		while ((s = tgetc()) != '\r' && s != ' ');
-		mlputs("\r\n");
-	}
+	mlputs("(End)");	/* Pause. */
+	TTflush();
+	while ((s = tgetc()) != '\r' && s != ' ');
+	mlputs("\r\n");
+
 	TTkopen();
 	sgarbf = TRUE;
 	return TRUE;

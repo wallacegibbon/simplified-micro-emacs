@@ -108,9 +108,7 @@ struct name_bind names[] = {
 	{"suspend-emacs", bktoshell},
 #endif
 	{"transpose-characters", twiddle},
-#if AEDIT
 	{"trim-line", trim},
-#endif
 	{"universal-argument", unarg},
 	{"unmark-buffer", unmark},
 	{"update-screen", upscreen},

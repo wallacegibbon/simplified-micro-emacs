@@ -118,9 +118,7 @@
 
 #endif /* Autoconf. */
 
-#define	AEDIT	1  /* advanced editing options: e.g. trim trailing spaces */
 #define	CLEAN	0  /* de-alloc memory on exit */
-
 #define ASCII	1  /* always using ASCII char sequences for now */
 
 #ifndef	AUTOCONF
@@ -386,8 +384,6 @@ struct buffer {
 #define	BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define	NUMMODES	6
-
 #define	MDCMOD	0x0001		/* C indentation and fence match */
 #define	MDVIEW	0x0002		/* read-only buffer */
 #define	MDEXACT	0x0004		/* Exact matching for searches */

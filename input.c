@@ -51,33 +51,6 @@ int mlyesno(char *prompt)
 }
 
 /*
- * nextarg:
- *	get the next argument
- *
- * char *prompt;		prompt to use if we must be interactive
- * char *buffer;		buffer to put token into
- * int size;			size of the buffer
- * int terminator;		terminating char to be used on interactive fetch
- */
-int nextarg(char *prompt, char *buffer, int size, int terminator)
-{
-	/* if we are interactive, go get it! */
-	if (clexec == FALSE)
-		return getstring(prompt, buffer, size, terminator);
-
-	/* grab token and advance past */
-	/*
-	execstr = token(execstr, buffer, size);
-	*/
-
-	/* evaluate it */
-	/*
-	getval(buffer, buffer, size);
-	*/
-	return TRUE;
-}
-
-/*
  * Write a prompt into the message line, then read back a response. Keep
  * track of the physical position of the cursor. If we are in a keyboard
  * macro throw the prompt away, and return the remembered response. This
@@ -87,12 +60,12 @@ int nextarg(char *prompt, char *buffer, int size, int terminator)
 
 int mlreply(char *prompt, char *buf, int nbuf)
 {
-	return nextarg(prompt, buf, nbuf, ctoec('\n'));
+	return getstring(prompt, buf, nbuf, ctoec('\n'));
 }
 
 int mlreplyt(char *prompt, char *buf, int nbuf, int eolchar)
 {
-	return nextarg(prompt, buf, nbuf, eolchar);
+	return getstring(prompt, buf, nbuf, eolchar);
 }
 
 /*
@@ -158,15 +131,6 @@ fn_t getname(void)
 
 	/* starting at the beginning of the string buffer */
 	cpos = 0;
-
-	/* if we are executing a command line get the next arg and match it */
-	/*
-	if (clexec) {
-		if (macarg(buf) != TRUE)
-			return NULL;
-		return fncmatch(&buf[0]);
-	}
-	*/
 
 	/* build a name string from the keyboard */
 	while (TRUE) {

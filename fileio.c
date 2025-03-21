@@ -119,21 +119,16 @@ int ffgetline(void)
 
 	/* read the line in */
 #if PKCODE
-	if (!nullflag) {
-		if (fgets(fline, NSTRING, ffp) == (char *) NULL) {	/* EOF ? */
-			i = 0;
-			c = EOF;
-		} else {
-			i = strlen(fline);
-			c = 0;
-			if (i > 0) {
-				c = fline[i - 1];
-				i--;
-			}
-		}
-	} else {
+	if (fgets(fline, NSTRING, ffp) == (char *) NULL) {	/* EOF ? */
 		i = 0;
-		c = fgetc(ffp);
+		c = EOF;
+	} else {
+		i = strlen(fline);
+		c = 0;
+		if (i > 0) {
+			c = fline[i - 1];
+			i--;
+		}
 	}
 	while (c != EOF && c != '\n') {
 #else
