@@ -6,8 +6,8 @@ This is a tiny emacs-like editor simplified from
 
 ## Goal
 
-- Be compatible with GNU emacs on basic operations.
-- Remove the extension language to make the program even smaller.
+- Be more compatible with GNU emacs on basic operations.
+- Remove unnecessary parts to make it tiny.
 
 
 ## Miscellaneous

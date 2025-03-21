@@ -1,21 +1,3 @@
-=>                      uEmacs/PK 4.0 HELP INDEX
-.. The very basics
-.. Cursor movement
-.. File commands
-.. Miscellaneous character commands
-.. Mode commands
-.. Keys and commands
-.. Deleting and inserting
-.. Formatting
-.. Window commands
-.. Buffer commands
-.. Searching and replacing
-.. Accessing the operating system
-.. Macro commands
-.. Miscellaneous
-.. Functions
-.. System variables
-.. File name completion
 -------------------------------------------------------------------------------
 =>                      THE VERY BASICS
 Notations: ^X means <Ctrl> and X. The <Meta> key is <Esc> on most systems.
