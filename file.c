@@ -367,12 +367,10 @@ int filewrite(int f, int n)
 }
 
 /*
- * Save the contents of the current
- * buffer in its associatd file. No nothing
- * if nothing has changed (this may be a bug, not a
- * feature). Error if there is no remembered file
- * name for the buffer. Bound to "C-X C-S". May
- * get called by "C-Z".
+ * Save the contents of the current buffer in its associatd file.
+ * No nothing if nothing has changed (this may be a bug, not a feature).
+ * Error if there is no remembered file name for the buffer.
+ * Bound to "C-X C-S".
  */
 int filesave(int f, int n)
 {
