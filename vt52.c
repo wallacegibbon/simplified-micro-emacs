@@ -28,24 +28,24 @@
 #define ESC     0x1B		/* ESC character. */
 #define BEL     0x07		/* ascii bell character */
 
-void ttopen();
-void ttclose();
-void vt52open();
-void vt52kopen();
-void vt52kclose();
-int ttgetc();
-int ttputc();
-void ttflush();
-void vt52move();
-void vt52eeol();
-void vt52eeop();
-void vt52beep();
-void vt52rev();
-int vt52cres();
+void ttopen(void);
+void ttclose(void);
+void vt52open(void);
+void vt52kopen(void);
+void vt52kclose(void);
+int ttgetc(void);
+int ttputc(void);
+void ttflush(void);
+void vt52move(int, int);
+void vt52eeol(void);
+void vt52eeop(void);
+void vt52beep(void);
+void vt52rev(int);
+int vt52cres(int, int);
 
 #if COLOR
-int vt52fcol();
-int vt52bcol();
+int vt52fcol(int);
+int vt52bcol(int);
 #endif
 
 /*
@@ -111,24 +111,24 @@ void vt52rev(int status)
 }
 
 /* change screen resolution - (not here though) */
-int vt52cres()
+int vt52cres(char *res)
 {
 	return TRUE;
 }
 
 #if COLOR
 /* set the forground color [NOT IMPLIMENTED] */
-int vt52fcol()
+int vt52fcol(void)
 {
 }
 
 /* set the background color [NOT IMPLIMENTED] */
-int vt52bcol()
+int vt52bcol(int color)
 {
 }
 #endif
 
-void vt52beep()
+void vt52beep(void)
 {
 #ifdef  BEL
 	ttputc(BEL);
@@ -136,7 +136,7 @@ void vt52beep()
 #endif
 }
 
-void vt52open()
+void vt52open(void)
 {
 #if V7 | BSD
 	char *cp;
@@ -154,11 +154,11 @@ void vt52open()
 	ttopen();
 }
 
-void vt52kopen()
+void vt52kopen(void)
 {
 }
 
-void vt52kclose()
+void vt52kclose(void)
 {
 }
 

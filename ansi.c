@@ -27,25 +27,25 @@
 #define BEL     0x07		/* BEL character. */
 #define ESC     0x1B		/* ESC character. */
 
-void ttopen();
-void ttclose();
-void ansiopen();
-void ansiclose();
-void ansikopen();
-void ansikclose();
-int ttgetc();
-int ttputc();
-void ttflush();
-void ansimove();
-void ansieeol();
-void ansieeop();
-void ansibeep();
-void ansirev();
-void ansicres();
+void ttopen(void);
+void ttclose(void);
+void ansiopen(void);
+void ansiclose(void);
+void ansikopen(void);
+void ansikclose(void);
+int ttgetc(void);
+int ttputc(void);
+void ttflush(void);
+void ansimove(int, int);
+void ansieeol(void);
+void ansieeop(void);
+void ansibeep(void);
+void ansirev(int);
+void ansicres(char *);
 
 #if COLOR
-int ansifcol();
-int ansibcol();
+int ansifcol(int);
+int ansibcol(int);
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */
@@ -173,7 +173,7 @@ void ansirev(int state)
 }
 
 /* Change screen resolution. */
-int ansicres()
+int ansicres(char *res)
 {
 	return TRUE;
 }

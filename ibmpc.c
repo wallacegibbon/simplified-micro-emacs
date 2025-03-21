@@ -64,27 +64,27 @@ unsigned int sline[NCOL];	/* screen line image */
 int egaexist = FALSE;		/* is an EGA card available? */
 extern union REGS rg;		/* cpu register for use of DOS calls */
 
-void ttopen();
-void ibmopen();
-void ibmclose();
-void ibmkopen();
-void ibmkclose();
-int ttgetc();
-int ttputc();
-void ttflush();
-void ttclose();
-void ibmmove();
-void ibmeeol();
-void ibmeeop();
-void ibmbeep();
-void ibmrev();
-int ibmcres();
-int ibmputc();
+void ttopen(void);
+void ibmopen(void);
+void ibmclose(void);
+void ibmkopen(void);
+void ibmkclose(void);
+int ttgetc(void);
+int ttputc(void);
+void ttflush(void);
+void ttclose(void);
+void ibmmove(int, int);
+void ibmeeol(void);
+void ibmeeop(void);
+void ibmbeep(void);
+void ibmrev(int);
+int ibmcres(char *);
+int ibmputc(int);
 
 #if COLOR
-int ibmfcol();
-int ibmbcol();
-void ibmscroll_reg();
+int ibmfcol(int);
+int ibmbcol(int);
+void ibmscroll_reg(int, int, int);
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */
@@ -262,7 +262,7 @@ void ibmcres(char *res)
 #if SCROLLCODE
 
 /* Move howmany lines starting at from to to. */
-void ibmscroll_reg(from, to, howmany)
+void ibmscroll_reg(int from, int to, int howmany)
 {
 	int i;
 
