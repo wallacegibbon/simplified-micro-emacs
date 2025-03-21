@@ -514,16 +514,15 @@ struct terminal {
 	void (*t_rev)(int);	/* set reverse video state */
 	int (*t_rez)(char *);	/* change screen resolution */
 #if COLOR
-	int (*t_setfor) ();	/* set forground color */
-	int (*t_setback) ();	/* set background color */
+	int (*t_setfor)(void);	/* set forground color */
+	int (*t_setback)(void);	/* set background color */
 #endif
 #if     SCROLLCODE
-	void (*t_scroll)(int, int,int);	/* scroll a region of the screen */
+	void (*t_scroll)(int, int, int);	/* scroll a region of the screen */
 #endif
 };
 
-/* TEMPORARY macros for terminal I/O  (to be placed in a machine
-					    dependant place later) */
+/* TEMPORARY macros for terminal I/O  (to be placed in a machine dependant place later) */
 
 #define	TTopen		(*term.t_open)
 #define	TTclose		(*term.t_close)
