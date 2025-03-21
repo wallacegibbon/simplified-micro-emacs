@@ -49,22 +49,19 @@ Newline ...............      ^M         Transpose characters ..      ^T
 Newline and indent ....      ^J         Trim line .............   ^X ^T
 Open line .............      ^O
 Handle tab ............      ^I         Quote character .......      ^Q
-Insert space ..........      ^C
 Goto line ............. Meta  G         Abort command .........      ^G
 Goto matching fence ... Meta ^F
 -------------------------------------------------------------------------------
 =>                      MODE COMMANDS
 Add mode ..............   ^X  M         Add global mode	....... Meta  M
 Delete mode ...........   ^X ^M         Delete global mode .... Meta ^M
-OVER   :: Overwrite, don't insert       MAGIC  :: Match patterns in search
-WRAP   :: Automatic carriage return     ^ $  Beginning and end of line
-VIEW   :: View only, don't change       .    Any character   \c   Character c
-CMODE  :: C program indenting           c*   Any number of character c
-EXACT  :: Match case in search          [ ]  Character class
+
+OVER   :: Overwrite, don't insert
+VIEW   :: View only, don't change
+CMODE  :: C program indenting
+EXACT  :: Match case in search
 -------------------------------------------------------------------------------
 =>                      KEYS AND COMMANDS
-Bind to key ........... Meta  K         Help .................. Meta  ?
-Unbind key ............ Meta ^K         Apropos ............... Meta  A
 Abort command .........      ^G
 Meta prefix ...........      Esc    ::  Although meta-prefix can be bound to
 Cntlx prefix ..........      ^X     ::  some other key, no other command can

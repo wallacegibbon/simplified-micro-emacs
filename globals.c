@@ -17,16 +17,16 @@ int flickcode = FALSE;		/* do flicker supression? */
  */
 
 char *modename[] = {
-	"CMODE", "SPELL", "EXACT", "VIEW", "OVER", "MAGIC", "ASAVE", "UTF-8"
+	"CMODE", "EXACT", "VIEW", "OVER", "ASAVE", "UTF-8"
 };
 
 char *mode2name[] = {
-	"CMode", "Spell", "Exact", "View", "Over", "Magic", "Asave", "utf-8"
+	"CMode", "Exact", "View", "Over", "Asave", "utf-8"
 };
 
-char modecode[] = "CSEVOMAU";	/* letters to represent modes */
+char modecode[] = "CEVOAU";	/* letters to represent modes */
 
-int gmode = 0;			/* global editor mode */
+int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
 int gfcolor = 7;		/* global forgrnd color (white) */
 int gbcolor = 0;		/* global backgrnd color (black) */

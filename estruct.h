@@ -118,8 +118,7 @@
 
 #endif /* Autoconf. */
 
-#define MAGIC	1  /* include regular expression matching? */
-#define	AEDIT	1  /* advanced editing options: en/detabbing */
+#define	AEDIT	1  /* advanced editing options: e.g. trim trailing spaces */
 #define	CLEAN	0  /* de-alloc memory on exit */
 
 #define ASCII	1  /* always using ASCII char sequences for now */
@@ -387,15 +386,13 @@ struct buffer {
 #define	BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define	NUMMODES	8
+#define	NUMMODES	6
 
 #define	MDCMOD	0x0001		/* C indentation and fence match */
-#define	MDSPELL	0x0002		/* spell error parcing */
+#define	MDVIEW	0x0002		/* read-only buffer */
 #define	MDEXACT	0x0004		/* Exact matching for searches */
-#define	MDVIEW	0x0008		/* read-only buffer */
-#define	MDOVER	0x0010		/* overwrite mode */
-#define	MDMAGIC	0x0020		/* regular expresions in search */
-#define	MDASAVE	0x0040		/* auto-save mode */
+#define	MDOVER	0x0008		/* overwrite mode */
+#define	MDASAVE	0x0010		/* auto-save mode */
 
 /*
  * The starting position of a region, and the size of the region in
@@ -527,63 +524,4 @@ struct while_block {
 #define	IS_FORWARD	0x13	/* Search forward */
 #define	IS_VMSQUOTE	0x16	/* VMS quote character */
 #define	IS_VMSFORW	0x18	/* Search forward for VMS */
-#define	IS_QUIT		0x1B	/* Exit the search */
 #define	IS_RUBOUT	0x7F	/* Delete previous character */
-
-/* IS_QUIT is no longer used, the variable metac is used instead */
-
-
-#if defined(MAGIC)
-/*
- * Defines for the metacharacters in the regular expression
- * search routines.
- */
-#define	MCNIL		0	/* Like the '\0' for strings. */
-#define	LITCHAR		1	/* Literal character, or string. */
-#define	ANY		2
-#define	CCL		3
-#define	NCCL		4
-#define	BOL		5
-#define	EOL		6
-#define	DITTO		7
-#define	CLOSURE		256	/* An or-able value. */
-#define	MASKCL		(CLOSURE - 1)
-
-#define	MC_ANY		'.'	/* 'Any' character (except newline). */
-#define	MC_CCL		'['	/* Character class. */
-#define	MC_NCCL		'^'	/* Negate character class. */
-#define	MC_RCCL		'-'	/* Range in character class. */
-#define	MC_ECCL		']'	/* End of character class. */
-#define	MC_BOL		'^'	/* Beginning of line. */
-#define	MC_EOL		'$'	/* End of line. */
-#define	MC_CLOSURE	'*'	/* Closure - does not extend past newline. */
-#define	MC_DITTO	'&'	/* Use matched string in replacement. */
-#define	MC_ESC		'\\'	/* Escape - suppress meta-meaning. */
-
-#define	BIT(n)		(1 << (n))	/* An integer with one bit set. */
-#define	CHCASE(c)	((c) ^ DIFCASE)	/* Toggle the case of a letter. */
-
-/* HICHAR - 1 is the largest character we will deal with.
- * HIBYTE represents the number of bytes in the bitmap.
- */
-#define	HICHAR		256
-#define	HIBYTE		HICHAR >> 3
-
-/* Typedefs that define the meta-character structure for MAGIC mode searching
- * (struct magic), and the meta-character structure for MAGIC mode replacement
- * (struct magic_replacement).
- */
-struct magic {
-	short int mc_type;
-	union {
-		int lchar;
-		char *cclmap;
-	} u;
-};
-
-struct magic_replacement {
-	short int mc_type;
-	char *rstr;
-};
-
-#endif
