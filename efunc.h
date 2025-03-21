@@ -170,7 +170,7 @@ int zotbuf(struct buffer *bp);
 int namebuffer(int f, int n);
 int listbuffers(int f, int n);
 int makelist(int iflag);
-void ltoa(char *buf, int width, long num);
+void e_ltoa(char *buf, int width, long num);
 int addline(char *text);
 int anycb(void);
 int bclear(struct buffer *bp);

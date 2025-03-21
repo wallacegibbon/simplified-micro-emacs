@@ -16,9 +16,6 @@
 #include "efunc.h"
 #include "line.h"
 
-/* the `ltoa` is defined on some compilers, so prefix is used */
-void e_ltoa(char *buf, int width, long num);
-
 /*
  * Attach a buffer to a window. The
  * values of dot and mark come from the buffer
