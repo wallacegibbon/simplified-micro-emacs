@@ -255,6 +255,3 @@ void lckerror(char *errstr);
 /* pklock.c */
 char *dolock(char *fname);
 char *undolock(char *fname);
-
-/* ibmpc.c */
-void scwrite(int row, unicode_t *outstr, int forg, int bacg);

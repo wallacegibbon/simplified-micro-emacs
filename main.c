@@ -62,15 +62,6 @@
 #include "line.h"
 #include "version.h"
 
-/* For MSDOS, increase the default stack space. */
-#if MSDOS & TURBO
-#if PKCODE
-extern unsigned _stklen = 20000;
-#else
-extern unsigned _stklen = 32766;
-#endif
-#endif
-
 #if VMS
 #include <ssdef.h>
 #define GOOD    (SS$_NORMAL)
@@ -451,9 +442,7 @@ int execute(int c, int f, int n)
 
 #if PKCODE
 	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
-#if IBMPC
-	    || (c >= 0x80 && c <= 0xFE)) {
-#elif VMS || BSD || USG	/* 8BIT P.K. */
+#if VMS || BSD || USG	/* 8BIT P.K. */
 	    || (c >= 0xA0 && c <= 0x10FFFF)) {
 #else
 	    ) {

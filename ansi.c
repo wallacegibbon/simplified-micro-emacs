@@ -44,8 +44,8 @@ void ansirev(int);
 void ansicres(char *);
 
 #if COLOR
-int ansifcol(int);
-int ansibcol(int);
+void ansifcol(int);
+void ansibcol(int);
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */

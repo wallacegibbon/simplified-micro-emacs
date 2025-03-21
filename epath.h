@@ -10,17 +10,6 @@
 
 /* possible names and paths of help files under different OSs */
 static char *pathname[] =
-#if MSDOS
-{
-	"emacs.hlp",
-	"\\sys\\public\\",
-	"\\usr\\bin\\",
-	"\\bin\\",
-	"\\",
-	""
-};
-#endif
-
 #if V7 | BSD | USG
 {
 	"emacs.hlp",

@@ -102,8 +102,7 @@ void ttclose(void)
 /*
  * Write a character to the display. On VMS, terminal output is buffered, and
  * we just put the characters in the big array, after checking for overflow.
- * On CPM terminal I/O unbuffered, so we just write the byte out. Ditto on
- * MS-DOS (use the very very raw console output routine).
+ * On CPM terminal I/O unbuffered, so we just write the byte out.
  */
 int ttputc(int c)
 {

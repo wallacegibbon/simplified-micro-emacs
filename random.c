@@ -802,11 +802,8 @@ int adjustmode(int kind, int global)
 	}
 
 	/* test it first against the colors we know */
-#if PKCODE & IBMPC
-	for (i = 0; i <= NCOLORS; i++) {
-#else
+
 	for (i = 0; i < NCOLORS; i++) {
-#endif
 		if (strcmp(cbuf, cname[i]) == 0) {
 			/* finding the match, we set the color */
 #if COLOR

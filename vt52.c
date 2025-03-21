@@ -44,8 +44,8 @@ void vt52rev(int);
 int vt52cres(int, int);
 
 #if COLOR
-int vt52fcol(int);
-int vt52bcol(int);
+void vt52fcol(int);
+void vt52bcol(int);
 #endif
 
 /*
@@ -118,12 +118,12 @@ int vt52cres(char *res)
 
 #if COLOR
 /* set the forground color [NOT IMPLIMENTED] */
-int vt52fcol(void)
+void vt52fcol(void)
 {
 }
 
 /* set the background color [NOT IMPLIMENTED] */
-int vt52bcol(int color)
+void vt52bcol(int color)
 {
 }
 #endif

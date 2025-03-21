@@ -36,11 +36,6 @@ int newmode[3];			/* New TTY mode bits */
 short iochan;			/* TTY I/O channel */
 #endif
 
-#if MSDOS & (MSC | TURBO)
-union REGS rg;			/* cpu register for use of DOS calls */
-int nxtchar = -1;		/* character held from type ahead */
-#endif
-
 #if USG			/* System V */
 #include <signal.h>
 #include <termio.h>
@@ -148,14 +143,6 @@ void ttopen(void)
 
 #endif
 
-#if MSDOS & (TURBO | (PKCODE & MSC))
-	/* kill the CONTROL-break interupt */
-	rg.h.ah = 0x33;		/* control-break check dos call */
-	rg.h.al = 1;		/* set the current state */
-	rg.h.dl = 0;		/* set it OFF */
-	intdos(&rg, &rg);	/* go for it! */
-#endif
-
 #if USG
 	ioctl(0, TCGETA, &otermio);	/* save old settings */
 	ntermio.c_iflag = 0;	/* setup new settings */
@@ -237,14 +224,6 @@ void ttclose(void)
 	if (status != SS$_NORMAL)
 		exit(status);
 #endif
-#if MSDOS & (TURBO | (PKCODE & MSC))
-	/* restore the CONTROL-break interupt */
-	rg.h.ah = 0x33;		/* control-break check dos call */
-	rg.h.al = 1;		/* set the current state */
-	rg.h.dl = 1;		/* set it ON */
-	intdos(&rg, &rg);	/* go for it! */
-#endif
-
 #if USG
 #if PKCODE
 	ioctl(0, TCSETAW, &otermio);	/* restore terminal settings */
@@ -266,8 +245,7 @@ void ttclose(void)
 /*
  * Write a character to the display. On VMS, terminal output is buffered, and
  * we just put the characters in the big array, after checking for overflow.
- * On CPM terminal I/O unbuffered, so we just write the byte out. Ditto on
- * MS-DOS (use the very very raw console output routine).
+ * On CPM terminal I/O unbuffered, so we just write the byte out.
  */
 void ttputc(c)
 {
@@ -275,10 +253,6 @@ void ttputc(c)
 	if (nobuf >= NOBUF)
 		ttflush();
 	obuf[nobuf++] = c;
-#endif
-
-#if MSDOS & ~IBMPC
-	bdos(6, c, 0);
 #endif
 
 #if V7 | USG | BSD
@@ -306,9 +280,6 @@ int ttflush(void)
 		nobuf = 0;
 	}
 	return status;
-#endif
-
-#if MSDOS
 #endif
 
 #if V7 | USG | BSD
@@ -339,7 +310,7 @@ int ttflush(void)
  * at all. More complex in VMS that almost anyplace else, which figures. Very
  * simple on CPM, because the system can do exactly what you want.
  */
-ttgetc()
+int ttgetc(void)
 {
 #if VMS
 	int status;
@@ -373,23 +344,6 @@ ttgetc()
 	return ibuf[ibufi++] & 0xFF;	/* Allow multinational */
 #endif
 
-#if MSDOS & (MSC | TURBO)
-	int c;			/* character read */
-
-	/* if a char already is ready, return it */
-	if (nxtchar >= 0) {
-		c = nxtchar;
-		nxtchar = -1;
-		return c;
-	}
-
-	/* call the dos to get a char */
-	rg.h.ah = 7;		/* dos Direct Console Input call */
-	intdos(&rg, &rg);
-	c = rg.h.al;		/* grab the char */
-	return c & 255;
-#endif
-
 #if V7 | BSD
 	return 255 & fgetc(stdin);	/* 8BIT P.K. */
 #endif
@@ -412,15 +366,8 @@ ttgetc()
 		keyboard buffer
 */
 
-typahead()
+int typahead(void)
 {
-#if MSDOS & (MSC | TURBO)
-	if (kbhit() != 0)
-		return TRUE;
-	else
-		return FALSE;
-#endif
-
 #if BSD
 	int x;			/* holds # of pending chars */
 
@@ -443,7 +390,7 @@ typahead()
 	return kbdqp;
 #endif
 
-#if !UNIX & !VMS & !MSDOS
+#if !UNIX & !VMS
 	return FALSE;
 #endif
 }

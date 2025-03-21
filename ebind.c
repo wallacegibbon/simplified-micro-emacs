@@ -118,31 +118,6 @@ struct key_tab keytab[] = {
 	{META | 'Z', quickexit},
 	{META | 0x7F, delbword},
 
-#if MSDOS
-	{SPEC | CONTROL | '_', forwhunt},
-	{SPEC | CONTROL | 'S', backhunt},
-	{SPEC | 71, gotobol},
-	{SPEC | 72, backline},
-	{SPEC | 73, backpage},
-	{SPEC | 75, backchar},
-	{SPEC | 77, forwchar},
-	{SPEC | 79, gotoeol},
-	{SPEC | 80, forwline},
-	{SPEC | 81, forwpage},
-	{SPEC | 82, insspace},
-	{SPEC | 83, forwdel},
-	{SPEC | 115, backword},
-	{SPEC | 116, forwword},
-#if PKCODE
-	{SPEC | 117, gotoeob},
-	{SPEC | 119, gotobob},
-	{SPEC | 141, gotobop},
-	{SPEC | 145, gotoeop},
-	{SPEC | 146, yank},
-	{SPEC | 147, killregion},
-#endif /* PKCODE */
-#endif /* MSDOS */
-
 #if VT220
 	{SPEC | '1', fisearch},
 	{SPEC | '2', yank},
