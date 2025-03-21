@@ -37,7 +37,7 @@ int wrapword(int f, int n)
 	   make sure there is a break in the line */
 	cnt = 0;
 	while (((c = lgetc(curwp->w_dotp, curwp->w_doto)) != ' ')
-	       && (c != '\t')) {
+			&& (c != '\t')) {
 		cnt++;
 		if (!backchar(0, 1))
 			return FALSE;
@@ -123,6 +123,7 @@ int upperword(int f, int n)
 		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
+
 	while (n--) {
 		while (inword() == FALSE) {
 			if (forwchar(FALSE, 1) == FALSE)
@@ -159,6 +160,7 @@ int lowerword(int f, int n)
 		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
+
 	while (n--) {
 		while (inword() == FALSE) {
 			if (forwchar(FALSE, 1) == FALSE)
@@ -196,6 +198,7 @@ int capword(int f, int n)
 		return rdonly();	/* we are in read only mode */
 	if (n < 0)
 		return FALSE;
+
 	while (n--) {
 		while (inword() == FALSE) {
 			if (forwchar(FALSE, 1) == FALSE)
@@ -243,15 +246,12 @@ int capword(int f, int n)
 int delfword(int f, int n)
 {
 	struct line *dotp;	/* original cursor line */
-	int doto;	/* and row */
-	int c;		/* temp char */
+	int doto;		/* and row */
+	int c;			/* temp char */
 	long size;		/* # of chars to delete */
 
-	/* don't allow this command if we are in read only mode */
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
-
-	/* ignore the command if there is a negative argument */
 	if (n < 0)
 		return FALSE;
 
@@ -333,11 +333,8 @@ int delbword(int f, int n)
 {
 	long size;
 
-	/* don't allow this command if we are in read only mode */
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
-
-	/* ignore the command if there is a nonpositive argument */
 	if (n <= 0)
 		return FALSE;
 

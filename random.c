@@ -465,16 +465,16 @@ int insbrace(int n, int c)
 	curwp->w_doto = 0;	/* debut de ligne */
 	/* aller au debut de la ligne apres la tabulation */
 	while ((ch = lgetc(curwp->w_dotp, curwp->w_doto)) == ' '
-	       || ch == '\t')
+			|| ch == '\t')
 		forwchar(FALSE, 1);
 
 	/* delete back first */
-	target = getccol(FALSE);	/* c'est l'indent que l'on doit avoir */
+	target = getccol(FALSE);
 	curwp->w_dotp = oldlp;
 	curwp->w_doto = oldoff;
 
 	while (target != getccol(FALSE)) {
-		if (target < getccol(FALSE))	/* on doit detruire des caracteres */
+		if (target < getccol(FALSE))
 			while (getccol(FALSE) > target)
 				backdel(FALSE, 1);
 		else {		/* on doit en inserer */
@@ -834,20 +834,23 @@ int adjustmode(int kind, int global)
 
 	for (i = 0; i < NUMMODES; i++) {
 		if (strcmp(cbuf, modename[i]) == 0) {
+			int val = modevalue[i];
 			/* finding a match, we process it */
-			if (kind == TRUE)
+			if (kind == TRUE) {
 				if (global)
-					gmode |= (1 << i);
+					gmode |= val;
 				else
-					curbp->b_mode |= (1 << i);
-			else if (global)
-				gmode &= ~(1 << i);
-			else
-				curbp->b_mode &= ~(1 << i);
+					curbp->b_mode |= val;
+			} else {
+				if (global)
+					gmode &= ~val;
+				else
+					curbp->b_mode &= ~val;
+			}
 			/* display new mode line */
 			if (global == 0)
 				upmode();
-			mlerase();	/* erase the junk */
+			mlerase();
 			return TRUE;
 		}
 	}

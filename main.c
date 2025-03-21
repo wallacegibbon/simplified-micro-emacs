@@ -318,26 +318,17 @@ loop:
 		mlwrite("Arg: 4");
 		while (((c = getcmd()) >= '0' && c <= '9') || c == reptc
 		       || c == '-') {
-			if (c == reptc)
+			if (c == reptc) {
 				if ((n > 0) == ((n * 4) > 0))
 					n = n * 4;
 				else
 					n = 1;
-			/*
-			 * If dash, and start of argument string, set arg.
-			 * to -1.  Otherwise, insert it.
-			 */
-			else if (c == '-') {
+			} else if (c == '-') {
 				if (mflag)
 					break;
 				n = 0;
 				mflag = -1;
-			}
-			/*
-			 * If first digit entered, replace previous argument
-			 * with digit and set sign.  Otherwise, append to arg.
-			 */
-			else {
+			} else {
 				if (!mflag) {
 					n = 0;
 					mflag = 1;
@@ -373,12 +364,12 @@ void edinit(char *bname)
 	struct buffer *bp;
 	struct window *wp;
 
-	bp = bfind(bname, TRUE, 0);	/* First buffer */
-	blistp = bfind("*List*", TRUE, BFINVS);	/* Buffer list buffer */
-	wp = (struct window *)malloc(sizeof(struct window));	/* First window */
+	bp = bfind(bname, TRUE, 0); /* First buffer */
+	blistp = bfind("*List*", TRUE, BFINVS); /* Buffer list buffer */
+	wp = (struct window *)malloc(sizeof(struct window)); /* First window */
 	if (bp == NULL || wp == NULL || blistp == NULL)
 		exit(1);
-	curbp = bp;		/* Make this current */
+	curbp = bp;
 	wheadp = wp;
 	curwp = wp;
 	wp->w_wndp = NULL;	/* Initialize window */
@@ -402,21 +393,17 @@ void edinit(char *bname)
 
 /*
  * This function looks a key binding up in the binding table
- *
- * int c;		key to find what is bound to it
  */
 int (*getbind(int c))(int, int)
 {
 	struct key_tab *ktp;
 
-	ktp = &keytab[0];  /* Look in key table. */
+	ktp = &keytab[0];
 	while (ktp->k_fp != NULL) {
 		if (ktp->k_code == c)
 			return ktp->k_fp;
 		++ktp;
 	}
-
-	/* no such binding */
 	return NULL;
 }
 
@@ -443,9 +430,9 @@ int execute(int c, int f, int n)
 #if PKCODE
 	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
 #if VMS || BSD || USG	/* 8BIT P.K. */
-	    || (c >= 0xA0 && c <= 0x10FFFF)) {
+			|| (c >= 0xA0 && c <= 0x10FFFF)) {
 #else
-	    ) {
+			) {
 #endif
 #else
 	if ((c >= 0x20 && c <= 0xFF)) {	/* Self inserting. */
@@ -460,9 +447,9 @@ int execute(int c, int f, int n)
 		   and next char is not a tab or we are at a tab stop,
 		   delete a char forword */
 		if (curwp->w_bufp->b_mode & MDOVER &&
-		    curwp->w_doto < curwp->w_dotp->l_used &&
-		    (lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-		     (curwp->w_doto) % 8 == 7))
+				curwp->w_doto < curwp->w_dotp->l_used &&
+				(lgetc(curwp->w_dotp, curwp->w_doto) != '\t'
+					 || (curwp->w_doto) % 8 == 7))
 			ldelchar(1, FALSE);
 
 		/* do the appropriate insertion */
@@ -475,20 +462,20 @@ int execute(int c, int f, int n)
 
 #if CFENCE
 		/* check for CMODE fence matching */
-		if ((c == '}' || c == ')' || c == ']') &&
-		    (curbp->b_mode & MDCMOD) != 0)
+		if ((c == '}' || c == ')' || c == ']')
+				&& (curbp->b_mode & MDCMOD) != 0)
 			fmatch(c);
 #endif
 
 		/* check auto-save mode */
-		if (curbp->b_mode & MDASAVE)
+		if (curbp->b_mode & MDASAVE) {
 			if (--gacount == 0) {
 				/* and save the file if needed */
 				upscreen(FALSE, 0);
 				filesave(FALSE, 0);
 				gacount = gasave;
 			}
-
+		}
 		lastflag = thisflag;
 		return status;
 	}
@@ -512,15 +499,11 @@ int quickexit(int f, int n)
 
 	bp = bheadp;
 	while (bp != NULL) {
-		if ((bp->b_flag & BFCHG) != 0	/* Changed. */
-		    && (bp->b_flag & BFTRUNC) == 0	/* Not truncated P.K. */
-		    && (bp->b_flag & BFINVS) == 0) {	/* Real. */
-			curbp = bp;	/* make that buffer cur */
+		if ((bp->b_flag & BFCHG) != 0 /* Changed. */
+				&& (bp->b_flag & BFTRUNC) == 0 /* Not truncated P.K. */
+				&& (bp->b_flag & BFINVS) == 0) { /* Real. */
+			curbp = bp;
 			mlwrite("(Saving %s)", bp->b_fname);
-#if PKCODE
-#else
-			mlwrite("\n");
-#endif
 			if ((status = filesave(f, n)) != TRUE) {
 				curbp = oldcb;	/* restore curbp */
 				return status;
@@ -546,11 +529,10 @@ int quit(int f, int n)
 {
 	int s;
 
-	if (f != FALSE		/* Argument forces it. */
-	    || anycb() == FALSE	/* All buffers clean. */
-	    /* User says it's OK. */
-	    || (s =
-		mlyesno("Modified buffers exist. Leave anyway")) == TRUE) {
+	if (f != FALSE /* Argument forces it. */
+			|| anycb() == FALSE /* All buffers clean. */
+			/* User says it's OK. */
+			|| (s = mlyesno("Modified buffers exist. Leave anyway")) == TRUE) {
 #if (FILOCK && BSD) || SVR4
 		if (lockrel() != TRUE) {
 			TTputc('\n');

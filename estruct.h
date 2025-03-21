@@ -342,11 +342,11 @@ struct window {
 #endif
 };
 
-#define WFFORCE 0x01		/* Window needs forced reframe */
-#define WFMOVE  0x02		/* Movement from line to line */
-#define WFEDIT  0x04		/* Editing within a line */
-#define WFHARD  0x08		/* Better to a full display */
-#define WFMODE  0x10		/* Update mode line. */
+#define	WFFORCE 0x01		/* Window needs forced reframe */
+#define	WFMOVE  0x02		/* Movement from line to line */
+#define	WFEDIT  0x04		/* Editing within a line */
+#define	WFHARD  0x08		/* Better to a full display */
+#define	WFMODE  0x10		/* Update mode line. */
 #define	WFCOLR	0x20		/* Needs a color change */
 
 #if SCROLLCODE
@@ -393,6 +393,7 @@ struct buffer {
 #define	MDEXACT	0x0004		/* Exact matching for searches */
 #define	MDOVER	0x0008		/* overwrite mode */
 #define	MDASAVE	0x0010		/* auto-save mode */
+#define	MDUTF8	0x0020		/* UTF-8 mode */
 
 /*
  * The starting position of a region, and the size of the region in

@@ -12,19 +12,19 @@ int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
 /**
- * CAUTION: when you add/remove modes, you should change
- * the NUMMODES macro, too.
+ * CAUTION:
+ * When you add/remove modes, you should change the NUMMODES macro, too.
  */
 
-char *modename[] = {
-	"CMODE", "EXACT", "VIEW", "OVER", "ASAVE", "UTF-8"
+const int modevalue[] = {
+	MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE, MDUTF8
 };
 
-char *mode2name[] = {
-	"CMode", "Exact", "View", "Over", "Asave", "utf-8"
+const char *modename[] = {
+	"CMODE", "VIEW", "EXACT", "OVER", "ASAVE", "UTF8"
 };
 
-char modecode[] = "CEVOAU";	/* letters to represent modes */
+char modecode[] = "CVEOAU";	/* letters to represent modes */
 
 int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
