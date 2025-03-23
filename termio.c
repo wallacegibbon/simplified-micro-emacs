@@ -14,28 +14,6 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if VMS
-#include <stsdef.h>
-#include <ssdef.h>
-#include <descrip.h>
-#include <iodef.h>
-#include <ttdef.h>
-#include <tt2def.h>
-
-#define NIBUF   128		/* Input buffer size */
-#define NOBUF   1024		/* MM says bug buffers win! */
-#define EFN     0		/* Event flag */
-
-char obuf[NOBUF];		/* Output buffer */
-int nobuf;			/* # of bytes in above */
-char ibuf[NIBUF];		/* Input buffer */
-int nibuf;			/* # of bytes in above */
-int ibufi;			/* Read index */
-int oldmode[3];			/* Old TTY mode bits */
-int newmode[3];			/* New TTY mode bits */
-short iochan;			/* TTY I/O channel */
-#endif
-
 #if USG			/* System V */
 #include <signal.h>
 #include <termio.h>
@@ -89,60 +67,9 @@ char tobuf[TBUFSIZ];		/* terminal output buffer */
 
 /*
  * This function is called once to set up the terminal device streams.
- * On VMS, it translates TT until it finds the terminal, then assigns
- * a channel to it and sets it raw. On CPM it is a no-op.
  */
 void ttopen(void)
 {
-#if VMS
-	struct dsc$descriptor idsc;
-	struct dsc$descriptor odsc;
-	char oname[40];
-	int iosb[2];
-	int status;
-
-	odsc.dsc$a_pointer = "TT";
-	odsc.dsc$w_length = strlen(odsc.dsc$a_pointer);
-	odsc.dsc$b_dtype = DSC$K_DTYPE_T;
-	odsc.dsc$b_class = DSC$K_CLASS_S;
-	idsc.dsc$b_dtype = DSC$K_DTYPE_T;
-	idsc.dsc$b_class = DSC$K_CLASS_S;
-	do {
-		idsc.dsc$a_pointer = odsc.dsc$a_pointer;
-		idsc.dsc$w_length = odsc.dsc$w_length;
-		odsc.dsc$a_pointer = &oname[0];
-		odsc.dsc$w_length = sizeof(oname);
-		status = LIB$SYS_TRNLOG(&idsc, &odsc.dsc$w_length, &odsc);
-		if (status != SS$_NORMAL && status != SS$_NOTRAN)
-			exit(status);
-		if (oname[0] == 0x1B) {
-			odsc.dsc$a_pointer += 4;
-			odsc.dsc$w_length -= 4;
-		}
-	} while (status == SS$_NORMAL);
-	status = SYS$ASSIGN(&odsc, &iochan, 0, 0);
-	if (status != SS$_NORMAL)
-		exit(status);
-	status = SYS$QIOW(EFN, iochan, IO$_SENSEMODE, iosb, 0, 0,
-			  oldmode, sizeof(oldmode), 0, 0, 0, 0);
-	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
-		exit(status);
-	newmode[0] = oldmode[0];
-	newmode[1] = oldmode[1] | TT$M_NOECHO;
-#if XONXOFF
-#else
-	newmode[1] &= ~(TT$M_TTSYNC | TT$M_HOSTSYNC);
-#endif
-	newmode[2] = oldmode[2] | TT2$M_PASTHRU;
-	status = SYS$QIOW(EFN, iochan, IO$_SETMODE, iosb, 0, 0,
-			  newmode, sizeof(newmode), 0, 0, 0, 0);
-	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
-		exit(status);
-	term.t_nrow = (newmode[1] >> 24) - 1;
-	term.t_ncol = newmode[0] >> 16;
-
-#endif
-
 #if USG
 	ioctl(0, TCGETA, &otermio);	/* save old settings */
 	ntermio.c_iflag = 0;	/* setup new settings */
@@ -206,24 +133,10 @@ void ttopen(void)
 
 /*
  * This function gets called just before we go back home to the command
- * interpreter. On VMS it puts the terminal back in a reasonable state.
- * Another no-operation on CPM.
+ * interpreter.
  */
 void ttclose(void)
 {
-#if VMS
-	int status;
-	int iosb[1];
-
-	ttflush();
-	status = SYS$QIOW(EFN, iochan, IO$_SETMODE, iosb, 0, 0,
-			  oldmode, sizeof(oldmode), 0, 0, 0, 0);
-	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
-		exit(status);
-	status = SYS$DASSGN(iochan);
-	if (status != SS$_NORMAL)
-		exit(status);
-#endif
 #if USG
 #if PKCODE
 	ioctl(0, TCSETAW, &otermio);	/* restore terminal settings */
@@ -243,18 +156,10 @@ void ttclose(void)
 }
 
 /*
- * Write a character to the display. On VMS, terminal output is buffered, and
- * we just put the characters in the big array, after checking for overflow.
- * On CPM terminal I/O unbuffered, so we just write the byte out.
+ * Write a character to the display.
  */
 void ttputc(c)
 {
-#if VMS
-	if (nobuf >= NOBUF)
-		ttflush();
-	obuf[nobuf++] = c;
-#endif
-
 #if V7 | USG | BSD
 	fputc(c, stdout);
 #endif
@@ -266,22 +171,6 @@ void ttputc(c)
  */
 int ttflush(void)
 {
-#if VMS
-	int status;
-	int iosb[2];
-
-	status = SS$_NORMAL;
-	if (nobuf != 0) {
-		status =
-		    SYS$QIOW(EFN, iochan, IO$_WRITELBLK | IO$M_NOFORMAT,
-			     iosb, 0, 0, obuf, nobuf, 0, 0, 0, 0);
-		if (status == SS$_NORMAL)
-			status = iosb[0] & 0xFFFF;
-		nobuf = 0;
-	}
-	return status;
-#endif
-
 #if V7 | USG | BSD
 /*
  * Add some terminal output success checking, sometimes an orphaned
@@ -307,43 +196,10 @@ int ttflush(void)
 
 /*
  * Read a character from the terminal, performing no editing and doing no echo
- * at all. More complex in VMS that almost anyplace else, which figures. Very
- * simple on CPM, because the system can do exactly what you want.
+ * at all.
  */
 int ttgetc(void)
 {
-#if VMS
-	int status;
-	int iosb[2];
-	int term[2];
-
-	while (ibufi >= nibuf) {
-		ibufi = 0;
-		term[0] = 0;
-		term[1] = 0;
-		status = SYS$QIOW(EFN, iochan, IO$_READLBLK | IO$M_TIMED,
-				  iosb, 0, 0, ibuf, NIBUF, 0, term, 0, 0);
-		if (status != SS$_NORMAL)
-			exit(status);
-		status = iosb[0] & 0xFFFF;
-		if (status != SS$_NORMAL && status != SS$_TIMEOUT &&
-		    status != SS$_DATAOVERUN)
-			exit(status);
-		nibuf = (iosb[0] >> 16) + (iosb[1] >> 16);
-		if (nibuf == 0) {
-			status = SYS$QIOW(EFN, iochan, IO$_READLBLK,
-					  iosb, 0, 0, ibuf, 1, 0, term, 0,
-					  0);
-			if (status != SS$_NORMAL
-			    || (status = (iosb[0] & 0xFFFF)) != SS$_NORMAL)
-				if (status != SS$_DATAOVERUN)
-					exit(status);
-			nibuf = (iosb[0] >> 16) + (iosb[1] >> 16);
-		}
-	}
-	return ibuf[ibufi++] & 0xFF;	/* Allow multinational */
-#endif
-
 #if V7 | BSD
 	return 255 & fgetc(stdin);	/* 8BIT P.K. */
 #endif
@@ -374,10 +230,6 @@ int typahead(void)
 	return (ioctl(0, FIONREAD, &x) < 0) ? 0 : x;
 #endif
 
-#if PKCODE & VMS
-	return ibufi < nibuf;
-#endif
-
 #if USG
 	if (!kbdqp) {
 		if (!kbdpoll && fcntl(0, F_SETFL, kbdflgs | O_NDELAY) < 0)
@@ -390,7 +242,7 @@ int typahead(void)
 	return kbdqp;
 #endif
 
-#if !UNIX & !VMS
+#if !UNIX
 	return FALSE;
 #endif
 }

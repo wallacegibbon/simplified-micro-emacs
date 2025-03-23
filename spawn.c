@@ -12,19 +12,6 @@
 #include "edef.h"
 #include "efunc.h"
 
-#if VMS
-#define EFN     0		/* Event flag. */
-
-#include <ssdef.h>	/* Random headers. */
-#include <stsdef.h>
-#include <descrip.h>
-#include <iodef.h>
-
-extern int oldmode[3];		/* In "termio.c" */
-extern int newmode[3];		/* In "termio.c" */
-extern short iochan;		/* In "termio.c" */
-#endif
-
 #if V7 | USG | BSD
 #include <signal.h>
 #ifdef SIGWINCH
@@ -36,8 +23,7 @@ void sizesignal(int);
 /*
  * Create a subjob with a copy of the command intrepreter in it. When the
  * command interpreter exits, mark the screen as garbage so that you do a full
- * repaint. Bound to "^X C". The message at the start in VMS puts out a newline.
- * Under some (unknown) condition, you don't get one free when DCL starts up.
+ * repaint. Bound to "^X C".
  */
 int spawncli(int f, int n)
 {
@@ -49,18 +35,6 @@ int spawncli(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if VMS
-	movecursor(term.t_nrow, 0);	/* In last line. */
-	mlputs("(Starting DCL)\r\n");
-	TTflush();		/* Ignore "ttcol". */
-	sgarbf = TRUE;
-	sys(NULL);
-	sleep(1);
-	mlputs("\r\n(Returning from DCL)\r\n");
-	TTflush();
-	sleep(1);
-	return TRUE;
-#endif
 #if V7 | USG | BSD
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
@@ -132,20 +106,6 @@ int spawn(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if VMS
-	if ((s = mlreply("!", line, NLINE)) != TRUE)
-		return s;
-	movecursor(term.t_nrow, 0);
-	TTflush();
-	s = sys(line);		/* Run the command. */
-
-	mlputs("\r\n\n(End)");	/* Pause. */
-	TTflush();
-	tgetc();
-
-	sgarbf = TRUE;
-	return s;
-#endif
 #if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
@@ -182,18 +142,6 @@ int execprg(int f, int n)
 	if (restflag)
 		return resterr();
 
-#if VMS
-	if ((s = mlreply("!", line, NLINE)) != TRUE)
-		return s;
-	TTflush();
-	s = sys(line);		/* Run the command. */
-	mlputs("\r\n\n(End)");	/* Pause. */
-	TTflush();
-	tgetc();
-	sgarbf = TRUE;
-	return s;
-#endif
-
 #if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
@@ -229,11 +177,6 @@ int pipecmd(int f, int n)
 	/* don't allow this command if restricted */
 	if (restflag)
 		return resterr();
-
-#if VMS
-	mlwrite("Not available under VMS");
-	return FALSE;
-#endif
 
 	/* get the command to pipe in */
 	if ((s = mlreply("@", line, NLINE)) != TRUE)
@@ -300,42 +243,3 @@ int pipecmd(int f, int n)
 	return TRUE;
 }
 
-#if VMS
-/*
- * Run a command. The "cmd" is a pointer to a command string, or NULL if you
- * want to run a copy of DCL in the subjob (this is how the standard routine
- * LIB$SPAWN works. You have to do wierd stuff with the terminal on the way in
- * and the way out, because DCL does not want the channel to be in raw mode.
- */
-int sys(char *cmd)
-{
-	struct dsc$descriptor cdsc;
-	struct dsc$descriptor *cdscp;
-	long status;
-	long substatus;
-	long iosb[2];
-
-	status = SYS$QIOW(EFN, iochan, IO$_SETMODE, iosb, 0, 0,
-			  oldmode, sizeof(oldmode), 0, 0, 0, 0);
-	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
-		return FALSE;
-	cdscp = NULL;		/* Assume DCL. */
-	if (cmd != NULL) {	/* Build descriptor. */
-		cdsc.dsc$a_pointer = cmd;
-		cdsc.dsc$w_length = strlen(cmd);
-		cdsc.dsc$b_dtype = DSC$K_DTYPE_T;
-		cdsc.dsc$b_class = DSC$K_CLASS_S;
-		cdscp = &cdsc;
-	}
-	status = LIB$SPAWN(cdscp, 0, 0, 0, 0, 0, &substatus, 0, 0, 0);
-	if (status != SS$_NORMAL)
-		substatus = status;
-	status = SYS$QIOW(EFN, iochan, IO$_SETMODE, iosb, 0, 0,
-			  newmode, sizeof(newmode), 0, 0, 0, 0);
-	if (status != SS$_NORMAL || (iosb[0] & 0xFFFF) != SS$_NORMAL)
-		return FALSE;
-	if ((substatus & STS$M_SUCCESS) == 0)	/* Command failed. */
-		return FALSE;
-	return TRUE;
-}
-#endif

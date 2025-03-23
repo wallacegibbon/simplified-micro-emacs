@@ -148,7 +148,7 @@ start_over:
 	c = ectoc(expc = get_char());
 
 	/* Reuse old search string? */
-	if ((c == IS_FORWARD) || (c == IS_REVERSE) || (c == IS_VMSFORW)) {
+	if ((c == IS_FORWARD) || (c == IS_REVERSE)) {
 		/* Yup, find the length */
 		for (cpos = 0; pat[cpos] != 0; cpos++)
 			col = echo_char(pat[cpos], col);
@@ -171,14 +171,12 @@ start_over:
 
 		case IS_REVERSE:
 		case IS_FORWARD:
-		case IS_VMSFORW:
 			n = (c == IS_REVERSE) ? -1 : 1;
 			status = scanmore(pat, n);
 			c = ectoc(expc = get_char());
 			continue;
 
 		case IS_QUOTE:
-		case IS_VMSQUOTE:
 			c = ectoc(expc = get_char());
 
 		case IS_TAB:

@@ -43,7 +43,7 @@
  *
  * After that versions 3.X and Daniel Lawrence went their own ways.
  * A modified 3.9e/PK was heavily used at the University of Helsinki
- * for several years on different UNIX, VMS, and MSDOS platforms.
+ * for several years on different UNIX platforms.
  *
  * This modified version is now called eEmacs/PK.
  *
@@ -61,11 +61,6 @@
 #include "efunc.h"
 #include "line.h"
 #include "version.h"
-
-#if VMS
-#include <ssdef.h>
-#define GOOD    (SS$_NORMAL)
-#endif
 
 #ifndef GOOD
 #define GOOD    0
@@ -108,10 +103,6 @@ int main(int argc, char **argv)
 	int saveflag;		/* temp store for lastflag */
 	char bname[NBUFN];	/* buffer name of file to read */
 	int newc;
-
-#if PKCODE & VMS
-	(void) umask(-1); /* Use old protection (this is at wrong place). */
-#endif
 
 #if PKCODE & BSD
 	sleep(1); /* Time for window manager. */
@@ -423,7 +414,7 @@ int execute(int c, int f, int n)
 
 #if PKCODE
 	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
-#if VMS || BSD || USG	/* 8BIT P.K. */
+#if BSD || USG	/* 8BIT P.K. */
 			|| (c >= 0xA0 && c <= 0x10FFFF)) {
 #else
 			) {

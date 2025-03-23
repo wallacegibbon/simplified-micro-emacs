@@ -19,13 +19,13 @@ PROGRAM=em
 SRC=ansi.c basic.c buffer.c display.c ebind.c names.c \
 	file.c fileio.c input.c isearch.c line.c lock.c main.c \
 	pklock.c posix.c random.c region.c search.c spawn.c tcap.c \
-	termio.c vmsvt.c vt52.c window.c word.c globals.c version.c \
+	termio.c vt52.c window.c word.c globals.c version.c \
 	usage.c wrapper.c utf8.c util.c
 
 OBJ=ansi.o basic.o buffer.o display.o ebind.o names.o \
 	file.o fileio.o input.o isearch.o line.o lock.o main.o \
 	pklock.o posix.o random.o region.o search.o spawn.o tcap.o \
-	termio.o vmsvt.o vt52.o window.o word.o globals.o version.o \
+	termio.o vt52.o window.o word.o globals.o version.o \
 	usage.o wrapper.o utf8.o util.o
 
 HDR=edef.h efunc.h epath.h estruct.h util.h version.h
@@ -147,7 +147,6 @@ spawn.o: spawn.c estruct.h edef.h
 tcap.o: tcap.c estruct.h edef.h
 termio.o: termio.c estruct.h edef.h
 utf8.o: utf8.c utf8.h
-vmsvt.o: vmsvt.c estruct.h edef.h
 vt52.o: vt52.c estruct.h edef.h
 window.o: window.c estruct.h edef.h
 word.o: word.c estruct.h edef.h

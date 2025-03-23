@@ -31,14 +31,7 @@ int ffropen(char *fn)
  */
 int ffwopen(char *fn)
 {
-#if VMS
-	int fd;
-
-	if ((fd = creat(fn, 0666, "rfm=var", "rat=cr")) < 0
-	    || (ffp = fdopen(fd, "w")) == NULL) {
-#else
 	if ((ffp = fopen(fn, "w")) == NULL) {
-#endif
 		mlwrite("Cannot open file for writing");
 		return FIOERR;
 	}

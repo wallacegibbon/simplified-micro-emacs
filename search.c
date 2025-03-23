@@ -245,11 +245,6 @@ int filter_buffer(int f, int n)
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
 
-#if VMS
-	mlwrite("Not available under VMS");
-	return FALSE;
-#endif
-
 	/* get the filter name and its args */
 	if ((s = mlreply("#", line, NLINE)) != TRUE)
 		return s;
@@ -783,11 +778,10 @@ int expandp(char *srcstr, char *deststr, int maxlength)
 }
 
 /*
- * boundry -- Return information depending on whether we may search no
- *	further.  Beginning of file and end of file are the obvious
- *	cases, but we may want to add further optional boundry restrictions
- *	in future, a' la VMS EDT.  At the moment, just return TRUE or
- *	FALSE depending on if a boundry is hit (ouch).
+ * boundry
+ *
+ * Return information depending on whether we may search no further.
+ * Beginning of file and end of file are the obvious cases.
  */
 int boundry(struct line *curline, int curoff, int dir)
 {
@@ -795,10 +789,10 @@ int boundry(struct line *curline, int curoff, int dir)
 
 	if (dir == FORWARD) {
 		border = (curoff == llength(curline)) &&
-		    (lforw(curline) == curbp->b_linep);
+			(lforw(curline) == curbp->b_linep);
 	} else {
 		border = (curoff == 0) &&
-		    (lback(curline) == curbp->b_linep);
+			(lback(curline) == curbp->b_linep);
 	}
 	return border;
 }

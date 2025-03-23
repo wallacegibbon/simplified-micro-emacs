@@ -13,7 +13,7 @@
 
 /* Machine/OS definitions. */
 
-#if defined(AUTOCONF) || defined(BSD) || defined(SYSV) || defined(VMS)
+#if defined(AUTOCONF) || defined(BSD) || defined(SYSV)
 
 /* Make an intelligent guess about the target system. */
 
@@ -37,12 +37,6 @@
 #define	USG 0
 #endif
 
-#if defined(VMS) || (defined(vax) && ! defined(unix))
-#define VMS 1 /* VAX/VMS */
-#else
-#define VMS 0
-#endif
-
 #define	V7 0 /* No more. */
 
 #else
@@ -50,7 +44,6 @@
 #define V7      0		/* V7 UNIX or Coherent or BSD4.2 */
 #define	BSD	0		/* UNIX BSD 4.2 and ULTRIX */
 #define	USG	0		/* UNIX system V */
-#define VMS     0		/* VAX/VMS */
 
 #endif				/*autoconf */
 
@@ -75,16 +68,14 @@
 /* Terminal Output definitions */
 
 #define ANSI    0		/* ANSI escape sequences */
-#define	VMSVT	0		/* various VMS terminal entries */
 #define VT52    0		/* VT52 terminal (Zenith). */
 #define TERMCAP 0		/* Use TERMCAP */
 
 #else
 
-#define	VT220	(UNIX | VMS)
+#define	VT220	UNIX
 #define	VT100	0
 #define	ANSI	0
-#define	VMSVT	VMS
 #define	VT52	0
 #define	TERMCAP	UNIX
 
@@ -128,25 +119,14 @@
 
 #else
 
-#define	XONXOFF	(UNIX | VMS)
-#define	NATIONL	(UNIX | VMS)
+#define	XONXOFF	UNIX
+#define	NATIONL	UNIX
 
 #endif /* Autoconf. */
 
 #define	PKCODE	1      /* include my extensions P.K., define always */
 #define SCROLLCODE 1   /* scrolling code P.K. */
 
-/* System dependant library redefinitions, structures and includes. */
-
-#if VMS
-#define	atoi xatoi
-#define	abs xabs
-#define getname xgetname
-#endif
-
-#if VMS
-#define	unlink(a) delete(a)
-#endif
 
 /* Define some ability flags. */
 
@@ -495,6 +475,4 @@ struct kill {
 #define	IS_QUOTE	0x11	/* Quote next character */
 #define IS_REVERSE	0x12	/* Search backward */
 #define	IS_FORWARD	0x13	/* Search forward */
-#define	IS_VMSQUOTE	0x16	/* VMS quote character */
-#define	IS_VMSFORW	0x18	/* Search forward for VMS */
 #define	IS_RUBOUT	0x7F	/* Delete previous character */
