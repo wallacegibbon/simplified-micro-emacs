@@ -60,23 +60,23 @@ struct terminal term = {
 	MARGIN,
 	SCRSIZ,
 	NPAUSE,
-	&vt52open,
-	&ttclose,
-	&vt52kopen,
-	&vt52kclose,
-	&ttgetc,
-	&ttputc,
-	&ttflush,
-	&vt52move,
-	&vt52eeol,
-	&vt52eeop,
-	&vt52beep,
-	&vt52rev,
-	&vt52cres
+	vt52open,
+	ttclose,
+	vt52kopen,
+	vt52kclose,
+	ttgetc,
+	ttputc,
+	ttflush,
+	vt52move,
+	vt52eeol,
+	vt52eeop,
+	vt52beep,
+	vt52rev,
+	vt52cres
 #if COLOR
 	,
-	&vt52fcol,
-	&vt52bcol
+	vt52fcol,
+	vt52bcol
 #endif
 #if SCROLLCODE
 	,

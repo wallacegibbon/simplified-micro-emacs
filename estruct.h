@@ -483,30 +483,6 @@ struct kill {
 	char d_chunk[KBLOCK];  /* Deleted text. */
 };
 
-/* When emacs' command interpetor needs to get a variable's name,
- * rather than it's value, it is passed back as a variable description
- * structure. The v_num field is a index into the appropriate variable table.
- */
-struct variable_description {
-	int v_type;  /* Type of variable. */
-	int v_num;   /* Ordinal pointer to variable in list. */
-};
-
-/* The !WHILE directive in the execution language needs to
- * stack references to pending whiles. These are stored linked
- * to each currently open procedure via a linked list of
- * the following structure.
-*/
-struct while_block {
-	struct line *w_begin;        /* ptr to !while statement */
-	struct line *w_end;          /* ptr to the !endwhile statement */
-	int w_type;		     /* block type */
-	struct while_block *w_next;  /* next while */
-};
-
-#define	BTWHILE		1
-#define	BTBREAK		2
-
 /*
  * Incremental search defines.
  */

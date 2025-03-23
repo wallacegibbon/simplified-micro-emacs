@@ -41,7 +41,7 @@ void ansieeol(void);
 void ansieeop(void);
 void ansibeep(void);
 void ansirev(int);
-void ansicres(char *);
+int ansicres(char *);
 
 #if COLOR
 void ansifcol(int);
