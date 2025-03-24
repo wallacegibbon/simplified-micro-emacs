@@ -13,8 +13,6 @@
 #include "efunc.h"
 #include "line.h"
 
-int tabsize; /* Tab size (0: use real tabs) */
-
 /*
  * Display the current position of the cursor, in origin 1 X-Y coordinates,
  * the character that is under the cursor (in hex), and the fraction of the
@@ -231,24 +229,10 @@ int quote(int f, int n)
 	return linsert(n, c);
 }
 
-/*
- * Set tab size if given non-default argument (n <> 1).  Otherwise, insert a
- * tab into file.  If given argument, n, of zero, change to true tabs.
- * If n > 1, simulate tab stop every n-characters using spaces. This has to be
- * done in this slightly funny way because the tab (in ASCII) has been turned
- * into "C-I" (in 10 bit code) already. Bound to "C-I".
- */
 int insert_tab(int f, int n)
 {
-	if (n < 0)
-		return FALSE;
-	if (n == 0 || n > 1) {
-		tabsize = n;
-		return TRUE;
-	}
-	if (!tabsize)
-		return linsert(1, '\t');
-	return linsert(tabsize - (getccol(FALSE) % tabsize), ' ');
+	/* More feature for C-i in the future, maybe~ */
+	return linsert(1, '\t');
 }
 
 /*
@@ -367,7 +351,7 @@ int cinsert(void)
 	/* save the indent of the previous line */
 	i = 0;
 	while ((i < tptr) && (cptr[i] == ' ' || cptr[i] == '\t')
-	       && (i < NSTRING - 1)) {
+			&& (i < NSTRING - 1)) {
 		ichar[i] = cptr[i];
 		++i;
 	}
@@ -513,7 +497,7 @@ int insbrace(int n, int c)
 	/* delete back first */
 	target = getccol(FALSE);	/* calc where we will delete to */
 	target -= 1;
-	target -= target % (tabsize == 0 ? 8 : tabsize);
+	target -= target % 8;
 	while (getccol(FALSE) > target)
 		backdel(FALSE, 1);
 

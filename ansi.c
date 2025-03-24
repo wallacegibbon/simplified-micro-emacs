@@ -27,25 +27,25 @@
 #define BEL     0x07		/* BEL character. */
 #define ESC     0x1B		/* ESC character. */
 
-void ttopen(void);
-void ttclose(void);
-void ansiopen(void);
-void ansiclose(void);
-void ansikopen(void);
-void ansikclose(void);
-int ttgetc(void);
-int ttputc(void);
-void ttflush(void);
-void ansimove(int, int);
-void ansieeol(void);
-void ansieeop(void);
-void ansibeep(void);
-void ansirev(int);
-int ansicres(char *);
+static void ttopen(void);
+static void ttclose(void);
+static void ansiopen(void);
+static void ansiclose(void);
+static void ansikopen(void);
+static void ansikclose(void);
+static int ttgetc(void);
+static int ttputc(void);
+static void ttflush(void);
+static void ansimove(int, int);
+static void ansieeol(void);
+static void ansieeop(void);
+static void ansibeep(void);
+static void ansirev(int);
+static int ansicres(char *);
 
 #if COLOR
-void ansifcol(int);
-void ansibcol(int);
+static void ansifcol(int);
+static void ansibcol(int);
 
 int cfcolor = -1;		/* current forground color */
 int cbcolor = -1;		/* current background color */
@@ -93,7 +93,7 @@ struct terminal term = {
 };
 
 #if COLOR
-void ansifcol(int color)
+static void ansifcol(int color)
 {
 	if (color == cfcolor)
 		return;
@@ -104,10 +104,7 @@ void ansifcol(int color)
 	cfcolor = color;
 }
 
-/* Set the current background color.
- * color: color to set.
- */
-void ansibcol(int color)
+static void ansibcol(int color)
 {
 	if (color == cbcolor)
 		return;
@@ -119,7 +116,7 @@ void ansibcol(int color)
 }
 #endif
 
-void ansimove(int row, int col)
+static void ansimove(int row, int col)
 {
 	ttputc(ESC);
 	ttputc('[');
@@ -129,14 +126,14 @@ void ansimove(int row, int col)
 	ttputc('H');
 }
 
-void ansieeol(void)
+static void ansieeol(void)
 {
 	ttputc(ESC);
 	ttputc('[');
 	ttputc('K');
 }
 
-void ansieeop(void)
+static void ansieeop(void)
 {
 #if COLOR
 	ansifcol(gfcolor);
@@ -150,7 +147,7 @@ void ansieeop(void)
 /* Change reverse video state.
  * state: TRUE = reverse, FALSE = normal
  */
-void ansirev(int state)
+static void ansirev(int state)
 {
 #if COLOR
 	int ftmp, btmp;		/* temporaries for colors */
@@ -173,18 +170,18 @@ void ansirev(int state)
 }
 
 /* Change screen resolution. */
-int ansicres(char *res)
+static int ansicres(char *res)
 {
 	return TRUE;
 }
 
-void ansibeep(void)
+static void ansibeep(void)
 {
 	ttputc(BEL);
 	ttflush();
 }
 
-void ansiparm(int n)
+static void ansiparm(int n)
 {
 	int q, r;
 
@@ -199,7 +196,7 @@ void ansiparm(int n)
 	ttputc((n % 10) + '0');
 }
 
-void ansiopen(void)
+static void ansiopen(void)
 {
 #if V7 | USG | BSD
 	char *cp;
@@ -218,7 +215,7 @@ void ansiopen(void)
 	ttopen();
 }
 
-void ansiclose(void)
+static void ansiclose(void)
 {
 #if COLOR
 	ansifcol(7);
@@ -228,12 +225,12 @@ void ansiclose(void)
 }
 
 /* Open the keyboard (a noop here). */
-void ansikopen(void)
+static void ansikopen(void)
 {
 }
 
 /* Close the keyboard (a noop here). */
-void ansikclose(void)
+static void ansikclose(void)
 {
 }
 

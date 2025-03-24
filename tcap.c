@@ -99,11 +99,13 @@ struct terminal term = {
 	tcaprev,
 	tcapcres
 #if COLOR
-	    , tcapfcol,
+	,
+	tcapfcol,
 	tcapbcol
 #endif
 #if SCROLLCODE
-	    , NULL		/* set dynamically at open time */
+	,
+	NULL		/* set dynamically at open time */
 #endif
 };
 

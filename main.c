@@ -237,8 +237,8 @@ loop:
 			fn_t execfunc;
 
 			if (c == newc && (execfunc = getbind(c)) != NULL
-			    && execfunc != insert_newline
-			    && execfunc != insert_tab)
+					&& execfunc != insert_newline
+					&& execfunc != insert_tab)
 				newc = getcmd();
 			else
 				break;
@@ -407,7 +407,7 @@ int execute(int c, int f, int n)
 	execfunc = getbind(c);
 	if (execfunc != NULL) {
 		thisflag = 0;
-		status = (*execfunc) (f, n);
+		status = execfunc(f, n);
 		lastflag = thisflag;
 		return status;
 	}

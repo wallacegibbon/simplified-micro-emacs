@@ -78,7 +78,7 @@ int bktoshell(int f, int n)
 	int pid;
 
 	pid = getpid();
-	kill(pid,SIGTSTP);
+	kill(pid, SIGTSTP);
 ******************************/
 	kill(0, SIGTSTP);
 	return TRUE;

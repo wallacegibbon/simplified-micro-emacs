@@ -28,24 +28,24 @@
 #define ESC     0x1B		/* ESC character. */
 #define BEL     0x07		/* ascii bell character */
 
-void ttopen(void);
-void ttclose(void);
-void vt52open(void);
-void vt52kopen(void);
-void vt52kclose(void);
-int ttgetc(void);
-int ttputc(void);
-void ttflush(void);
-void vt52move(int, int);
-void vt52eeol(void);
-void vt52eeop(void);
-void vt52beep(void);
-void vt52rev(int);
-int vt52cres(int, int);
+static void ttopen(void);
+static void ttclose(void);
+static void vt52open(void);
+static void vt52kopen(void);
+static void vt52kclose(void);
+static int ttgetc(void);
+static int ttputc(void);
+static void ttflush(void);
+static void vt52move(int, int);
+static void vt52eeol(void);
+static void vt52eeop(void);
+static void vt52beep(void);
+static void vt52rev(int);
+static int vt52cres(int, int);
 
 #if COLOR
-void vt52fcol(int);
-void vt52bcol(int);
+static void vt52fcol(int);
+static void vt52bcol(int);
 #endif
 
 /*
@@ -84,7 +84,7 @@ struct terminal term = {
 #endif
 };
 
-void vt52move(int row, int col)
+static void vt52move(int row, int col)
 {
 	ttputc(ESC);
 	ttputc('Y');
@@ -92,43 +92,43 @@ void vt52move(int row, int col)
 	ttputc(col + BIAS);
 }
 
-void vt52eeol(void)
+static void vt52eeol(void)
 {
 	ttputc(ESC);
 	ttputc('K');
 }
 
-void vt52eeop(void)
+static void vt52eeop(void)
 {
 	ttputc(ESC);
 	ttputc('J');
 }
 
 /* TRUE = reverse video, FALSE = normal video */
-void vt52rev(int status)
+static void vt52rev(int status)
 {
 	/* can't do this here, so we won't */
 }
 
 /* change screen resolution - (not here though) */
-int vt52cres(char *res)
+static int vt52cres(char *res)
 {
 	return TRUE;
 }
 
 #if COLOR
 /* set the forground color [NOT IMPLIMENTED] */
-void vt52fcol(void)
+static void vt52fcol(void)
 {
 }
 
 /* set the background color [NOT IMPLIMENTED] */
-void vt52bcol(int color)
+static void vt52bcol(int color)
 {
 }
 #endif
 
-void vt52beep(void)
+static void vt52beep(void)
 {
 #ifdef  BEL
 	ttputc(BEL);
@@ -136,7 +136,7 @@ void vt52beep(void)
 #endif
 }
 
-void vt52open(void)
+static void vt52open(void)
 {
 #if V7 | BSD
 	char *cp;
@@ -154,11 +154,11 @@ void vt52open(void)
 	ttopen();
 }
 
-void vt52kopen(void)
+static void vt52kopen(void)
 {
 }
 
-void vt52kclose(void)
+static void vt52kclose(void)
 {
 }
 

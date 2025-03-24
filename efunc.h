@@ -63,8 +63,6 @@ int setmark(int f, int n);
 int swapmark(int f, int n);
 
 /* random.c */
-extern int tabsize;  /* Tab size (0: use real tabs). */
-
 int showcpos(int f, int n);
 int getcline(void);
 int getccol(int bflg);
