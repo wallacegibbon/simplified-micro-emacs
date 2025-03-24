@@ -210,8 +210,7 @@ int twiddle(int f, int n)
  */
 int quote(int f, int n)
 {
-	int s;
-	int c;
+	int s, c;
 
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
@@ -231,8 +230,16 @@ int quote(int f, int n)
 
 int insert_tab(int f, int n)
 {
-	/* More feature for C-i in the future, maybe~ */
-	return linsert(1, '\t');
+	int s;
+	if (n <= 0)
+		return FALSE;
+
+	while (n--) {
+		if ((s = linsert(1, '\t')) == FALSE)
+			return s;
+	}
+
+	return TRUE;
 }
 
 /*
@@ -411,6 +418,7 @@ int insbrace(int n, int c)
 	case ')':
 		oc = '(';
 		break;
+
 	default:
 		return FALSE;
 	}
