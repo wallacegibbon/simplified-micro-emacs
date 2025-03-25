@@ -1,26 +1,13 @@
-/* buffer.c
- *
- *	Buffer management.
- *	Some of the functions are internal,
- *	and some are actually attached to user
- *	keys. Like everyone else, they set hints
- *	for the display system
- *
- *	modified by Petri Kutvonen
- */
-
-#include <stdio.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
+#include <stdio.h>
 
 /*
- * Attach a buffer to a window. The
- * values of dot and mark come from the buffer
- * if the use count is 0. Otherwise, they come
- * from some other window.
+ * Attach a buffer to a window.
+ * The values of dot and mark come from the buffer if the use count is 0.
+ * Otherwise, they come from some other window.
  */
 int usebuffer(int f, int n)
 {
@@ -35,9 +22,6 @@ int usebuffer(int f, int n)
 	return swbuffer(bp);
 }
 
-/*
- * switch to the next buffer in the buffer list
- */
 int nextbuffer(int f, int n)
 {
 	struct buffer *bp = NULL;  /* eligable buffer to switch to */
@@ -123,11 +107,12 @@ int swbuffer(struct buffer *bp)
 
 /*
  * Dispose of a buffer, by name.
- * Ask for the name. Look it up (don't get too
- * upset if it isn't there at all!). Get quite upset
- * if the buffer is being displayed. Clear the buffer (ask
- * if the buffer has been changed). Then free the header
- * line and the buffer header. Bound to "C-X K".
+ * Ask for the name. Look it up (don't get too upset if it isn't there at all!).
+ * Get quite upset if the buffer is being displayed.
+ * Clear the buffer (ask if the buffer has been changed).
+ * Then free the header line and the buffer header.
+ *
+ * Bound to "C-X K".
  */
 int killbuffer(int f, int n)
 {
@@ -175,11 +160,6 @@ int zotbuf(struct buffer *bp)
 	return TRUE;
 }
 
-/*
- * Rename the current buffer
- *
- * int f, n;		default Flag & Numeric arg
- */
 int namebuffer(int f, int n)
 {
 	struct buffer *bp;	/* pointer to scan through all buffers */
@@ -210,13 +190,13 @@ ask:
 
 /*
  * List all of the active buffers.  First update the special
- * buffer that holds the list.  Next make sure at least 1
- * window is displaying the buffer list, splitting the screen
- * if this is what it takes.  Lastly, repaint all of the
- * windows that are displaying the list.  Bound to "C-X C-B". 
+ * buffer that holds the list.  Next make sure at least 1 window is displaying
+ * the buffer list, splitting the screen if this is what it takes.
+ * Lastly, repaint all of the windows that are displaying the list.
  *
- * A numeric argument forces it to list invisible buffers as
- * well.
+ * Bound to "C-X C-B".
+ *
+ * A numeric argument forces it to list invisible buffers as well.
  */
 int listbuffers(int f, int n)
 {
@@ -255,13 +235,12 @@ int listbuffers(int f, int n)
 }
 
 /*
- * This routine rebuilds the
- * text in the special secret buffer
- * that holds the buffer list. It is called
- * by the list buffers command. Return TRUE
- * if everything works. Return FALSE if there
- * is an error (if there is no memory). Iflag
- * indicates wether to list hidden buffers.
+ * This routine rebuilds the text in the special secret buffer
+ * that holds the buffer list.
+ * It is called by the list buffers command.
+ * Return TRUE if everything works.
+ * Return FALSE if there is an error (if there is no memory).
+ * Iflag indicates wether to list hidden buffers.
  *
  * int iflag;		list hidden buffer flag
  */
@@ -387,11 +366,9 @@ void e_ltoa(char *buf, int width, long num)
 }
 
 /*
- * The argument "text" points to
- * a string. Append this line to the
- * buffer list buffer. Handcraft the EOL
- * on the end. Return TRUE if it worked and
- * FALSE if you ran out of room.
+ * The argument "text" points to a string.
+ * Append this line to the buffer list buffer. Handcraft the EOL on the end.
+ * Return TRUE if it worked and FALSE if you ran out of room.
  */
 int addline(char *text)
 {
@@ -414,14 +391,11 @@ int addline(char *text)
 }
 
 /*
- * Look through the list of
- * buffers. Return TRUE if there
- * are any changed buffers. Buffers
- * that hold magic internal stuff are
- * not considered; who cares if the
- * list of buffer names is hacked.
- * Return FALSE if no buffers
- * have been changed.
+ * Look through the list of buffers.
+ * Return TRUE if there are any changed buffers.
+ * Buffers that hold magic internal stuff are not considered;
+ * who cares if the list of buffer names is hacked.
+ * Return FALSE if no buffers have been changed.
  */
 int anycb(void)
 {
@@ -438,11 +412,10 @@ int anycb(void)
 }
 
 /*
- * Find a buffer, by name. Return a pointer
- * to the buffer structure associated with it.
- * If the buffer is not found
- * and the "cflag" is TRUE, create it. The "bflag" is
- * the settings for the flags in in buffer.
+ * Find a buffer, by name. Return a pointer to the buffer structure
+ * associated with it.
+ * If the buffer is not found and the "cflag" is TRUE, create it.
+ * The "bflag" is the settings for the flags in in buffer.
  */
 struct buffer *bfind(char *bname, int cflag, int bflag)
 {
@@ -456,58 +429,63 @@ struct buffer *bfind(char *bname, int cflag, int bflag)
 			return bp;
 		bp = bp->b_bufp;
 	}
-	if (cflag != FALSE) {
-		if ((bp = (struct buffer *)malloc(sizeof(struct buffer))) == NULL)
-			return NULL;
-		if ((lp = lalloc(0)) == NULL) {
-			free((char *) bp);
-			return NULL;
-		}
-		/* find the place in the list to insert this buffer */
-		if (bheadp == NULL || strcmp(bheadp->b_bname, bname) > 0) {
-			/* insert at the beginning */
-			bp->b_bufp = bheadp;
-			bheadp = bp;
-		} else {
-			sb = bheadp;
-			while (sb->b_bufp != NULL) {
-				if (strcmp(sb->b_bufp->b_bname, bname) > 0)
-					break;
-				sb = sb->b_bufp;
-			}
 
-			/* and insert it */
-			bp->b_bufp = sb->b_bufp;
-			sb->b_bufp = bp;
-		}
+	/* not existing buffer found */
 
-		/* and set up the other buffer fields */
-		bp->b_active = TRUE;
-		bp->b_dotp = lp;
-		bp->b_doto = 0;
-		bp->b_markp = NULL;
-		bp->b_marko = 0;
-		bp->b_flag = bflag;
-		bp->b_mode = gmode;
-		bp->b_nwnd = 0;
-		bp->b_linep = lp;
-		strcpy(bp->b_fname, "");
-		strcpy(bp->b_bname, bname);
-		lp->l_fp = lp;
-		lp->l_bp = lp;
+	if (cflag == FALSE)
+		return NULL;
+
+	/* create a buffer */
+
+	if ((bp = (struct buffer *)malloc(sizeof(struct buffer))) == NULL)
+		return NULL;
+	if ((lp = lalloc(0)) == NULL) {
+		free((char *) bp);
+		return NULL;
 	}
+	/* find the place in the list to insert this buffer */
+	if (bheadp == NULL || strcmp(bheadp->b_bname, bname) > 0) {
+		/* insert at the beginning */
+		bp->b_bufp = bheadp;
+		bheadp = bp;
+	} else {
+		sb = bheadp;
+		while (sb->b_bufp != NULL) {
+			if (strcmp(sb->b_bufp->b_bname, bname) > 0)
+				break;
+			sb = sb->b_bufp;
+		}
+		/* and insert it */
+		bp->b_bufp = sb->b_bufp;
+		sb->b_bufp = bp;
+	}
+
+	/* and set up the other buffer fields */
+	bp->b_active = TRUE;
+	bp->b_dotp = lp;
+	bp->b_doto = 0;
+	bp->b_markp = NULL;
+	bp->b_marko = 0;
+	bp->b_flag = bflag;
+	bp->b_mode = gmode;
+	bp->b_nwnd = 0;
+	bp->b_linep = lp;
+	strcpy(bp->b_fname, "");
+	strcpy(bp->b_bname, bname);
+
+	lp->l_fp = lp;
+	lp->l_bp = lp;
+
 	return bp;
 }
 
 /*
- * This routine blows away all of the text
- * in a buffer. If the buffer is marked as changed
- * then we ask if it is ok to blow it away; this is
- * to save the user the grief of losing text. The
- * window chain is nearly always wrong if this gets
- * called; the caller must arrange for the updates
- * that are required. Return TRUE if everything
- * looks good.
+ * This routine blows away all of the text in a buffer.
+ * If the buffer is marked as changed then we ask if it is ok to blow it away;
+ * this is to save the user the grief of losing text.
+ * The window chain is nearly always wrong if this gets called;
+ * the caller must arrange for the updates that are required.
+ * Return TRUE if everything looks good.
  */
 int bclear(struct buffer *bp)
 {
@@ -515,8 +493,8 @@ int bclear(struct buffer *bp)
 	int s;
 
 	if ((bp->b_flag & BFINVS) == 0	/* Not scratch buffer. */
-	    && (bp->b_flag & BFCHG) != 0	/* Something changed */
-	    && (s = mlyesno("Discard changes")) != TRUE)
+			&& (bp->b_flag & BFCHG) != 0	/* Something changed */
+			&& (s = mlyesno("Discard changes")) != TRUE)
 		return s;
 	bp->b_flag &= ~BFCHG;	/* Not changed */
 	while ((lp = lforw(bp->b_linep)) != bp->b_linep)
@@ -530,8 +508,6 @@ int bclear(struct buffer *bp)
 
 /*
  * unmark the current buffers change flag
- *
- * int f, n;		unused command arguments
  */
 int unmark(int f, int n)
 {
