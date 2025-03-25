@@ -1073,10 +1073,12 @@ static void modeline(struct window *wp)
 	n = 2;
 
 	strcpy(tline, " ");
+	/*
 	strcat(tline, PROGRAM_NAME_LONG);
 	strcat(tline, " ");
 	strcat(tline, VERSION);
 	strcat(tline, ": ");
+	*/
 	cp = &tline[0];
 	while ((c = *cp++) != 0) {
 		vtputc(c);
