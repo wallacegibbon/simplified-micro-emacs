@@ -13,7 +13,6 @@ Backward character ....      ^B         Forward character .....      ^F
 Previous word ......... Meta  B         Next word ............. Meta  F
 Beginning of line .....      ^A         End of line ...........      ^E
 Previous line .........      ^P         Next line .............      ^N
-Previous paragraph .... Meta  P         Next paragraph ........ Meta  N
 Previous page .........      ^Z         Next page .............      ^V
 Beginning of file ..... Meta  <         End of file ........... Meta  >
 -------------------------------------------------------------------------------
@@ -54,9 +53,9 @@ Delete previous character    ^H         Delete next character .      ^D
 Delete previous word .. Meta ^H         Delete next word ...... Meta  D
 Kill to end of line ...      ^K         Set mark .............. Meta Space
 Kill region ...........      ^W         Yank ..................      ^Y
+Copy region ........... Meta  W
 Exchange point and mark   ^X ^X
-Delete blank lines ....   ^X ^O     ::  A region is defined as the area between
-Copy region ........... Meta  W     ::  the mark and the current position.
+Delete blank lines ....   ^X ^O
 -------------------------------------------------------------------------------
 =>                      FORMATTING
 Case word upper ....... Meta  U         Case word lower ....... Meta  L
@@ -76,13 +75,13 @@ Move window down ......   ^X ^N         Restore window ........ not bound
 Next buffer ...........   ^X  X         Buffer position .......   ^X  = 
 Select buffer .........   ^X  B         Unmark buffer ......... Meta  ~
 List buffers ..........   ^X ^B
-Delete buffer .........   ^X  K         Write message ......... not bound  
-Name buffer ........... Meta ^N         Clear message line .... not bound  
+Delete buffer .........   ^X  K         Write message ......... not bound
+Name buffer ........... Meta ^N         Clear message line .... not bound
 Filter buffer .........   ^X  #
 Pipe command ..........   ^X  @
 -------------------------------------------------------------------------------
 =>                      SEARCHING AND REPLACING
-Incremental search           ^S     ::  Search next ^X, stop Meta, cancel ^G.
+Incremental search           ^S     ::  Search next ^X, stop Enter, cancel ^G.
 Reverse incremental search   ^R
 Replace string ........ Meta  R
 Query replace string .. Meta  %     ::  Yes/no Y/N, replace rest !, cancel ^G.
