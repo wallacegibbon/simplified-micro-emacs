@@ -1,8 +1,3 @@
-/* PKLOCK.C
- *
- *	locking routines as modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"

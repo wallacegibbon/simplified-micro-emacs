@@ -1,13 +1,3 @@
-/* ESTRUCT.H
- *
- *      Structure and preprocessor defines
- *
- *	written by Dave G. Conroy
- *	modified by Steve Wilhite, George Jones
- *      substantially modified by Daniel Lawrence
- *	modified by Petri Kutvonen
- */
-
 #define MAXCOL	500
 #define MAXROW	500
 
@@ -174,25 +164,11 @@
 #define	PLAY	1		/* playing */
 #define	RECORD	2		/* recording */
 
-/* Directive definitions */
-
-#define	DIF		0
-#define DELSE		1
-#define DENDIF		2
-#define DGOTO		3
-#define DRETURN		4
-#define DENDM		5
-#define DWHILE		6
-#define	DENDWHILE	7
-#define	DBREAK		8
-#define DFORCE		9
-
-#define NUMDIRS		10
-
 /*
- * PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
- * the scan routines.
- */
+	PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
+	the scan routines.
+*/
+
 #define	PTBEG	0		/* Leave the point at the beginning on search */
 #define	PTEND	1		/* Leave the point at the end on search */
 #define	FORWARD	0		/* forward direction */
@@ -211,48 +187,20 @@
 #define	BELL	0x07		/* a bell character */
 #define	TAB	0x09		/* a tab character */
 
-#if V7 | USG | BSD
-#define	PATHCHR	':'
-#else
-#define	PATHCHR	';'
-#endif
+/*
+ * DIFCASE represents the integer difference between upper
+ * and lower case letters.  It is an xor-able value, which is
+ * fortunate, since the relative positions of upper to lower
+ * case letters is the opposite of ascii in ebcdic.
+ */
 
-#define	INTWIDTH	sizeof(int) * 3
-
-/* Macro argument token types */
-
-#define	TKNUL	0		/* end-of-string */
-#define	TKARG	1		/* interactive argument */
-#define	TKBUF	2		/* buffer argument */
-#define	TKVAR	3		/* user variables */
-#define	TKENV	4		/* environment variables */
-#define	TKFUN	5		/* function.... */
-#define	TKDIR	6		/* directive */
-#define	TKLBL	7		/* line label */
-#define	TKLIT	8		/* numeric literal */
-#define	TKSTR	9		/* quoted string literal */
-#define	TKCMD	10		/* command name */
-
-/* Internal defined functions */
-
-#define	nextab(a)	(a & ~tabmask) + (tabmask+1)
-#ifdef	abs
-#undef	abs
-#endif
-
-/* DIFCASE represents the integer difference between upper
-   and lower case letters.  It is an xor-able value, which is
-   fortunate, since the relative positions of upper to lower
-   case letters is the opposite of ascii in ebcdic.
-*/
-
-#ifdef	islower
-#undef	islower
+#ifdef islower
+#undef islower
 #endif
 
 #if PKCODE
-#ifdef	isupper
-#undef	isupper
+#ifdef isupper
+#undef isupper
 #endif
 #endif
 
@@ -284,10 +232,6 @@
 #define	malloc	allocate
 #define	free	release
 #endif
-
-/* De-allocate memory always on exit (if the operating system or
-	main program can not
-*/
 
 #if CLEAN
 #define	exit(a)	cexit(a)
@@ -371,25 +315,12 @@ struct buffer {
 #define	MDASAVE	0x0010		/* auto-save mode */
 #define	MDUTF8	0x0020		/* UTF-8 mode */
 
-/*
- * The starting position of a region, and the size of the region in
- * characters, is kept in a region structure.  Used by the region commands.
- */
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */
 	int r_offset;		/* Origin struct line offset. */
 	long r_size;		/* Length in characters. */
 };
 
-/*
- * The editor communicates with the display using a high level interface. A
- * "TERM" structure holds useful variables, and indirect pointers to routines
- * that do useful operations. The low level get and put routines are here too.
- * This lets a terminal, in addition to having non standard commands, have
- * funny get and put character code too. The calls might get changed to
- * "termp->t_field" style in the future, to make it possible to run more than
- * one terminal type.
- */
 struct terminal {
 	short t_mrow;		/* max number of rows allowable */
 	short t_nrow;		/* current number of rows used */
@@ -415,12 +346,10 @@ struct terminal {
 	void (*t_setfor)(int);	/* set forground color */
 	void (*t_setback)(int);	/* set background color */
 #endif
-#if     SCROLLCODE
-	void (*t_scroll)(int, int, int);	/* scroll a region of the screen */
+#if SCROLLCODE
+	void (*t_scroll)(int, int, int);/* scroll a region of the screen */
 #endif
 };
-
-/* TEMPORARY macros for terminal I/O  (to be placed in a machine dependant place later) */
 
 #define	TTopen		(*term.t_open)
 #define	TTclose		(*term.t_close)
@@ -452,7 +381,8 @@ struct name_bind {
 	int (*n_func)(int, int); /* function name is bound to */
 };
 
-/* The editor holds deleted text chunks in the struct kill buffer. The
+/*
+ * The editor holds deleted text chunks in the struct kill buffer. The
  * kill buffer is logically a stream of ascii characters, however
  * due to its unpredicatable size, it gets implemented as a linked
  * list of chunks. (The d_ prefix is for "deleted" text, as k_
@@ -463,9 +393,8 @@ struct kill {
 	char d_chunk[KBLOCK];  /* Deleted text. */
 };
 
-/*
- * Incremental search defines.
- */
+/* Incremental search defines. */
+
 #define	CMDBUFLEN	256	/* Length of our command buffer */
 
 #define	IS_ABORT	0x07	/* Abort the isearch */

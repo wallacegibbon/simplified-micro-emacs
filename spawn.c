@@ -1,10 +1,3 @@
-/* spawn.c
- *
- *	Various operating system access commands.
- *
- *	<odified by Petri Kutvonen
- */
-
 #include <stdio.h>
 #include <unistd.h>
 

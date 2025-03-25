@@ -820,7 +820,7 @@ static int endofline(unicode_t *s, int n)
 	return 0;
 }
 
-#endif				/* SCROLLCODE */
+#endif /* SCROLLCODE */
 
 /*
  * updext:

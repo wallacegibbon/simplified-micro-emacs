@@ -1,12 +1,3 @@
-/* edef.h
- *
- *	Global variable definitions
- *
- *	written by Dave G. Conroy
- *	modified by Steve Wilhite, George Jones
- *	greatly modified by Daniel Lawrence
- *	modified by Petri Kutvonen
- */
 #ifndef __EDEF_H
 #define __EDEF_H
 

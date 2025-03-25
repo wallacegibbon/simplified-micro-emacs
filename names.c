@@ -1,10 +1,3 @@
-/* Name to function binding table.
- *
- * This table gives the names of all the bindable functions
- * end their C function address. These are used for the bind-to-key
- * function.
-*/
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
