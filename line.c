@@ -118,8 +118,6 @@ void lchange(int flag)
 
 /*
  * insert spaces forward into text
- *
- * int f, n;		default flag and numeric argument
  */
 int insspace(int f, int n)
 {
@@ -131,7 +129,6 @@ int insspace(int f, int n)
 /*
  * linstr -- Insert a string at the current point
  */
-
 int linstr(char *instr)
 {
 	int status = TRUE;

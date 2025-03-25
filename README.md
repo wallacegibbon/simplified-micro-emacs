@@ -7,7 +7,7 @@ This is a tiny emacs-like editor simplified from
 ## Goal
 
 - Be more compatible with GNU emacs on basic operations.
-- Remove unnecessary parts to make it tiny.
+- Remove unnecessary parts (like the script engine) to make it tiny.
 
 
 ## Miscellaneous

@@ -37,8 +37,6 @@ int usebuffer(int f, int n)
 
 /*
  * switch to the next buffer in the buffer list
- *
- * int f, n;		default flag, numeric argument
  */
 int nextbuffer(int f, int n)
 {

@@ -20,9 +20,6 @@
  * a new line.	Otherwise, break the line at the word-break, eat it, and jump
  * back to the end of the word.
  * Returns TRUE on success, FALSE on errors.
- *
- * @f: default flag.
- * @n: numeric argument.
  */
 int wrapword(int f, int n)
 {

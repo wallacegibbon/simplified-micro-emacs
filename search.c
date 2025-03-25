@@ -72,8 +72,6 @@ static int nextch(struct line **pcurline, int *pcuroff, int dir);
  * forwsearch -- Search forward.  Get a search string from the user, and
  *	search for the string.  If found, reset the "." to be just after
  *	the match string, and (perhaps) repaint the display.
- *
- * int f, n;			default flag / numeric argument
  */
 int forwsearch(int f, int n)
 {
@@ -111,8 +109,6 @@ int forwsearch(int f, int n)
  * forwhunt -- Search forward for a previously acquired search string.
  *	If found, reset the "." to be just after the match string,
  *	and (perhaps) repaint the display.
- *
- * int f, n;		default flag / numeric argument
  */
 int forwhunt(int f, int n)
 {
@@ -150,8 +146,6 @@ int forwhunt(int f, int n)
  *	search, starting at "." and proceeding toward the front of the buffer.
  *	If found "." is left pointing at the first character of the pattern
  *	(the last character that was matched).
- *
- * int f, n;		default flag / numeric argument
  */
 int backsearch(int f, int n)
 {
@@ -190,8 +184,6 @@ int backsearch(int f, int n)
  *	starting at "." and proceeding toward the front of the buffer.
  *	If found "." is left pointing at the first character of the pattern
  *	(the last character that was matched).
- *
- * int f, n;		default flag / numeric argument
  */
 int backhunt(int f, int n)
 {
@@ -486,9 +478,6 @@ void rvstrcpy(char *rvstr, char *str)
 
 /*
  * sreplace -- Search and replace.
- *
- * int f;		default flag
- * int n;		# of repetitions wanted
  */
 int sreplace(int f, int n)
 {
@@ -497,9 +486,6 @@ int sreplace(int f, int n)
 
 /*
  * qreplace -- search and replace with query.
- *
- * int f;		default flag
- * int n;		# of repetitions wanted
  */
 int qreplace(int f, int n)
 {
@@ -511,8 +497,6 @@ int qreplace(int f, int n)
  *	string.  Query might be enabled (according to kind).
  *
  * int kind;		Query enabled flag
- * int f;		default flag
- * int n;		# of repetitions wanted
  */
 static int replaces(int kind, int f, int n)
 {

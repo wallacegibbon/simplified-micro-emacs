@@ -50,9 +50,6 @@ int redraw(int f, int n)
  * there is only 1 window on the screen. Bound to "C-X C-N".
  *
  * with an argument this command finds the <n>th window from the top
- *
- * int f, n;		default flag and numeric argument
- *
  */
 int nextwind(int f, int n)
 {
@@ -307,8 +304,6 @@ int delwind(int f, int n)
  * argument of two forces the cursor to the lower window.  The only
  * other error that is possible is a "malloc" failure allocating the
  * structure for the new window.  Bound to "C-X 2". 
- *
- * int f, n;	default flag and numeric argument
  */
 int splitwind(int f, int n)
 {
@@ -489,8 +484,6 @@ int shrinkwind(int f, int n)
 
 /*
  * Resize the current window to the requested size
- *
- * int f, n;		default flag and numeric argument
  */
 int resize(int f, int n)
 {
@@ -572,9 +565,6 @@ int restwnd(int f, int n)
 
 /*
  * resize the screen, re-writing the screen
- *
- * int f;	default flag
- * int n;	numeric argument
  */
 int newsize(int f, int n)
 {
@@ -660,9 +650,6 @@ int newsize(int f, int n)
 
 /*
  * resize the screen, re-writing the screen
- *
- * int f;		default flag
- * int n;		numeric argument
  */
 int newwidth(int f, int n)
 {

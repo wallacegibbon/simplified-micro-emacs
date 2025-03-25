@@ -244,8 +244,6 @@ int insert_tab(int f, int n)
 
 /*
  * trim trailing whitespace from the point to eol
- *
- * int f, n;		default flag and numeric repeat count
  */
 int trim(int f, int n)
 {
@@ -301,12 +299,12 @@ int openline(int f, int n)
 		return FALSE;
 	if (n == 0)
 		return TRUE;
-	i = n;			/* Insert newlines. */
+	i = n;				/* Insert newlines. */
 	do {
 		s = lnewline();
 	} while (s == TRUE && --i);
-	if (s == TRUE)		/* Then back up overtop */
-		s = backchar(f, n);	/* of them all. */
+	if (s == TRUE)			/* Then back up overtop of them all*/
+		s = backchar(f, n);
 	return s;
 }
 
@@ -384,9 +382,6 @@ int cinsert(void)
 #if NBRACE
 /*
  * insert a brace into the text here...we are in CMODE
- *
- * int n;	repeat count
- * int c;	brace to insert (always } for now)
  */
 int insbrace(int n, int c)
 {
@@ -481,9 +476,6 @@ int insbrace(int n, int c)
 
 /*
  * insert a brace into the text here...we are in CMODE
- *
- * int n;		repeat count
- * int c;		brace to insert (always { for now)
  */
 int insbrace(int n, int c)
 {
