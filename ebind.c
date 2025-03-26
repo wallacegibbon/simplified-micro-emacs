@@ -90,7 +90,6 @@ struct key_tab keytab[] = {
 	{META | CONTROL | 'V', scrnextdw},
 	{META | CONTROL | 'Z', scrnextup},
 	{META | ' ', setmark},
-	{META | '!', reposition},
 	{META | '.', setmark},
 	{META | '>', gotoeob},
 	{META | '<', gotobob},
@@ -103,7 +102,6 @@ struct key_tab keytab[] = {
 	{META | 'G', gotoline},
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
-	{META | 'R', sreplace},
 #if BSD
 	{META | 'S', bktoshell},
 #endif

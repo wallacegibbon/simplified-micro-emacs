@@ -516,45 +516,37 @@ static int replaces(int kind, int f, int n)
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
 
-	/* Check for negative repetitions.
-	 */
 	if (f && n < 0)
 		return FALSE;
 
-	/* Ask the user for the text of a pattern.
-	 */
-	if ((status = readpattern((kind ==
-				   FALSE ? "Replace" : "Query replace"),
-				  &pat[0], TRUE))
-	    != TRUE)
+	/* Ask the user for the text of a pattern. */
+	if ((status = readpattern((kind == FALSE ? "Replace" : "Query replace"),
+			&pat[0], TRUE)) != TRUE)
 		return status;
 
-	/* Ask for the replacement string.
-	 */
+	/* Ask for the replacement string. */
 	if ((status = readpattern("with", &rpat[0], FALSE)) == ABORT)
 		return status;
 
-	/* Find the length of the replacement string.
-	 */
+	/* Find the length of the replacement string. */
 	rlength = strlen(&rpat[0]);
 
-	/* Set up flags so we can make sure not to do a recursive
+	/*
+	 * Set up flags so we can make sure not to do a recursive
 	 * replace on the last line.
 	 */
 	nlflag = (pat[matchlen - 1] == '\n');
 	nlrepl = FALSE;
 
 	if (kind) {
-		/* Build query replace question string.
-		 */
+		/* Build query replace question string. */
 		strcpy(tpat, "Replace '");
 		expandp(&pat[0], &tpat[strlen(tpat)], NPAT / 3);
 		strcat(tpat, "' with '");
 		expandp(&rpat[0], &tpat[strlen(tpat)], NPAT / 3);
 		strcat(tpat, "'? ");
 
-		/* Initialize last replaced pointers.
-		 */
+		/* Initialize last replaced pointers. */
 		lastline = NULL;
 		lastoff = 0;
 	}
