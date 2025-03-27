@@ -22,10 +22,9 @@
 #endif
 
 /*
- * Read a file into the current
- * buffer. This is really easy; all you do it
- * find the name of the file, and call the standard
- * "read a file into the current buffer" code.
+ * Read a file into the current buffer.
+ * This is really easy; all you do it find the name of the file,
+ * and call the standard "read a file into the current buffer" code.
  * Bound to "C-X C-R".
  */
 int fileread(int f, int n)
@@ -41,10 +40,9 @@ int fileread(int f, int n)
 }
 
 /*
- * Insert a file into the current
- * buffer. This is really easy; all you do it
- * find the name of the file, and call the standard
- * "insert a file into the current buffer" code.
+ * Insert a file into the current buffer.
+ * This is really easy; all you do it find the name of the file,
+ * and call the standard "insert a file into the current buffer" code.
  * Bound to "C-X C-I".
  */
 int insfile(int f, int n)
@@ -65,17 +63,16 @@ int insfile(int f, int n)
 
 /*
  * Select a file for editing.
- * Look around to see if you can find the
- * fine in another buffer; if you can find it
- * just switch to the buffer. If you cannot find
- * the file, create a new buffer, read in the
- * text, and switch to the new buffer.
+ * Look around to see if you can find the fine in another buffer;
+ * if you can find it just switch to the buffer.
+ * If you cannot find the file, create a new buffer, read in the text,
+ * and switch to the new buffer.
  * Bound to C-X C-F.
  */
 int filefind(int f, int n)
 {
 	char fname[NFILEN];	/* file user wishes to find */
-	int s;		/* status return */
+	int s;			/* status return */
 
 	if (restflag)		/* don't allow this command if restricted */
 		return resterr();
@@ -85,9 +82,9 @@ int filefind(int f, int n)
 }
 
 int viewfile(int f, int n)
-{				/* visit a file in VIEW mode */
+{
 	char fname[NFILEN];	/* file user wishes to find */
-	int s;		/* status return */
+	int s;			/* status return */
 	struct window *wp;	/* scan for windows that need updating */
 
 	if (restflag)		/* don't allow this command if restricted */
@@ -108,12 +105,6 @@ int viewfile(int f, int n)
 	return s;
 }
 
-/*
- * getfile()
- *
- * char fname[];	file name to find
- * int lockfl;		check the file for locks?
- */
 int getfile(char *fname, int lockfl)
 {
 	struct buffer *bp;
@@ -276,11 +267,10 @@ out:
 }
 
 /*
- * Take a file name, and from it
- * fabricate a buffer name. This routine knows
- * about the syntax of file names on the target system.
- * I suppose that this information could be put in
- * a better place than a line of code.
+ * Take a file name, and from it fabricate a buffer name.
+ * This routine knows about the syntax of file names on the target system.
+ * I suppose that this information could be put in a better place
+ * than a line of code.
  */
 void makename(char *bname, char *fname)
 {
@@ -303,8 +293,6 @@ void makename(char *bname, char *fname)
 
 /*
  * make sure a buffer name is unique
- *
- * char *name;		name to check on
  */
 void unqname(char *name)
 {
@@ -326,13 +314,11 @@ void unqname(char *name)
 }
 
 /*
- * Ask for a file name, and write the
- * contents of the current buffer to that file.
- * Update the remembered file name and clear the
- * buffer changed flag. This handling of file names
- * is different from the earlier versions, and
- * is more compatable with Gosling EMACS than
- * with ITS EMACS. Bound to "C-X C-W".
+ * Ask for a file name, and write the contents of the current buffer to that
+ * file.  Update the remembered file name and clear the buffer changed flag.
+ * This handling of file names is different from the earlier versions,
+ * and is more compatable with Gosling EMACS than with ITS EMACS.
+ * Bound to "C-X C-W".
  */
 int filewrite(int f, int n)
 {
@@ -398,12 +384,11 @@ int filesave(int f, int n)
 }
 
 /*
- * This function performs the details of file
- * writing. Uses the file management routines in the
- * "fileio.c" package. The number of lines written is
- * displayed. Sadly, it looks inside a struct line; provide
- * a macro for this. Most of the grief is error
- * checking of some sort.
+ * This function performs the details of file writing.
+ * Uses the file management routines in the "fileio.c" package.
+ * The number of lines written is displayed.
+ * Sadly, it looks inside a struct line; provide a macro for this.
+ * Most of the grief is error checking of some sort.
  */
 int writeout(char *fn)
 {
@@ -439,13 +424,11 @@ int writeout(char *fn)
 }
 
 /*
- * The command allows the user
- * to modify the file name associated with
- * the current buffer. It is like the "f" command
- * in UNIX "ed". The operation is simple; just zap
- * the name in the buffer structure, and mark the windows
- * as needing an update. You can type a blank line at the
- * prompt if you wish.
+ * The command allows the user to modify the file name associated with the
+ * current buffer.  It is like the "f" command in UNIX "ed".
+ * The operation is simple; just zap the name in the buffer structure,
+ * and mark the windows as needing an update.
+ * You can type a blank line at the prompt if you wish.
  */
 int filename(int f, int n)
 {
@@ -472,9 +455,8 @@ int filename(int f, int n)
 }
 
 /*
- * Insert file "fname" into the current
- * buffer, Called by insert file command. Return the final
- * status of the read.
+ * Insert file "fname" into the current buffer, Called by insert file command.
+ * Return the final status of the read.
  */
 int ifile(char *fname)
 {

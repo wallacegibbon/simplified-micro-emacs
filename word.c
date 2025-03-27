@@ -222,8 +222,7 @@ int capword(int f, int n)
 				if (c >= 'A' && c <= 'Z') {
 #endif
 					c += 'a' - 'A';
-					lputc(curwp->w_dotp, curwp->w_doto,
-					      c);
+					lputc(curwp->w_dotp, curwp->w_doto, c);
 					lchange(WFHARD);
 				}
 				if (forwchar(FALSE, 1) == FALSE)

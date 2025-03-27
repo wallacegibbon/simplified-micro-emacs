@@ -38,7 +38,7 @@ static int eaten_char = -1;		/* Re-eaten char */
 
 /* A couple more "own" variables for the command string */
 
-static int cmd_buff[CMDBUFLEN];	/* Save the command args here */
+static int cmd_buff[CMDBUFLEN];		/* Save the command args here */
 static int cmd_offset;			/* Current offset into command buff */
 static int cmd_reexecute = -1;		/* > 0 if re-executing command */
 

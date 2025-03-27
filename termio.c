@@ -14,7 +14,7 @@
 #include "estruct.h"
 #include "edef.h"
 
-#if USG			/* System V */
+#if USG				/* System V */
 #include <signal.h>
 #include <termio.h>
 #include <fcntl.h>
@@ -30,7 +30,7 @@ struct termio ntermio;		/* charactoristics to use inside */
 #endif
 
 #if V7 | BSD
-#include <sgtty.h>	/* for stty/gtty functions */
+#include <sgtty.h>		/* for stty/gtty functions */
 #include <signal.h>
 struct sgttyb ostate;		/* saved tty state */
 struct sgttyb nstate;		/* values for editor mode */
