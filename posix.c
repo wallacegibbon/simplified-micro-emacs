@@ -232,4 +232,4 @@ int typahead(void)
 	return x;
 }
 
-#endif				/* POSIX */
+#endif /* POSIX */

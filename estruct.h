@@ -35,13 +35,13 @@
 #define	BSD	0		/* UNIX BSD 4.2 and ULTRIX */
 #define	USG	0		/* UNIX system V */
 
-#endif				/*autoconf */
+#endif /* AUTOCONF || BSD || SYSV */
 
 #ifndef	AUTOCONF
 #define	UNIX	0		/* a random UNIX compiler */
 #else
 #define	UNIX	(V7 | BSD | USG)
-#endif				/*autoconf */
+#endif /* AUTOCONF */
 
 /* Debugging options */
 
@@ -69,7 +69,7 @@
 #define	VT52	0
 #define	TERMCAP	UNIX
 
-#endif /* Autoconf. */
+#endif /* AUTOCONF */
 
 /* Configuration options */
 
@@ -97,7 +97,7 @@
 #define	FILOCK	BSD
 #endif
 
-#endif /* Autoconf. */
+#endif /* AUTOCONF. */
 
 #define	CLEAN	0  /* de-alloc memory on exit */
 #define ASCII	1  /* always using ASCII char sequences for now */
@@ -112,7 +112,7 @@
 #define	XONXOFF	UNIX
 #define	NATIONL	UNIX
 
-#endif /* Autoconf. */
+#endif /* AUTOCONF */
 
 #define	PKCODE	1      /* include my extensions P.K., define always */
 #define SCROLLCODE 1   /* scrolling code P.K. */

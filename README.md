@@ -1,18 +1,19 @@
 ## Introduction
 
-This is a tiny emacs-like editor simplified from
-	<https://github.com/torvalds/uemacs>
+This is a tiny emacs-like editor simplified from <https://github.com/torvalds/uemacs>.
 
 
 ## Goal
 
-- Be more compatible with GNU emacs on basic operations.
-- Remove unnecessary parts (like the script engine) to make it tiny.
+- Be more compatible with GNU emacs.
+- Be tiny. (by removing unecessary parts like the script engine)
 
 
 ## Miscellaneous
 
-To get the priority information:
+We can make `em` the default `editor` of the system with `update-alternatives`.
+
+To get the priority of `editor`:
 ```sh
 update-alternatives --display editor
 ```

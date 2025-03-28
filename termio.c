@@ -123,7 +123,7 @@ void ttopen(void)
 	signal(SIGTSTP, SIG_DFL);	/* set signals so that we can */
 	signal(SIGCONT, rtfrmshell);	/* suspend & restart emacs */
 	TTflush();
-#endif				/* __hpux */
+#endif /* __hpux */
 
 	/* on all screens we are not sure of the initial position
 	   of the cursor */
@@ -248,4 +248,4 @@ int typahead(void)
 }
 #endif
 
-#endif				/* not POSIX */
+#endif /* POSIX */
