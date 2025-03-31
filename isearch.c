@@ -220,7 +220,7 @@ start_over:
 		}
 		pat[cpos] = 0;
 		col = echo_char(c, col);
-		
+
 		if (!status) {	/* If we lost last time */
 			TTputc(BELL);
 			TTflush();
@@ -234,7 +234,7 @@ start_over:
 /*
  * Trivial routine to insure that the next character in the search string is
  * still true to whatever we're pointing to in the buffer.  This routine will
- * not attempt to move the "point" if the match fails, although it will 
+ * not attempt to move the "point" if the match fails, although it will
  * implicitly move the "point" if we're forward searching, and find a match,
  * since that's the way forward isearch works.
  *
@@ -415,7 +415,7 @@ static int echo_char(int c, int col)
 
 /*
  * Routine to get the next character from the input stream.  If we're reading
- * from the real terminal, force a screen update before we get the char. 
+ * from the real terminal, force a screen update before we get the char.
  * Otherwise, we must be re-executing the command string, so just return the
  * next character.
  */

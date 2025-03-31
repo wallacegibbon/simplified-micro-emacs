@@ -31,7 +31,7 @@ int gethostname(char *name, int namelen)
 
 /**********************
  *
- * if successful, returns NULL  
+ * if successful, returns NULL
  * if file locked, returns username of person locking the file
  * if other error, returns "LOCK ERROR: explanation"
  *

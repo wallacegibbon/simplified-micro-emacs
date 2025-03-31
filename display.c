@@ -211,7 +211,7 @@ static void vtputc(int c)
 		vtputc(hex[c & 15]);
 		return;
 	}
-	
+
 	if (vtcol >= 0)
 		vp->v_text[vtcol] = c;
 	++vtcol;

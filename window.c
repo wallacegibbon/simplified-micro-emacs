@@ -303,7 +303,7 @@ int delwind(int f, int n)
  * split.  An argument of 1 forces the cursor into the upper window, an
  * argument of two forces the cursor to the lower window.  The only
  * other error that is possible is a "malloc" failure allocating the
- * structure for the new window.  Bound to "C-X 2". 
+ * structure for the new window.  Bound to "C-X 2".
  */
 int splitwind(int f, int n)
 {
