@@ -501,17 +501,12 @@ int qreplace(int f, int n)
 static int replaces(int kind, int f, int n)
 {
 	int status;		/* success flag on pattern inputs */
-	int rlength;		/* length of replacement string */
 	int numsub;		/* number of substitutions */
 	int nummatch;		/* number of found matches */
 	int nlflag;		/* last char of search string a <NL>? */
 	int nlrepl;		/* was a replace done on the last line? */
 	char c;			/* input char for query */
 	char tpat[NPAT];	/* temporary to hold search pattern */
-	struct line *origline;	/* original "." position */
-	int origoff;		/* and offset (for . query option) */
-	struct line *lastline;	/* position of last replace and */
-	int lastoff;		/* offset (for 'u' query option) */
 
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
@@ -528,9 +523,6 @@ static int replaces(int kind, int f, int n)
 	if ((status = readpattern("with", &rpat[0], FALSE)) == ABORT)
 		return status;
 
-	/* Find the length of the replacement string. */
-	rlength = strlen(&rpat[0]);
-
 	/*
 	 * Set up flags so we can make sure not to do a recursive
 	 * replace on the last line.
@@ -545,17 +537,8 @@ static int replaces(int kind, int f, int n)
 		strcat(tpat, "' with '");
 		expandp(&rpat[0], &tpat[strlen(tpat)], NPAT / 3);
 		strcat(tpat, "'? ");
-
-		/* Initialize last replaced pointers. */
-		lastline = NULL;
-		lastoff = 0;
 	}
 
-	/* Save original . position, init the number of matches and
-	 * substitutions, and scan through the file.
-	 */
-	origline = curwp->w_dotp;
-	origoff = curwp->w_doto;
 	numsub = 0;
 	nummatch = 0;
 
@@ -576,7 +559,6 @@ static int replaces(int kind, int f, int n)
 		/* Check for query. */
 		if (kind) {
 			/* Get the query. */
-pprompt:
 			mlwrite(&tpat[0], &pat[0], &rpat[0]);
 qprompt:
 			update(TRUE);	/* show the proposed place to change */
@@ -585,98 +567,38 @@ qprompt:
 
 			/* And respond appropriately. */
 			switch (c) {
-#if PKCODE
-			case 'Y':
-#endif
-			case 'y':	/* yes, substitute */
+			case 'y':
 			case ' ':
 				savematch();
 				break;
 
-#if PKCODE
-			case 'N':
-#endif
-			case 'n':	/* no, onword */
+			case 'n':
 				forwchar(FALSE, 1);
 				continue;
 
-			case '!':	/* yes/stop asking */
+			case '!':
 				kind = FALSE;
 				break;
 
-#if PKCODE
-			case 'U':
-#endif
-			case 'u':	/* undo last and re-prompt */
-				/* Restore old position. */
-				if (lastline == NULL) {
-					/* There is nothing to undo. */
-					TTbeep();
-					goto pprompt;
-				}
-				curwp->w_dotp = lastline;
-				curwp->w_doto = lastoff;
-				lastline = NULL;
-				lastoff = 0;
-
-				/* Delete the new string. */
-				backchar(FALSE, rlength);
-#if PKCODE
-				matchline = curwp->w_dotp;
-				matchoff = curwp->w_doto;
-#endif
-				status = delins(rlength, patmatch, FALSE);
-				if (status != TRUE)
-					return status;
-
-				/* Record one less substitution,
-				 * backup, save our place, and
-				 * reprompt.
-				 */
-				--numsub;
-				backchar(FALSE, mlenold);
-				matchline = curwp->w_dotp;
-				matchoff = curwp->w_doto;
-				goto pprompt;
-
-			case '.':	/* abort! and return */
-				/* restore old position */
-				curwp->w_dotp = origline;
-				curwp->w_doto = origoff;
-				curwp->w_flag |= WFMOVE;
-
-			case BELL:	/* abort! and stay */
-				mlwrite("Aborted!");
+			case BELL:
+				mlwrite("%d substitutions", numsub);
 				return FALSE;
 
-			default:	/* bitch and beep */
+			default:
 				TTbeep();
-
-			case '?':	/* help me */
-				mlwrite("(Y)es, (N)o, (!)Do rest, (U)ndo last, (^G)Abort, (.)Abort back, (?)Help: ");
+			case '?':
+				mlwrite("(Y)es, (N)o, (!)Do rest, (^G)Abort, (?)Help: ");
 				goto qprompt;
 
-			}	/* end of switch */
+			}
 		}
 
-		/* end of "if kind" */
-		/*
-		 * Delete the sucker, and insert its
-		 * replacement.
-		 */
+		/* Delete the sucker, and insert its replacement. */
 		status = delins(matchlen, &rpat[0], TRUE);
 		if (status != TRUE)
 			return status;
 
-		/* Save our position, since we may
-		 * undo this.
-		 */
-		if (kind) {
-			lastline = curwp->w_dotp;
-			lastoff = curwp->w_doto;
-		}
-
-		numsub++;	/* increment # of substitutions */
+		numsub++;
 	}
 
 	mlwrite("%d substitutions", numsub);
@@ -692,9 +614,7 @@ int delins(int dlength, char *instr, int use_meta)
 {
 	int status;
 
-	/* Zap what we gotta,
-	 * and insert its replacement.
-	 */
+	/* Zap what we gotta, and insert its replacement. */
 	if ((status = ldelete((long) dlength, FALSE)) != TRUE)
 		mlwrite("%%ERROR while deleting");
 	else
@@ -712,11 +632,11 @@ int delins(int dlength, char *instr, int use_meta)
  */
 int expandp(char *srcstr, char *deststr, int maxlength)
 {
-	unsigned char c;	/* current char to translate */
+	unsigned char c;
 
 	/* Scan through the string. */
 	while ((c = *srcstr++) != 0) {
-		if (c == '\n') {	/* it's a newline */
+		if (c == '\n') {
 			*deststr++ = '<';
 			*deststr++ = 'N';
 			*deststr++ = 'L';
