@@ -24,7 +24,8 @@
 #include "efunc.h"
 #include "utf8.h"
 
-/* Since Mac OS X's termios.h doesn't have the following 2 macros, define them.
+/*
+ * Since Mac OS X's termios.h doesn't have the following 2 macros, define them.
  */
 #if defined(SYSV) && (defined(_DARWIN_C_SOURCE) || defined(_FREEBSD_C_SOURCE))
 #define OLCUC 0000002
@@ -56,16 +57,16 @@ void ttopen(void)
 
 	/* raw CR/NL etc input handling, but keep ISTRIP if we're on a 7-bit line */
 	ntermios.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK
-			      | INPCK | INLCR | IGNCR | ICRNL);
+		| INPCK | INLCR | IGNCR | ICRNL);
 
 	/* raw CR/NR etc output handling */
 	ntermios.c_oflag &=
-	    ~(OPOST | ONLCR | OLCUC | OCRNL | ONOCR | ONLRET);
+		~(OPOST | ONLCR | OLCUC | OCRNL | ONOCR | ONLRET);
 
 	/* No signal handling, no echo etc */
 	ntermios.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK
-			      | ECHONL | NOFLSH | TOSTOP | ECHOCTL |
-			      ECHOPRT | ECHOKE | FLUSHO | PENDIN | IEXTEN);
+		| ECHONL | NOFLSH | TOSTOP | ECHOCTL
+		| ECHOPRT | ECHOKE | FLUSHO | PENDIN | IEXTEN);
 
 	/* one character, no timeout */
 	ntermios.c_cc[VMIN] = 1;
@@ -81,8 +82,7 @@ void ttopen(void)
 	kbdflgs = fcntl(0, F_GETFL, 0);
 	kbdpoll = FALSE;
 
-	/* on all screens we are not sure of the initial position
-	   of the cursor */
+	/* on screens we are not sure of the initial position of the cursor */
 	ttrow = 999;
 	ttcol = 999;
 }

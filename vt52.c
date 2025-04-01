@@ -25,8 +25,6 @@
 #define	SCRSIZ	64		/* scroll size for extended lines */
 #define	NPAUSE	100		/* # times thru update to pause */
 #define BIAS    0x20		/* Origin 0 coordinate bias. */
-#define ESC     0x1B		/* ESC character. */
-#define BEL     0x07		/* ascii bell character */
 
 static void ttopen(void);
 static void ttclose(void);
@@ -35,7 +33,6 @@ static void vt52kopen(void);
 static void vt52kclose(void);
 static int ttgetc(void);
 static int ttputc(void);
-static void ttflush(void);
 static void vt52move(int, int);
 static void vt52eeol(void);
 static void vt52eeop(void);
@@ -130,10 +127,8 @@ static void vt52bcol(int color)
 
 static void vt52beep(void)
 {
-#ifdef  BEL
-	ttputc(BEL);
+	ttputc(BELL);
 	ttflush();
-#endif
 }
 
 static void vt52open(void)

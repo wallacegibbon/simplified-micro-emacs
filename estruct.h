@@ -184,8 +184,9 @@
 #define CFCPCN  0x0001		/* Last command was C-P, C-N */
 #define CFKILL  0x0002		/* Last command was a kill */
 
-#define	BELL	0x07		/* a bell character */
-#define	TAB	0x09		/* a tab character */
+#define	BELL	0x07		/* BELL character */
+#define	TAB	0x09		/* TAB character */
+#define ESC     0x1B		/* ESC character. */
 
 /*
  * DIFCASE represents the integer difference between upper

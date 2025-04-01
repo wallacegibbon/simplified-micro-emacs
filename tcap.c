@@ -30,8 +30,6 @@
 #define	MARGIN	8
 #define	SCRSIZ	64
 #define	NPAUSE	10    /* # times thru update to pause. */
-#define BEL     0x07
-#define ESC     0x1B
 
 static void tcapkopen(void);
 static void tcapkclose(void);
@@ -348,7 +346,7 @@ static void tcapbcol(void)
 
 static void tcapbeep(void)
 {
-	ttputc(BEL);
+	ttputc(BELL);
 }
 
 static void putpad(char *str)

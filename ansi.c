@@ -24,8 +24,6 @@
 #define	NPAUSE	100		/* # times thru update to pause */
 #define	MARGIN	8		/* size of minimim margin and */
 #define	SCRSIZ	64		/* scroll size for extended lines */
-#define BEL     0x07		/* BEL character. */
-#define ESC     0x1B		/* ESC character. */
 
 static void ttopen(void);
 static void ttclose(void);
@@ -177,7 +175,7 @@ static int ansicres(char *res)
 
 static void ansibeep(void)
 {
-	ttputc(BEL);
+	ttputc(BELL);
 	ttflush();
 }
 
