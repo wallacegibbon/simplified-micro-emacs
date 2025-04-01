@@ -420,9 +420,9 @@ proc_ctlxc:
 			goto proc_metac;
 		}
 #endif
-		if (c >= 'a' && c <= 'z')	/* Force to upper */
+		if (c >= 'a' && c <= 'z')
 			c -= 0x20;
-		if (c >= 0x00 && c <= 0x1F)	/* control key */
+		else if (c >= 0x00 && c <= 0x1F)
 			c = CONTROL | (c + '@');
 		return CTLX | c;
 	}
