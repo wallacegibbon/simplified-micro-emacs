@@ -76,7 +76,7 @@ int mlreplyt(char *prompt, char *buf, int nbuf, int eolchar)
 int ectoc(int c)
 {
 	if (c & CONTROL)
-		c = c & ~(CONTROL | 0x40);
+		c = ~CONTROL & (c - '@');
 	if (c & SPEC)
 		c = c & 255;
 	return c;
