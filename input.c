@@ -100,7 +100,7 @@ int ctoec(int c)
  *
  * char *fname;		name to attempt to match
  */
-int (*fncmatch(char *fname)) (int, int)
+int (*fncmatch(char *fname))(int, int)
 {
 	struct name_bind *ffp;	/* pointer to entry in name binding table */
 
@@ -123,10 +123,6 @@ fn_t getname(void)
 {
 	int cpos;	/* current column on screen output */
 	int c;
-	char *sp;	/* pointer to string for output */
-	struct name_bind *ffp;	/* first ptr to entry in name binding table */
-	struct name_bind *cffp;	/* current ptr to entry in name binding table */
-	struct name_bind *lffp;	/* last ptr to entry in name binding table */
 	char buf[NSTRING];	/* buffer to hold tentative command name */
 
 	/* starting at the beginning of the string buffer */
@@ -158,91 +154,6 @@ fn_t getname(void)
 				TTflush();
 			}
 
-		} else if (c == 0x15) {	/* C-U, kill */
-			while (cpos != 0) {
-				TTputc('\b');
-				TTputc(' ');
-				TTputc('\b');
-				--cpos;
-				--ttcol;
-			}
-
-			TTflush();
-
-		} else if (c == ' ' || c == 0x1b || c == 0x09) {
-/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
-			/* attempt a completion */
-			buf[cpos] = 0;	/* terminate it for us */
-			ffp = &names[0];	/* scan for matches */
-			while (ffp->n_func != NULL) {
-				if (strncmp(buf, ffp->n_name, strlen(buf))
-				    == 0) {
-					/* a possible match! More than one? */
-					if ((ffp + 1)->n_func == NULL ||
-					    (strncmp
-					     (buf, (ffp + 1)->n_name,
-					      strlen(buf)) != 0)) {
-						/* no...we match, print it */
-						sp = ffp->n_name + cpos;
-						while (*sp)
-							TTputc(*sp++);
-						TTflush();
-						return ffp->n_func;
-					} else {
-/* << << << << << << << << << << << << << << << << << */
-						/* try for a partial match against the list */
-
-						/* first scan down until we no longer match the current input */
-						lffp = (ffp + 1);
-						while ((lffp +
-							1)->n_func !=
-						       NULL) {
-							if (strncmp
-							    (buf,
-							     (lffp +
-							      1)->n_name,
-							     strlen(buf))
-							    != 0)
-								break;
-							++lffp;
-						}
-
-						/* and now, attempt to partial complete the string, char at a time */
-						while (TRUE) {
-							/* add the next char in */
-							buf[cpos] =
-							    ffp->
-							    n_name[cpos];
-
-							/* scan through the candidates */
-							cffp = ffp + 1;
-							while (cffp <=
-							       lffp) {
-								if (cffp->
-								    n_name
-								    [cpos]
-								    !=
-								    buf
-								    [cpos])
-									goto onward;
-								++cffp;
-							}
-
-							/* add the character */
-							TTputc(buf
-							       [cpos++]);
-						}
-/* << << << << << << << << << << << << << << << << << */
-					}
-				}
-				++ffp;
-			}
-
-			/* no match.....beep and onward */
-			TTbeep();
-onward:
-			TTflush();
-/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 		} else {
 			if (cpos < NSTRING - 1 && c > ' ') {
 				buf[cpos++] = c;
@@ -444,11 +355,11 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	static char tmp[] = "/tmp/meXXXXXX";
 	FILE *tmpf = NULL;
 	ffile = (strcmp(prompt, "Find file: ") == 0
-		 || strcmp(prompt, "View file: ") == 0
-		 || strcmp(prompt, "Insert file: ") == 0
-		 || strcmp(prompt, "Write file: ") == 0
-		 || strcmp(prompt, "Read file: ") == 0
-		 || strcmp(prompt, "File to execute: ") == 0);
+			|| strcmp(prompt, "View file: ") == 0
+			|| strcmp(prompt, "Insert file: ") == 0
+			|| strcmp(prompt, "Write file: ") == 0
+			|| strcmp(prompt, "Read file: ") == 0
+			|| strcmp(prompt, "File to execute: ") == 0);
 
 	cpos = 0;
 	quotef = FALSE;
@@ -516,26 +427,8 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				TTflush();
 			}
 
-		} else if (c == 0x15 && quotef == FALSE) {
-			/* C-U, kill */
-			while (cpos != 0) {
-				outstring("\b \b");
-				--ttcol;
-
-				if (buf[--cpos] < 0x20) {
-					outstring("\b \b");
-					--ttcol;
-				}
-				if (buf[cpos] == '\n') {
-					outstring("\b\b  \b\b");
-					ttcol -= 2;
-				}
-			}
-			TTflush();
-
 #if COMPLC
-		} else if ((c == 0x09 || c == ' ') && quotef == FALSE
-			   && ffile) {
+		} else if ((c == 0x09 || c == ' ') && quotef == FALSE && ffile) {
 			/* TAB, complete file name */
 			char ffbuf[255];
 			int n, iswild = 0;
@@ -664,24 +557,22 @@ int namedcmd(int f, int n)
 
 /*
  * output a string of characters
- *
- * char *s;		string to output
  */
 void outstring(char *s)
 {
-	if (disinp)
+	if (disinp) {
 		while (*s)
 			TTputc(*s++);
+	}
 }
 
 /*
  * output a string of output characters
- *
- * char *s;		string to output
  */
 void ostring(char *s)
 {
-	if (discmd)
+	if (discmd) {
 		while (*s)
 			TTputc(*s++);
+	}
 }
