@@ -247,14 +247,11 @@ int listbuffers(int f, int n)
 #define MAXLINE	MAXCOL
 int makelist(int iflag)
 {
-	char *cp1;
-	char *cp2;
-	int c;
+	char *cp1, *cp2;
 	struct buffer *bp;
 	struct line *lp;
-	int s;
-	int i;
-	long nbytes;		/* # of bytes in current buffer */
+	int c, s, i;
+	long nbytes;
 	char b[7 + 1];
 	char line[MAXLINE];
 
@@ -262,8 +259,9 @@ int makelist(int iflag)
 	if ((s = bclear(blistp)) != TRUE)	/* Blow old text away */
 		return s;
 	strcpy(blistp->b_fname, "");
-	if (addline("ACT MODES    Size Buffer          File") == FALSE
-			|| addline("--- -----    ---- ------          ----") == FALSE)
+	if (addline("ACT MODES    SIZE BUFFER          FILE") == FALSE)
+		return FALSE;
+	if (addline("--- -----    ---- ------          ----") == FALSE)
 		return FALSE;
 
 	bp = bheadp;		/* For all buffers */
