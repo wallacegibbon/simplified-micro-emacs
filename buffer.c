@@ -262,8 +262,8 @@ int makelist(int iflag)
 	if ((s = bclear(blistp)) != TRUE)	/* Blow old text away */
 		return s;
 	strcpy(blistp->b_fname, "");
-	if (addline("ACT MODES        Size Buffer        File") == FALSE
-			|| addline("--- -----        ---- ------        ----") == FALSE)
+	if (addline("ACT MODES    Size Buffer            File") == FALSE
+			|| addline("--- -----    ---- ------            ----") == FALSE)
 		return FALSE;
 
 	bp = bheadp;		/* For all buffers */
