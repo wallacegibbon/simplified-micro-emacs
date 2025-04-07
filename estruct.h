@@ -313,7 +313,6 @@ struct buffer {
 #define	MDEXACT	0x0004		/* Exact matching for searches */
 #define	MDOVER	0x0008		/* overwrite mode */
 #define	MDASAVE	0x0010		/* auto-save mode */
-#define	MDUTF8	0x0020		/* UTF-8 mode */
 
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */

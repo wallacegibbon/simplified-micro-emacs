@@ -10,14 +10,14 @@ int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
 const int modevalue[] = {
-	MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE, MDUTF8
+	MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE
 };
 
 const char *modename[] = {
-	"CMODE", "VIEW", "EXACT", "OVER", "ASAVE", "UTF8"
+	"CMODE", "VIEW", "EXACT", "OVER", "ASAVE"
 };
 
-char modecode[] = "CVEOAU";	/* letters to represent modes */
+char modecode[] = "CVEOA";	/* letters to represent modes */
 
 int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
