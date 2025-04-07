@@ -329,7 +329,7 @@ int makelist(int iflag)
 			nbytes += (long) llength(lp) + 1L;
 			lp = lforw(lp);
 		}
-		e_ltoa(b, 7, nbytes);	/* 6 digit buffer size. */
+		e_ltoa(b, 7, nbytes);	/* 7 digit buffer size. */
 		cp2 = &b[0];
 		while ((c = *cp2++) != 0)
 			*cp1++ = c;
@@ -339,7 +339,7 @@ int makelist(int iflag)
 			*cp1++ = c;
 		cp2 = &bp->b_fname[0];	/* File name */
 		if (*cp2 != 0) {
-			while (cp1 < &line[3 + 1 + 5 + 1 + 6 + 1 + NBUFN + 1])
+			while (cp1 < &line[3 + 1 + 5 + 1 + 7 + 1 + NBUFN])
 				*cp1++ = ' ';
 			while ((c = *cp2++) != 0) {
 				if (cp1 < &line[MAXLINE - 1])
