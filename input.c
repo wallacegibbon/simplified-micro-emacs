@@ -217,13 +217,7 @@ int tgetc(void)
 
 int get1key(void)
 {
-	int c;
-
-	/* get a keystroke */
-	c = tgetc();
-	if (c >= 0x00 && c <= 0x1F)	/* C0 control -> C- */
-		c = CONTROL | (c + '@');
-	return c;
+	return ctoec(tgetc());
 }
 
 /* GETCMD:	Get a command from the keyboard. Process all applicable
@@ -291,8 +285,7 @@ handle_CSI:
 #endif
 		if (islower(c))	/* Force to upper */
 			c ^= DIFCASE;
-		if (c >= 0x00 && c <= 0x1F)	/* control key */
-			c = CONTROL | (c + '@');
+		c = ctoec(c);
 		return META | c;
 	}
 #if PKCODE
@@ -306,8 +299,7 @@ handle_CSI:
 #endif
 		if (islower(c))	/* Force to upper */
 			c ^= DIFCASE;
-		if (c >= 0x00 && c <= 0x1F)	/* control key */
-			c = CONTROL | (c + '@');
+		c = ctoec(c);
 		return META | c;
 	}
 #endif
@@ -327,8 +319,8 @@ proc_ctlxc:
 #endif
 		if (c >= 'a' && c <= 'z')
 			c -= 0x20;
-		else if (c >= 0x00 && c <= 0x1F)
-			c = CONTROL | (c + '@');
+		else
+			c = ctoec(c);
 		return CTLX | c;
 	}
 
