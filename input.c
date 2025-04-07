@@ -14,12 +14,6 @@
 #include "efunc.h"
 #include "wrapper.h"
 
-#if PKCODE && UNIX
-#define	COMPLC	1
-#else
-#define COMPLC	0
-#endif
-
 /*
  * Ask a yes or no question in the message line. Return either TRUE, FALSE, or
  * ABORT. The ABORT status is returned if the user bumps out of the question
@@ -351,15 +345,6 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	int cpos;	/* current character position in string */
 	int c;
 	int quotef;	/* are we quoting the next char? */
-	int ffile, ocpos, nskip = 0, didtry = 0;
-	static char tmp[] = "/tmp/meXXXXXX";
-	FILE *tmpf = NULL;
-	ffile = (strcmp(prompt, "Find file: ") == 0
-			|| strcmp(prompt, "View file: ") == 0
-			|| strcmp(prompt, "Insert file: ") == 0
-			|| strcmp(prompt, "Write file: ") == 0
-			|| strcmp(prompt, "Read file: ") == 0
-			|| strcmp(prompt, "File to execute: ") == 0);
 
 	cpos = 0;
 	quotef = FALSE;
@@ -368,11 +353,6 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	mlwrite(prompt);
 
 	for (;;) {
-#if COMPLC
-		if (!didtry)
-			nskip = -1;
-		didtry = 0;
-#endif
 		/* get a character from the user */
 		c = get1key();
 
@@ -426,86 +406,6 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 
 				TTflush();
 			}
-
-#if COMPLC
-		} else if ((c == 0x09 || c == ' ') && quotef == FALSE && ffile) {
-			/* TAB, complete file name */
-			char ffbuf[255];
-			int n, iswild = 0;
-
-			didtry = 1;
-			ocpos = cpos;
-			while (cpos != 0) {
-				outstring("\b \b");
-				--ttcol;
-
-				if (buf[--cpos] < 0x20) {
-					outstring("\b \b");
-					--ttcol;
-				}
-				if (buf[cpos] == '\n') {
-					outstring("\b\b  \b\b");
-					ttcol -= 2;
-				}
-				if (buf[cpos] == '*' || buf[cpos] == '?')
-					iswild = 1;
-			}
-			TTflush();
-			if (nskip < 0) {
-				buf[ocpos] = 0;
-				if (tmpf != NULL)
-					fclose(tmpf);
-				strcpy(tmp, "/tmp/meXXXXXX");
-				strcpy(ffbuf, "echo ");
-				strcat(ffbuf, buf);
-				if (!iswild)
-					strcat(ffbuf, "*");
-				strcat(ffbuf, " >");
-				xmkstemp(tmp);
-				strcat(ffbuf, tmp);
-				strcat(ffbuf, " 2>&1");
-				system(ffbuf);
-				tmpf = fopen(tmp, "r");
-				nskip = 0;
-			}
-			c = ' ';
-			for (n = nskip; n > 0; n--)
-				while ((c = getc(tmpf)) != EOF && c != ' ');
-			nskip++;
-
-			if (c != ' ') {
-				TTbeep();
-				nskip = 0;
-			}
-			while ((c = getc(tmpf)) != EOF &&
-			       c != '\n' && c != ' ' && c != '*') {
-				if (cpos < nbuf - 1)
-					buf[cpos++] = c;
-			}
-			if (c == '*')
-				TTbeep();
-
-			for (n = 0; n < cpos; n++) {
-				c = buf[n];
-				if ((c < ' ') && (c != '\n')) {
-					outstring("^");
-					++ttcol;
-					c ^= 0x40;
-				}
-
-				if (c != '\n') {
-					if (disinp)
-						TTputc(c);
-				} else {	/* put out <NL> for <ret> */
-					outstring("<NL>");
-					ttcol += 3;
-				}
-				++ttcol;
-			}
-			TTflush();
-			rewind(tmpf);
-			unlink(tmp);
-#endif
 
 		} else if ((c == quotec || c == 0x16) && quotef == FALSE) {
 			quotef = TRUE;
