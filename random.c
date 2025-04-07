@@ -813,7 +813,7 @@ int adjustmode(int kind, int global)
 
 	/* test it against the modes we know */
 
-	for (i = 0; i < sizeof(modecode) - 1; i++) {
+	for (i = 0; i < sizeof(modecode); i++) {
 		if (strcmp(cbuf, modename[i]) == 0) {
 			int val = modevalue[i];
 			/* finding a match, we process it */

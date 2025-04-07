@@ -263,9 +263,9 @@ int makelist(int iflag)
 		return s;
 	strcpy(blistp->b_fname, "");
 	if (addline("ACT MODES        Size Buffer        File") == FALSE
-	    || addline("--- -----        ---- ------        ----") ==
-	    FALSE)
+			|| addline("--- -----        ---- ------        ----") == FALSE)
 		return FALSE;
+
 	bp = bheadp;		/* For all buffers */
 
 	/* build line to report global mode settings */
@@ -276,11 +276,12 @@ int makelist(int iflag)
 	*cp1++ = ' ';
 
 	/* output the mode codes */
-	for (i = 0; i < sizeof(modecode) - 1; i++)
-		if (gmode & (1 << i))
+	for (i = 0; i < sizeof(modecode); i++) {
+		if (gmode & modevalue[i])
 			*cp1++ = modecode[i];
 		else
 			*cp1++ = '.';
+	}
 	strcpy(cp1, "         Global Modes");
 	if (addline(line) == FALSE)
 		return FALSE;
@@ -315,8 +316,8 @@ int makelist(int iflag)
 		*cp1++ = ' ';	/* space */
 
 		/* output the mode codes */
-		for (i = 0; i < sizeof(modecode) - 1; i++) {
-			if (bp->b_mode & (1 << i))
+		for (i = 0; i < sizeof(modecode); i++) {
+			if (bp->b_mode & modevalue[i])
 				*cp1++ = modecode[i];
 			else
 				*cp1++ = '.';
