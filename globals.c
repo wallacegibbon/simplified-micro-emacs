@@ -1,21 +1,16 @@
 #include "estruct.h"
 #include "edef.h"
 
-/* initialized global definitions */
-
 int kbdm[NKBDM];		/* Macro */
+
 char golabel[NPAT] = "";	/* current line to go to */
 int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
-const int modevalue[] = {
-	MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE
-};
+const int modevalue[] = {MDCMOD, MDVIEW, MDEXACT, MDOVER, MDASAVE};
 
-const char *modename[] = {
-	"CMODE", "VIEW", "EXACT", "OVER", "ASAVE"
-};
+const char *modename[] = {"CMODE", "VIEW", "EXACT", "OVER", "ASAVE"};
 
 char modecode[] = "CVEOA";	/* letters to represent modes */
 
@@ -60,14 +55,7 @@ int kbdmode = STOP;		/* current keyboard macro mode */
 int kbdrep = 0;			/* number of repetitions */
 int restflag = FALSE;		/* restricted use? */
 int lastkey = 0;		/* last keystoke */
-int seed = 0;			/* random number seed */
 long envram = 0l;		/* # of bytes current in use by malloc */
-int macbug = FALSE;		/* macro debuging flag */
-char errorm[] = "ERROR";	/* error literal */
-char truem[] = "TRUE";		/* true literal */
-char falsem[] = "FALSE";	/* false litereal */
-int cmdstatus = TRUE;		/* last command status */
-char palstr[49] = "";		/* palette string */
 int saveflag = 0;		/* Flags, saved with the $target var */
 char *fline = NULL;		/* dynamic return line */
 int flen = 0;			/* current length of fline */
@@ -76,7 +64,12 @@ int rval = 0;			/* return value of a subprocess */
 int overlap = 0;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
 
-/* uninitialized global definitions */
+unsigned int matchlen = 0;	/* The length of the matched string */
+unsigned int mlenold = 0;
+char *patmatch = NULL;		/* The string that satisfies the search */
+struct line *matchline = NULL;	/* The line of the *start* of match */
+int matchoff = 0;		/* The offset of the *start* of match */
+
 
 int currow;			/* Cursor row */
 int curcol;			/* Cursor column */
@@ -89,20 +82,7 @@ struct window *wheadp;		/* Head of list of windows */
 struct buffer *bheadp;		/* Head of list of buffers */
 struct buffer *blistp;		/* Buffer for C-X C-B */
 
-char sres[NBUFN];		/* current screen resolution */
+char sres[NBUFN];		/* Current screen resolution */
 char pat[NPAT];			/* Search pattern */
 char tap[NPAT];			/* Reversed pattern array. */
-char rpat[NPAT];		/* replacement pattern */
-
-/* The variable matchlen holds the length of the matched
- * string - used by the replace functions.
- * The variable patmatch holds the string that satisfies
- * the search command.
- * The variables matchline and matchoff hold the line and
- * offset position of the *start* of match.
- */
-unsigned int matchlen = 0;
-unsigned int mlenold = 0;
-char *patmatch = NULL;
-struct line *matchline = NULL;
-int matchoff = 0;
+char rpat[NPAT];		/* Replacement pattern */
