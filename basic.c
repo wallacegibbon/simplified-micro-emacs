@@ -155,7 +155,7 @@ int gotoline(int f, int n)
 	}
         /*
 	 * Handle the case where the user may be passed something like this:
-	 * em filename +
+	 * me filename +
 	 * In this case we just go to the end of the buffer.
 	 */
 	if (n == 0)
