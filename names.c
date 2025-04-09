@@ -73,6 +73,7 @@ struct name_bind names[] = {
 	{"open-line", openline},
 	{"overwrite-string", ovstring},
 	{"pipe-command", pipecmd},
+	{"previous-buffer", prevbuffer},
 	{"previous-line", backline},
 	{"previous-page", backpage},
 	{"previous-window", prevwind},

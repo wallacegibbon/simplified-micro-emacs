@@ -22,6 +22,14 @@ int usebuffer(int f, int n)
 	return swbuffer(bp);
 }
 
+int prevbuffer(int f, int n)
+{
+	if (prevbp != NULL)
+		return swbuffer(prevbp);
+	else
+		return FALSE;
+}
+
 int nextbuffer(int f, int n)
 {
 	struct buffer *bp = NULL;  /* eligable buffer to switch to */
@@ -70,7 +78,11 @@ int swbuffer(struct buffer *bp)
 		curbp->b_markp = curwp->w_markp;
 		curbp->b_marko = curwp->w_marko;
 	}
-	curbp = bp;		/* Switch. */
+
+	/* Switch */
+	prevbp = curbp;
+	curbp = bp;
+
 	if (curbp->b_active != TRUE) {	/* buffer not active yet */
 		/* read it in and activate it */
 		readin(curbp->b_fname, TRUE);
@@ -122,10 +134,12 @@ int killbuffer(int f, int n)
 
 	if ((s = mlreply("Kill buffer: ", bufn, NBUFN)) != TRUE)
 		return s;
-	if ((bp = bfind(bufn, FALSE, 0)) == NULL)	/* Easy if unknown. */
+	if ((bp = bfind(bufn, FALSE, 0)) == NULL)
 		return TRUE;
+
 	if (bp->b_flag & BFINVS)	/* Deal with special buffers */
 		return TRUE;	/* by doing nothing. */
+
 	return zotbuf(bp);
 }
 
@@ -137,6 +151,10 @@ int zotbuf(struct buffer *bp)
 	struct buffer *bp1;
 	struct buffer *bp2;
 	int s;
+
+	/* Reset prevbp when that buffer is killed */
+	if (bp == prevbp)
+		prevbp = NULL;
 
 	if (bp->b_nwnd != 0) {	/* Error if on screen. */
 		mlwrite("Buffer is being displayed");

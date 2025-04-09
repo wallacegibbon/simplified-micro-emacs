@@ -153,6 +153,7 @@ void ostring(char *s);
 /* buffer.c */
 int usebuffer(int f, int n);
 int nextbuffer(int f, int n);
+int prevbuffer(int f, int n);
 int swbuffer(struct buffer *bp);
 int killbuffer(int f, int n);
 int zotbuf(struct buffer *bp);

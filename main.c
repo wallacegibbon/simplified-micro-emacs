@@ -355,6 +355,7 @@ void edinit(char *bname)
 	if (bp == NULL || wp == NULL || blistp == NULL)
 		exit(1);
 	curbp = bp;
+	prevbp = NULL;
 	wheadp = wp;
 	curwp = wp;
 	wp->w_wndp = NULL;	/* Initialize window */

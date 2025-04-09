@@ -102,6 +102,7 @@ struct key_tab keytab[] = {
 	{META | 'G', gotoline},
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
+	{META | 'P', prevbuffer},
 #if BSD
 	{META | 'S', bktoshell},
 #endif
