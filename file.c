@@ -149,9 +149,14 @@ int getfile(char *fname, int lockfl)
 		curbp->b_markp = curwp->w_markp;
 		curbp->b_marko = curwp->w_marko;
 	}
-	curbp = bp;		/* Switch to it. */
+
+	/* Switch */
+	prevbp = curbp;
+	curbp = bp;
+
 	curwp->w_bufp = bp;
 	curbp->b_nwnd++;
+
 	s = readin(fname, lockfl);	/* Read it in. */
 	cknewwindow();
 	return s;
