@@ -26,3 +26,12 @@ If the priority 100 is still too low, set it manually:
 ```sh
 sudo update-alternatives --set editor /usr/bin/me
 ```
+
+## Debug
+
+There is a program for getting raw input from terminal, which is useful for
+debugging.  Compile it with ncurses:
+
+```sh
+gcc showkeys.c -lcurses
+```
