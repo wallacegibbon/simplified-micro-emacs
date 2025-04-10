@@ -1,16 +1,15 @@
-/*
- * Command table.
- * This table  is *roughly* in ASCII order, left to right across the
- * characters of the command. This explains the funny location of the
- * control-X commands.
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
 
 struct key_tab keytab[] = {
+	/* Normal chars (without prefix) can be rebind, too */
+	/*
+	{'A', backdel},
+	*/
+	{0x7F, backdel},
+
 	{CONTROL | 'A', gotobol},
 	{CONTROL | 'B', backchar},
 	{CONTROL | 'D', forwdel},
@@ -37,48 +36,6 @@ struct key_tab keytab[] = {
 	{CONTROL | 'Y', yank},
 	{CONTROL | 'Z', backpage},
 	{CONTROL | ']', metafn},
-	{CTLX | CONTROL | 'B', listbuffers},
-	{CTLX | CONTROL | 'C', quit},
-	{CTLX | CONTROL | 'F', filefind},
-	{CTLX | CONTROL | 'I', insfile},
-	{CTLX | CONTROL | 'L', lowerregion},
-	{CTLX | CONTROL | 'M', delmode},
-	{CTLX | CONTROL | 'N', mvdnwind},
-	{CTLX | CONTROL | 'O', deblank},
-	{CTLX | CONTROL | 'P', mvupwind},
-	{CTLX | CONTROL | 'R', fileread},
-	{CTLX | CONTROL | 'S', filesave},
-	{CTLX | CONTROL | 'T', trim},
-	{CTLX | CONTROL | 'U', upperregion},
-	{CTLX | CONTROL | 'V', viewfile},
-	{CTLX | CONTROL | 'W', filewrite},
-	{CTLX | CONTROL | 'X', swapmark},
-	{CTLX | CONTROL | 'Z', shrinkwind},
-	{CTLX | '!', spawn},
-	{CTLX | '@', pipecmd},
-	{CTLX | '#', filter_buffer},
-	{CTLX | '$', execprg},
-	{CTLX | '=', showcpos},
-	{CTLX | '(', ctlxlp},
-	{CTLX | ')', ctlxrp},
-	{CTLX | '^', enlargewind},
-	{CTLX | '0', delwind},
-	{CTLX | '1', onlywind},
-	{CTLX | '2', splitwind},
-	{CTLX | 'B', usebuffer},
-	{CTLX | 'C', spawncli},
-#if BSD | __hpux | SVR4
-	{CTLX | 'D', bktoshell},
-#endif
-	{CTLX | 'E', ctlxe},
-	{CTLX | 'K', killbuffer},
-	{CTLX | 'M', setemode},
-	{CTLX | 'N', filename},
-	{CTLX | 'O', nextwind},
-	{CTLX | 'P', prevwind},
-	{CTLX | 'W', resize},
-	{CTLX | 'X', nextbuffer},
-	{CTLX | 'Z', enlargewind},
 
 	{META | ' ', setmark},
 	{META | '.', setmark},
@@ -115,12 +72,55 @@ struct key_tab keytab[] = {
 	{META | CONTROL | 'V', scrnextdw},
 	{META | CONTROL | 'Z', scrnextup},
 
-	/* META + CTLX + CONTROL is also working in this version */
+	{CTLX | '!', spawn},
+	{CTLX | '@', pipecmd},
+	{CTLX | '#', filter_buffer},
+	{CTLX | '$', execprg},
+	{CTLX | '=', showcpos},
+	{CTLX | '(', ctlxlp},
+	{CTLX | ')', ctlxrp},
+	{CTLX | '^', enlargewind},
+	{CTLX | '0', delwind},
+	{CTLX | '1', onlywind},
+	{CTLX | '2', splitwind},
+	{CTLX | 'B', usebuffer},
+	{CTLX | 'C', spawncli},
+#if BSD | __hpux | SVR4
+	{CTLX | 'D', bktoshell},
+#endif
+	{CTLX | 'E', ctlxe},
+	{CTLX | 'K', killbuffer},
+	{CTLX | 'M', setemode},
+	{CTLX | 'N', filename},
+	{CTLX | 'O', nextwind},
+	{CTLX | 'P', prevwind},
+	{CTLX | 'W', resize},
+	{CTLX | 'X', nextbuffer},
+	{CTLX | 'Z', enlargewind},
+
+	{CTLX | CONTROL | 'B', listbuffers},
+	{CTLX | CONTROL | 'C', quit},
+	{CTLX | CONTROL | 'F', filefind},
+	{CTLX | CONTROL | 'I', insfile},
+	{CTLX | CONTROL | 'L', lowerregion},
+	{CTLX | CONTROL | 'M', delmode},
+	{CTLX | CONTROL | 'N', mvdnwind},
+	{CTLX | CONTROL | 'O', deblank},
+	{CTLX | CONTROL | 'P', mvupwind},
+	{CTLX | CONTROL | 'R', fileread},
+	{CTLX | CONTROL | 'S', filesave},
+	{CTLX | CONTROL | 'T', trim},
+	{CTLX | CONTROL | 'U', upperregion},
+	{CTLX | CONTROL | 'V', viewfile},
+	{CTLX | CONTROL | 'W', filewrite},
+	{CTLX | CONTROL | 'X', swapmark},
+	{CTLX | CONTROL | 'Z', shrinkwind},
+
+	/* CTLX + META + CONTROL is also working in this version */
 	/*
-	{META | CTLX | CONTROL | 'F', nullproc},
-	{META | CTLX | CONTROL | 'G', ctrlg},
+	{CTLX | META | CONTROL | 'F', nullproc},
+	{CTLX | META | CONTROL | 'G', ctrlg},
 	*/
 
-	{0x7F, backdel},
 	{0, NULL}
 };
