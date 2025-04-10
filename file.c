@@ -204,9 +204,6 @@ int readin(char *fname, int lockfl)
 	bp->b_flag &= ~(BFINVS | BFCHG);
 	mystrscpy(bp->b_fname, fname, NFILEN);
 
-	/* let a user macro get hold of things...if he wants */
-	execute(META | SPEC | 'R', FALSE, 1);
-
 	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open. */
 		goto out;
 

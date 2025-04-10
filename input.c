@@ -1,14 +1,5 @@
-/* input.c
- *
- *	Various input routines
- *
- *	written by Daniel Lawrence 5/9/86
- *	modified by Petri Kutvonen
- */
-
 #include <stdio.h>
 #include <unistd.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -65,21 +56,19 @@ int mlreplyt(char *prompt, char *buf, int nbuf, int eolchar)
 /*
  * ectoc:
  *	expanded character to character
- *	collapse the CONTROL and SPEC flags back into an ascii code
+ *	collapse the CONTROL flags back into an ascii code
  */
 int ectoc(int c)
 {
 	if (c & CONTROL)
 		c = ~CONTROL & (c - '@');
-	if (c & SPEC)
-		c = c & 255;
 	return c;
 }
 
 /*
  * ctoec:
  *	character to extended character
- *	pull out the CONTROL and SPEC prefixes (if possible)
+ *	pull out the CONTROL prefixes (if possible)
  */
 int ctoec(int c)
 {
@@ -108,19 +97,11 @@ int (*fncmatch(char *fname))(int, int)
 	return NULL;
 }
 
-/*
- * get a command name from the command line. Command completion means
- * that pressing a <SPACE> will attempt to complete an unfinished command
- * name if it is unique.
- */
 fn_t getname(void)
 {
-	int cpos;	/* current column on screen output */
-	int c;
+	int cpos = 0;		/* current column on screen output */
 	char buf[NSTRING];	/* buffer to hold tentative command name */
-
-	/* starting at the beginning of the string buffer */
-	cpos = 0;
+	int c;
 
 	/* build a name string from the keyboard */
 	while (TRUE) {
@@ -211,8 +192,8 @@ int tgetc(void)
 	return c;
 }
 
-/* GET1KEY:	Get one keystroke. The only prefixs legal here
-			are the SPEC and CONTROL prefixes.
+/* GET1KEY:	Get one keystroke. The only prefixs legal here are the
+		CONTROL prefixes.
  */
 
 int get1key(void)
@@ -221,109 +202,50 @@ int get1key(void)
 }
 
 /* GETCMD:	Get a command from the keyboard. Process all applicable
-		prefix keys
+		prefix keys.
  */
 int getcmd(void)
 {
-	int c;			/* fetched keystroke */
-#if VT220
-	int d;			/* second character P.K. */
+	int c = get1key();
 	int cmask = 0;
-#endif
-	/* get initial character */
-	c = get1key();
 
+	/* process META prefix */
+	if (c == metac) {
 #if VT220
 proc_metac:
 #endif
-	if (c == 128+27)		/* CSI */
-		goto handle_CSI;
-	/* process META prefix */
-	if (c == (CONTROL | '[')) {
+		cmask |= META;
 		c = get1key();
 #if VT220
-		if (c == '[' || c == 'O') {	/* CSI P.K. */
-handle_CSI:
-			c = get1key();
-			if (c >= 'A' && c <= 'D')
-				return SPEC | c | cmask;
-			if (c >= 'E' && c <= 'z' && c != 'i' && c != 'c')
-				return SPEC | c | cmask;
-			d = get1key();
-			if (d == '~')	/* ESC [ n ~   P.K. */
-				return SPEC | c | cmask;
-			switch (c) {	/* ESC [ n n ~ P.K. */
-			case '1':
-				c = d + 32;
-				break;
-			case '2':
-				c = d + 48;
-				break;
-			case '3':
-				c = d + 64;
-				break;
-			default:
-				c = '?';
-				break;
-			}
-			if (d != '~')	/* eat tilde P.K. */
-				get1key();
-			if (c == 'i') {	/* DO key    P.K. */
-				c = ctlxc;
-				goto proc_ctlxc;
-			} else if (c == 'c')	/* ESC key   P.K. */
-				c = get1key();
-			else
-				return SPEC | c | cmask;
-		}
-#endif
-#if VT220
-		if (c == (CONTROL | '[')) {
-			cmask = META;
+		if (c == metac)
 			goto proc_metac;
-		}
+		else if (c == ctlxc)
+			goto proc_ctlxc;
 #endif
-		if (islower(c))	/* Force to upper */
+		/* Force to upper to match bind configurations */
+		if (islower(c))
 			c ^= DIFCASE;
 		c = ctoec(c);
-		return META | c;
+		return cmask | c;
 	}
-#if PKCODE
-	else if (c == metac) {
-		c = get1key();
-#if VT220
-		if (c == (CONTROL | '[')) {
-			cmask = META;
-			goto proc_metac;
-		}
-#endif
-		if (islower(c))	/* Force to upper */
-			c ^= DIFCASE;
-		c = ctoec(c);
-		return META | c;
-	}
-#endif
 
-
+	/* process CTLX prefix */
+	if (c == ctlxc) {
 #if VT220
 proc_ctlxc:
 #endif
-	/* process CTLX prefix */
-	if (c == ctlxc) {
+		cmask |= CTLX;
 		c = get1key();
 #if VT220
-		if (c == (CONTROL | '[')) {
-			cmask = CTLX;
+		if (c == metac)
 			goto proc_metac;
-		}
 #endif
-		if (c >= 'a' && c <= 'z')
-			c -= 0x20;
+		if (islower(c))
+			c ^= DIFCASE;
 		else
 			c = ctoec(c);
-		return CTLX | c;
+		return cmask | c;
 	}
-
 	/* otherwise, just return it */
 	return c;
 }

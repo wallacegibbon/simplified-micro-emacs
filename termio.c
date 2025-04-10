@@ -200,7 +200,7 @@ void ttflush(void)
 int ttgetc(void)
 {
 #if V7 | BSD
-	return 255 & fgetc(stdin);	/* 8BIT P.K. */
+	return fgetc(stdin) & 0xFF;	/* 8BIT P.K. */
 #endif
 
 #if USG
@@ -212,7 +212,7 @@ int ttgetc(void)
 		kbdpoll = FALSE;
 		while (read(0, &kbdq, 1) != 1);
 	}
-	return kbdq & 255;
+	return kbdq & 0xFF;
 #endif
 }
 

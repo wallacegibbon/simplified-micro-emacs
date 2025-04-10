@@ -226,7 +226,6 @@ int main(int argc, char **argv)
 loop:
 	/* Execute the "command" macro...normally null. */
 	saveflag = lastflag;  /* Preserve lastflag through this. */
-	execute(META | SPEC | 'C', FALSE, 1);
 	lastflag = saveflag;
 
 #if TYPEAH && PKCODE
@@ -413,16 +412,7 @@ int execute(int c, int f, int n)
 		return status;
 	}
 
-#if PKCODE
-	if ((c >= 0x20 && c <= 0x7E)	/* Self inserting. */
-#if BSD || USG	/* 8BIT P.K. */
-			|| (c >= 0xA0 && c <= 0x10FFFF)) {
-#else
-			) {
-#endif
-#else
-	if ((c >= 0x20 && c <= 0xFF)) {	/* Self inserting. */
-#endif /* PKCODE */
+	if ((c >= 0x20 && c <= 0x7E)) {	/* Self inserting. */
 		if (n <= 0) {	/* Fenceposts. */
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;
@@ -467,7 +457,7 @@ int execute(int c, int f, int n)
 	}
 	TTbeep();
 	mlwrite("(Key not bound)");	/* complain */
-	lastflag = 0;		/* Fake last flags. */
+	lastflag = 0;			/* Fake last flags. */
 	return FALSE;
 }
 

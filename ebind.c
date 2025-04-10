@@ -79,16 +79,7 @@ struct key_tab keytab[] = {
 	{CTLX | 'W', resize},
 	{CTLX | 'X', nextbuffer},
 	{CTLX | 'Z', enlargewind},
-#if CFENCE
-	{META | CONTROL | 'F', getfence},
-#endif
-	{META | CONTROL | 'H', delbword},
-	{META | CONTROL | 'L', reposition},
-	{META | CONTROL | 'M', delgmode},
-	{META | CONTROL | 'N', namebuffer},
-	{META | CONTROL | 'R', qreplace},
-	{META | CONTROL | 'V', scrnextdw},
-	{META | CONTROL | 'Z', scrnextup},
+
 	{META | ' ', setmark},
 	{META | '.', setmark},
 	{META | '>', gotoeob},
@@ -113,31 +104,23 @@ struct key_tab keytab[] = {
 	{META | 'Z', quickexit},
 	{META | 0x7F, delbword},
 
-#if VT220
-	{SPEC | '1', fisearch},
-	{SPEC | '2', yank},
-	{SPEC | '3', killregion},
-	{SPEC | '4', setmark},
-	{SPEC | '5', backpage},
-	{SPEC | '6', forwpage},
-	{SPEC | 'A', backline},
-	{SPEC | 'B', forwline},
-	{SPEC | 'C', forwchar},
-	{SPEC | 'D', backchar},
-	{SPEC | 'c', metafn},
-	{SPEC | 'd', backchar},
-	{SPEC | 'e', forwline},
-	{SPEC | 'f', gotobob},
-	{SPEC | 'i', cex},
-#endif /* VT200 */
+#if CFENCE
+	{META | CONTROL | 'F', getfence},
+#endif
+	{META | CONTROL | 'H', delbword},
+	{META | CONTROL | 'L', reposition},
+	{META | CONTROL | 'M', delgmode},
+	{META | CONTROL | 'N', namebuffer},
+	{META | CONTROL | 'R', qreplace},
+	{META | CONTROL | 'V', scrnextdw},
+	{META | CONTROL | 'Z', scrnextup},
+
+	/* META + CTLX + CONTROL is also working in this version */
+	/*
+	{META | CTLX | CONTROL | 'F', nullproc},
+	{META | CTLX | CONTROL | 'G', ctrlg},
+	*/
 
 	{0x7F, backdel},
-
-	/* special internal bindings */
-	{ SPEC | META | 'W', wrapword },	/* called on word wrap */
-	{ SPEC | META | 'C', nullproc },	/* every command input */
-	{ SPEC | META | 'R', nullproc },	/* on file read */
-	{ SPEC | META | 'X', nullproc },	/* on window change P.K. */
-
 	{0, NULL}
 };

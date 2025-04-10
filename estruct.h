@@ -99,18 +99,11 @@
 #endif /* AUTOCONF. */
 
 #define	CLEAN	0  /* de-alloc memory on exit */
-#define ASCII	1  /* always using ASCII char sequences for now */
 
 #ifndef	AUTOCONF
-
 #define	XONXOFF	0  /* don't disable XON-XOFF flow control P.K. */
-#define	NATIONL	0  /* interprete [,],\,{,},| as characters P.K. */
-
 #else
-
 #define	XONXOFF	UNIX
-#define	NATIONL	UNIX
-
 #endif /* AUTOCONF */
 
 #define	PKCODE	1      /* include my extensions P.K., define always */
@@ -145,7 +138,6 @@
 #define CONTROL	0x1000		/* Control flag, or'ed in */
 #define META	0x2000		/* Meta flag, or'ed in */
 #define CTLX	0x4000		/* ^X flag, or'ed in */
-#define SPEC	0x8000		/* special key (function keys) */
 
 #ifdef	FALSE
 #undef	FALSE
@@ -164,9 +156,9 @@
 #define	RECORD	2		/* recording */
 
 /*
-	PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
-	the scan routines.
-*/
+ * PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
+ * the scan routines.
+ */
 
 #define	PTBEG	0		/* Leave the point at the beginning on search */
 #define	PTEND	1		/* Leave the point at the end on search */
@@ -194,37 +186,19 @@
  * case letters is the opposite of ascii in ebcdic.
  */
 
+#define	DIFCASE		0x20
+
 #ifdef islower
 #undef islower
 #endif
 
-#if PKCODE
 #ifdef isupper
 #undef isupper
 #endif
-#endif
 
-#if ASCII
-
-#define	DIFCASE		0x20
-
-#if NATIONL
-#define LASTUL ']'
-#define LASTLL '}'
-#else
-#define LASTUL 'Z'
-#define LASTLL 'z'
-#endif
-
-#define isletter(c)	isxletter((0xFF & (c)))
-#define islower(c)	isxlower((0xFF & (c)))
-#define isupper(c)	isxupper((0xFF & (c)))
-
-#define isxletter(c)	(('a' <= c && LASTLL >= c) || ('A' <= c && LASTUL >= c) || (192<=c && c<=255))
-#define isxlower(c)	(('a' <= c && LASTLL >= c) || (224 <= c && 252 >= c))
-#define isxupper(c)	(('A' <= c && LASTUL >= c) || (192 <= c && 220 >= c))
-
-#endif /* ASCII */
+#define islower(c)	('a' <= (c) && (c) <= 'z')
+#define isupper(c)	('A' <= (c) && (c) <= 'Z')
+#define isletter(c)	(islower(c) || isupper(c))
 
 /* Dynamic RAM tracking and reporting redefinitions */
 

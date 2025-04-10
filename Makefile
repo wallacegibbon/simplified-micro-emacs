@@ -30,6 +30,7 @@ HDR=edef.h efunc.h epath.h estruct.h util.h version.h
 
 CC=gcc
 WARNINGS=-Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
+#CFLAGS=-O0 $(WARNINGS) -g
 CFLAGS=-O2 $(WARNINGS) -g
 #CC=c89 +O3			# HP
 #CFLAGS= -D_HPUX_SOURCE -DSYSV

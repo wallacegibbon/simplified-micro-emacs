@@ -29,11 +29,11 @@ int ttcol = HUGE;		/* Column location of HW cursor */
 int lbound = 0;			/* leftmost column of current line being displayed */
 int taboff = 0;			/* tab offset for display */
 
-int metac = CONTROL | '[';	/* current meta character */
-int ctlxc = CONTROL | 'X';	/* current control X prefix char */
-int reptc = CONTROL | 'U';	/* current universal repeat char */
-int abortc = CONTROL | 'G';	/* current abort command char */
-int enterc = CONTROL | 'M';	/* current enter/CR char */
+int metac = (CONTROL | '[');	/* META character */
+int ctlxc = (CONTROL | 'X');	/* CONTROL-X prefix char */
+int abortc = (CONTROL | 'G');	/* ABORT command char */
+int enterc = (CONTROL | 'M');	/* ENTER/CR char */
+int reptc = (CONTROL | 'U');	/* Universal repeat char */
 
 int quotec = 0x11;		/* quote char during mlreply() */
 int tabmask = 0x07;		/* tabulator mask */

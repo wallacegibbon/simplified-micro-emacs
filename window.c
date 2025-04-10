@@ -700,5 +700,5 @@ int getwpos(void)
 
 void cknewwindow(void)
 {
-	execute(META | SPEC | 'X', FALSE, 1);
+	/* Nothing yet */
 }

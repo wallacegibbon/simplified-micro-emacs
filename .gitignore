@@ -1,4 +1,5 @@
 me
 *.o
+a.out
 *~
 *.swp
