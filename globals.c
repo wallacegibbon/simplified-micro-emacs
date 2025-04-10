@@ -1,18 +1,16 @@
 #include "estruct.h"
 #include "edef.h"
 
-int kbdm[NKBDM];		/* Macro */
+int kbdm[NKBDM];		/* Keyboard Macro */
 
 char golabel[NPAT] = "";	/* current line to go to */
 int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
-const int modevalue[] = {MDCMOD, MDASAVE, MDVIEW, MDEXACT, MDOVER};
-
 const char *modename[] = {"CMODE", "ASAVE", "VIEW", "EXACT", "OVER"};
-
-char modecode[] = "CAVEO";	/* letters to represent modes */
+int modevalue[] = {MDCMOD, MDASAVE, MDVIEW, MDEXACT, MDOVER};
+char modecode[] = "CAVEO";
 
 int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */

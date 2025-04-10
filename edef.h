@@ -21,12 +21,11 @@ extern int revexist;		/* does reverse video exist? */
 
 #define	NUMMODES	5
 extern const char *modename[NUMMODES];	/* text names of modes */
-extern const int modevalue[NUMMODES];	/* value of modes */
-extern char modecode[NUMMODES];	/* letters to represent modes */
+extern int modevalue[NUMMODES];		/* value of modes */
+extern char modecode[NUMMODES];		/* letters to represent modes */
 
-extern struct key_tab keytab[];	/* key bind to functions table */
-extern struct name_bind names[];/* name to function table */
-extern struct key_tab keytab[];	/* key to function table */
+extern struct name_bind names[];	/* name to function table */
+extern struct key_tab keytab[];		/* key to function table */
 
 extern int gmode;		/* global editor mode */
 extern int gflags;		/* global control flag */

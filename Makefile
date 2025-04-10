@@ -29,7 +29,7 @@ OBJ=ansi.o basic.o buffer.o display.o ebind.o names.o \
 HDR=edef.h efunc.h epath.h estruct.h util.h version.h
 
 CC=gcc
-WARNINGS=-Wall -Wstrict-prototypes
+WARNINGS=-Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
 CFLAGS=-O2 $(WARNINGS) -g
 #CC=c89 +O3			# HP
 #CFLAGS= -D_HPUX_SOURCE -DSYSV

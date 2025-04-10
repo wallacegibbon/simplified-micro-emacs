@@ -437,9 +437,9 @@ static int readpattern(char *prompt, char *apat, int srch)
  */
 void savematch(void)
 {
-	char *ptr;	/* pointer to last match string */
-	int j;
-	struct line *curline;		/* line of last match */
+	char *ptr;		/* pointer to last match string */
+	unsigned int j;
+	struct line *curline;	/* line of last match */
 	int curoff;		/* offset "      " */
 
 	/* Free any existing match string, then
@@ -586,6 +586,7 @@ qprompt:
 
 			default:
 				TTbeep();
+				/* fallthrough */
 			case '?':
 				mlwrite("(Y)es, (N)o, (!)Do rest, (^G)Abort, (?)Help: ");
 				goto qprompt;

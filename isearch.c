@@ -336,7 +336,7 @@ int match_pat(char *patrn)
 
 	/* top of per character compare loop: */
 
-	for (i = 0; i < strlen(patrn); i++) {
+	for (i = 0; i < (int)strlen(patrn); i++) {
 		if (curoff == llength(curline)) {	/* If at end of line */
 			curline = lforw(curline);	/* Skip to the next line */
 			curoff = 0;

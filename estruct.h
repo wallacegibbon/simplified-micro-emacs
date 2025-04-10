@@ -376,7 +376,7 @@ struct key_tab {
 
 /* Structure for the name binding table. */
 struct name_bind {
-	char *n_name;		 /* name of function key */
+	const char *n_name;	 /* name of function key */
 	int (*n_func)(int, int); /* function name is bound to */
 };
 
