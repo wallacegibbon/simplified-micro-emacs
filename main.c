@@ -87,14 +87,15 @@ void usage(int status)
 
 int main(int argc, char **argv)
 {
-	int c = -1;	/* command character */
-	int f;		/* default flag */
-	int n;		/* numeric repeat count */
-	int mflag;	/* negative flag on repeat */
+	int c = -1;		/* command character */
+	int f;			/* default flag */
+	int n;			/* numeric repeat count */
+	int mflag;		/* negative flag on repeat */
 	struct buffer *bp;	/* temp buffer pointer */
-	int firstfile;	/* first file flag */
-	int carg;	/* current arg to scan */
-	struct buffer *firstbp = NULL;	/* ptr to first buffer in cmd line */
+	int firstfile;		/* first file flag */
+	int carg;		/* current arg to scan */
+	struct buffer *firstbp = NULL;
+				/* ptr to first buffer in cmd line */
 	int basec;		/* c stripped of meta character */
 	int viewflag;		/* are we starting in view mode? */
 	int gotoflag;		/* do we need to goto a line at start? */
@@ -350,7 +351,7 @@ void edinit(char *bname)
 
 	bp = bfind(bname, TRUE, 0); /* First buffer */
 	blistp = bfind("*List*", TRUE, BFINVS); /* Buffer list buffer */
-	wp = (struct window *)malloc(sizeof(struct window)); /* First window */
+	wp = malloc(sizeof(struct window)); /* First window */
 	if (bp == NULL || wp == NULL || blistp == NULL)
 		exit(1);
 	curbp = bp;
@@ -412,7 +413,14 @@ int execute(int c, int f, int n)
 		return status;
 	}
 
-	if ((c >= 0x20 && c <= 0x7E)) {	/* Self inserting. */
+	/* No binding found, self inserting. */
+
+	/* To support unicode or things like it, we need to take care of
+	   unbound prefixed chars (like C-X C-A), they can overlap key codes. */
+
+	/* ASCII is enough for coding, let's keep things simple */
+
+	if ((c >= 0x20 && c <= 0x7E)) {
 		if (n <= 0) {	/* Fenceposts. */
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;
