@@ -8,9 +8,9 @@ int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
-const char *modename[] = {"CMODE", "ASAVE", "VIEW", "EXACT", "OVER"};
-int modevalue[] = {MDCMOD, MDASAVE, MDVIEW, MDEXACT, MDOVER};
-char modecode[] = "CAVEO";
+const char *modename[NUMMODES] = {"CMODE", "ASAVE", "VIEW", "EXACT", "OVER"};
+int modevalue[NUMMODES] = {MDCMOD, MDASAVE, MDVIEW, MDEXACT, MDOVER};
+char modecode[NUMMODES] = "CAVEO";
 
 int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
