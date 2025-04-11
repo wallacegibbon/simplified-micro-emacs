@@ -1,7 +1,7 @@
 # Make the build silent by default
 V =
 
-ifeq ($(strip $(V)),)
+ifeq ($(strip $(V)), )
 	E = @echo
 	Q = @
 else
@@ -36,16 +36,18 @@ CFLAGS = -O2 $(WARNINGS) -g
 #CFLAGS = -D_HPUX_SOURCE -DSYSV
 #CFLAGS = -O4 -DSVR4		# Sun
 #CFLAGS = -O -qchars=signed	# RS/6000
-ifeq ($(uname_S),Linux)
+ifeq ($(uname_S), Linux)
 DEFINES = -DAUTOCONF -DPOSIX -DUSG -D_XOPEN_SOURCE=600 -D_GNU_SOURCE
 endif
 
-ifeq ($(uname_S),FreeBSD)
-DEFINES = -DAUTOCONF -DPOSIX -DSYSV -D_FREEBSD_C_SOURCE -D_BSD_SOURCE -D_SVID_SOURCE -D_XOPEN_SOURCE=600
+ifeq ($(uname_S), FreeBSD)
+DEFINES = -DAUTOCONF -DPOSIX -DSYSV -D_FREEBSD_C_SOURCE -D_BSD_SOURCE \
+	-D_SVID_SOURCE -D_XOPEN_SOURCE=600
 endif
 
-ifeq ($(uname_S),Darwin)
-DEFINES = -DAUTOCONF -DPOSIX -DSYSV -D_DARWIN_C_SOURCE -D_BSD_SOURCE -D_SVID_SOURCE -D_XOPEN_SOURCE=600
+ifeq ($(uname_S), Darwin)
+DEFINES = -DAUTOCONF -DPOSIX -DSYSV -D_DARWIN_C_SOURCE -D_BSD_SOURCE \
+	-D_SVID_SOURCE -D_XOPEN_SOURCE=600
 endif
 
 #DEFINES = -DAUTOCONF
@@ -74,6 +76,8 @@ install: $(PROGRAM)
 .c.o:
 	$(E) "  CC      " $@
 	$(Q) ${CC} ${CFLAGS} ${DEFINES} -c $*.c
+
+# Write the dependencies by hand to work on different make programs.
 
 names.o: edef.h efunc.h estruct.h
 ebind.o: edef.h efunc.h estruct.h
