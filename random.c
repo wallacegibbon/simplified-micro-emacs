@@ -680,60 +680,24 @@ int killtext(int f, int n)
 	return ldelete(chunk, TRUE);
 }
 
-/*
- * prompt and set an editor mode
- *
- * int f, n;		default and argument
- */
 int setemode(int f, int n)
 {
-#if 	PKCODE
 	return adjustmode(TRUE, FALSE);
-#else
-	adjustmode(TRUE, FALSE);
-#endif
 }
 
-/*
- * prompt and delete an editor mode
- *
- * int f, n;		default and argument
- */
 int delmode(int f, int n)
 {
-#if PKCODE
 	return adjustmode(FALSE, FALSE);
-#else
-	adjustmode(FALSE, FALSE);
-#endif
 }
 
-/*
- * prompt and set a global editor mode
- *
- * int f, n;		default and argument
- */
 int setgmode(int f, int n)
 {
-#if PKCODE
 	return adjustmode(TRUE, TRUE);
-#else
-	adjustmode(TRUE, TRUE);
-#endif
 }
 
-/*
- * prompt and delete a global editor mode
- *
- * int f, n;		default and argument
- */
 int delgmode(int f, int n)
 {
-#if PKCODE
 	return adjustmode(FALSE, TRUE);
-#else
-	adjustmode(FALSE, TRUE);
-#endif
 }
 
 /*
@@ -744,11 +708,11 @@ int delgmode(int f, int n)
  */
 int adjustmode(int kind, int global)
 {
-	char *scan;	/* scanning pointer to convert prompt */
-	int i;		/* loop index */
-	int status;	/* error return on input */
+	char *scan;		/* scanning pointer to convert prompt */
+	int i;			/* loop index */
+	int status;		/* error return on input */
 #if COLOR
-	int uflag;	/* was modename uppercase? */
+	int uflag;		/* was modename uppercase? */
 #endif
 	char prompt[50];	/* string to prompt user with */
 	char cbuf[NPAT];	/* buffer to recieve mode name into */
@@ -840,66 +804,19 @@ int adjustmode(int kind, int global)
 	return FALSE;
 }
 
-/*
- * This function simply clears the message line,
- * mainly for macro usage
- *
- * int f, n;		arguments ignored
- */
-int clrmes(int f, int n)
-{
-	mlforce("");
-	return TRUE;
-}
-
-/*
- * This function writes a string on the message line
- * mainly for macro usage
- *
- * int f, n;		arguments ignored
- */
-int writemsg(int f, int n)
-{
-	char *sp;	/* pointer into buf to expand %s */
-	char *np;	/* ptr into nbuf */
-	int status;
-	char buf[NPAT];		/* buffer to recieve message into */
-	char nbuf[NPAT * 2];	/* buffer to expand string into */
-
-	if ((status =
-	     mlreply("Message to write: ", buf, NPAT - 1)) != TRUE)
-		return status;
-
-	/* expand all '%' to "%%" so mlwrite won't expect arguments */
-	sp = buf;
-	np = nbuf;
-	while (*sp) {
-		*np++ = *sp;
-		if (*sp++ == '%')
-			*np++ = '%';
-	}
-	*np = '\0';
-
-	/* write the message out */
-	mlforce(nbuf);
-	return TRUE;
-}
-
 #if CFENCE
 /*
  * the cursor is moved to a matching fence
- *
- * int f, n;		not used
  */
 int getfence(int f, int n)
 {
 	struct line *oldlp;	/* original line pointer */
-	int oldoff;	/* and offset */
-	int sdir;	/* direction of search (1/-1) */
-	int count;	/* current fence level count */
-	char ch;	/* fence type to match against */
-	char ofence;	/* open fence */
-	char c;	/* current character in scan */
+	int oldoff;		/* and offset */
+	int sdir;		/* direction of search (1/-1) */
+	int count;		/* current fence level count */
+	char ch;		/* fence type to match against */
+	char ofence;		/* open fence */
+	char c;			/* current character in scan */
 
 	/* save the original cursor position */
 	oldlp = curwp->w_dotp;
@@ -994,11 +911,11 @@ int getfence(int f, int n)
 int fmatch(int ch)
 {
 	struct line *oldlp;	/* original line pointer */
-	int oldoff;	/* and offset */
+	int oldoff;		/* and offset */
 	struct line *toplp;	/* top line in current window */
-	int count;	/* current fence level count */
-	char opench;	/* open fence */
-	char c;	/* current character in scan */
+	int count;		/* current fence level count */
+	char opench;		/* open fence */
+	char c;			/* current character in scan */
 	int i;
 
 	/* first get the display update out there */
@@ -1033,7 +950,7 @@ int fmatch(int ch)
 			--count;
 		backchar(FALSE, 1);
 		if (curwp->w_dotp == curwp->w_bufp->b_linep->l_fp &&
-		    curwp->w_doto == 0)
+				curwp->w_doto == 0)
 			break;
 	}
 
@@ -1060,12 +977,11 @@ int fmatch(int ch)
  */
 int istring(int f, int n)
 {
-	int status;	/* status return code */
+	int status;		/* status return code */
 	char tstring[NPAT + 1];	/* string to add */
 
 	/* ask for string to insert */
-	status =
-	    mlreplyt("String to insert<CR>: ", tstring, NPAT, enterc);
+	status = mlreplyt("String to insert<CR>: ", tstring, NPAT, enterc);
 	if (status != TRUE)
 		return status;
 
@@ -1088,12 +1004,11 @@ int istring(int f, int n)
  */
 int ovstring(int f, int n)
 {
-	int status;	/* status return code */
+	int status;		/* status return code */
 	char tstring[NPAT + 1];	/* string to add */
 
 	/* ask for string to insert */
-	status =
-	    mlreplyt("String to overwrite<CR>: ", tstring, NPAT, enterc);
+	status = mlreplyt("String to overwrite<CR>: ", tstring, NPAT, enterc);
 	if (status != TRUE)
 		return status;
 

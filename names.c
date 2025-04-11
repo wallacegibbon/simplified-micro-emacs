@@ -19,7 +19,6 @@ struct name_bind names[] = {
 	{"case-word-upper", upperword},
 	{"change-file-name", filename},
 	{"clear-and-redraw", redraw},
-	{"clear-message-line", clrmes},
 	{"copy-region", copyregion},
 	{"ctlx-prefix", cex},
 	{"delete-blank-lines", deblank},
@@ -109,7 +108,6 @@ struct name_bind names[] = {
 	{"view-file", viewfile},
 	{"wrap-word", wrapword},
 	{"write-file", filewrite},
-	{"write-message", writemsg},
 	{"yank", yank},
 
 	{"", NULL}
