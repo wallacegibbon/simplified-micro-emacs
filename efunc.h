@@ -91,7 +91,6 @@ int ctlxrp(int f, int n);
 int ctlxe(int f, int n);
 int ctrlg(int f, int n);
 int rdonly(void);
-int resterr(void);
 int nullproc(int f, int n);
 int metafn(int f, int n);
 int cex(int f, int n);
@@ -145,7 +144,6 @@ int getcmd(void);
 int getstring(char *prompt, char *buf, int nbuf, int eolchar);
 int namedcmd(int f, int n);
 void outstring(char *s);
-void ostring(char *s);
 
 /* buffer.c */
 int usebuffer(int f, int n);

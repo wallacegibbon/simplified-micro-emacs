@@ -49,7 +49,6 @@ int *kbdptr;			/* current position in keyboard buf */
 int *kbdend = &kbdm[0];		/* ptr to end of the keyboard */
 int kbdmode = STOP;		/* current keyboard macro mode */
 int kbdrep = 0;			/* number of repetitions */
-int restflag = FALSE;		/* restricted use? */
 int lastkey = 0;		/* last keystoke */
 long envram = 0l;		/* # of bytes current in use by malloc */
 int saveflag = 0;		/* Flags, saved with the $target var */
@@ -65,7 +64,6 @@ unsigned int mlenold = 0;
 char *patmatch = NULL;		/* The string that satisfies the search */
 struct line *matchline = NULL;	/* The line of the *start* of match */
 int matchoff = 0;		/* The offset of the *start* of match */
-
 
 int currow;			/* Cursor row */
 int curcol;			/* Cursor column */

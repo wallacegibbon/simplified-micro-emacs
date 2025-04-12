@@ -66,7 +66,6 @@ extern int *kbdend;		/* ptr to end of the keyboard */
 extern int kbdmode;		/* current keyboard macro mode */
 extern int kbdrep;		/* number of repetitions */
 
-extern int restflag;		/* restricted use? */
 extern int lastkey;		/* last keystoke */
 extern long envram;		/* # of bytes current in use by malloc */
 extern int saveflag;		/* Flags, saved with the $target var */

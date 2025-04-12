@@ -24,10 +24,6 @@ int spawncli(int f, int n)
 	char *cp;
 #endif
 
-	/* don't allow this command if restricted */
-	if (restflag)
-		return resterr();
-
 #if V7 | USG | BSD
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
@@ -95,10 +91,6 @@ int spawn(int f, int n)
 	int s;
 	char line[NLINE];
 
-	/* don't allow this command if restricted */
-	if (restflag)
-		return resterr();
-
 #if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
@@ -131,10 +123,6 @@ int execprg(int f, int n)
 	int s;
 	char line[NLINE];
 
-	/* don't allow this command if restricted */
-	if (restflag)
-		return resterr();
-
 #if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
@@ -166,10 +154,6 @@ int pipecmd(int f, int n)
 	static char bname[] = "command";
 
 	static char filnam[NSTRING] = "command";
-
-	/* don't allow this command if restricted */
-	if (restflag)
-		return resterr();
 
 	/* get the command to pipe in */
 	if ((s = mlreply("@", line, NLINE)) != TRUE)

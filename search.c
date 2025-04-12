@@ -222,17 +222,14 @@ int backhunt(int f, int n)
  */
 int filter_buffer(int f, int n)
 {
-	int s;		/* return status from CLI */
+	int s;			/* return status from CLI */
 	struct buffer *bp;	/* pointer to buffer to zot */
 	char line[NLINE];	/* command line send to shell */
 	char tmpnam[NFILEN];	/* place to store real file name */
+
 	static char bname1[] = "fltinp";
 	static char filnam1[] = "fltinp";
 	static char filnam2[] = "fltout";
-
-	/* don't allow this command if restricted */
-	if (restflag)
-		return resterr();
 
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */

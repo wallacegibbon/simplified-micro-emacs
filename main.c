@@ -153,10 +153,6 @@ int main(int argc, char **argv)
 				gotoflag = TRUE;
 				gline = atoi(&argv[carg][2]);
 				break;
-			case 'r':	/* -r restrictive use */
-			case 'R':
-				restflag = TRUE;
-				break;
 			case 's':	/* -s for initial search string */
 			case 'S':
 				searchflag = TRUE;
@@ -611,13 +607,6 @@ int rdonly(void)
 {
 	TTbeep();
 	mlwrite("(Key illegal in VIEW mode)");
-	return FALSE;
-}
-
-int resterr(void)
-{
-	TTbeep();
-	mlwrite("(That command is RESTRICTED)");
 	return FALSE;
 }
 

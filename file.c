@@ -32,10 +32,9 @@ int fileread(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if ((s = mlreply("Read file: ", fname, NFILEN)) != TRUE)
 		return s;
+
 	return readin(fname, TRUE);
 }
 
@@ -50,14 +49,13 @@ int insfile(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
 		return rdonly();	/* we are in read only mode */
 	if ((s = mlreply("Insert file: ", fname, NFILEN)) != TRUE)
 		return s;
 	if ((s = ifile(fname)) != TRUE)
 		return s;
+
 	return reposition(TRUE, -1);
 }
 
@@ -74,8 +72,6 @@ int filefind(int f, int n)
 	char fname[NFILEN];	/* file user wishes to find */
 	int s;			/* status return */
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if ((s = mlreply("Find file: ", fname, NFILEN)) != TRUE)
 		return s;
 	return getfile(fname, TRUE);
@@ -87,8 +83,6 @@ int viewfile(int f, int n)
 	int s;			/* status return */
 	struct window *wp;	/* scan for windows that need updating */
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if ((s = mlreply("View file: ", fname, NFILEN)) != TRUE)
 		return s;
 	s = getfile(fname, FALSE);
@@ -328,8 +322,6 @@ int filewrite(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if ((s = mlreply("Write file: ", fname, NFILEN)) != TRUE)
 		return s;
 	if ((s = writeout(fname)) == TRUE) {
@@ -438,8 +430,6 @@ int filename(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if (restflag)		/* don't allow this command if restricted */
-		return resterr();
 	if ((s = mlreply("Name: ", fname, NFILEN)) == ABORT)
 		return s;
 	if (s == FALSE)
