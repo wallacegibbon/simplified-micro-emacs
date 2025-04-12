@@ -1241,9 +1241,6 @@ void mlerase(void)
 	int i;
 
 	movecursor(term.t_nrow, 0);
-	if (discmd == FALSE)
-		return;
-
 #if COLOR
 	TTforg(7);
 	TTbacg(0);
@@ -1274,11 +1271,6 @@ void mlwrite(const char *fmt, ...)
 	int c;		/* current char in format string */
 	va_list ap;
 
-	/* if we are not currently echoing on the command line, abort this */
-	if (discmd == FALSE) {
-		movecursor(term.t_nrow, 0);
-		return;
-	}
 #if COLOR
 	/* set up the proper colors for the command line */
 	TTforg(7);
@@ -1337,23 +1329,6 @@ void mlwrite(const char *fmt, ...)
 		TTeeol();
 	TTflush();
 	mpresf = TRUE;
-}
-
-/*
- * Force a string out to the message line regardless of the
- * current $discmd setting. This is needed when $debug is TRUE
- * and for the write-message and clear-message-line commands
- *
- * char *s;		string to force out
- */
-void mlforce(char *s)
-{
-	int oldcmd;	/* original command display flag */
-
-	oldcmd = discmd;	/* save the discmd value */
-	discmd = TRUE;		/* and turn display on */
-	mlwrite(s);		/* write the string out */
-	discmd = oldcmd;	/* and restore the original setting */
 }
 
 /*

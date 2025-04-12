@@ -35,8 +35,6 @@ extern int gasave;		/* global ASAVE size */
 extern int gacount;		/* count until next ASAVE */
 extern int sgarbf;		/* State of screen unknown */
 extern int mpresf;		/* Stuff in message line */
-extern int discmd;		/* display command flag */
-extern int disinp;		/* display input characters */
 extern int vtrow;		/* Row location of SW cursor */
 extern int vtcol;		/* Column location of SW cursor */
 extern int ttrow;		/* Row location of HW cursor */

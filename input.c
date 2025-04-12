@@ -85,7 +85,7 @@ int ctoec(int c)
  */
 int (*fncmatch(char *fname))(int, int)
 {
-	struct name_bind *ffp;	/* pointer to entry in name binding table */
+	struct name_bind *ffp;
 
 	/* scan through the table, returning any match */
 	ffp = &names[0];
@@ -146,7 +146,7 @@ fn_t getname(void)
 
 int tgetc(void)
 {
-	int c;			/* fetched character */
+	int c;
 
 	/* if we are playing a keyboard macro back, */
 	if (kbdmode == PLAY) {
@@ -256,12 +256,9 @@ proc_ctlxc:
  */
 int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 {
-	int cpos;	/* current character position in string */
+	int cpos = 0;		/* current character position in string */
+	int quotef = FALSE;	/* are we quoting the next char? */
 	int c;
-	int quotef;	/* are we quoting the next char? */
-
-	cpos = 0;
-	quotef = FALSE;
 
 	/* prompt the user for the input string */
 	mlwrite(prompt);
@@ -335,9 +332,8 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				}
 
 				if (c != '\n') {
-					if (disinp)
-						TTputc(c);
-				} else {	/* put out <NL> for <ret> */
+					TTputc(c);
+				} else {
 					outstring("<NL>");
 					ttcol += 3;
 				}
@@ -353,7 +349,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
  */
 int namedcmd(int f, int n)
 {
-	fn_t kfunc;	/* ptr to the requexted function to bind to */
+	fn_t kfunc;
 
 	/* prompt the user to type a named command */
 	mlwrite(": ");
@@ -369,24 +365,8 @@ int namedcmd(int f, int n)
 	return kfunc(f, n);
 }
 
-/*
- * output a string of characters
- */
 void outstring(char *s)
 {
-	if (disinp) {
-		while (*s)
-			TTputc(*s++);
-	}
-}
-
-/*
- * output a string of output characters
- */
-void ostring(char *s)
-{
-	if (discmd) {
-		while (*s)
-			TTputc(*s++);
-	}
+	while (*s)
+		TTputc(*s++);
 }
