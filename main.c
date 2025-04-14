@@ -432,20 +432,7 @@ int execute(int c, int f, int n)
 					 || (curwp->w_doto) % 8 == 7))
 			ldelchar(1, FALSE);
 
-		/* do the appropriate insertion */
-		if (c == '}' && (curbp->b_mode & MDCMOD) != 0)
-			status = insbrace(n, c);
-		else if (c == '#' && (curbp->b_mode & MDCMOD) != 0)
-			status = inspound();
-		else
-			status = linsert(n, c);
-
-#if CFENCE
-		/* check for CMODE fence matching */
-		if ((c == '}' || c == ')' || c == ']')
-				&& (curbp->b_mode & MDCMOD) != 0)
-			fmatch(c);
-#endif
+		status = linsert(n, c);
 
 		/* check auto-save mode */
 		if (curbp->b_mode & MDASAVE) {

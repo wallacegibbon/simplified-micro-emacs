@@ -62,9 +62,6 @@ int insert_tab(int f, int n);
 int trim(int f, int n);
 int openline(int f, int n);
 int insert_newline(int f, int n);
-int cinsert(void);
-int insbrace(int n, int c);
-int inspound(void);
 int deblank(int f, int n);
 int indent(int f, int n);
 int forwdel(int f, int n);
@@ -75,8 +72,6 @@ int delmode(int f, int n);
 int setgmode(int f, int n);
 int delgmode(int f, int n);
 int adjustmode(int kind, int global);
-int getfence(int f, int n);
-int fmatch(int ch);
 int istring(int f, int n);
 int ovstring(int f, int n);
 

@@ -61,9 +61,6 @@ struct key_tab keytab[] = {
 	{META | 'Z', quickexit},
 	{META | 0x7F, delbword},
 
-#if CFENCE
-	{META | CONTROL | 'F', getfence},
-#endif
 	{META | CONTROL | 'H', delbword},
 	{META | CONTROL | 'L', reposition},
 	{META | CONTROL | 'M', delgmode},

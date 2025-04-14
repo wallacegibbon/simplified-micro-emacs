@@ -75,7 +75,6 @@
 
 #define CVMVAS  1  /* arguments to page forward/back in pages */
 #define	CLRMSG	0  /* space clears the message line with no insert */
-#define	CFENCE	1  /* fench matching in CMODE */
 #define	TYPEAH	1  /* type ahead causes update to be skipped */
 #define	VISMAC	0  /* update display during keyboard macros */
 #define ADDCR	0  /* ajout d'un CR en fin de chaque ligne (ST520) */
@@ -282,11 +281,10 @@ struct buffer {
 #define	BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define	MDCMOD	0x0001		/* C indentation and fence match */
-#define	MDVIEW	0x0002		/* read-only buffer */
-#define	MDEXACT	0x0004		/* Exact matching for searches */
-#define	MDOVER	0x0008		/* overwrite mode */
-#define	MDASAVE	0x0010		/* auto-save mode */
+#define	MDVIEW	0x0001		/* read-only buffer */
+#define	MDEXACT	0x0002		/* Exact matching for searches */
+#define	MDOVER	0x0004		/* overwrite mode */
+#define	MDASAVE	0x0008		/* auto-save mode */
 
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */

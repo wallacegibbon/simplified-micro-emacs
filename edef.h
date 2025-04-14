@@ -19,7 +19,7 @@ extern char golabel[];		/* current line to go to */
 extern int eolexist;		/* does clear to EOL exist? */
 extern int revexist;		/* does reverse video exist? */
 
-#define	NUMMODES	5
+#define	NUMMODES	4
 extern const char *modename[NUMMODES];	/* text names of modes */
 extern int modevalue[NUMMODES];		/* value of modes */
 extern char modecode[NUMMODES];		/* letters to represent modes */

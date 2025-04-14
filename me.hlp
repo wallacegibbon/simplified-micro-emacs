@@ -31,16 +31,15 @@ Newline and indent ....      ^J         Trim line .............   ^X ^T
 Open line .............      ^O
 Handle tab ............      ^I         Quote character .......      ^Q
 Goto line ............. Meta  G         Abort command .........      ^G
-Goto matching fence ... Meta ^F
 -------------------------------------------------------------------------------
 =>                      MODE COMMANDS
 Add mode ..............   ^X  M         Add global mode	....... Meta  M
 Delete mode ...........   ^X ^M         Delete global mode .... Meta ^M
 
-OVER   :: Overwrite, don't insert
+ASAVE  :: Auto save the buffer
 VIEW   :: View only, don't change
-CMODE  :: C program indenting
 EXACT  :: Match case in search
+OVER   :: Overwrite, don't insert
 -------------------------------------------------------------------------------
 =>                      KEYS AND COMMANDS
 Abort command .........      ^G
