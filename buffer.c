@@ -277,9 +277,9 @@ int makelist(int iflag)
 	if ((s = bclear(blistp)) != TRUE)	/* Blow old text away */
 		return s;
 	strcpy(blistp->b_fname, "");
-	if (addline("ACT MODES    SIZE BUFFER          FILE") == FALSE)
+	if (addline("ACT MODE    SIZE BUFFER          FILE") == FALSE)
 		return FALSE;
-	if (addline("--- -----    ---- ------          ----") == FALSE)
+	if (addline("--- ----    ---- ------          ----") == FALSE)
 		return FALSE;
 
 	bp = bheadp;		/* For all buffers */
@@ -355,7 +355,7 @@ int makelist(int iflag)
 			*cp1++ = c;
 		cp2 = &bp->b_fname[0];	/* File name */
 		if (*cp2 != 0) {
-			while (cp1 < &line[3 + 1 + 5 + 1 + 7 + 1 + NBUFN])
+			while (cp1 < &line[3 + 1 + 4 + 1 + 7 + 1 + NBUFN])
 				*cp1++ = ' ';
 			while ((c = *cp2++) != 0) {
 				if (cp1 < &line[MAXLINE - 1])
