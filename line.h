@@ -27,7 +27,6 @@ struct line {
 
 void lfree(struct line *lp);
 void lchange(int flag);
-int insspace(int f, int n);
 int linstr(char *instr);
 int linsert(int n, int c);
 int lowrite(int c);

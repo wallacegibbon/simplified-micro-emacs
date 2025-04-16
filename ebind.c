@@ -17,7 +17,6 @@ struct key_tab keytab[] = {
 	{CONTROL | 'F', forwchar},
 	{CONTROL | 'G', ctrlg},
 	{CONTROL | 'H', backdel},
-	{CONTROL | 'I', insert_tab},
 	{CONTROL | 'J', indent},
 	{CONTROL | 'K', killtext},
 	{CONTROL | 'L', redraw},

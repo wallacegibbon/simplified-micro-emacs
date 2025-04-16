@@ -117,16 +117,6 @@ void lchange(int flag)
 }
 
 /*
- * insert spaces forward into text
- */
-int insspace(int f, int n)
-{
-	linsert(n, ' ');
-	backchar(f, n);
-	return TRUE;
-}
-
-/*
  * linstr -- Insert a string at the current point
  */
 int linstr(char *instr)
@@ -263,8 +253,8 @@ int linsert(int n, int c)
 int lowrite(int c)
 {
 	if (curwp->w_doto < curwp->w_dotp->l_used &&
-	    (lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-	     ((curwp->w_doto) & tabmask) == tabmask))
+			(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
+			(curwp->w_doto & tabmask) == tabmask))
 		ldelchar(1, FALSE);
 	return linsert(1, c);
 }
@@ -279,13 +269,11 @@ int lover(char *ostr)
 
 	if (ostr != NULL)
 		while ((tmpc = *ostr) && status == TRUE) {
-			status =
-			    (tmpc == '\n' ? lnewline() : lowrite(tmpc));
+			status = tmpc == '\n' ? lnewline() : lowrite(tmpc);
 
 			/* Insertion error? */
 			if (status != TRUE) {
-				mlwrite
-				    ("%%Out of memory while overwriting");
+				mlwrite("%%Out of memory while overwriting");
 				break;
 			}
 			ostr++;
@@ -317,8 +305,8 @@ int lnewline(void)
 #else
 	lchange(WFHARD);
 #endif
-	lp1 = curwp->w_dotp;	/* Get the address and */
-	doto = curwp->w_doto;	/* offset of "." */
+	lp1 = curwp->w_dotp;		/* Get the address and */
+	doto = curwp->w_doto;		/* offset of "." */
 	if ((lp2 = lalloc(doto)) == NULL)	/* New first half line */
 		return FALSE;
 	cp1 = &lp1->l_text[0];	/* Shuffle text around */
@@ -412,8 +400,9 @@ int ldelete(long n, int kflag)
 #else
 			lchange(WFHARD);
 #endif
-			if (ldelnewline() == FALSE
-			    || (kflag != FALSE && kinsert('\n') == FALSE))
+			if (ldelnewline() == FALSE ||
+					(kflag != FALSE &&
+					kinsert('\n') == FALSE))
 				return FALSE;
 			--n;
 			continue;
@@ -457,10 +446,10 @@ int ldelete(long n, int kflag)
  */
 char *getctext(void)
 {
-	struct line *lp;	/* line to copy */
-	int size;	/* length of line to return */
-	char *sp;	/* string pointer into line */
-	char *dp;	/* string pointer into returned line */
+	struct line *lp;		/* line to copy */
+	int size;			/* length of line to return */
+	char *sp;			/* string pointer into line */
+	char *dp;			/* string pointer into returned line */
 	static char rline[NSTRING];	/* line to return */
 
 	/* find the contents of the current line and its length */
@@ -626,7 +615,8 @@ int kinsert(int c)
 
 	/* check to see if we need a new chunk */
 	if (kused >= KBLOCK) {
-		if ((nchunk = (struct kill *)malloc(sizeof(struct kill))) == NULL)
+		if ((nchunk = (struct kill *)malloc(sizeof(struct kill)))
+				== NULL)
 			return FALSE;
 		if (kbufh == NULL)	/* set head ptr if first time */
 			kbufh = nchunk;

@@ -228,20 +228,6 @@ int quote(int f, int n)
 	return linsert(n, c);
 }
 
-int insert_tab(int f, int n)
-{
-	int s;
-	if (n <= 0)
-		return FALSE;
-
-	while (n--) {
-		if ((s = linsert(1, '\t')) == FALSE)
-			return s;
-	}
-
-	return TRUE;
-}
-
 /*
  * trim trailing whitespace from the point to eol
  */
@@ -601,58 +587,4 @@ int adjustmode(int kind, int global)
 
 	mlwrite("No such mode!");
 	return FALSE;
-}
-
-/*
- * ask for and insert a string into the current
- * buffer at the current point
- *
- * int f, n;		ignored arguments
- */
-int istring(int f, int n)
-{
-	int status;		/* status return code */
-	char tstring[NPAT + 1];	/* string to add */
-
-	/* ask for string to insert */
-	status = mlreplyt("String to insert<CR>: ", tstring, NPAT, enterc);
-	if (status != TRUE)
-		return status;
-
-	if (f == FALSE)
-		n = 1;
-
-	if (n < 0)
-		n = -n;
-
-	/* insert it */
-	while (n-- && (status = linstr(tstring)));
-	return status;
-}
-
-/*
- * ask for and overwite a string into the current
- * buffer at the current point
- *
- * int f, n;		ignored arguments
- */
-int ovstring(int f, int n)
-{
-	int status;		/* status return code */
-	char tstring[NPAT + 1];	/* string to add */
-
-	/* ask for string to insert */
-	status = mlreplyt("String to overwrite<CR>: ", tstring, NPAT, enterc);
-	if (status != TRUE)
-		return status;
-
-	if (f == FALSE)
-		n = 1;
-
-	if (n < 0)
-		n = -n;
-
-	/* insert it */
-	while (n-- && (status = lover(tstring)));
-	return status;
 }

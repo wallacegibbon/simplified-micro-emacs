@@ -58,7 +58,6 @@ int getccol(int bflg);
 int setccol(int pos);
 int twiddle(int f, int n);
 int quote(int f, int n);
-int insert_tab(int f, int n);
 int trim(int f, int n);
 int openline(int f, int n);
 int insert_newline(int f, int n);
@@ -72,8 +71,6 @@ int delmode(int f, int n);
 int setgmode(int f, int n);
 int delgmode(int f, int n);
 int adjustmode(int kind, int global);
-int istring(int f, int n);
-int ovstring(int f, int n);
 
 /* main.c */
 int (*getbind(int c))(int, int);

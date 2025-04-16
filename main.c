@@ -233,8 +233,7 @@ loop:
 			fn_t execfunc;
 
 			if (c == newc && (execfunc = getbind(c)) != NULL
-					&& execfunc != insert_newline
-					&& execfunc != insert_tab)
+					&& execfunc != insert_newline)
 				newc = getcmd();
 			else
 				break;
@@ -416,7 +415,11 @@ int execute(int c, int f, int n)
 
 	/* ASCII is enough for coding, let's keep things simple */
 
-	if ((c >= 0x20 && c <= 0x7E)) {
+	/* If C-I is not bound, insert it */
+	if (c == (CONTROL | 'I'))
+		c = '\t';
+
+	if ((c >= 0x20 && c <= 0x7E) || c == '\t') {
 		if (n <= 0) {	/* Fenceposts. */
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;
