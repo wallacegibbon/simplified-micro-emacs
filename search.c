@@ -504,9 +504,10 @@ static int replaces(int kind, int f, int n)
 	int nlrepl;		/* was a replace done on the last line? */
 	char c;			/* input char for query */
 	char tpat[NPAT];	/* temporary to hold search pattern */
+	char last_char = '\0';
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 
 	if (f && n < 0)
 		return FALSE;
@@ -563,6 +564,7 @@ qprompt:
 			mlwrite("");	/* and clear it */
 
 			/* And respond appropriately. */
+			last_char = c;
 			switch (c) {
 			case 'y':
 			case ' ':
@@ -598,6 +600,9 @@ qprompt:
 
 		numsub++;
 	}
+
+	if (last_char == 'n')
+		backchar(FALSE, 1);
 
 	mlwrite("%d substitutions", numsub);
 	return TRUE;
