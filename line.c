@@ -126,8 +126,7 @@ int linstr(char *instr)
 
 	if (instr != NULL)
 		while ((tmpc = *instr) && status == TRUE) {
-			status =
-			    (tmpc == '\n' ? lnewline() : linsert(1, tmpc));
+			status = (tmpc == '\n' ? lnewline() : linsert(1, tmpc));
 
 			/* Insertion error? */
 			if (status != TRUE) {

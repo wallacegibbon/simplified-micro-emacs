@@ -140,9 +140,9 @@ start_over:
 	status = TRUE;		/* Assume everything's cool */
 
 	/*
-	   Get the first character in the pattern.
-	   If we get an initial C-S or C-R,
-	   re-use the old search string and find the first occurrence
+	 * Get the first character in the pattern.
+	 * If we get an initial C-S or C-R,
+	 * re-use the old search string and find the first occurrence
 	 */
 
 	c = ectoc(expc = get_char());

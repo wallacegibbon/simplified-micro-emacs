@@ -5,6 +5,8 @@
 #include "efunc.h"
 #include "wrapper.h"
 
+int quotec = 0x11;		/* quote char during mlreply() */
+
 /*
  * Ask a yes or no question in the message line. Return either TRUE, FALSE, or
  * ABORT. The ABORT status is returned if the user bumps out of the question
@@ -269,11 +271,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 
 		if (c != eolchar) {
 			/* If it is a <ret>, change it to a <NL> */
-#if PKCODE
 			if (c == (CONTROL | 0x4d) && !quotef)
-#else
-			if (c == (CONTROL | 0x4d))
-#endif
 				c = CONTROL | 0x40 | '\n';
 		}
 
@@ -318,7 +316,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 				TTflush();
 			}
 
-		} else if ((c == quotec || c == 0x16) && quotef == FALSE) {
+		} else if (c == quotec && quotef == FALSE) {
 			quotef = TRUE;
 		} else {
 			quotef = FALSE;

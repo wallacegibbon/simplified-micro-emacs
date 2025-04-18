@@ -173,19 +173,17 @@ int getregion(struct region *rp)
 		rp->r_linep = curwp->w_dotp;
 		if (curwp->w_doto < curwp->w_marko) {
 			rp->r_offset = curwp->w_doto;
-			rp->r_size =
-			    (long) (curwp->w_marko - curwp->w_doto);
+			rp->r_size = (long)(curwp->w_marko - curwp->w_doto);
 		} else {
 			rp->r_offset = curwp->w_marko;
-			rp->r_size =
-			    (long) (curwp->w_doto - curwp->w_marko);
+			rp->r_size = (long)(curwp->w_doto - curwp->w_marko);
 		}
 		return TRUE;
 	}
 	blp = curwp->w_dotp;
-	bsize = (long) curwp->w_doto;
+	bsize = (long)curwp->w_doto;
 	flp = curwp->w_dotp;
-	fsize = (long) (llength(flp) - curwp->w_doto + 1);
+	fsize = (long)(llength(flp) - curwp->w_doto + 1);
 	while (flp != curbp->b_linep || lback(blp) != curbp->b_linep) {
 		if (flp != curbp->b_linep) {
 			flp = lforw(flp);

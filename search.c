@@ -541,8 +541,9 @@ static int replaces(int kind, int f, int n)
 	nummatch = 0;
 
 	while ((f == FALSE || n > nummatch) &&
-	       (nlflag == FALSE || nlrepl == FALSE)) {
-		/* Search for the pattern.
+			(nlflag == FALSE || nlrepl == FALSE)) {
+		/*
+		 * Search for the pattern.
 		 * If we search with a regular expression,
 		 * matchlen is reset to the true length of the matched string.
 		 */

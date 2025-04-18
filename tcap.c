@@ -135,14 +135,15 @@ static void tcapopen(void)
 		term.t_nrow = int_row - 1;
 		term.t_ncol = int_col;
 
-		if ((term.t_nrow <= 0)
-		    && (term.t_nrow = (short) tgetnum("li") - 1) == -1) {
+		if ((term.t_nrow <= 0) &&
+				(term.t_nrow = (short)tgetnum("li") - 1)
+						== -1) {
 			puts("termcap entry incomplete (lines)");
 			exit(1);
 		}
 
-		if ((term.t_ncol <= 0)
-		    && (term.t_ncol = (short) tgetnum("co")) == -1) {
+		if ((term.t_ncol <= 0) &&
+				(term.t_ncol = (short)tgetnum("co")) == -1) {
 			puts("Termcap entry incomplete (columns)");
 			exit(1);
 		}

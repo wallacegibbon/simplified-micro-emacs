@@ -33,7 +33,6 @@ int abortc = (CONTROL | 'G');	/* ABORT command char */
 int enterc = (CONTROL | 'M');	/* ENTER/CR char */
 int reptc = (CONTROL | 'U');	/* Universal repeat char */
 
-int quotec = 0x11;		/* quote char during mlreply() */
 int tabmask = 0x07;		/* tabulator mask */
 
 char *cname[] = {		/* names of colors */

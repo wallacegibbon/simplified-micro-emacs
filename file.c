@@ -108,8 +108,8 @@ int getfile(char *fname, int lockfl)
 	char bname[NBUFN];	/* buffer name to put file */
 
 	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
-		if ((bp->b_flag & BFINVS) == 0
-		    && strcmp(bp->b_fname, fname) == 0) {
+		if ((bp->b_flag & BFINVS) == 0 &&
+				strcmp(bp->b_fname, fname) == 0) {
 			swbuffer(bp);
 			lp = curwp->w_dotp;
 			i = curwp->w_ntrows / 2;

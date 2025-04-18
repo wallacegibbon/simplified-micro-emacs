@@ -185,8 +185,7 @@ int namebuffer(int f, int n)
 
 	/* prompt for and get the new buffer name */
 ask:
-	if (mlreply("Change buffer name to: ", bufn, NBUFN) !=
-	    TRUE)
+	if (mlreply("Change buffer name to: ", bufn, NBUFN) != TRUE)
 		return FALSE;
 
 	/* and check for duplicates */
@@ -420,8 +419,7 @@ int anycb(void)
 
 	bp = bheadp;
 	while (bp != NULL) {
-		if ((bp->b_flag & BFINVS) == 0
-		    && (bp->b_flag & BFCHG) != 0)
+		if ((bp->b_flag & BFINVS) == 0 && (bp->b_flag & BFCHG) != 0)
 			return TRUE;
 		bp = bp->b_bufp;
 	}

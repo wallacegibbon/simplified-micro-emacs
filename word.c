@@ -30,11 +30,13 @@ int wrapword(int f, int n)
 	if (!backchar(0, 1))
 		return FALSE;
 
-	/* back up until we aren't in a word,
-	   make sure there is a break in the line */
+	/*
+	 * Back up until we aren't in a word, make sure there is a break
+	 * in the line.
+	 */
 	cnt = 0;
-	while (((c = lgetc(curwp->w_dotp, curwp->w_doto)) != ' ')
-			&& (c != '\t')) {
+	while (((c = lgetc(curwp->w_dotp, curwp->w_doto)) != ' ') &&
+			(c != '\t')) {
 		cnt++;
 		if (!backchar(0, 1))
 			return FALSE;
@@ -290,8 +292,9 @@ int delfword(int f, int n)
 
 		/* skip whitespace and newlines */
 		while ((curwp->w_doto == llength(curwp->w_dotp)) ||
-		       ((c = lgetc(curwp->w_dotp, curwp->w_doto)) == ' ')
-		       || (c == '\t')) {
+				((c = lgetc(curwp->w_dotp, curwp->w_doto))
+						== ' ') ||
+				(c == '\t')) {
 			if (forwchar(FALSE, 1) == FALSE)
 				break;
 			++size;

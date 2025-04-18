@@ -254,7 +254,7 @@ int trim(int f, int n)
 		/* trim the current line */
 		while (length > offset) {
 			if (lgetc(lp, length - 1) != ' ' &&
-			    lgetc(lp, length - 1) != '\t')
+					lgetc(lp, length - 1) != '\t')
 				break;
 			length--;
 		}
@@ -372,9 +372,11 @@ int indent(int f, int n)
 				nicol |= tabmask;
 			++nicol;
 		}
-		if (lnewline() == FALSE
-		    || ((i = nicol / 8) != 0 && linsert(i, '\t') == FALSE)
-		    || ((i = nicol % 8) != 0 && linsert(i, ' ') == FALSE))
+		if (lnewline() == FALSE ||
+				((i = nicol / 8) != 0 &&
+						linsert(i, '\t') == FALSE) ||
+				((i = nicol % 8) != 0 &&
+						linsert(i, ' ') == FALSE))
 			return FALSE;
 	}
 	return TRUE;

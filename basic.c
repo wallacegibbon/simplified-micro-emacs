@@ -213,8 +213,10 @@ int forwline(int f, int n)
 	if (curwp->w_dotp == curbp->b_linep)
 		return FALSE;
 
-	/* if the last command was not note a line move,
-	   reset the goal column */
+	/*
+	 * if the last command was not note a line move,
+	 * reset the goal column
+	 */
 	if ((lastflag & CFCPCN) == 0)
 		curgoal = getccol(FALSE);
 
@@ -250,8 +252,10 @@ int backline(int f, int n)
 	if (lback(curwp->w_dotp) == curbp->b_linep)
 		return FALSE;
 
-	/* if the last command was not note a line move,
-	   reset the goal column */
+	/*
+	 * if the last command was not note a line move,
+	 * reset the goal column
+	 */
 	if ((lastflag & CFCPCN) == 0)
 		curgoal = getccol(FALSE);
 

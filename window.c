@@ -66,8 +66,10 @@ int nextwind(int f, int n)
 			wp = wp->w_wndp;
 		}
 
-		/* if the argument is negative, it is the nth window
-		   from the bottom of the screen */
+		/*
+		 * if the argument is negative, it is the nth window
+		 * from the bottom of the screen
+		 */
 		if (n < 0)
 			n = nwindows + n + 1;
 
@@ -458,8 +460,7 @@ int shrinkwind(int f, int n)
 	}
 	if (curwp->w_wndp == adjwp) {	/* Grow below. */
 		lp = adjwp->w_linep;
-		for (i = 0; i < n && lback(lp) != adjwp->w_bufp->b_linep;
-		     ++i)
+		for (i = 0; i < n && lback(lp) != adjwp->w_bufp->b_linep; ++i)
 			lp = lback(lp);
 		adjwp->w_linep = lp;
 		adjwp->w_toprow -= n;
@@ -512,8 +513,8 @@ struct window *wpopup(void)
 {
 	struct window *wp;
 
-	if (wheadp->w_wndp == NULL	/* Only 1 window */
-	    && splitwind(FALSE, 0) == FALSE)	/* and it won't split */
+	if (wheadp->w_wndp == NULL &&	/* Only 1 window */
+			splitwind(FALSE, 0) == FALSE) /* and it won't split */
 		return NULL;
 	wp = wheadp;		/* Find window to use */
 	while (wp != NULL && wp == curwp)
@@ -632,8 +633,7 @@ int newsize(int f, int n)
 				/* need to change this window size? */
 				lastline = wp->w_toprow + wp->w_ntrows - 1;
 				if (lastline >= n - 2) {
-					wp->w_ntrows =
-					    n - wp->w_toprow - 2;
+					wp->w_ntrows = n - wp->w_toprow - 2;
 					wp->w_flag |= WFHARD | WFMODE;
 				}
 			}

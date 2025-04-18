@@ -296,8 +296,8 @@ loop:
 		n = 4;		/* with argument of 4 */
 		mflag = 0;	/* that can be discarded. */
 		mlwrite("Arg: 4");
-		while (((c = getcmd()) >= '0' && c <= '9') || c == reptc
-		       || c == '-') {
+		while (((c = getcmd()) >= '0' && c <= '9') || c == reptc ||
+				c == '-') {
 			if (c == reptc) {
 				if ((n > 0) == ((n * 4) > 0))
 					n = n * 4;
@@ -410,8 +410,10 @@ int execute(int c, int f, int n)
 
 	/* No binding found, self inserting. */
 
-	/* To support unicode or things like it, we need to take care of
-	   unbound prefixed chars (like C-X C-A), they can overlap key codes. */
+	/*
+	 * To support unicode or things like it, we need to take care of
+	 * unbound prefixed chars (like C-X C-A), they can overlap key codes.
+	 */
 
 	/* ASCII is enough for coding, let's keep things simple */
 
@@ -426,13 +428,15 @@ int execute(int c, int f, int n)
 		}
 		thisflag = 0;	/* For the future. */
 
-		/* if we are in overwrite mode, not at eol,
-		   and next char is not a tab or we are at a tab stop,
-		   delete a char forword */
+		/*
+		 * if we are in overwrite mode, not at eol,
+		 * and next char is not a tab or we are at a tab stop,
+		 * delete a char forword
+		 */
 		if (curwp->w_bufp->b_mode & MDOVER &&
 				curwp->w_doto < curwp->w_dotp->l_used &&
-				(lgetc(curwp->w_dotp, curwp->w_doto) != '\t'
-					 || (curwp->w_doto) % 8 == 7))
+				(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
+						(curwp->w_doto) % 8 == 7))
 			ldelchar(1, FALSE);
 
 		status = linsert(n, c);

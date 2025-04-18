@@ -273,8 +273,10 @@ int update(int force)
 
 #if SCROLLCODE
 
-	/* first, propagate mode line changes to all instances of
-	   a buffer displayed in more than one window */
+	/*
+	 * first, propagate mode line changes to all instances of
+	 * a buffer displayed in more than one window
+	 */
 	wp = wheadp;
 	while (wp != NULL) {
 		if (wp->w_flag & WFMODE) {
@@ -302,8 +304,7 @@ int update(int force)
 			reframe(wp);	/* check the framing */
 #if SCROLLCODE
 			if (wp->w_flag & (WFKILLS | WFINS)) {
-				scrflags |=
-				    (wp->w_flag & (WFINS | WFKILLS));
+				scrflags |= (wp->w_flag & (WFINS | WFKILLS));
 				wp->w_flag &= ~(WFKILLS | WFINS);
 			}
 #endif
@@ -381,8 +382,10 @@ static int reframe(struct window *wp)
 #if SCROLLCODE
 				/* if not _quite_ in, we'll reframe gently */
 				if (i < 0 || i == wp->w_ntrows) {
-					/* if the terminal can't help, then
-					   we're simply outside */
+					/*
+					 * if the terminal can't help, then
+					 *  we're simply outside
+					 */
 					if (term.t_scroll == NULL)
 						i = wp->w_force;
 					break;
@@ -576,7 +579,7 @@ void upddex(void)
 		while (i < wp->w_toprow + wp->w_ntrows) {
 			if (vscreen[i]->v_flag & VFEXT) {
 				if ((wp != curwp) || (lp != wp->w_dotp) ||
-				    (curcol < term.t_ncol - 1)) {
+						(curcol < term.t_ncol - 1)) {
 					vtmove(i, 0);
 					show_line(lp);
 					vteeol();
@@ -722,7 +725,7 @@ static int scrolls(int inserts)
 			match = i;
 			count = 1;
 			for (j = match + 1, k = from + 1;
-			     j < rows && k < rows; j++, k++) {
+					j < rows && k < rows; j++, k++) {
 				if (inserts ? texttest(j, k) : texttest(k, j))
 					count++;
 				else
@@ -913,23 +916,27 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 #endif
 
 #if REVSTA | COLOR
-	/* if we need to change the reverse video status of the
-	   current line, we need to re-write the entire line */
+	/*
+	 * if we need to change the reverse video status of the
+	 * current line, we need to re-write the entire line
+	 */
 	rev = (vp1->v_flag & VFREV) == VFREV;
 	req = (vp1->v_flag & VFREQ) == VFREQ;
 	if ((rev != req)
 #if COLOR
-	    || (vp1->v_fcolor != vp1->v_rfcolor)
-	    || (vp1->v_bcolor != vp1->v_rbcolor)
+			|| (vp1->v_fcolor != vp1->v_rfcolor)
+			|| (vp1->v_bcolor != vp1->v_rbcolor)
 #endif
-	    ) {
+			) {
 		movecursor(row, 0);	/* Go to start of line. */
 		/* set rev video if needed */
 		if (rev != req)
 			(*term.t_rev) (req);
 
-		/* scan through the line and dump it to the screen and
-		   the virtual screen array */
+		/*
+		 * scan through the line and dump it to the screen and
+		 * the virtual screen array
+		 */
 		cp3 = &vp1->v_text[term.t_ncol];
 		while (cp1 < cp3) {
 			TTputc(*cp1);
@@ -1189,8 +1196,7 @@ static void modeline(struct window *wp)
 			} else {
 				ratio = 0;
 				if (numlines != 0)
-					ratio =
-					    (100L * predlines) / numlines;
+					ratio = (100L * predlines) / numlines;
 				if (ratio > 99)
 					ratio = 99;
 				sprintf(tline, " %2d%% ", ratio);

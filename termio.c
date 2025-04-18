@@ -107,8 +107,10 @@ void ttopen(void)
 	ioctl(0, TIOCSLTC, &nltchars);	/* New local characters */
 #endif
 #if BSD
-	/* provide a smaller terminal output buffer so that
-	   the type ahead detection works better (more often) */
+	/*
+	 * provide a smaller terminal output buffer so that
+	 * the type ahead detection works better (more often)
+	 */
 	setbuffer(stdout, &tobuf[0], TBUFSIZ);
 	signal(SIGTSTP, SIG_DFL);	/* set signals so that we can */
 	signal(SIGCONT, rtfrmshell);	/* suspend & restart emacs */
@@ -116,16 +118,20 @@ void ttopen(void)
 #endif
 
 #if __hpux | SVR4
-	/* provide a smaller terminal output buffer so that
-	   the type ahead detection works better (more often) */
+	/*
+	 * provide a smaller terminal output buffer so that
+	 * the type ahead detection works better (more often)
+	 */
 	setvbuf(stdout, &tobuf[0], _IOFBF, TBUFSIZ);
 	signal(SIGTSTP, SIG_DFL);	/* set signals so that we can */
 	signal(SIGCONT, rtfrmshell);	/* suspend & restart emacs */
 	TTflush();
 #endif /* __hpux */
 
-	/* on all screens we are not sure of the initial position
-	   of the cursor */
+	/*
+	 * on all screens we are not sure of the initial position
+	 * of the cursor
+	 */
 	ttrow = 999;
 	ttcol = 999;
 }

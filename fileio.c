@@ -134,8 +134,7 @@ int ffgetline(void)
 			fline[i++] = c;
 			/* if it's longer, get more room */
 			if (i >= flen) {
-				if ((tmpline =
-				     malloc(flen + NSTRING)) == NULL)
+				if ((tmpline = malloc(flen + NSTRING)) == NULL)
 					return FIOMEM;
 				strncpy(tmpline, fline, flen);
 				flen += NSTRING;
