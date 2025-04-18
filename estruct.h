@@ -134,9 +134,9 @@
 #define	NCOLORS	8		/* number of supported colors */
 #define	KBLOCK	250		/* sizeof kill buffer chunks */
 
-#define CONTROL	0x1000		/* Control flag, or'ed in */
-#define META	0x2000		/* Meta flag, or'ed in */
-#define CTLX	0x4000		/* ^X flag, or'ed in */
+#define CONTROL	0x2000		/* Control flag, or'ed in */
+#define META	0x4000		/* Meta flag, or'ed in */
+#define CTLX	0x8000		/* ^X flag, or'ed in */
 
 #ifdef	FALSE
 #undef	FALSE

@@ -606,24 +606,6 @@ int nullproc(int f, int n)
 	return TRUE;
 }
 
-/* dummy function for binding to meta prefix */
-int metafn(int f, int n)
-{
-	return TRUE;
-}
-
-/* dummy function for binding to control-x prefix */
-int cex(int f, int n)
-{
-	return TRUE;
-}
-
-/* dummy function for binding to universal-argument */
-int unarg(int f, int n)
-{
-	return TRUE;
-}
-
 /*****		Compiler specific Library functions	****/
 
 #if RAMSIZE

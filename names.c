@@ -20,7 +20,6 @@ struct name_bind names[] = {
 	{"change-file-name", filename},
 	{"clear-and-redraw", redraw},
 	{"copy-region", copyregion},
-	{"ctlx-prefix", cex},
 	{"delete-blank-lines", deblank},
 	{"delete-buffer", killbuffer},
 	{"delete-mode", delmode},
@@ -51,7 +50,6 @@ struct name_bind names[] = {
 	{"kill-region", killregion},
 	{"kill-to-end-of-line", killtext},
 	{"list-buffers", listbuffers},
-	{"meta-prefix", metafn},
 	{"move-window-down", mvdnwind},
 	{"move-window-up", mvupwind},
 	{"name-buffer", namebuffer},
@@ -95,7 +93,6 @@ struct name_bind names[] = {
 #endif
 	{"transpose-characters", twiddle},
 	{"trim-line", trim},
-	{"universal-argument", unarg},
 	{"unmark-buffer", unmark},
 	{"update-screen", upscreen},
 	{"view-file", viewfile},

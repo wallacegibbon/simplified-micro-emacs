@@ -84,9 +84,6 @@ int ctlxe(int f, int n);
 int ctrlg(int f, int n);
 int rdonly(void);
 int nullproc(int f, int n);
-int metafn(int f, int n);
-int cex(int f, int n);
-int unarg(int f, int n);
 int cexit(int status);
 
 /* display.c */

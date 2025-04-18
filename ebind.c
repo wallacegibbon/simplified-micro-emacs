@@ -28,13 +28,10 @@ struct key_tab keytab[] = {
 	{CONTROL | 'R', risearch},
 	{CONTROL | 'S', fisearch},
 	{CONTROL | 'T', twiddle},
-	{CONTROL | 'U', unarg},
 	{CONTROL | 'V', forwpage},
 	{CONTROL | 'W', killregion},
-	{CONTROL | 'X', cex},
 	{CONTROL | 'Y', yank},
 	{CONTROL | 'Z', backpage},
-	{CONTROL | ']', metafn},
 
 	{META | ' ', setmark},
 	{META | '.', setmark},
