@@ -58,29 +58,6 @@ int spawncli(int f, int n)
 #endif
 }
 
-#if BSD | __hpux | SVR4
-
-int bktoshell(int f, int n)
-{				/* suspend MicroEMACS and wait to wake up */
-	vttidy();
-/******************************
-	int pid;
-
-	pid = getpid();
-	kill(pid, SIGTSTP);
-******************************/
-	kill(0, SIGTSTP);
-	return TRUE;
-}
-
-void rtfrmshell(void)
-{
-	TTopen();
-	curwp->w_flag = WFHARD;
-	sgarbf = TRUE;
-}
-#endif
-
 /*
  * Run a one-liner in a subjob. When the command returns, wait for a single
  * character to be typed, then mark the screen as garbage so a full repaint is

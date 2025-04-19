@@ -35,31 +35,26 @@ struct sgttyb ostate;		/* saved tty state */
 struct sgttyb nstate;		/* values for editor mode */
 struct tchars otchars;		/* Saved terminal special character set */
 #if XONXOFF
-struct tchars ntchars = { 0xff, 0xff, 0x11, 0x13, 0xff, 0xff };
-
+struct tchars ntchars = {0xff, 0xff, 0x11, 0x13, 0xff, 0xff};
 				/* A lot of nothing and XON/XOFF */
 #else
-struct tchars ntchars = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-
+struct tchars ntchars = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 				/* A lot of nothing */
 #endif
 #if BSD & PKCODE
 struct ltchars oltchars;	/* Saved terminal local special character set */
-struct ltchars nltchars = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-
+struct ltchars nltchars = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 				/* A lot of nothing */
 #endif
 
 #if BSD
 #include <sys/ioctl.h>		/* to get at the typeahead */
-int rtfrmshell();		/* return from suspended shell */
 #define	TBUFSIZ	128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
 #endif
 #endif
 
 #if __hpux | SVR4
-int rtfrmshell();		/* return from suspended shell */
 #define TBUFSIZ 128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
 #endif
@@ -112,8 +107,6 @@ void ttopen(void)
 	 * the type ahead detection works better (more often)
 	 */
 	setbuffer(stdout, &tobuf[0], TBUFSIZ);
-	signal(SIGTSTP, SIG_DFL);	/* set signals so that we can */
-	signal(SIGCONT, rtfrmshell);	/* suspend & restart emacs */
 #endif
 #endif
 
@@ -123,8 +116,6 @@ void ttopen(void)
 	 * the type ahead detection works better (more often)
 	 */
 	setvbuf(stdout, &tobuf[0], _IOFBF, TBUFSIZ);
-	signal(SIGTSTP, SIG_DFL);	/* set signals so that we can */
-	signal(SIGCONT, rtfrmshell);	/* suspend & restart emacs */
 	TTflush();
 #endif /* __hpux */
 

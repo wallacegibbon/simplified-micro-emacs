@@ -47,9 +47,6 @@ struct key_tab keytab[] = {
 	{META | 'L', lowerword},
 	{META | 'M', setgmode},
 	{META | 'P', prevbuffer},
-#if BSD
-	{META | 'S', bktoshell},
-#endif
 	{META | 'U', upperword},
 	{META | 'V', backpage},
 	{META | 'W', copyregion},
@@ -78,9 +75,6 @@ struct key_tab keytab[] = {
 	{CTLX | '2', splitwind},
 	{CTLX | 'B', usebuffer},
 	{CTLX | 'C', spawncli},
-#if BSD | __hpux | SVR4
-	{CTLX | 'D', bktoshell},
-#endif
 	{CTLX | 'E', ctlxe},
 	{CTLX | 'K', killbuffer},
 	{CTLX | 'M', setemode},

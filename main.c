@@ -610,7 +610,8 @@ int nullproc(int f, int n)
 	return TRUE;
 }
 
-/*****		Compiler specific Library functions	****/
+
+/* Compiler specific Library functions */
 
 #if RAMSIZE
 /* These routines will allow me to track memory usage by placing

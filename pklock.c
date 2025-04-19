@@ -29,13 +29,11 @@ int gethostname(char *name, int namelen)
 
 
 
-/**********************
- *
+/*
  * if successful, returns NULL
  * if file locked, returns username of person locking the file
  * if other error, returns "LOCK ERROR: explanation"
- *
- *********************/
+ */
 char *dolock(char *fname)
 {
 	int fd, n;
@@ -88,15 +86,14 @@ char *dolock(char *fname)
 }
 
 
-/*********************
+/*
  *
  * undolock -- unlock the file fname
  *
  * if successful, returns NULL
  * if other error, returns "LOCK ERROR: explanation"
  *
- *********************/
-
+ */
 char *undolock(char *fname)
 {
 	static char lname[MAXLOCK];

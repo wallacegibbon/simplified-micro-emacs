@@ -88,9 +88,6 @@ struct name_bind names[] = {
 	{"shell-command", spawn},
 	{"shrink-window", shrinkwind},
 	{"split-current-window", splitwind},
-#if BSD | __hpux | SVR4
-	{"suspend-emacs", bktoshell},
-#endif
 	{"transpose-characters", twiddle},
 	{"trim-line", trim},
 	{"unmark-buffer", unmark},
