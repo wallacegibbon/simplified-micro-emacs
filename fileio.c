@@ -112,7 +112,7 @@ int ffgetline(void)
 
 	/* read the line in */
 #if PKCODE
-	if (fgets(fline, NSTRING, ffp) == (char *) NULL) {	/* EOF ? */
+	if (fgets(fline, NSTRING, ffp) == (char *)NULL) {	/* EOF ? */
 		i = 0;
 		c = EOF;
 	} else {

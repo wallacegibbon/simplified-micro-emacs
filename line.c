@@ -88,7 +88,7 @@ void lfree(struct line *lp)
 	}
 	lp->l_bp->l_fp = lp->l_fp;
 	lp->l_fp->l_bp = lp->l_bp;
-	free((char *) lp);
+	free((char *)lp);
 }
 
 /*
@@ -196,7 +196,7 @@ static int linsert_byte(int n, int c)
 		lp2->l_fp = lp1->l_fp;
 		lp1->l_fp->l_bp = lp2;
 		lp2->l_bp = lp1->l_bp;
-		free((char *) lp1);
+		free((char *)lp1);
 	} else {		/* Easy: in place */
 		lp2 = lp1;	/* Pretend new line */
 		lp2->l_used += n;
@@ -232,7 +232,7 @@ int linsert(int n, int c)
 	int bytes = unicode_to_utf8(c, utf8), i;
 
 	if (bytes == 1)
-		return linsert_byte(n, (unsigned char) utf8[0]);
+		return linsert_byte(n, (unsigned char)utf8[0]);
 	for (i = 0; i < n; i++) {
 		int j;
 		for (j = 0; j < bytes; j++) {
@@ -538,7 +538,7 @@ int ldelnewline(void)
 		lp1->l_used += lp2->l_used;
 		lp1->l_fp = lp2->l_fp;
 		lp2->l_fp->l_bp = lp1;
-		free((char *) lp2);
+		free((char *)lp2);
 		return TRUE;
 	}
 	if ((lp3 = lalloc(lp1->l_used + lp2->l_used)) == NULL)
@@ -572,8 +572,8 @@ int ldelnewline(void)
 		}
 		wp = wp->w_wndp;
 	}
-	free((char *) lp1);
-	free((char *) lp2);
+	free((char *)lp1);
+	free((char *)lp2);
 	return TRUE;
 }
 

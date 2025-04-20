@@ -619,7 +619,7 @@ int delins(int dlength, char *instr, int use_meta)
 	int status;
 
 	/* Zap what we gotta, and insert its replacement. */
-	if ((status = ldelete((long) dlength, FALSE)) != TRUE)
+	if ((status = ldelete((long)dlength, FALSE)) != TRUE)
 		mlwrite("%%ERROR while deleting");
 	else
 		status = linstr(instr);

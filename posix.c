@@ -156,7 +156,7 @@ int ttgetc(void)
 		pending = count;
 	}
 
-	c = (unsigned char) buffer[0];
+	c = (unsigned char)buffer[0];
 	if (c >= 32 && c < 128)
 		goto done;
 

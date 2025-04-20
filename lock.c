@@ -47,7 +47,7 @@ int lockchk(char *fname)
 		return TRUE;
 
 	/* we have now locked it, add it to our table */
-	lname[++numlocks - 1] = (char *) malloc(strlen(fname) + 1);
+	lname[++numlocks - 1] = (char *)malloc(strlen(fname) + 1);
 	if (lname[numlocks - 1] == NULL) {	/* malloc failure */
 		undolock(fname);	/* free the lock */
 		mlwrite("Cannot lock, out of memory");

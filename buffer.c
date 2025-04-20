@@ -162,7 +162,7 @@ int zotbuf(struct buffer *bp)
 	}
 	if ((s = bclear(bp)) != TRUE)	/* Blow text away. */
 		return s;
-	free((char *) bp->b_linep);	/* Release header line. */
+	free((char *)bp->b_linep);	/* Release header line. */
 	bp1 = NULL;		/* Find the header. */
 	bp2 = bheadp;
 	while (bp2 != bp) {
@@ -174,7 +174,7 @@ int zotbuf(struct buffer *bp)
 		bheadp = bp2;
 	else
 		bp1->b_bufp = bp2;
-	free((char *) bp);	/* Release buffer block */
+	free((char *)bp);	/* Release buffer block */
 	return TRUE;
 }
 
@@ -341,7 +341,7 @@ int makelist(int iflag)
 		nbytes = 0L;	/* Count bytes in buf. */
 		lp = lforw(bp->b_linep);
 		while (lp != bp->b_linep) {
-			nbytes += (long) llength(lp) + 1L;
+			nbytes += (long)llength(lp) + 1L;
 			lp = lforw(lp);
 		}
 		e_ltoa(b, 7, nbytes);	/* 7 digit buffer size. */
@@ -376,7 +376,7 @@ void e_ltoa(char *buf, int width, long num)
 		buf[--width] = (int) (num % 10L) + '0';
 		num /= 10L;
 	}
-	buf[--width] = (int) num + '0';	/* Always 1 digit. */
+	buf[--width] = (int)num + '0';	/* Always 1 digit. */
 	while (width != 0)	/* Pad with blanks. */
 		buf[--width] = ' ';
 }
@@ -455,7 +455,7 @@ struct buffer *bfind(char *bname, int cflag, int bflag)
 	if ((bp = (struct buffer *)malloc(sizeof(struct buffer))) == NULL)
 		return NULL;
 	if ((lp = lalloc(0)) == NULL) {
-		free((char *) bp);
+		free((char *)bp);
 		return NULL;
 	}
 	/* find the place in the list to insert this buffer */

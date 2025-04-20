@@ -399,7 +399,7 @@ int forwdel(int f, int n)
 			kdelete();
 		thisflag |= CFKILL;
 	}
-	return ldelchar((long) n, f);
+	return ldelchar((long)n, f);
 }
 
 /*

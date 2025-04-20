@@ -22,7 +22,9 @@ int main()
 		ch = getch();
 		*/
 		read(0, &ch, 1);
-		if (ch == 3) break; /* stop on ^C */
+		if (ch == 3)
+			break; /* stop on ^C */
+
 		printw(" <%d (0x%X)> ", ch, ch);
 		refresh();
 	}

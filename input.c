@@ -252,9 +252,10 @@ proc_ctlxc:
 	return c;
 }
 
-/* A more generalized prompt/reply function allowing the caller
-	to specify the proper terminator. If the terminator is not
-	a return ('\n') it will echo as "<NL>"
+/*
+ * A more generalized prompt/reply function allowing the caller
+ * to specify the proper terminator. If the terminator is not
+ * a return ('\n') it will echo as "<NL>"
  */
 int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 {
