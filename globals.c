@@ -64,17 +64,17 @@ char *patmatch = NULL;		/* The string that satisfies the search */
 struct line *matchline = NULL;	/* The line of the *start* of match */
 int matchoff = 0;		/* The offset of the *start* of match */
 
-int currow;			/* Cursor row */
-int curcol;			/* Cursor column */
-int thisflag;			/* Flags, this command */
-int lastflag;			/* Flags, last command */
-int curgoal;			/* Goal for C-P, C-N */
 struct window *curwp;		/* Current window */
 struct buffer *curbp;		/* Current buffer */
 struct buffer *prevbp;		/* Previous buffer */
 struct window *wheadp;		/* Head of list of windows */
 struct buffer *bheadp;		/* Head of list of buffers */
 struct buffer *blistp;		/* Buffer for C-X C-B */
+int currow;			/* Cursor row */
+int curcol;			/* Cursor column */
+int curgoal;			/* Goal for C-P, C-N */
+int thisflag;			/* Flags, this command */
+int lastflag = 0;		/* Flags, last command */
 
 char sres[NBUFN];		/* Current screen resolution */
 char pat[NPAT];			/* Search pattern */

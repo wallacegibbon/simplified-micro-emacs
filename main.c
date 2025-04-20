@@ -34,23 +34,22 @@ void usage(int status)
 
 int main(int argc, char **argv)
 {
-	int c = -1;		/* command character */
-	int f;			/* default flag */
-	int n;			/* numeric repeat count */
-	int mflag;		/* negative flag on repeat */
 	struct buffer *bp;	/* temp buffer pointer */
-	int firstfile;		/* first file flag */
+	int firstfile = TRUE;	/* first file flag */
 	int carg;		/* current arg to scan */
 	struct buffer *firstbp = NULL;
 				/* ptr to first buffer in cmd line */
-	int basec;		/* c stripped of meta character */
-	int viewflag;		/* are we starting in view mode? */
-	int gotoflag;		/* do we need to goto a line at start? */
+	int viewflag = FALSE;	/* are we starting in view mode? */
+	int gotoflag = FALSE;	/* do we need to goto a line at start? */
 	int gline = 0;		/* if so, what line? */
-	int searchflag;		/* Do we need to search at start? */
+	int searchflag = FALSE;	/* Do we need to search at start? */
 	int saveflag;		/* temp store for lastflag */
 	char bname[NBUFN];	/* buffer name of file to read */
-	int newc;
+	fn_t execfunc;
+	int f;			/* default flag */
+	int n;			/* numeric repeat count */
+	int mflag;		/* negative flag on repeat */
+	int c = 0, c1;
 
 #if PKCODE & BSD
 	sleep(1); /* Time for window manager. */
@@ -155,28 +154,22 @@ int main(int argc, char **argv)
 			update(FALSE);
 	}
 
-	/* Setup to process commands. */
-	lastflag = 0;
-
 loop:
-	/* Execute the "command" macro...normally null. */
-	saveflag = lastflag;  /* Preserve lastflag through this. */
+	saveflag = lastflag;
 	lastflag = saveflag;
 
 #if TYPEAH && PKCODE
 	if (typahead()) {
-		newc = getcmd();
+		c1 = getcmd();
 		update(FALSE);
 		do {
-			fn_t execfunc;
-
-			if (c == newc && (execfunc = getbind(c)) != NULL
+			if (c == c1 && (execfunc = getbind(c1)) != NULL
 					&& execfunc != insert_newline)
-				newc = getcmd();
+				c1 = getcmd();
 			else
 				break;
 		} while (typahead());
-		c = newc;
+		c = c1;
 	} else {
 		update(FALSE);
 		c = getcmd();
@@ -199,12 +192,12 @@ loop:
 
 	/* do META-# processing if needed */
 
-	basec = c & ~META;
-	if ((c & META) && ((basec >= '0' && basec <= '9') || basec == '-')) {
+	c1 = c & ~META;
+	if ((c & META) && ((c1 >= '0' && c1 <= '9') || c1 == '-')) {
 		f = TRUE;
 		n = 0;
 		mflag = 1;	/* current minus flag */
-		c = basec;	/* strip the META */
+		c = c1;
 		while ((c >= '0' && c <= '9') || (c == '-')) {
 			if (c == '-') {
 				/* already hit a minus or digit? */
@@ -356,10 +349,12 @@ int execute(int c, int f, int n)
 		c = '\t';
 
 	if ((c >= 0x20 && c <= 0x7E) || c == '\t') {
-		if (n <= 0) {	/* Fenceposts. */
+		/* Do not insert when n <= 0 */
+		if (n <= 0) {
 			lastflag = 0;
 			return n < 0 ? FALSE : TRUE;
 		}
+
 		thisflag = 0;	/* For the future. */
 
 		/*
@@ -528,8 +523,7 @@ int ctrlg(int f, int n)
 }
 
 /*
- * tell the user that this command is illegal while we are in
- * VIEW (read-only) mode
+ * Tell the user that this command is illegal while we are in VIEW mode.
  */
 int rdonly(void)
 {
@@ -538,7 +532,7 @@ int rdonly(void)
 	return FALSE;
 }
 
-/* user function that does NOTHING */
+/* User function that does NOTHING */
 int nullproc(int f, int n)
 {
 	return TRUE;
