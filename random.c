@@ -186,8 +186,8 @@ int twiddle(int f, int n)
 	int cl;
 	int cr;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	dotp = curwp->w_dotp;
 	doto = curwp->w_doto;
 	if (doto == llength(dotp) && --doto < 0)
@@ -212,8 +212,8 @@ int quote(int f, int n)
 {
 	int s, c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	c = tgetc();
 	if (n < 0)
 		return FALSE;
@@ -238,9 +238,8 @@ int trim(int f, int n)
 	int length;		/* current length */
 	int inc;		/* increment to next line [sgn(n)] */
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
-
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (f == FALSE)
 		n = 1;
 
@@ -276,11 +275,10 @@ int trim(int f, int n)
  */
 int openline(int f, int n)
 {
-	int i;
-	int s;
+	int i, s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 	if (n == 0)
@@ -298,8 +296,8 @@ int insert_newline(int f, int n)
 {
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 
@@ -328,8 +326,8 @@ int deblank(int f, int n)
 	struct line *lp2;
 	long nld;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	lp1 = curwp->w_dotp;
 	while (llength(lp1) == 0 && (lp2 = lback(lp1)) != curbp->b_linep)
 		lp1 = lp2;
@@ -358,8 +356,8 @@ int indent(int f, int n)
 	int c;
 	int i;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 	while (n--) {
@@ -390,8 +388,8 @@ int indent(int f, int n)
  */
 int forwdel(int f, int n)
 {
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return backdel(f, -n);
 	if (f != FALSE) {	/* Really a kill. */
@@ -412,8 +410,8 @@ int backdel(int f, int n)
 {
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return forwdel(f, -n);
 	if (f != FALSE) {	/* Really a kill. */
@@ -439,10 +437,10 @@ int killtext(int f, int n)
 	struct line *nextp;
 	long chunk;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if ((lastflag & CFKILL) == 0)	/* Clear kill buffer if */
-		kdelete();	/* last wasn't a kill. */
+		kdelete();		/* last wasn't a kill. */
 	thisflag |= CFKILL;
 	if (f == FALSE) {
 		chunk = llength(curwp->w_dotp) - curwp->w_doto;

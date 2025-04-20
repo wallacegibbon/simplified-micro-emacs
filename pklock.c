@@ -27,8 +27,6 @@ int gethostname(char *name, int namelen)
 }
 #endif
 
-
-
 /*
  * if successful, returns NULL
  * if file locked, returns username of person locking the file
@@ -84,7 +82,6 @@ char *dolock(char *fname)
 	locker[n > MAXNAME ? MAXNAME : n] = 0;
 	return locker;
 }
-
 
 /*
  *

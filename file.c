@@ -49,8 +49,8 @@ int insfile(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if ((s = mlreply("Insert file: ", fname, NFILEN)) != TRUE)
 		return s;
 	if ((s = ifile(fname)) != TRUE)
@@ -348,8 +348,8 @@ int filesave(int f, int n)
 	struct window *wp;
 	int s;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if ((curbp->b_flag & BFCHG) == 0)	/* Return, no changes. */
 		return TRUE;
 	if (curbp->b_fname[0] == 0) {	/* Must have a name. */

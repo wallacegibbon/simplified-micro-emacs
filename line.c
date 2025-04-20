@@ -159,8 +159,8 @@ static int linsert_byte(int n, int c)
 	int i;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	lchange(WFEDIT);
 	lp1 = curwp->w_dotp;	/* Current line */
 	if (lp1 == curbp->b_linep) {	/* At the end: special */
@@ -297,8 +297,8 @@ int lnewline(void)
 	int doto;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 #if SCROLLCODE
 	lchange(WFHARD | WFINS);
 #else
@@ -383,8 +383,8 @@ int ldelete(long n, int kflag)
 	int chunk;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	while (n != 0) {
 		dotp = curwp->w_dotp;
 		doto = curwp->w_doto;
@@ -507,8 +507,8 @@ int ldelnewline(void)
 	struct line *lp3;
 	struct window *wp;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	lp1 = curwp->w_dotp;
 	lp2 = lp1->l_fp;
 	if (lp2 == curbp->b_linep) {	/* At the buffer end. */
@@ -638,13 +638,12 @@ int kinsert(int c)
  */
 int yank(int f, int n)
 {
-	int c;
-	int i;
-	char *sp;	/* pointer into string to insert */
-	struct kill *kp;		/* pointer into kill buffer */
+	char *sp;		/* pointer into string to insert */
+	struct kill *kp;	/* pointer into kill buffer */
+	int c, i;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 	/* make sure there is something to yank */

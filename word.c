@@ -118,8 +118,8 @@ int upperword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 
@@ -151,8 +151,8 @@ int lowerword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 
@@ -185,8 +185,8 @@ int capword(int f, int n)
 {
 	int c;
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 	if (n < 0)
 		return FALSE;
 

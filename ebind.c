@@ -34,7 +34,6 @@ struct key_tab keytab[] = {
 	{CONTROL | 'Z', backpage},
 
 	{META | ' ', setmark},
-	{META | '.', setmark},
 	{META | '>', gotoeob},
 	{META | '<', gotobob},
 	{META | '~', unmark},

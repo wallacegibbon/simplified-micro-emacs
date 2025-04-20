@@ -1,56 +1,3 @@
-/*
- *	main.c
-
- *	uEmacs/PK 4.0
- *
- *	Based on:
- *
- *	MicroEMACS 3.9
- *	Written by Dave G. Conroy.
- *	Substantially modified by Daniel M. Lawrence
- *	Modified by Petri Kutvonen
- *
- *	MicroEMACS 3.9 (c) Copyright 1987 by Daniel M. Lawrence
- *
- *	Original statement of copying policy:
- *
- *	MicroEMACS 3.9 can be copied and distributed freely for any
- *	non-commercial purposes. MicroEMACS 3.9 can only be incorporated
- *	into commercial software with the permission of the current author.
- *
- *	No copyright claimed for modifications made by Petri Kutvonen.
- *
- *	This file contains the main driving routine, and some keyboard
- *	processing code.
- *
- * REVISION HISTORY:
- *
- * 1.0  Steve Wilhite, 30-Nov-85
- *
- * 2.0  George Jones, 12-Dec-85
- *
- * 3.0  Daniel Lawrence, 29-Dec-85
- *
- * 3.2-3.6 Daniel Lawrence, Feb...Apr-86
- *
- * 3.7	Daniel Lawrence, 14-May-86
- *
- * 3.8	Daniel Lawrence, 18-Jan-87
- *
- * 3.9	Daniel Lawrence, 16-Jul-87
- *
- * 3.9e	Daniel Lawrence, 16-Nov-87
- *
- * After that versions 3.X and Daniel Lawrence went their own ways.
- * A modified 3.9e/PK was heavily used at the University of Helsinki
- * for several years on different UNIX platforms.
- *
- * This modified version is now called eEmacs/PK.
- *
- * 4.0	Petri Kutvonen, 1-Sep-91
- *
- */
-
 #include <stdio.h>
 
 /* Make global definitions not external. */
@@ -124,24 +71,15 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Initialize the editor. */
 	vtinit();		/* Display */
 	edinit("main");		/* Buffers, windows */
 
-	viewflag = FALSE;	/* view mode defaults off in command line */
-	gotoflag = FALSE;	/* set to off to begin with */
-	searchflag = FALSE;	/* set to off to begin with */
-	firstfile = TRUE;	/* no file to edit yet */
+	viewflag = FALSE;
+	gotoflag = FALSE;
+	searchflag = FALSE;
+	firstfile = TRUE;
 
-	/* Parse the command line */
 	for (carg = 1; carg < argc; ++carg) {
-		/* Process Switches */
-#if PKCODE
-		if (argv[carg][0] == '+') {
-			gotoflag = TRUE;
-			gline = atoi(&argv[carg][1]);
-		} else
-#endif
 		if (argv[carg][0] == '-') {
 			switch (argv[carg][1]) {
 			case 'e':	/* -e for Edit file */
@@ -218,7 +156,7 @@ int main(int argc, char **argv)
 	}
 
 	/* Setup to process commands. */
-	lastflag = 0;  /* Fake last flags. */
+	lastflag = 0;
 
 loop:
 	/* Execute the "command" macro...normally null. */
@@ -244,10 +182,7 @@ loop:
 		c = getcmd();
 	}
 #else
-	/* Fix up the screen */
 	update(FALSE);
-
-	/* get the next command from the keyboard */
 	c = getcmd();
 #endif
 	/* if there is something on the command line, clear it */
@@ -264,10 +199,10 @@ loop:
 
 	/* do META-# processing if needed */
 
-	basec = c & ~META;	/* strip meta char off if there */
+	basec = c & ~META;
 	if ((c & META) && ((basec >= '0' && basec <= '9') || basec == '-')) {
-		f = TRUE;	/* there is a # arg */
-		n = 0;		/* start with a zero default */
+		f = TRUE;
+		n = 0;
 		mflag = 1;	/* current minus flag */
 		c = basec;	/* strip the META */
 		while ((c >= '0' && c <= '9') || (c == '-')) {
@@ -279,22 +214,22 @@ loop:
 			} else {
 				n = n * 10 + (c - '0');
 			}
-			if ((n == 0) && (mflag == -1))	/* lonely - */
+			if ((n == 0) && (mflag == -1))
 				mlwrite("Arg:");
 			else
 				mlwrite("Arg: %d", n * mflag);
 
-			c = getcmd();	/* get the next key */
+			c = getcmd();
 		}
-		n = n * mflag;	/* figure in the sign */
+		n = n * mflag;
 	}
 
 	/* do ^U repeat argument processing */
 
-	if (c == reptc) {	/* ^U, start argument */
+	if (c == reptc) {
 		f = TRUE;
-		n = 4;		/* with argument of 4 */
-		mflag = 0;	/* that can be discarded. */
+		n = 4;
+		mflag = 0;
 		mlwrite("Arg: 4");
 		while (((c = getcmd()) >= '0' && c <= '9') || c == reptc ||
 				c == '-') {
@@ -329,7 +264,6 @@ loop:
 		}
 	}
 
-	/* and execute the command */
 	execute(c, f, n);
 	goto loop;
 }
@@ -614,13 +548,14 @@ int nullproc(int f, int n)
 /* Compiler specific Library functions */
 
 #if RAMSIZE
-/* These routines will allow me to track memory usage by placing
-	a layer on top of the standard system malloc() and free() calls.
-	with this code defined, the environment variable, $RAM, will
-	report on the number of bytes allocated via malloc.
+/*
+ * These routines will allow me to track memory usage by placing a layer
+ * on top of the standard system malloc() and free() calls.
+ * With this code defined, the environment variable, $RAM, will
+ * report on the number of bytes allocated via malloc.
 
-	with SHOWRAM defined, the number is also posted on the
-	end of the bottom mode line and is updated whenever it is changed.
+ * With SHOWRAM defined, the number is also posted on the
+ * end of the bottom mode line and is updated whenever it is changed.
 */
 
 #undef	malloc
@@ -686,11 +621,6 @@ void dspram()
 
 #if CLEAN
 
-/*
- * cexit()
- *
- * int status;		return status of emacs
- */
 int cexit(int status)
 {
 	struct buffer *bp;	/* buffer list pointer */

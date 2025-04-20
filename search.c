@@ -70,8 +70,8 @@ static int nextch(struct line **pcurline, int *pcuroff, int dir);
 
 /*
  * forwsearch -- Search forward.  Get a search string from the user, and
- *	search for the string.  If found, reset the "." to be just after
- *	the match string, and (perhaps) repaint the display.
+ * search for the string.  If found, reset the "." to be just after
+ * the match string, and (perhaps) repaint the display.
  */
 int forwsearch(int f, int n)
 {
@@ -107,14 +107,14 @@ int forwsearch(int f, int n)
 
 /*
  * forwhunt -- Search forward for a previously acquired search string.
- *	If found, reset the "." to be just after the match string,
- *	and (perhaps) repaint the display.
+ * If found, reset the "." to be just after the match string,
+ * and (perhaps) repaint the display.
  */
 int forwhunt(int f, int n)
 {
 	int status = TRUE;
 
-	if (n < 0)		/* search backwards */
+	if (n < 0)
 		return backhunt(f, -n);
 
 	/* Make sure a pattern exists */
@@ -143,17 +143,14 @@ int forwhunt(int f, int n)
 
 /*
  * backsearch -- Reverse search.  Get a search string from the user, and
- *	search, starting at "." and proceeding toward the front of the buffer.
- *	If found "." is left pointing at the first character of the pattern
- *	(the last character that was matched).
+ * search, starting at "." and proceeding toward the front of the buffer.
+ * If found "." is left pointing at the first character of the pattern
+ * (the last character that was matched).
  */
 int backsearch(int f, int n)
 {
 	int status = TRUE;
 
-	/* If n is negative, search forwards.
-	 * Otherwise proceed by asking for the search string.
-	 */
 	if (n < 0)
 		return forwsearch(f, -n);
 
@@ -181,9 +178,9 @@ int backsearch(int f, int n)
 
 /*
  * backhunt -- Reverse search for a previously acquired search string,
- *	starting at "." and proceeding toward the front of the buffer.
- *	If found "." is left pointing at the first character of the pattern
- *	(the last character that was matched).
+ * starting at "." and proceeding toward the front of the buffer.
+ * If found "." is left pointing at the first character of the pattern
+ * (the last character that was matched).
  */
 int backhunt(int f, int n)
 {
@@ -231,8 +228,8 @@ int filter_buffer(int f, int n)
 	static char filnam1[] = "fltinp";
 	static char filnam2[] = "fltout";
 
-	if (curbp->b_mode & MDVIEW)	/* don't allow this command if */
-		return rdonly();	/* we are in read only mode */
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
 
 	/* get the filter name and its args */
 	if ((s = mlreply("#", line, NLINE)) != TRUE)
@@ -294,8 +291,8 @@ int filter_buffer(int f, int n)
 
 /*
  * scanner -- Search for a pattern in either direction.  If found,
- *	reset the "." to be at the start or just after the match string,
- *	and (perhaps) repaint the display.
+ * reset the "." to be at the start or just after the match string,
+ * and (perhaps) repaint the display.
  *
  * unsigned char *patrn;	string to scan for
  * int direct;			which way to go.
@@ -303,11 +300,11 @@ int filter_buffer(int f, int n)
  */
 int scanner(const char *patrn, int direct, int beg_or_end)
 {
-	int c;		/* character at current position */
+	int c;			/* character at current position */
 	const char *patptr;	/* pointer into pattern */
-	struct line *curline;		/* current line during scan */
+	struct line *curline;	/* current line during scan */
 	int curoff;		/* position within current line */
-	struct line *scanline;		/* current line during scanning */
+	struct line *scanline;	/* current line during scanning */
 	int scanoff;		/* position in scanned line */
 
 	/* If we are going in reverse, then the 'end' is actually
@@ -362,7 +359,7 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 				curwp->w_doto = matchoff;
 			}
 
-			curwp->w_flag |= WFMOVE;	/* Flag that we have moved. */
+			curwp->w_flag |= WFMOVE;
 			return TRUE;
 
 		}
@@ -375,7 +372,7 @@ fail:
 
 /*
  * eq -- Compare two characters.  The "bc" comes from the buffer, "pc"
- *	from the pattern.  If we are not in EXACT mode, fold out the case.
+ * from the pattern.  If we are not in EXACT mode, fold out the case.
  */
 int eq(unsigned char bc, unsigned char pc)
 {
@@ -392,12 +389,12 @@ int eq(unsigned char bc, unsigned char pc)
 
 /*
  * readpattern -- Read a pattern.  Stash it in apat.
- *	Apat is not updated if the user types in an empty line.  If
- *	the user typed an empty line, and there is no old pattern, it is
- *	an error.  Display the old pattern, in the style of Jeff Lomicka.
- *	There is some do-it-yourself control expansion.  Change to using
- *	<META> to delimit the end-of-pattern to allow <NL>s in the search
- *	string.
+ * Apat is not updated if the user types in an empty line.  If
+ * the user typed an empty line, and there is no old pattern, it is
+ * an error.  Display the old pattern, in the style of Jeff Lomicka.
+ * There is some do-it-yourself control expansion.  Change to using
+ * <META> to delimit the end-of-pattern to allow <NL>s in the search
+ * string.
  */
 static int readpattern(char *prompt, char *apat, int srch)
 {
@@ -491,7 +488,7 @@ int qreplace(int f, int n)
 
 /*
  * replaces -- Search for a string and replace it with another
- *	string.  Query might be enabled (according to kind).
+ * string.  Query might be enabled (according to kind).
  *
  * int kind;		Query enabled flag
  */
@@ -611,8 +608,8 @@ qprompt:
 
 /*
  * delins -- Delete a specified length from the current point
- *	then either insert the string directly, or make use of
- *	replacement meta-array.
+ * then either insert the string directly, or make use of
+ * replacement meta-array.
  */
 int delins(int dlength, char *instr, int use_meta)
 {
@@ -699,11 +696,11 @@ int boundry(struct line *curline, int curoff, int dir)
 
 /*
  * nextch -- retrieve the next/previous character in the buffer,
- *	and advance/retreat the point.
- *	The order in which this is done is significant, and depends
- *	upon the direction of the search.  Forward searches look at
- *	the current character and move, reverse searches move and
- *	look at the character.
+ * and advance/retreat the point.
+ * The order in which this is done is significant, and depends
+ * upon the direction of the search.  Forward searches look at
+ * the current character and move, reverse searches move and
+ * look at the character.
  */
 static int nextch(struct line **pcurline, int *pcuroff, int dir)
 {
