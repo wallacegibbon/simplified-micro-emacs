@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 			case 's':	/* -s for initial search string */
 			case 'S':
 				searchflag = TRUE;
-				strncpy(pat, &argv[carg][2], NPAT);
+				strncpy(pat, &argv[carg][2], NPAT - 1);
 				break;
 			case 'v':	/* -v for View File */
 			case 'V':
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
 			/* set this to inactive */
 			bp = bfind(bname, TRUE, 0);
-			strcpy(bp->b_fname, argv[carg]);
+			strncpy(bp->b_fname, argv[carg], NFILEN - 1);
 			bp->b_active = FALSE;
 			if (firstfile) {
 				firstbp = bp;

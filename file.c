@@ -14,7 +14,6 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include "util.h"
 
 #if defined(PKCODE)
 /* Max number of lines from one file. */
@@ -196,7 +195,7 @@ int readin(char *fname, int lockfl)
 	if ((s = bclear(bp)) != TRUE)	/* Might be old. */
 		return s;
 	bp->b_flag &= ~(BFINVS | BFCHG);
-	mystrscpy(bp->b_fname, fname, NFILEN);
+	strncpy(bp->b_fname, fname, NFILEN - 1);
 
 	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open. */
 		goto out;

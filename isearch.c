@@ -192,8 +192,8 @@ start_over:
 			curwp->w_doto = curoff;
 			n = init_direction;
 
-			/* Restore the old search str */
-			strncpy(pat, pat_save, NPAT);
+			/* Restore the old search str, safe to use `strcpy` */
+			strcpy(pat, pat_save);
 
 			cmd_reexecute = 0;
 			goto start_over;
