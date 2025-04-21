@@ -209,8 +209,6 @@ int scanmore(char *patrn, int dir);
 int match_pat(char *patrn);
 int promptpattern(char *prompt);
 int get_char(void);
-int uneat(void);
-void reeat(int c);
 
 /* lock.c */
 int lockchk(char *fname);

@@ -76,7 +76,7 @@
 #define CVMVAS  1  /* arguments to page forward/back in pages */
 #define	CLRMSG	0  /* space clears the message line with no insert */
 #define	TYPEAH	1  /* type ahead causes update to be skipped */
-#define	VISMAC	1  /* update display during keyboard macros */
+#define	VISMAC	0  /* update display during keyboard macros */
 #define ADDCR	0  /* ajout d'un CR en fin de chaque ligne (ST520) */
 #define	NBRACE	1  /* new style brace matching command */
 #define	REVSTA	1  /* Status line appears in reverse video */
@@ -198,6 +198,7 @@
 #define islower(c)	('a' <= (c) && (c) <= 'z')
 #define isupper(c)	('A' <= (c) && (c) <= 'Z')
 #define isletter(c)	(islower(c) || isupper(c))
+#define isvisible(c)	(((c) >= 0x20 && (c) <= 0x7E) || (c) == '\t')
 
 /* Dynamic RAM tracking and reporting redefinitions */
 
@@ -368,11 +369,7 @@ struct kill {
 
 #define	CMDBUFLEN	256	/* Length of our command buffer */
 
-#define	IS_ABORT	0x07	/* Abort the isearch */
-#define IS_BACKSP	0x08	/* Delete previous char */
-#define	IS_TAB		0x09	/* Tab character (allowed search char) */
-#define IS_NEWLINE	0x0D	/* New line from keyboard (Carriage return) */
-#define	IS_QUOTE	0x11	/* Quote next character */
 #define IS_REVERSE	0x12	/* Search backward */
 #define	IS_FORWARD	0x13	/* Search forward */
+#define IS_BACKSP	0x08	/* Delete previous char */
 #define	IS_RUBOUT	0x7F	/* Delete previous character */

@@ -348,7 +348,7 @@ int execute(int c, int f, int n)
 	if (c == (CONTROL | 'I'))
 		c = '\t';
 
-	if ((c >= 0x20 && c <= 0x7E) || c == '\t') {
+	if (isvisible(c)) {
 		/* Do not insert when n <= 0 */
 		if (n <= 0) {
 			lastflag = 0;

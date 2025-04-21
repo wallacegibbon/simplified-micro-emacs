@@ -159,23 +159,16 @@ start_over:
 		/* CR/NEWLINE finish the searching */
 		if (expc == enterc)
 			return TRUE;
+		if (expc == abortc)
+			return FALSE;
 
 		switch (c) {
-		case IS_ABORT:
-			return FALSE;	/* Quit searching again */
-
 		case IS_REVERSE:
 		case IS_FORWARD:
 			n = (c == IS_REVERSE) ? -1 : 1;
 			status = scanmore(pat, n);
 			c = ectoc(expc = get_char());
 			continue;
-
-		case IS_QUOTE:
-			c = ectoc(expc = get_char());
-
-		case IS_TAB:
-			break;
 
 		case IS_BACKSP:
 		case IS_RUBOUT:
@@ -196,7 +189,11 @@ start_over:
 			/* Presumably a quasi-normal character comes here */
 
 		default:
-			/* Just ignore other chars */
+			/* Only add visible chars to the pattern buffer */
+			if (!isvisible(c)) {
+				c = ectoc(expc = get_char());
+				continue;
+			}
 		}
 
 		/* I guess we got something to search for, so search for it */
@@ -413,16 +410,17 @@ int get_char(void)
 
 	/* See if we're re-executing: */
 
-	if (cmd_reexecute >= 0)	/* Is there an offset? */
+	if (cmd_reexecute >= 0)	{ /* Is there an offset? */
 		if ((c = cmd_buff[cmd_reexecute++]) != 0)
-			return c;	/* Yes, return any character */
+			return c;
+	}
 
 	/* We're not re-executing (or aren't any more).  Try for a real char */
 
 	cmd_reexecute = -1;	/* Say we're in real mode again */
 	update(FALSE);		/* Pretty up the screen */
-	if (cmd_offset >= CMDBUFLEN - 1) {	/* If we're getting too big ... */
-		mlwrite("? command too long");	/* Complain loudly and bitterly */
+	if (cmd_offset >= CMDBUFLEN - 1) {
+		mlwrite("? command too long");
 		return abortc;
 	}
 	c = get1key();
