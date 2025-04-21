@@ -76,7 +76,7 @@
 #define CVMVAS  1  /* arguments to page forward/back in pages */
 #define	CLRMSG	0  /* space clears the message line with no insert */
 #define	TYPEAH	1  /* type ahead causes update to be skipped */
-#define	VISMAC	0  /* update display during keyboard macros */
+#define	VISMAC	1  /* update display during keyboard macros */
 #define ADDCR	0  /* ajout d'un CR en fin de chaque ligne (ST520) */
 #define	NBRACE	1  /* new style brace matching command */
 #define	REVSTA	1  /* Status line appears in reverse video */

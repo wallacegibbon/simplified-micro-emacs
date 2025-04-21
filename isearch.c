@@ -31,11 +31,6 @@
 
 static int echo_char(int c, int col);
 
-/* A couple of "own" variables for re-eat */
-
-static int (*saved_get_char) (void);	/* Get character routine */
-static int eaten_char = -1;		/* Re-eaten char */
-
 /* A couple more "own" variables for the command string */
 
 static int cmd_buff[CMDBUFLEN];		/* Save the command args here */
@@ -200,15 +195,8 @@ start_over:
 
 			/* Presumably a quasi-normal character comes here */
 
-		default: /* All other chars */
-			if (c < ' ') {
-				/*
-				 * c is not printable, re-eat the char
-				 * and return the last status
-				 */
-				reeat(c);
-				return TRUE;
-			}
+		default:
+			/* Just ignore other chars */
 		}
 
 		/* I guess we got something to search for, so search for it */
@@ -441,33 +429,4 @@ int get_char(void)
 	cmd_buff[cmd_offset++] = c;	/* Save the char for next time */
 	cmd_buff[cmd_offset] = '\0';	/* And terminate the buffer */
 	return c;
-}
-
-/*
- * Hacky routine to re-eat a character.  This will save the character to be
- * re-eaten by redirecting the input call to a routine here.  Hack, etc.
- */
-
-/* Come here on the next term.t_getchar call: */
-
-int uneat(void)
-{
-	int c;
-
-	term.t_getchar = saved_get_char;
-	c = eaten_char;		/* Get the re-eaten char */
-	eaten_char = -1;	/* Clear the old char */
-	return c;
-}
-
-void reeat(int c)
-{
-	if (eaten_char != -1)	/* If we've already been here */
-		return;
-
-	eaten_char = c;
-
-	/* Save the char get routine, Replace it with ours */
-	saved_get_char = term.t_getchar;
-	term.t_getchar = uneat;
 }

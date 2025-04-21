@@ -155,7 +155,7 @@ int tgetc(void)
 
 		/* if there is some left... */
 		if (kbdptr < kbdend)
-			return (int) *kbdptr++;
+			return (int)*kbdptr++;
 
 		/* at the end of last repitition? */
 		if (--kbdrep < 1) {
@@ -168,7 +168,7 @@ int tgetc(void)
 
 			/* reset the macro to the begining for the next rep */
 			kbdptr = &kbdm[0];
-			return (int) *kbdptr++;
+			return (int)*kbdptr++;
 		}
 	}
 
