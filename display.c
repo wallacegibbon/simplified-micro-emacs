@@ -223,12 +223,12 @@ static void vtputc(int c)
  */
 static void vteeol(void)
 {
-/* struct video *vp; */
+	/* struct video *vp; */
 	unicode_t *vcp = vscreen[vtrow]->v_text;
 
-/* vp = vscreen[vtrow]; */
+	/* vp = vscreen[vtrow]; */
 	while (vtcol < term.t_ncol)
-/* vp->v_text[vtcol++] = ' '; */
+		/* vp->v_text[vtcol++] = ' '; */
 		vcp[vtcol++] = ' ';
 }
 
@@ -371,7 +371,7 @@ static int reframe(struct window *wp)
 			i = -1;
 			lp = lp0;
 		}
-		for (; i <= (int) (wp->w_ntrows); i++)
+		for (; i <= wp->w_ntrows; i++)
 #else
 		lp = wp->w_linep;
 		for (i = 0; i < wp->w_ntrows; i++)
@@ -624,7 +624,7 @@ void updgar(void)
 	}
 
 	movecursor(0, 0);	/* Erase the screen. */
-	(*term.t_eeop) ();
+	(*term.t_eeop)();
 	sgarbf = FALSE;		/* Erase-page clears */
 	mpresf = FALSE;		/* the message area. */
 #if COLOR
@@ -795,7 +795,7 @@ static int scrolls(int inserts)
 static void scrscroll(int from, int to, int count)
 {
 	ttrow = ttcol = -1;
-	(*term.t_scroll) (from, to, count);
+	(*term.t_scroll)(from, to, count);
 }
 
 /*
@@ -890,8 +890,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 		*cp2 = *cp1;
 		++cp2;
 		++cp1;
-	}
-	while (--nch);
+	} while (--nch);
 	*flags &= ~VFCHG;
 #else
 /* UPDATELINE code for all other versions */
@@ -901,7 +900,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 	unicode_t *cp3;
 	unicode_t *cp4;
 	unicode_t *cp5;
-	int nbflag;	/* non-blanks to the right flag? */
+	int nbflag;		/* non-blanks to the right flag? */
 	int rev;		/* reverse video flag */
 	int req;		/* reverse video request flag */
 
@@ -931,7 +930,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 		movecursor(row, 0);	/* Go to start of line. */
 		/* set rev video if needed */
 		if (rev != req)
-			(*term.t_rev) (req);
+			(*term.t_rev)(req);
 
 		/*
 		 * scan through the line and dump it to the screen and
@@ -945,7 +944,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 		}
 		/* turn rev video off */
 		if (rev != req)
-			(*term.t_rev) (FALSE);
+			(*term.t_rev)(FALSE);
 
 		/* update the needed flags */
 		vp1->v_flag &= ~VFCHG;
@@ -1154,7 +1153,7 @@ static void modeline(struct window *wp)
 		++n;
 	}
 
-	{			/* determine if top line, bottom line, or both are visible */
+	{	/* determine if top line, bottom line, or both are visible */
 		struct line *lp = wp->w_linep;
 		int rows = wp->w_ntrows;
 		char *msg = NULL;
@@ -1392,7 +1391,7 @@ static void mlputli(long l, int r)
 	if (q != 0)
 		mlputli(q, r);
 
-	TTputc((int) (l % r) + '0');
+	TTputc((int)(l % r) + '0');
 	++ttcol;
 }
 

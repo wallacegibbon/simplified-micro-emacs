@@ -21,8 +21,8 @@ struct line {
 
 #define lforw(lp)       ((lp)->l_fp)
 #define lback(lp)       ((lp)->l_bp)
-#define lgetc(lp, n)    ((lp)->l_text[(n)]&0xFF)
-#define lputc(lp, n, c) ((lp)->l_text[(n)]=(c))
+#define lgetc(lp, n)    ((lp)->l_text[(n)] & 0xFF)
+#define lputc(lp, n, c) ((lp)->l_text[(n)] = (c))
 #define llength(lp)     ((lp)->l_used)
 
 void lfree(struct line *lp);

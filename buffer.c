@@ -373,7 +373,7 @@ void e_ltoa(char *buf, int width, long num)
 {
 	buf[width] = 0;		/* End of string. */
 	while (num >= 10) {	/* Conditional digits. */
-		buf[--width] = (int) (num % 10L) + '0';
+		buf[--width] = (int)(num % 10L) + '0';
 		num /= 10L;
 	}
 	buf[--width] = (int)num + '0';	/* Always 1 digit. */

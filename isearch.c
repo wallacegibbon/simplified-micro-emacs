@@ -31,11 +31,10 @@
 
 static int echo_char(int c, int col);
 
-/* A couple more "own" variables for the command string */
-
-static int cmd_buff[CMDBUFLEN];		/* Save the command args here */
-static int cmd_offset;			/* Current offset into command buff */
-static int cmd_reexecute = -1;		/* > 0 if re-executing command */
+/* No `static` for easier debugging */
+int cmd_buff[CMDBUFLEN];	/* Save the command args here */
+int cmd_offset;			/* Current offset into command buff */
+int cmd_reexecute = -1;		/* > 0 if re-executing command */
 
 /*
  * Subroutine to do incremental search.
@@ -86,7 +85,7 @@ int risearch(int f, int n)
  * at the end of the entire matched string.  Typing a Control-S or Control-X
  * will cause the next occurrence of the string to be searched for (where the
  * next occurrence does NOT overlap the current occurrence).  A Control-R will
- * change to a backwards search, META will terminate the search and Control-G
+ * change to a backwards search, Enter will terminate the search and Control-G
  * will abort the search.  Rubout will back up to the previous match of the
  * string, or if the starting point is reached first, it will delete the
  * last character from the search string.
@@ -104,14 +103,14 @@ int risearch(int f, int n)
 
 int isearch(int f, int n)
 {
+	struct line *curline;	/* Current line on entry */
+	int curoff;		/* Current offset on entry */
+	char pat_save[NPAT];	/* Saved copy of the old pattern str */
 	int status;		/* Search status */
 	int col;		/* prompt column */
 	int cpos;		/* character number in search string */
-	int expc;		/* function expanded input char */
-	char pat_save[NPAT];	/* Saved copy of the old pattern str */
-	struct line *curline;	/* Current line on entry */
-	int curoff;		/* Current offset on entry */
 	int init_direction;	/* The initial search direction */
+	int expc;		/* function expanded input char */
 	int c;			/* current input character */
 
 	/* Initialize starting conditions */
@@ -162,8 +161,11 @@ start_over:
 		/* CR/NEWLINE finish the searching */
 		if (expc == enterc)
 			return TRUE;
-		if (expc == abortc)
+		/* ^G stop the searching and restore the pattern */
+		if (expc == abortc) {
+			strcpy(pat, pat_save);
 			return FALSE;
+		}
 
 		switch (c) {
 		case IS_REVERSE:
@@ -231,7 +233,7 @@ start_over:
  * char *patrn;		The entire search string (incl chr)
  * int dir;		Search direction
  */
-int checknext(char chr, char *patrn, int dir)	/* Check next character in search string */
+int checknext(char chr, char *patrn, int dir)
 {
 	struct line *curline;
 	int curoff; /* position within current line */
