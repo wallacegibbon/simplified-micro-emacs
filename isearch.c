@@ -183,6 +183,7 @@ start_over:
 			cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
 			curwp->w_dotp = curline;
 			curwp->w_doto = curoff;
+			curwp->w_flag |= WFMOVE;
 			n = init_direction;
 
 			/* Restore the old search str */
