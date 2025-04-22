@@ -107,19 +107,22 @@ int isearch(int f, int n)
 	int status;		/* Search status */
 	int col;		/* prompt column */
 	int cpos;		/* character number in search string */
-	int c;			/* current input character */
 	int expc;		/* function expanded input char */
 	char pat_save[NPAT];	/* Saved copy of the old pattern str */
 	struct line *curline;	/* Current line on entry */
 	int curoff;		/* Current offset on entry */
 	int init_direction;	/* The initial search direction */
+	int c;			/* current input character */
 
 	/* Initialize starting conditions */
 
 	cmd_reexecute = -1;	/* We're not re-executing (yet?) */
 	cmd_offset = 0;
 	cmd_buff[0] = '\0';
+
+	/* `pat` is global, so 0-initialized on startup */
 	strncpy(pat_save, pat, NPAT - 1);
+
 	curline = curwp->w_dotp;
 	curoff = curwp->w_doto;
 	init_direction = n;
@@ -174,19 +177,17 @@ start_over:
 		case IS_RUBOUT:
 			if (cmd_offset <= 1)
 				return TRUE;
-			--cmd_offset; /* Back up over the Rubout */
+			--cmd_offset;
 			cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
 			curwp->w_dotp = curline;
 			curwp->w_doto = curoff;
 			n = init_direction;
 
-			/* Restore the old search str, safe to use `strcpy` */
+			/* Restore the old search str */
 			strcpy(pat, pat_save);
 
 			cmd_reexecute = 0;
 			goto start_over;
-
-			/* Presumably a quasi-normal character comes here */
 
 		default:
 			/* Only add visible chars to the pattern buffer */
@@ -199,7 +200,7 @@ start_over:
 		/* I guess we got something to search for, so search for it */
 
 		pat[cpos++] = c;
-		if (cpos >= NPAT) {
+		if (cpos >= NPAT - 1) {
 			mlwrite("? Search string too long");
 			return TRUE;
 		}
@@ -353,49 +354,18 @@ int promptpattern(char *prompt)
 	return strlen(tpat);
 }
 
-/*
- * routine to echo i-search characters
- *
- * int c;		character to be echoed
- * int col;		column to be echoed in
- */
 static int echo_char(int c, int col)
 {
-	movecursor(term.t_nrow, col);	/* Position the cursor */
-	if ((c < ' ') || (c == 0x7F)) {	/* Control character? */
-		switch (c) {	/* Yes, dispatch special cases */
-		case '\n':	/* Newline */
-			TTputc('<');
-			TTputc('N');
-			TTputc('L');
-			TTputc('>');
-			col += 3;
-			break;
-
-		case '\t':	/* Tab */
-			TTputc('<');
-			TTputc('T');
-			TTputc('A');
-			TTputc('B');
-			TTputc('>');
-			col += 4;
-			break;
-
-		case 0x7F:	/* Rubout: */
-			TTputc('^');	/* Output a funny looking */
-			TTputc('?');	/* indication of Rubout */
-			col++;	/* Count the extra char */
-			break;
-
-		default:	/* Vanilla control char */
-			TTputc('^');	/* Yes, output prefix */
-			TTputc(c + 0x40);	/* Make it "^X" */
-			col++;	/* Count this char */
-		}
-	} else
-		TTputc(c);	/* Otherwise, output raw char */
-	TTflush();		/* Flush the output */
-	return ++col;		/* return the new column no */
+	movecursor(term.t_nrow, col);
+	if (c == 0x7F) {
+		TTputc('^'); TTputc('?'); col++;
+	} else if (c < ' ') {
+		TTputc('^'); TTputc(c + 0x40); col++;
+	} else {
+		TTputc(c);
+	}
+	TTflush();
+	return ++col;
 }
 
 /*

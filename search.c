@@ -635,21 +635,8 @@ int expandp(char *srcstr, char *deststr, int maxlength)
 {
 	unsigned char c;
 
-	/* Scan through the string. */
 	while ((c = *srcstr++) != 0) {
-		if (c == '\n') {
-			*deststr++ = '<';
-			*deststr++ = 'N';
-			*deststr++ = 'L';
-			*deststr++ = '>';
-			maxlength -= 4;
-		}
-#if PKCODE
-		else if ((c > 0 && c < 0x20) || c == 0x7f)	/* control character */
-#else
-		else if (c < 0x20 || c == 0x7f)	/* control character */
-#endif
-		{
+		if (c < 0x20 || c == 0x7f) {	/* control character */
 			*deststr++ = '^';
 			*deststr++ = c ^ 0x40;
 			maxlength -= 2;
@@ -657,14 +644,13 @@ int expandp(char *srcstr, char *deststr, int maxlength)
 			*deststr++ = '%';
 			*deststr++ = '%';
 			maxlength -= 2;
-		} else {	/* any other character */
+		} else {
 
 			*deststr++ = c;
 			maxlength--;
 		}
 
-		/* check for maxlength */
-		if (maxlength < 4) {
+		if (maxlength < 3) {
 			*deststr++ = '$';
 			*deststr = '\0';
 			return FALSE;
