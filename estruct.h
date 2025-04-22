@@ -364,12 +364,3 @@ struct kill {
 	struct kill *d_next;   /* Link to next chunk, NULL if last. */
 	char d_chunk[KBLOCK];  /* Deleted text. */
 };
-
-/* Incremental search defines. */
-
-#define	CMDBUFLEN	256	/* Length of our command buffer */
-
-#define IS_REVERSE	0x12	/* Search backward */
-#define	IS_FORWARD	0x13	/* Search forward */
-#define IS_BACKSP	0x08	/* Delete previous char */
-#define	IS_RUBOUT	0x7F	/* Delete previous character */

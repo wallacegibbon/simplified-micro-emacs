@@ -25,6 +25,10 @@ struct key_tab keytab[] = {
 	{CONTROL | 'O', openline},
 	{CONTROL | 'P', backline},
 	{CONTROL | 'Q', quote},
+	/*
+	{CONTROL | 'R', backsearch},
+	{CONTROL | 'S', forwsearch},
+	*/
 	{CONTROL | 'R', risearch},
 	{CONTROL | 'S', fisearch},
 	{CONTROL | 'T', twiddle},

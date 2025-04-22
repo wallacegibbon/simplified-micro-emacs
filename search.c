@@ -294,8 +294,6 @@ int filter_buffer(int f, int n)
  * reset the "." to be at the start or just after the match string,
  * and (perhaps) repaint the display.
  *
- * unsigned char *patrn;	string to scan for
- * int direct;			which way to go.
  * int beg_or_end;		put point at beginning or end of pattern.
  */
 int scanner(const char *patrn, int direct, int beg_or_end)
