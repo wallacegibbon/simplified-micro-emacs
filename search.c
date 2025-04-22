@@ -307,39 +307,37 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 	struct line *scanline;	/* current line during scanning */
 	int scanoff;		/* position in scanned line */
 
-	/* If we are going in reverse, then the 'end' is actually
-	 * the beginning of the pattern.  Toggle it.
+	/*
+	 * If we are going in reverse, then the 'end' is actually the
+	 * beginning of the pattern.  Toggle it.
 	 */
 	beg_or_end ^= direct;
 
-	/* Set up local pointers to global ".".
-	 */
+	/* Set up local pointers to global ".". */
 	curline = curwp->w_dotp;
 	curoff = curwp->w_doto;
 
-	/* Scan each character until we hit the head link record.
-	 */
+	/* Scan each character until we hit the head link record. */
 	while (!boundry(curline, curoff, direct)) {
-		/* Save the current position in case we match
-		 * the search string at this point.
+		/*
+		 * Save the current position in case we match the search
+		 * string at this point.
 		 */
 		matchline = curline;
 		matchoff = curoff;
 
-		/* Get the character resolving newlines, and
-		 * test it against first char in pattern.
+		/* Get the character resolving newlines, and test it against
+		 * first char in pattern.
 		 */
 		c = nextch(&curline, &curoff, direct);
 
 		if (eq(c, patrn[0])) {	/* if we find it.. */
-			/* Setup scanning pointers.
-			 */
+			/* Setup scanning pointers. */
 			scanline = curline;
 			scanoff = curoff;
 			patptr = &patrn[0];
 
-			/* Scan through the pattern for a match.
-			 */
+			/* Scan through the pattern for a match. */
 			while (*++patptr != '\0') {
 				c = nextch(&scanline, &scanoff, direct);
 
@@ -668,16 +666,12 @@ int expandp(char *srcstr, char *deststr, int maxlength)
  */
 int boundry(struct line *curline, int curoff, int dir)
 {
-	int border;
-
-	if (dir == FORWARD) {
-		border = (curoff == llength(curline)) &&
+	if (dir == FORWARD)
+		return (curoff == llength(curline)) &&
 			(lforw(curline) == curbp->b_linep);
-	} else {
-		border = (curoff == 0) &&
+	else
+		return (curoff == 0) &&
 			(lback(curline) == curbp->b_linep);
-	}
-	return border;
 }
 
 /*
