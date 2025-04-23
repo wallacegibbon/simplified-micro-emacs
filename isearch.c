@@ -112,6 +112,7 @@ int isearch(int f, int n)
 	int init_direction;	/* The initial search direction */
 	int expc;		/* function expanded input char */
 	int c;			/* current input character */
+	int was_searching = 0;	/* Previous key was ^S or ^R */
 
 	/* Initialize starting conditions */
 
@@ -150,6 +151,7 @@ start_over:
 		for (cpos = 0; pat[cpos] != 0; cpos++)
 			col = echo_char(pat[cpos], col);
 
+		was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 		c = ectoc(expc = get_char());
@@ -170,6 +172,7 @@ start_over:
 		switch (c) {
 		case IS_REVERSE:
 		case IS_FORWARD:
+			was_searching = 1;
 			n = (c == IS_REVERSE) ? -1 : 1;
 			status = scanmore(pat, n);
 			c = ectoc(expc = get_char());
@@ -193,8 +196,12 @@ start_over:
 			goto start_over;
 
 		default:
-			/* Only add visible chars to the pattern buffer */
-			if (!isvisible(c)) {
+			if (was_searching && isvisible(c)) {
+				was_searching = 0;
+				reeat_char = c;
+				return TRUE;
+			}
+			if (c < ' ') {
 				reeat_char = c;
 				return TRUE;
 			}
