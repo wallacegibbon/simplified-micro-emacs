@@ -107,12 +107,12 @@ int isearch(int f, int n)
 	int curoff;		/* Current offset on entry */
 	char pat_save[NPAT];	/* Saved copy of the old pattern str */
 	int status;		/* Search status */
-	int col;		/* prompt column */
-	int cpos;		/* character number in search string */
+	int col;		/* Prompt column */
+	int cpos;		/* Character number in search string */
 	int init_direction;	/* The initial search direction */
-	int expc;		/* function expanded input char */
-	int c;			/* current input character */
-	int was_searching = 0;	/* Previous key was ^S or ^R */
+	int expc;		/* Function expanded input char */
+	int c;			/* Current input character */
+	int was_searching;	/* Previous cmd is ^S or ^R */
 
 	/* Initialize starting conditions */
 
@@ -127,104 +127,96 @@ int isearch(int f, int n)
 	curoff = curwp->w_doto;
 	init_direction = n;
 
-	/* This is a good place to start a re-execution: */
+	/* Display the prompt before any command */
+	promptpattern("ISearch: ", pat);
 
-start_over:
-
-	/* ask the user for the text of a pattern */
-	col = promptpattern("ISearch: ");
-
-	cpos = 0;		/* Start afresh */
-	status = TRUE;		/* Assume everything's cool */
-
-	/*
-	 * Get the first character in the pattern.
-	 * If we get an initial C-S or C-R,
-	 * re-use the old search string and find the first occurrence
-	 */
+	/* Fill the search string when necessary (^S or ^R again on start) */
 
 	c = ectoc(expc = get_char());
-
-	/* Reuse old search string? */
+	cmd_offset = 0;
 	if ((c == IS_FORWARD) || (c == IS_REVERSE)) {
-		/* Yup, find the length */
-		for (cpos = 0; pat[cpos] != 0; cpos++)
-			col = echo_char(pat[cpos], col);
+		for (cpos = 0; pat[cpos] != '\0'; cpos++)
+			cmd_buff[cmd_offset++] = pat[cpos];
+	} else {
+		cmd_buff[cmd_offset++] = c;
+	}
+	cmd_buff[cmd_offset] = '\0';
 
+	/* Both rubout and backspace will trigger the re-searching */
+start_over:
+	/* display prompt and clear rest contents in message line */
+	col = promptpattern("ISearch: ", pat_save);
+	was_searching = 0;
+	cmd_reexecute = 0;
+	status = TRUE;
+	cpos = 0;
+
+char_loop:
+	c = ectoc(expc = get_char());
+
+	/* ^M will finish the searching */
+	if (expc == enterc)
+		return TRUE;
+
+	/* ^G will stop the searching and restore the search pattern */
+	if (expc == abortc) {
+		strcpy(pat, pat_save);
+		return FALSE;
+	}
+
+	switch (c) {
+	case IS_REVERSE:
+	case IS_FORWARD:
 		was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
-		c = ectoc(expc = get_char());
-	}
+		goto char_loop;
 
-	/* Top of the per character loop */
-
-	for (;;) {
-		/* CR/NEWLINE finish the searching */
-		if (expc == enterc)
-			return TRUE;
-		/* ^G stop the searching and restore the pattern */
-		if (expc == abortc) {
+	case IS_BACKSP:
+	case IS_RUBOUT:
+		if (cmd_offset <= 1) {
 			strcpy(pat, pat_save);
-			return FALSE;
-		}
-
-		switch (c) {
-		case IS_REVERSE:
-		case IS_FORWARD:
-			was_searching = 1;
-			n = (c == IS_REVERSE) ? -1 : 1;
-			status = scanmore(pat, n);
-			c = ectoc(expc = get_char());
-			continue;
-
-		case IS_BACKSP:
-		case IS_RUBOUT:
-			if (cmd_offset <= 1)
-				return TRUE;
-			--cmd_offset;
-			cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
-			curwp->w_dotp = curline;
-			curwp->w_doto = curoff;
-			curwp->w_flag |= WFMOVE;
-			n = init_direction;
-
-			/* Restore the old search str */
-			strcpy(pat, pat_save);
-
-			cmd_reexecute = 0;
-			goto start_over;
-
-		default:
-			if (was_searching && isvisible(c)) {
-				was_searching = 0;
-				reeat_char = c;
-				return TRUE;
-			}
-			if (c < ' ') {
-				reeat_char = c;
-				return TRUE;
-			}
-		}
-
-		/* I guess we got something to search for, so search for it */
-
-		pat[cpos++] = c;
-		if (cpos >= NPAT - 1) {
-			mlwrite("? Search string too long");
 			return TRUE;
 		}
-		pat[cpos] = 0;
-		col = echo_char(c, col);
+		--cmd_offset;
+		cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
+		curwp->w_dotp = curline;
+		curwp->w_doto = curoff;
+		curwp->w_flag |= WFMOVE;
+		n = init_direction;
+		goto start_over;
 
-		if (!status) {	/* If we lost last time */
-			TTputc(BELL);
-			TTflush();
-		} else if (!(status = checknext(c, pat, n))) {
-			status = scanmore(pat, n);
-		}
-		c = ectoc(expc = get_char());
+	default:
+		/* nothing */
 	}
+
+	/* Other characters */
+
+	if (was_searching && isvisible(c)) {
+		reeat_char = c;
+		return TRUE;
+	}
+
+	if (c < ' ') {
+		reeat_char = c;
+		return TRUE;
+	}
+
+	pat[cpos++] = c;
+	if (cpos >= NPAT - 1) {
+		mlwrite("? Search string too long");
+		return TRUE;
+	}
+	pat[cpos] = '\0';
+	col = echo_char(c, col);
+
+	if (!status) {	/* If we lost last time */
+		TTputc(BELL);
+		TTflush();
+	} else if (!(status = checknext(c, pat, n))) {
+		status = scanmore(pat, n);
+	}
+	goto char_loop;
 }
 
 /*
@@ -244,8 +236,8 @@ start_over:
 int checknext(char chr, char *patrn, int dir)
 {
 	struct line *curline;
-	int curoff; /* position within current line */
-	int buffchar; /* character at current position */
+	int curoff;
+	int buffchar;		/* character at current position */
 	int status;
 
 
@@ -351,7 +343,7 @@ int match_pat(char *patrn)
 /*
  * Routine to prompt for I-Search string.
  */
-int promptpattern(char *prompt)
+int promptpattern(const char *prompt, const char *pat)
 {
 	char tpat[NPAT + 20];
 

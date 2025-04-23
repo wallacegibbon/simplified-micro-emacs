@@ -197,7 +197,7 @@ void rvstrcpy(char *rvstr, char *str);
 int sreplace(int f, int n);
 int qreplace(int f, int n);
 int delins(int dlength, char *instr, int use_meta);
-int expandp(char *srcstr, char *deststr, int maxlength);
+int expandp(const char *srcstr, char *deststr, int maxlength);
 int boundry(struct line *curline, int curoff, int dir);
 
 /* isearch.c */
@@ -207,7 +207,7 @@ int isearch(int f, int n);
 int checknext(char chr, char *patrn, int dir);
 int scanmore(char *patrn, int dir);
 int match_pat(char *patrn);
-int promptpattern(char *prompt);
+int promptpattern(const char *prompt, const char *pat);
 int get_char(void);
 
 /* lock.c */

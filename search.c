@@ -629,7 +629,7 @@ int delins(int dlength, char *instr, int use_meta)
  * char *deststr;		destination of expanded string
  * int maxlength;		maximum chars in destination
  */
-int expandp(char *srcstr, char *deststr, int maxlength)
+int expandp(const char *srcstr, char *deststr, int maxlength)
 {
 	unsigned char c;
 
