@@ -284,7 +284,7 @@ int makelist(int iflag)
 	bp = bheadp;		/* For all buffers */
 
 	/* build line to report global mode settings */
-	cp1 = &line[0];
+	cp1 = line;
 	*cp1++ = ' ';
 	*cp1++ = ' ';
 	*cp1++ = ' ';
@@ -308,7 +308,7 @@ int makelist(int iflag)
 			bp = bp->b_bufp;
 			continue;
 		}
-		cp1 = &line[0];	/* Start at left edge */
+		cp1 = line;	/* Start at left edge */
 
 		/* output status of ACTIVE flag (has the file been read in? */
 		if (bp->b_active == TRUE)	/* "@" if activated */
@@ -345,7 +345,7 @@ int makelist(int iflag)
 			lp = lforw(lp);
 		}
 		e_ltoa(b, 7, nbytes);	/* 7 digit buffer size. */
-		cp2 = &b[0];
+		cp2 = b;
 		while ((c = *cp2++) != 0)
 			*cp1++ = c;
 		*cp1++ = ' ';	/* Gap. */

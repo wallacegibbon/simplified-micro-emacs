@@ -106,7 +106,7 @@ void ttopen(void)
 	 * provide a smaller terminal output buffer so that
 	 * the type ahead detection works better (more often)
 	 */
-	setbuffer(stdout, &tobuf[0], TBUFSIZ);
+	setbuffer(stdout, tobuf, TBUFSIZ);
 #endif
 #endif
 
@@ -115,7 +115,7 @@ void ttopen(void)
 	 * provide a smaller terminal output buffer so that
 	 * the type ahead detection works better (more often)
 	 */
-	setvbuf(stdout, &tobuf[0], _IOFBF, TBUFSIZ);
+	setvbuf(stdout, tobuf, _IOFBF, TBUFSIZ);
 	TTflush();
 #endif /* __hpux */
 

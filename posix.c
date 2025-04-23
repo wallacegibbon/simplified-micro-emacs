@@ -77,7 +77,7 @@ void ttopen(void)
 	 * provide a smaller terminal output buffer so that
 	 * the type ahead detection works better (more often)
 	 */
-	setbuffer(stdout, &tobuf[0], TBUFSIZ);
+	setbuffer(stdout, tobuf, TBUFSIZ);
 
 	kbdflgs = fcntl(0, F_GETFL, 0);
 	kbdpoll = FALSE;

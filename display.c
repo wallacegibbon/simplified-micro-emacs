@@ -1085,7 +1085,7 @@ static void modeline(struct window *wp)
 	strcat(tline, VERSION);
 	strcat(tline, ": ");
 	*/
-	cp = &tline[0];
+	cp = tline;
 	while ((c = *cp++) != 0) {
 		vtputc(c);
 		++n;
@@ -1116,7 +1116,7 @@ static void modeline(struct window *wp)
 	}
 	strcat(tline, ") ");
 
-	cp = &tline[0];
+	cp = tline;
 	while ((c = *cp++) != 0) {
 		vtputc(c);
 		++n;

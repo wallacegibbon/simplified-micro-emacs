@@ -45,7 +45,7 @@ struct kill *kbufh = NULL;	/* kill buffer header pointer */
 int kused = KBLOCK;		/* # of bytes used in kill buffer */
 struct window *swindow = NULL;	/* saved window pointer */
 int *kbdptr;			/* current position in keyboard buf */
-int *kbdend = &kbdm[0];		/* ptr to end of the keyboard */
+int *kbdend = kbdm;		/* ptr to end of the keyboard */
 int kbdmode = STOP;		/* current keyboard macro mode */
 int kbdrep = 0;			/* number of repetitions */
 int lastkey = 0;		/* last keystoke */

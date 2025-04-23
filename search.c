@@ -61,157 +61,11 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include <stdio.h>
 #include <unistd.h>
 
 static int readpattern(char *prompt, char *apat, int srch);
 static int replaces(int kind, int f, int n);
 static int nextch(struct line **pcurline, int *pcuroff, int dir);
-
-/*
- * forwsearch -- Search forward.  Get a search string from the user, and
- * search for the string.  If found, reset the "." to be just after
- * the match string, and (perhaps) repaint the display.
- */
-int forwsearch(int f, int n)
-{
-	int status = TRUE;
-
-	/* If n is negative, search backwards.
-	 * Otherwise proceed by asking for the search string.
-	 */
-	if (n < 0)
-		return backsearch(f, -n);
-
-	/* Ask the user for the text of a pattern.  If the
-	 * response is TRUE (responses other than FALSE are
-	 * possible), search for the pattern for as long as
-	 * n is positive (n == 0 will go through once, which
-	 * is just fine).
-	 */
-	if ((status = readpattern("Search", &pat[0], TRUE)) == TRUE) {
-		do {
-			status = scanner(&pat[0], FORWARD, PTEND);
-		} while ((--n > 0) && status);
-
-		/* Save away the match, or complain
-		 * if not there.
-		 */
-		if (status == TRUE)
-			savematch();
-		else
-			mlwrite("Not found");
-	}
-	return status;
-}
-
-/*
- * forwhunt -- Search forward for a previously acquired search string.
- * If found, reset the "." to be just after the match string,
- * and (perhaps) repaint the display.
- */
-int forwhunt(int f, int n)
-{
-	int status = TRUE;
-
-	if (n < 0)
-		return backhunt(f, -n);
-
-	/* Make sure a pattern exists */
-	if (pat[0] == '\0') {
-		mlwrite("No pattern set");
-		return FALSE;
-	}
-
-	/* Search for the pattern for as long as n is positive
-	 * (n == 0 will go through once, which is just fine).
-	 */
-	do {
-		status = scanner(&pat[0], FORWARD, PTEND);
-	} while ((--n > 0) && status);
-
-	/* Save away the match, or complain
-	 * if not there.
-	 */
-	if (status == TRUE)
-		savematch();
-	else
-		mlwrite("Not found");
-
-	return status;
-}
-
-/*
- * backsearch -- Reverse search.  Get a search string from the user, and
- * search, starting at "." and proceeding toward the front of the buffer.
- * If found "." is left pointing at the first character of the pattern
- * (the last character that was matched).
- */
-int backsearch(int f, int n)
-{
-	int status = TRUE;
-
-	if (n < 0)
-		return forwsearch(f, -n);
-
-	/* Ask the user for the text of a pattern.  If the
-	 * response is TRUE (responses other than FALSE are
-	 * possible), search for the pattern for as long as
-	 * n is positive (n == 0 will go through once, which
-	 * is just fine).
-	 */
-	if ((status = readpattern("Reverse search", &pat[0], TRUE)) == TRUE) {
-		do {
-			status = scanner(&tap[0], REVERSE, PTBEG);
-		} while ((--n > 0) && status);
-
-		/* Save away the match, or complain
-		 * if not there.
-		 */
-		if (status == TRUE)
-			savematch();
-		else
-			mlwrite("Not found");
-	}
-	return status;
-}
-
-/*
- * backhunt -- Reverse search for a previously acquired search string,
- * starting at "." and proceeding toward the front of the buffer.
- * If found "." is left pointing at the first character of the pattern
- * (the last character that was matched).
- */
-int backhunt(int f, int n)
-{
-	int status = TRUE;
-
-	if (n < 0)
-		return forwhunt(f, -n);
-
-	/* Make sure a pattern exists */
-	if (tap[0] == '\0') {
-		mlwrite("No pattern set");
-		return FALSE;
-	}
-
-	/* Go search for it for as long as n is positive
-	 * (n == 0 will go through once, which is just fine).
-	 */
-	do {
-		status = scanner(&tap[0], REVERSE, PTBEG);
-	} while ((--n > 0) && status);
-
-	/* Save away the match, or complain
-	 * if not there.
-	 */
-	if (status == TRUE)
-		savematch();
-	else
-		mlwrite("Not found");
-
-	return status;
-}
 
 /*
  * filter a buffer through an external DOS program
@@ -300,12 +154,12 @@ int filter_buffer(int f, int n)
  */
 int scanner(const char *patrn, int direct, int beg_or_end)
 {
-	int c;			/* character at current position */
+	struct line *curline = curwp->w_dotp;
+	int curoff = curwp->w_doto;
+	struct line *scanline;
+	int scanoff;
 	const char *patptr;	/* pointer into pattern */
-	struct line *curline;	/* current line during scan */
-	int curoff;		/* position within current line */
-	struct line *scanline;	/* current line during scanning */
-	int scanoff;		/* position in scanned line */
+	int c;
 
 	/*
 	 * If we are going in reverse, then the 'end' is actually the
@@ -313,11 +167,6 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 	 */
 	beg_or_end ^= direct;
 
-	/* Set up local pointers to global ".". */
-	curline = curwp->w_dotp;
-	curoff = curwp->w_doto;
-
-	/* Scan each character until we hit the head link record. */
 	while (!boundry(curline, curoff, direct)) {
 		/*
 		 * Save the current position in case we match the search
@@ -326,7 +175,8 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 		matchline = curline;
 		matchoff = curoff;
 
-		/* Get the character resolving newlines, and test it against
+		/*
+		 * Get the character resolving newlines, and test it against
 		 * first char in pattern.
 		 */
 		c = nextch(&curline, &curoff, direct);
@@ -335,24 +185,21 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 			/* Setup scanning pointers. */
 			scanline = curline;
 			scanoff = curoff;
-			patptr = &patrn[0];
+			patptr = patrn;
 
 			/* Scan through the pattern for a match. */
 			while (*++patptr != '\0') {
 				c = nextch(&scanline, &scanoff, direct);
-
 				if (!eq(c, *patptr))
 					goto fail;
 			}
 
-			/* A SUCCESSFULL MATCH!!!
-			 * reset the global "." pointers
-			 */
+			/* A SUCCESSFULL MATCH!!! */
+
 			if (beg_or_end == PTEND) {	/* at end of string */
 				curwp->w_dotp = scanline;
 				curwp->w_doto = scanoff;
 			} else {	/* at beginning of string */
-
 				curwp->w_dotp = matchline;
 				curwp->w_doto = matchoff;
 			}
@@ -364,8 +211,7 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 fail:
 		;/* continue to search */
 	}
-
-	return FALSE;		/* We could not find a match */
+	return FALSE;
 }
 
 /*
@@ -396,12 +242,12 @@ int eq(unsigned char bc, unsigned char pc)
  */
 static int readpattern(char *prompt, char *apat, int srch)
 {
-	int status;
 	char tpat[NPAT + 20];
+	int status;
 
-	strcpy(tpat, prompt);	/* copy prompt to output string */
-	strcat(tpat, " (");	/* build new prompt string */
-	expandp(&apat[0], &tpat[strlen(tpat)], NPAT / 2);	/* add old pattern */
+	strcpy(tpat, prompt);
+	strcat(tpat, " (");
+	expandp(apat, &tpat[strlen(tpat)], NPAT / 2);
 	strcat(tpat, ")<CR>: ");
 
 	/* Read a pattern.  Either we get one,
@@ -412,15 +258,16 @@ static int readpattern(char *prompt, char *apat, int srch)
 	if ((status = mlreplyt(tpat, tpat, NPAT, enterc)) == TRUE) {
 		strcpy(apat, tpat);
 		if (srch) {	/* If we are doing the search string. */
-			/* Reverse string copy, and remember
-			 * the length for substitution purposes.
+			/*
+			 * Reverse string copy, and remember the length for
+			 * substitution purposes.
 			 */
 			rvstrcpy(tap, apat);
 			mlenold = matchlen = strlen(apat);
 		}
-	} else if (status == FALSE && apat[0] != 0)	/* Old one */
+	} else if (status == FALSE && apat[0] != 0) {	/* Old one */
 		status = TRUE;
-
+	}
 	return status;
 }
 
@@ -459,21 +306,11 @@ void savematch(void)
 void rvstrcpy(char *rvstr, char *str)
 {
 	int i;
-
 	str += (i = strlen(str));
-
 	while (i-- > 0)
 		*rvstr++ = *--str;
 
 	*rvstr = '\0';
-}
-
-/*
- * sreplace -- Search and replace.
- */
-int sreplace(int f, int n)
-{
-	return replaces(FALSE, f, n);
 }
 
 /*
@@ -485,6 +322,24 @@ int qreplace(int f, int n)
 }
 
 /*
+ * delins -- Delete a specified length from the current point
+ * then either insert the string directly, or make use of
+ * replacement meta-array.
+ */
+int delins(int dlength, char *instr, int use_meta)
+{
+       int status;
+
+       /* Zap what we gotta, and insert its replacement. */
+       if ((status = ldelete((long)dlength, FALSE)) != TRUE)
+               mlwrite("%%ERROR while deleting");
+       else
+               status = linstr(instr);
+
+       return status;
+}
+
+/*
  * replaces -- Search for a string and replace it with another
  * string.  Query might be enabled (according to kind).
  *
@@ -492,14 +347,10 @@ int qreplace(int f, int n)
  */
 static int replaces(int kind, int f, int n)
 {
-	int status;		/* success flag on pattern inputs */
-	int numsub;		/* number of substitutions */
-	int nummatch;		/* number of found matches */
 	int nlflag;		/* last char of search string a <NL>? */
 	int nlrepl;		/* was a replace done on the last line? */
-	char c;			/* input char for query */
-	char tpat[NPAT];	/* temporary to hold search pattern */
-	char last_char = '\0';
+	char tpat[NPAT];
+	int numsub, nummatch, status, c, last_char = 0;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -509,11 +360,11 @@ static int replaces(int kind, int f, int n)
 
 	/* Ask the user for the text of a pattern. */
 	if ((status = readpattern((kind == FALSE ? "Replace" : "Query replace"),
-			&pat[0], TRUE)) != TRUE)
+			pat, TRUE)) != TRUE)
 		return status;
 
 	/* Ask for the replacement string. */
-	if ((status = readpattern("with", &rpat[0], FALSE)) == ABORT)
+	if ((status = readpattern("with", rpat, FALSE)) == ABORT)
 		return status;
 
 	/*
@@ -526,9 +377,9 @@ static int replaces(int kind, int f, int n)
 	if (kind) {
 		/* Build query replace question string. */
 		strcpy(tpat, "Replace '");
-		expandp(&pat[0], &tpat[strlen(tpat)], NPAT / 3);
+		expandp(pat, &tpat[strlen(tpat)], NPAT / 3);
 		strcat(tpat, "' with '");
-		expandp(&rpat[0], &tpat[strlen(tpat)], NPAT / 3);
+		expandp(rpat, &tpat[strlen(tpat)], NPAT / 3);
 		strcat(tpat, "'? ");
 	}
 
@@ -537,23 +388,16 @@ static int replaces(int kind, int f, int n)
 
 	while ((f == FALSE || n > nummatch) &&
 			(nlflag == FALSE || nlrepl == FALSE)) {
-		/*
-		 * Search for the pattern.
-		 * If we search with a regular expression,
-		 * matchlen is reset to the true length of the matched string.
-		 */
-		if (!scanner(&pat[0], FORWARD, PTBEG))
+		if (!scanner(pat, FORWARD, PTBEG))
 			break;	/* all done */
 
-		++nummatch;	/* Increment # of matches */
+		++nummatch;
 
 		/* Check if we are on the last line. */
 		nlrepl = (lforw(curwp->w_dotp) == curwp->w_bufp->b_linep);
 
-		/* Check for query. */
 		if (kind) {
-			/* Get the query. */
-			mlwrite(&tpat[0], &pat[0], &rpat[0]);
+			mlwrite(tpat, pat, rpat);
 qprompt:
 			update(TRUE);	/* show the proposed place to change */
 			c = tgetc();	/* and input */
@@ -590,7 +434,7 @@ qprompt:
 		}
 
 		/* Delete the sucker, and insert its replacement. */
-		status = delins(matchlen, &rpat[0], TRUE);
+		status = delins(matchlen, rpat, TRUE);
 		if (status != TRUE)
 			return status;
 
@@ -602,24 +446,6 @@ qprompt:
 
 	mlwrite("%d substitutions", numsub);
 	return TRUE;
-}
-
-/*
- * delins -- Delete a specified length from the current point
- * then either insert the string directly, or make use of
- * replacement meta-array.
- */
-int delins(int dlength, char *instr, int use_meta)
-{
-	int status;
-
-	/* Zap what we gotta, and insert its replacement. */
-	if ((status = ldelete((long)dlength, FALSE)) != TRUE)
-		mlwrite("%%ERROR while deleting");
-	else
-		status = linstr(instr);
-
-	return status;
 }
 
 /*
@@ -677,40 +503,37 @@ int boundry(struct line *curline, int curoff, int dir)
 /*
  * nextch -- retrieve the next/previous character in the buffer,
  * and advance/retreat the point.
- * The order in which this is done is significant, and depends
- * upon the direction of the search.  Forward searches look at
- * the current character and move, reverse searches move and
- * look at the character.
+ * The order in which this is done is significant, and depends upon the
+ * direction of the search.
+ * Forward searches look at the current character and move;
+ * Reverse searches move and look at the character.
  */
 static int nextch(struct line **pcurline, int *pcuroff, int dir)
 {
-	struct line *curline;
-	int curoff;
+	struct line *curline = *pcurline;
+	int curoff = *pcuroff;
 	int c;
-
-	curline = *pcurline;
-	curoff = *pcuroff;
 
 	if (dir == FORWARD) {
 		if (curoff == llength(curline)) {	/* if at EOL */
-			curline = lforw(curline);	/* skip to next line */
+			curline = lforw(curline);
 			curoff = 0;
 			c = '\n';	/* and return a <NL> */
-		} else
-			c = lgetc(curline, curoff++);	/* get the char */
-	} else {		/* Reverse. */
+		} else {
+			c = lgetc(curline, curoff++);
+		}
+	} else {
 
 		if (curoff == 0) {
 			curline = lback(curline);
 			curoff = llength(curline);
 			c = '\n';
-		} else
+		} else {
 			c = lgetc(curline, --curoff);
+		}
 
 	}
 	*pcurline = curline;
 	*pcuroff = curoff;
-
 	return c;
 }
-

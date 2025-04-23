@@ -42,7 +42,6 @@ int main(int argc, char **argv)
 	int viewflag = FALSE;	/* are we starting in view mode? */
 	int gotoflag = FALSE;	/* do we need to goto a line at start? */
 	int gline = 0;		/* if so, what line? */
-	int searchflag = FALSE;	/* Do we need to search at start? */
 	int saveflag;		/* temp store for lastflag */
 	char bname[NBUFN];	/* buffer name of file to read */
 	fn_t execfunc;
@@ -73,11 +72,6 @@ int main(int argc, char **argv)
 	vtinit();		/* Display */
 	edinit("main");		/* Buffers, windows */
 
-	viewflag = FALSE;
-	gotoflag = FALSE;
-	searchflag = FALSE;
-	firstfile = TRUE;
-
 	for (carg = 1; carg < argc; ++carg) {
 		if (argv[carg][0] == '-') {
 			switch (argv[carg][1]) {
@@ -85,21 +79,16 @@ int main(int argc, char **argv)
 			case 'E':
 				viewflag = FALSE;
 				break;
+			case 'v':	/* -v for View File */
+			case 'V':
+				viewflag = TRUE;
+				break;
 			case 'g':	/* -g for initial goto */
 			case 'G':
 				gotoflag = TRUE;
 				gline = atoi(&argv[carg][2]);
 				break;
-			case 's':	/* -s for initial search string */
-			case 'S':
-				searchflag = TRUE;
-				strncpy(pat, &argv[carg][2], NPAT - 1);
-				break;
-			case 'v':	/* -v for View File */
-			case 'V':
-				viewflag = TRUE;
-				break;
-			default:	/* unknown switch */
+			default:
 				/* ignore this for now */
 				break;
 			}
@@ -140,18 +129,12 @@ int main(int argc, char **argv)
 	} else
 		bp->b_mode |= gmode;
 
-	/* Deal with startup gotos and searches */
-	if (gotoflag && searchflag) {
-		update(FALSE);
-		mlwrite("(Can not search and goto at the same time!)");
-	} else if (gotoflag) {
+	/* Deal with startup gotos */
+	if (gotoflag) {
 		if (gotoline(TRUE, gline) == FALSE) {
 			update(FALSE);
 			mlwrite("(Bogus goto argument)");
 		}
-	} else if (searchflag) {
-		if (forwhunt(FALSE, 0) == FALSE)
-			update(FALSE);
 	}
 
 loop:
@@ -304,9 +287,8 @@ void edinit(char *bname)
  */
 int (*getbind(int c))(int, int)
 {
-	struct key_tab *ktp;
+	struct key_tab *ktp = keytab;
 
-	ktp = &keytab[0];
 	while (ktp->k_fp != NULL) {
 		if (ktp->k_code == c)
 			return ktp->k_fp;
@@ -467,7 +449,7 @@ int ctlxlp(int f, int n)
 		return FALSE;
 	}
 	mlwrite("(Start macro)");
-	kbdptr = &kbdm[0];
+	kbdptr = kbdm;
 	kbdend = kbdptr;
 	kbdmode = RECORD;
 	return TRUE;
@@ -503,9 +485,9 @@ int ctlxe(int f, int n)
 	}
 	if (n <= 0)
 		return TRUE;
-	kbdrep = n;		/* remember how many times to execute */
-	kbdmode = PLAY;		/* start us in play mode */
-	kbdptr = &kbdm[0];	/* at the beginning */
+	kbdrep = n;
+	kbdmode = PLAY;
+	kbdptr = kbdm;
 	return TRUE;
 }
 
@@ -599,7 +581,7 @@ void dspram()
 	TTbacg(0);
 #endif
 	sprintf(mbuf, "[%lu]", envram);
-	sp = &mbuf[0];
+	sp = mbuf;
 	while (*sp)
 		TTputc(*sp++);
 	TTmove(term.t_nrow, 0);

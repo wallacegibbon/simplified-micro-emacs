@@ -272,15 +272,15 @@ void makename(char *bname, char *fname)
 	char *cp1;
 	char *cp2;
 
-	cp1 = &fname[0];
+	cp1 = fname;
 	while (*cp1 != 0)
 		++cp1;
 
 #if V7 | USG | BSD
-	while (cp1 != &fname[0] && cp1[-1] != '/')
+	while (cp1 != fname && cp1[-1] != '/')
 		--cp1;
 #endif
-	cp2 = &bname[0];
+	cp2 = bname;
 	while (cp2 != &bname[NBUFN - 1] && *cp1 != 0 && *cp1 != ';')
 		*cp2++ = *cp1++;
 	*cp2 = 0;

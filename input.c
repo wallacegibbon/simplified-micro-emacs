@@ -96,11 +96,9 @@ int (*fncmatch(char *fname))(int, int)
 	struct name_bind *ffp;
 
 	/* scan through the table, returning any match */
-	ffp = &names[0];
-	while (ffp->n_func != NULL) {
+	for (ffp = names; ffp->n_func != NULL; ffp++) {
 		if (strcmp(fname, ffp->n_name) == 0)
 			return ffp->n_func;
-		++ffp;
 	}
 	return NULL;
 }
@@ -120,7 +118,7 @@ fn_t getname(void)
 			buf[cpos] = 0;
 
 			/* and match it off */
-			return fncmatch(&buf[0]);
+			return fncmatch(buf);
 
 		} else if (c == ectoc(abortc)) {	/* Bell, abort */
 			ctrlg(FALSE, 0);
@@ -179,7 +177,7 @@ int tgetc(void)
 		} else {
 
 			/* reset the macro to the begining for the next rep */
-			kbdptr = &kbdm[0];
+			kbdptr = kbdm;
 			return (int)*kbdptr++;
 		}
 	}
