@@ -128,15 +128,18 @@ int isearch(int f, int n)
 	init_direction = n;
 
 	/* Display the prompt before any command */
-	promptpattern("ISearch: ", pat);
+	promptpattern("ISearch Start: ", pat);
 
 	/* Fill the search string when necessary (^S or ^R again on start) */
+
+#define IS_INNER_CTL1 3 /* ^C is not used by uemacs or isearch, safe */
 
 	c = ectoc(expc = get_char());
 	cmd_offset = 0;
 	if ((c == IS_FORWARD) || (c == IS_REVERSE)) {
 		for (cpos = 0; pat[cpos] != '\0'; cpos++)
 			cmd_buff[cmd_offset++] = pat[cpos];
+		cmd_buff[cmd_offset++] = IS_INNER_CTL1;
 	} else {
 		cmd_buff[cmd_offset++] = c;
 	}
@@ -164,8 +167,18 @@ char_loop:
 		return FALSE;
 	}
 
+	if (c == IS_INNER_CTL1) {
+		if (pat[0] != '\0')
+			was_searching = 1;
+		goto char_loop;
+	}
 	if (c == IS_REVERSE || c == IS_FORWARD) {
-		was_searching = 1;
+		/*
+		 * As long as the pattern is not empty, we hope to enter the
+		 * state where was_searching is 1 since we have typed ^S or ^R.
+		 */
+		if (pat[0] != '\0')
+			was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 		goto char_loop;
