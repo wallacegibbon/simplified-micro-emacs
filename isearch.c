@@ -164,16 +164,14 @@ char_loop:
 		return FALSE;
 	}
 
-	switch (c) {
-	case IS_REVERSE:
-	case IS_FORWARD:
+	if (c == IS_REVERSE || c == IS_FORWARD) {
 		was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 		goto char_loop;
+	}
 
-	case IS_BACKSP:
-	case IS_RUBOUT:
+	if (c == IS_BACKSP || c == IS_RUBOUT) {
 		if (cmd_offset <= 1) {
 			strcpy(pat, pat_save);
 			return TRUE;
@@ -185,19 +183,14 @@ char_loop:
 		curwp->w_flag |= WFMOVE;
 		n = init_direction;
 		goto start_over;
-
-	default:
-		/* nothing */
 	}
 
-	/* Other characters */
-
-	if (was_searching && isvisible(c)) {
-		reeat_char = c;
-		return TRUE;
-	}
-
-	if (c < ' ') {
+	/*
+	 * There are 2 situations to quit searching mode and insert the char.
+	 * 1. Visible character just after ^S or ^R
+	 * 2. Control commands
+	 */
+	if ((was_searching && isvisible(c)) || c < ' ') {
 		reeat_char = c;
 		return TRUE;
 	}
@@ -283,7 +276,7 @@ int checknext(char chr, char *patrn, int dir)
  * char *patrn;			string to scan for
  * int dir;			direction to search
  */
-int scanmore(char *patrn, int dir)	/* search forward or back for a pattern */
+int scanmore(char *patrn, int dir)
 {
 	int sts;
 
@@ -295,8 +288,8 @@ int scanmore(char *patrn, int dir)	/* search forward or back for a pattern */
 	}
 
 	if (!sts) {
-		TTputc(BELL);	/* Feep if search fails */
-		TTflush();	/* see that the feep feeps */
+		TTputc(BELL);	/* Beep if search fails */
+		TTflush();
 	}
 
 	return sts;		/* else, don't even try */
