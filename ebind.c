@@ -104,9 +104,10 @@ struct key_tab keytab[] = {
 
 	/* CTLX + META + CONTROL is also working in this version */
 	/*
-	{CTLX | META | CONTROL | 'F', nullproc},
 	{CTLX | META | CONTROL | 'G', ctrlg},
 	*/
+
+	{CTLX | META | CONTROL | 'Z', nullproc},
 
 	{0, NULL}
 };

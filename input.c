@@ -223,19 +223,45 @@ int getcmd(void)
 	int c = get1key();
 	int cmask = 0;
 
+	if (c == 128 + 27)
+		goto handle_CSI;
+
 	/* process META prefix */
 	if (c == metac) {
 #if VT220
 proc_metac:
 #endif
-		cmask |= META;
 		c = get1key();
 #if VT220
-		if (c == metac)
+		if (c == '[' || c == 'O') {
+		/* if CSI is not handled, events like scrolling won't work */
+handle_CSI:
+			c = get1key();
+			if (c == 'A') {
+				return cmask | CONTROL | 'P';
+			} else if (c == 'B') {
+				return cmask | CONTROL | 'N';
+			} else if (c == 'C') {
+				return cmask | CONTROL | 'F';
+			} else if (c == 'D') {
+				return cmask | CONTROL | 'B';
+			} else if (c >= 'E' && c <= 'z') {
+				return CTLX | META | CONTROL | 'Z';
+			} else {
+				/* There are many other CSI related keys */
+				get1key();
+				return CTLX | META | CONTROL | 'Z';
+			}
+		} else if (c == metac) {
+			cmask |= META;
 			goto proc_metac;
-		else if (c == ctlxc)
+		} else if (c == ctlxc) {
 			goto proc_ctlxc;
+		} else {
+			cmask |= META;
+		}
 #endif
+
 		/* Force to upper to match bind configurations */
 		if (islower(c))
 			c ^= DIFCASE;
@@ -251,8 +277,10 @@ proc_ctlxc:
 		cmask |= CTLX;
 		c = get1key();
 #if VT220
-		if (c == metac)
+		if (c == metac) {
+			cmask |= META;
 			goto proc_metac;
+		}
 #endif
 		if (islower(c))
 			c ^= DIFCASE;
