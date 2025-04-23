@@ -7,6 +7,12 @@
 
 int quotec = 0x11;		/* quote char during mlreply() */
 
+/* CAUTION:
+ * Prefixed characters (like `CONTROL | 'A'`) may be put into this variable,
+ * which should be okay since functions like `ctoec` will keep it unchanged.
+ */
+int reeat_char = -1;
+
 /*
  * Ask a yes or no question in the message line. Return either TRUE, FALSE, or
  * ABORT. The ABORT status is returned if the user bumps out of the question
@@ -149,6 +155,12 @@ fn_t getname(void)
 int tgetc(void)
 {
 	int c;
+
+	if (reeat_char != -1) {
+		c = reeat_char;
+		reeat_char = -1;
+		return c;
+	}
 
 	/* if we are playing a keyboard macro back, */
 	if (kbdmode == PLAY) {

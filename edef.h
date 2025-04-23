@@ -102,4 +102,6 @@ extern int matchoff;
 /* Terminal table defined only in term.c */
 extern struct terminal term;
 
+extern int reeat_char;
+
 #endif

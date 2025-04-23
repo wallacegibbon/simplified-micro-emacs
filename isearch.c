@@ -195,8 +195,8 @@ start_over:
 		default:
 			/* Only add visible chars to the pattern buffer */
 			if (!isvisible(c)) {
-				c = ectoc(expc = get_char());
-				continue;
+				reeat_char = c;
+				return TRUE;
 			}
 		}
 
