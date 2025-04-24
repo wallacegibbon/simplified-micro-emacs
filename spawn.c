@@ -1,9 +1,8 @@
-#include <stdio.h>
-#include <unistd.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
+#include <stdio.h>
+#include <unistd.h>
 
 #if V7 | USG | BSD
 #include <signal.h>

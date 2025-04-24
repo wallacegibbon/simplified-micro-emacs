@@ -2,7 +2,6 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include <stdio.h>
 
 /*
  * Attach a buffer to a window.

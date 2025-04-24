@@ -13,7 +13,6 @@
 
 #define termdef	1		/* don't define "term" external */
 
-#include <stdio.h>
 #include "estruct.h"
 #include "edef.h"
 

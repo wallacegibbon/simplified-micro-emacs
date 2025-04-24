@@ -6,8 +6,6 @@
  *	Modified by Petri Kutvonen
  */
 
-#include <stdio.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"

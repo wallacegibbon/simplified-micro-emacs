@@ -7,13 +7,12 @@
  *	modified by Petri Kutvonen
  */
 
-#include <stdio.h>
-#include <unistd.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
+#include <unistd.h>
+#include <stdio.h>
 
 #if defined(PKCODE)
 /* Max number of lines from one file. */

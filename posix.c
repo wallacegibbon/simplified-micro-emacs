@@ -12,17 +12,16 @@
 
 #ifdef POSIX
 
+#include "estruct.h"
+#include "edef.h"
+#include "efunc.h"
+#include "utf8.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
-
-#include "estruct.h"
-#include "edef.h"
-#include "efunc.h"
-#include "utf8.h"
 
 /*
  * Since Mac OS X's termios.h doesn't have the following 2 macros, define them.

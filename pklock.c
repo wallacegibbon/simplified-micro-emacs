@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <stdio.h>	/* for cuserid(...) */
 #include <fcntl.h>
 #ifdef SVR4
 #include <string.h>

@@ -6,10 +6,10 @@
  *	modified by Petri Kutvonen
  */
 
-#include <stdio.h>
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
+#include <stdio.h>
 
 static FILE *ffp;			/* File pointer, all functions. */
 static int eofflag;			/* end-of-file flag */

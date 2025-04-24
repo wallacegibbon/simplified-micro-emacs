@@ -8,11 +8,6 @@
  *	Modified by Petri Kutvonen
  */
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <unistd.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -20,6 +15,10 @@
 #include "version.h"
 #include "wrapper.h"
 #include "utf8.h"
+#include <errno.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <unistd.h>
 
 struct video {
 	int v_flag;		/* Flags */
@@ -38,9 +37,9 @@ struct video {
 #define VFREQ	0x0008		/* reverse video request */
 #define VFCOL	0x0010		/* color change requested */
 
-static struct video **vscreen;		/* Virtual screen. */
+static struct video **vscreen;	/* Virtual screen. */
 #if SCROLLCODE
-static struct video **pscreen;		/* Physical screen. */
+static struct video **pscreen;	/* Physical screen. */
 #endif
 
 static int displaying = TRUE;
@@ -1033,14 +1032,12 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
  */
 static void modeline(struct window *wp)
 {
-	char *cp;
-	int c;
-	int n;		/* cursor position count */
-	struct buffer *bp;
-	int i;		/* loop index */
-	int lchar;	/* character to draw line in buffer with */
-	int firstm;	/* is this the first mode? */
+	int lchar;		/* character to draw line in buffer with */
+	int firstm;		/* is this the first mode? */
 	char tline[NLINE];	/* buffer for part of mode line */
+	struct buffer *bp;
+	char *cp;
+	int c, n, i;
 
 	n = wp->w_toprow + wp->w_ntrows;	/* Location. */
 	vscreen[n]->v_flag |= VFCHG | VFREQ | VFCOL;	/* Redraw next time. */

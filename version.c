@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include "version.h"
+#include <stdio.h>
 
 void version(void)
 {
