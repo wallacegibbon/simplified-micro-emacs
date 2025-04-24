@@ -460,7 +460,7 @@ int expandp(const char *srcstr, char *deststr, int maxlength)
 	unsigned char c;
 
 	while ((c = *srcstr++) != 0) {
-		if (c < 0x20 || c == 0x7f) {	/* control character */
+		if (c < 0x20 || c == 0x7F) {	/* control character */
 			*deststr++ = '^';
 			*deststr++ = c ^ 0x40;
 			maxlength -= 2;

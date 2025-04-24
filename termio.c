@@ -35,15 +35,15 @@ struct sgttyb ostate;		/* saved tty state */
 struct sgttyb nstate;		/* values for editor mode */
 struct tchars otchars;		/* Saved terminal special character set */
 #if XONXOFF
-struct tchars ntchars = {0xff, 0xff, 0x11, 0x13, 0xff, 0xff};
+struct tchars ntchars = {0xFF, 0xFF, 0x11, 0x13, 0xFF, 0xFF};
 				/* A lot of nothing and XON/XOFF */
 #else
-struct tchars ntchars = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+struct tchars ntchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
 #endif
 #if BSD & PKCODE
 struct ltchars oltchars;	/* Saved terminal local special character set */
-struct ltchars nltchars = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+struct ltchars nltchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
 #endif
 

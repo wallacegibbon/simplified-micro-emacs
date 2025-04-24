@@ -198,7 +198,7 @@ static void vtputc(int c)
 		return;
 	}
 
-	if (c == 0x7f) {
+	if (c == 0x7F) {
 		vtputc('^');
 		vtputc('?');
 		return;

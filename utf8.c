@@ -28,7 +28,7 @@ unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 	 * 0xxxxxxx is valid utf8
 	 * 10xxxxxx is invalid UTF-8, we assume it is Latin1
 	 */
-	if (c < 0xc0)
+	if (c < 0xC0)
 		return 1;
 
 	/* Ok, it's 11xxxxxx, do a stupid decode */
@@ -52,7 +52,7 @@ unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 		c = line[i];
 		if ((c & 0xc0) != 0x80)
 			return 1;
-		value = (value << 6) | (c & 0x3f);
+		value = (value << 6) | (c & 0x3F);
 	}
 	*res = value;
 	return bytes;
@@ -83,11 +83,11 @@ unsigned int unicode_to_utf8(unsigned int c, char *utf8)
 	int bytes = 1;
 
 	*utf8 = c;
-	if (c > 0x7f) {
+	if (c > 0x7F) {
 		unsigned int prefix = 0x40;
 		char *p = utf8;
 		do {
-			*p++ = 0x80 + (c & 0x3f);
+			*p++ = 0x80 + (c & 0x3F);
 			bytes++;
 			prefix >>= 1;
 			c >>= 6;

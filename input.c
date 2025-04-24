@@ -114,7 +114,7 @@ fn_t getname(void)
 		c = tgetc();
 
 		/* if we are at the end, just match it */
-		if (c == 0x0d) {
+		if (c == 0x0D) {
 			buf[cpos] = 0;
 
 			/* and match it off */
@@ -310,7 +310,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 
 		if (c != eolchar) {
 			/* If it is a <ret>, change it to a <NL> */
-			if (c == (CONTROL | 0x4d) && !quotef)
+			if (c == (CONTROL | 0x4D) && !quotef)
 				c = CONTROL | 0x40 | '\n';
 		}
 

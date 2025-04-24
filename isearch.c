@@ -60,31 +60,6 @@ int risearch(int f, int n)
 	return fisearch(f, -n);
 }
 
-/*
- * Subroutine to do an incremental search.  In general, this works similarly
- * to the older micro-emacs search function, except that the search happens
- * as each character is typed, with the screen and cursor updated with each
- * new search character.
- *
- * While searching forward, each successive character will leave the cursor
- * at the end of the entire matched string.  Typing a Control-S or Control-X
- * will cause the next occurrence of the string to be searched for (where the
- * next occurrence does NOT overlap the current occurrence).  A Control-R will
- * change to a backwards search, Enter will terminate the search and Control-G
- * will abort the search.  Rubout will back up to the previous match of the
- * string, or if the starting point is reached first, it will delete the
- * last character from the search string.
- *
- * While searching backward, each successive character will leave the cursor
- * at the beginning of the matched string.  Typing a Control-R will search
- * backward for the next occurrence of the string.  Control-S or Control-X
- * will revert the search to the forward direction.  In general, the reverse
- * incremental search is just like the forward incremental search inverted.
- *
- * In all cases, if the search fails, the user will be feeped, and the search
- * will stall until the pattern string is edited back into something that
- * exists (or until the search is aborted).
- */
 int isearch(int f, int n)
 {
 	struct line *curline = curwp->w_dotp;
@@ -115,7 +90,7 @@ int isearch(int f, int n)
 	}
 	cmd_buff[cmd_offset] = '\0';
 
-	/* Both rubout and backspace will trigger the re-searching */
+	/* IS_STARTOVER will trigger the re-searching */
 start_over:
 	/* display prompt and clear rest contents in message line */
 	col = promptpattern("ISearch: ", pat_save);
@@ -142,7 +117,7 @@ char_loop:
 		goto char_loop;
 	}
 
-	if (c == IS_BACKSP || c == IS_RUBOUT) {
+	if (c == IS_STARTOVER) {
 		if (cmd_offset <= 1) {
 			/* We don't want to lose the saved pattern */
 			strcpy(pat, pat_save);
@@ -157,7 +132,7 @@ char_loop:
 		goto start_over;
 	}
 
-	if (c < ' ') {
+	if (c < ' ' || c == 0x7F) {
 		reeat_char = c;
 		return TRUE;
 	}
