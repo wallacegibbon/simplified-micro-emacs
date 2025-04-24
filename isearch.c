@@ -170,14 +170,23 @@ char_loop:
 	pat[cpos] = '\0';
 	col = echo_char(c, col);
 
-	if (!status) {	/* If we lost last time */
+	/* If we lost on last char, no more check is needed */
+
+	if (!status) {
 		TTputc(BELL);
 		TTflush();
+
+	/* If we matched on last key, we can try easier check first */
+
 	} else if (!(status = checknext(c, pat, n))) {
+
+		/* Fix the "." position before a reverse scan */
 		if (n == -1)
 			forwchar(FALSE, cpos);
+
 		status = scanmore(pat, n);
 	}
+
 	goto char_loop;
 }
 
@@ -202,14 +211,12 @@ int checknext(char chr, char *patrn, int dir)
 	int buffchar;
 	int status;
 
-	/* This tiny optimization only work for forward search */
+	/* Reverse search need different check */
 	if (dir < 0)
-		return FALSE;
+		return match_pat(patrn);
 
 	if (curoff == llength(curline)) { /* If at end of line */
 		curline = lforw(curline);
-
-		/* Abort if at end of buffer */
 		if (curline == curbp->b_linep)
 			return FALSE;
 
@@ -226,6 +233,37 @@ int checknext(char chr, char *patrn, int dir)
 		curwp->w_flag |= WFMOVE;
 	}
 	return status;
+}
+
+/*
+ * The following is a worker subroutine used by the reverse search.  It
+ * compares the pattern string with the characters at "." for equality. If
+ * any characters mismatch, it will return FALSE.
+ *
+ * This isn't used for forward searches, because forward searches leave "."
+ * at the end of the search string (instead of in front),
+ * so all that needs to be done is match the last char input.
+ */
+int match_pat(char *patrn)
+{
+	struct line *curline = curwp->w_dotp;
+	int curoff = curwp->w_doto;
+	int buffchar, i, len;
+
+	for (i = 0, len = (int)strlen(patrn); i < len; i++) {
+		if (curoff == llength(curline)) {
+			curline = lforw(curline);
+			curoff = 0;
+			if (curline == curbp->b_linep)
+				return FALSE;
+			buffchar = '\n';
+		} else {
+			buffchar = lgetc(curline, curoff++);
+		}
+		if (!eq(buffchar, patrn[i]))
+			return FALSE;
+	}
+	return TRUE;
 }
 
 /*
