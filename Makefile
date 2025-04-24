@@ -71,6 +71,7 @@ clean:
 
 install: $(PROGRAM)
 	cp me ${BINDIR}
+	strip ${BINDIR}/me
 	chmod 755 ${BINDIR}/me
 
 .c.o:
