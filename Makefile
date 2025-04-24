@@ -62,21 +62,23 @@ BINDIR = /usr/bin
 LIBDIR = /usr/lib
 
 $(PROGRAM): $(OBJ)
-	$(E) "  LINK    " $@
+	$(E) "	LINK	" $@
 	$(Q) $(CC) $(LDFLAGS) $(DEFINES) -o $@ $(OBJ) $(LIBS)
 
 clean:
-	$(E) "  CLEAN"
+	$(E) "	CLEAN"
 	$(Q) rm -f $(PROGRAM) core *.o
 
 install: $(PROGRAM)
-	cp me ${BINDIR}
-	strip ${BINDIR}/me
-	chmod 755 ${BINDIR}/me
+	$(E) "	INSTALLING to $(BINDIR)/$(PROGRAM)"
+	$(Q) cp me $(BINDIR)
+	$(Q) strip $(BINDIR)/$(PROGRAM)
+	$(Q) chmod 755 $(BINDIR)/$(PROGRAM)
+	$(Q) echo
 
 .c.o:
-	$(E) "  CC      " $@
-	$(Q) ${CC} ${CFLAGS} ${DEFINES} -c $*.c
+	$(E) "	CC	" $@
+	$(Q) $(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
 # Write the dependencies by hand to work on different make programs.
 

@@ -66,7 +66,7 @@ int isearch(int f, int n)
 	int curoff = curwp->w_doto;
 	int init_direction = n;
 	char pat_save[NPAT];
-	int status, col, cpos, expc, c;
+	int status, col, cpos, expc, c, was_searching;
 
 	cmd_reexecute = -1;	/* We're not re-executing (yet?) */
 	cmd_offset = 0;
@@ -80,11 +80,19 @@ int isearch(int f, int n)
 
 	/* Fill the search string when necessary (^S or ^R again on start) */
 
+#define IS_INNERCTL_1 0x03	/* ^C is not used by Micro Emacs, safe */
+
 	c = ectoc(expc = get_char());
 	cmd_offset = 0;
 	if ((c == IS_FORWARD) || (c == IS_REVERSE)) {
 		for (cpos = 0; pat[cpos] != '\0'; cpos++)
 			cmd_buff[cmd_offset++] = pat[cpos];
+
+		/*
+		 * Store a command that can make was_searching 1, just like
+		 * a ^S or ^R is pressed.
+		 */
+		cmd_buff[cmd_offset++] = IS_INNERCTL_1;
 	} else {
 		cmd_buff[cmd_offset++] = c;
 	}
@@ -94,6 +102,7 @@ int isearch(int f, int n)
 start_over:
 	/* display prompt and clear rest contents in message line */
 	col = promptpattern("ISearch: ", pat_save);
+	was_searching = 0;
 	cmd_reexecute = 0;
 	status = TRUE;
 	cpos = 0;
@@ -112,8 +121,16 @@ char_loop:
 	}
 
 	if (c == IS_REVERSE || c == IS_FORWARD) {
+		if (pat[0] != '\0')
+			was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
+		goto char_loop;
+	}
+
+	if (c == IS_INNERCTL_1) {
+		if (pat[0] != '\0')
+			was_searching = 1;
 		goto char_loop;
 	}
 
@@ -132,7 +149,13 @@ char_loop:
 		goto start_over;
 	}
 
-	if (c < ' ' || c == 0x7F) {
+	if ((c < ' ' && c != '\t') || c == 0x7F) {
+		reeat_char = c;
+		return TRUE;
+	}
+
+	/* For other characters, check was_searching flag */
+	if (was_searching) {
 		reeat_char = c;
 		return TRUE;
 	}
