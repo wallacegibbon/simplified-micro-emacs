@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 /* Make global definitions not external. */
-#define	maindef
+#define maindef
 
 #include "estruct.h"
 #include "edef.h"

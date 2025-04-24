@@ -11,7 +11,7 @@
  *	modified by Petri Kutvonen
  */
 
-#define	termdef	1		/* don't define "term" external */
+#define termdef	1		/* don't define "term" external */
 
 #include <stdio.h>
 #include "estruct.h"
@@ -21,9 +21,9 @@
 
 #define NROW    24		/* Screen size. */
 #define NCOL    80		/* Edit if you want to. */
-#define	MARGIN	8		/* size of minimim margin and */
-#define	SCRSIZ	64		/* scroll size for extended lines */
-#define	NPAUSE	100		/* # times thru update to pause */
+#define MARGIN	8		/* size of minimim margin and */
+#define SCRSIZ	64		/* scroll size for extended lines */
+#define NPAUSE	100		/* # times thru update to pause */
 #define BIAS    0x20		/* Origin 0 coordinate bias. */
 
 static void ttopen(void);

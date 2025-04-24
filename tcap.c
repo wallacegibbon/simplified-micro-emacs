@@ -11,7 +11,7 @@
  *	-lbt
  */
 #define USE_BROKEN_OPTIMIZATION 0
-#define	termdef	1 /* Don't define "term" external. */
+#define termdef	1 /* Don't define "term" external. */
 
 #include <curses.h>
 #include <stdio.h>
@@ -27,9 +27,9 @@
 #include <signal.h>
 #endif
 
-#define	MARGIN	8
-#define	SCRSIZ	64
-#define	NPAUSE	10    /* # times thru update to pause. */
+#define MARGIN	8
+#define SCRSIZ	64
+#define NPAUSE	10    /* # times thru update to pause. */
 
 static void tcapkopen(void);
 static void tcapkclose(void);

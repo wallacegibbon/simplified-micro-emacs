@@ -33,10 +33,10 @@ struct video {
 };
 
 #define VFCHG   0x0001		/* Changed flag */
-#define	VFEXT	0x0002		/* extended (beyond column 80) */
-#define	VFREV	0x0004		/* reverse video status */
-#define	VFREQ	0x0008		/* reverse video request */
-#define	VFCOL	0x0010		/* color change requested */
+#define VFEXT	0x0002		/* extended (beyond column 80) */
+#define VFREV	0x0004		/* reverse video status */
+#define VFREQ	0x0008		/* reverse video request */
+#define VFCOL	0x0010		/* color change requested */
 
 static struct video **vscreen;		/* Virtual screen. */
 #if SCROLLCODE

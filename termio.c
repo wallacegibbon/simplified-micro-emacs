@@ -49,7 +49,7 @@ struct ltchars nltchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 #if BSD
 #include <sys/ioctl.h>		/* to get at the typeahead */
-#define	TBUFSIZ	128
+#define TBUFSIZ	128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
 #endif
 #endif

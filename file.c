@@ -17,7 +17,7 @@
 
 #if defined(PKCODE)
 /* Max number of lines from one file. */
-#define	MAXNLINE 10000000
+#define MAXNLINE 10000000
 #endif
 
 /*

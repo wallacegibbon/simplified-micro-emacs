@@ -7,7 +7,7 @@
  *	modified by Petri Kutvonen
  */
 
-#define	termdef	1		/* don't define "term" external */
+#define termdef	1		/* don't define "term" external */
 
 #include <stdio.h>
 #include "estruct.h"
@@ -19,11 +19,11 @@
 #define NCOL    80		/* Edit if you want to. */
 
 #if PKCODE
-#define	MROW	64
+#define MROW	64
 #endif
-#define	NPAUSE	100		/* # times thru update to pause */
-#define	MARGIN	8		/* size of minimim margin and */
-#define	SCRSIZ	64		/* scroll size for extended lines */
+#define NPAUSE	100		/* # times thru update to pause */
+#define MARGIN	8		/* size of minimim margin and */
+#define SCRSIZ	64		/* scroll size for extended lines */
 
 static void ttopen(void);
 static void ttclose(void);

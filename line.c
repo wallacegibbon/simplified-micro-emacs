@@ -22,7 +22,7 @@
 #include "efunc.h"
 #include "utf8.h"
 
-#define	BLOCK_SIZE 16 /* Line block chunk size. */
+#define BLOCK_SIZE 16 /* Line block chunk size. */
 
 /*
  * This routine allocates a block of memory large enough to hold a struct line

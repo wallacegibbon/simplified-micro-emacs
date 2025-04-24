@@ -12,7 +12,7 @@
 #define BSD 1 /* Berkeley UNIX */
 #endif
 #else
-#define	BSD 0
+#define BSD 0
 #endif
 
 #if defined(SVR4) || defined(__linux__)	/* ex. SunOS 5.3 */
@@ -22,31 +22,31 @@
 #endif
 
 #if defined(SYSV) || defined(u3b2) || defined(_AIX) || (defined(i386) && defined(unix)) || defined(__hpux)
-#define	USG 1 /* System V UNIX */
+#define USG 1 /* System V UNIX */
 #else
-#define	USG 0
+#define USG 0
 #endif
 
-#define	V7 0 /* No more. */
+#define V7 0 /* No more. */
 
 #else
 
 #define V7      0		/* V7 UNIX or Coherent or BSD4.2 */
-#define	BSD	0		/* UNIX BSD 4.2 and ULTRIX */
-#define	USG	0		/* UNIX system V */
+#define BSD	0		/* UNIX BSD 4.2 and ULTRIX */
+#define USG	0		/* UNIX system V */
 
 #endif /* AUTOCONF || BSD || SYSV */
 
 #ifndef	AUTOCONF
-#define	UNIX	0		/* a random UNIX compiler */
+#define UNIX	0		/* a random UNIX compiler */
 #else
-#define	UNIX	(V7 | BSD | USG)
+#define UNIX	(V7 | BSD | USG)
 #endif /* AUTOCONF */
 
 /* Debugging options */
 
-#define	RAMSIZE	0		/* dynamic RAM memory usage tracking */
-#define	RAMSHOW	0		/* auto dynamic RAM reporting */
+#define RAMSIZE	0		/* dynamic RAM memory usage tracking */
+#define RAMSHOW	0		/* auto dynamic RAM reporting */
 
 #ifndef	AUTOCONF
 
@@ -63,76 +63,76 @@
 
 #else
 
-#define	VT220	UNIX
-#define	VT100	0
-#define	ANSI	0
-#define	VT52	0
-#define	TERMCAP	UNIX
+#define VT220	UNIX
+#define VT100	0
+#define ANSI	0
+#define VT52	0
+#define TERMCAP	UNIX
 
 #endif /* AUTOCONF */
 
 /* Configuration options */
 
 #define CVMVAS  1  /* arguments to page forward/back in pages */
-#define	CLRMSG	0  /* space clears the message line with no insert */
-#define	TYPEAH	1  /* type ahead causes update to be skipped */
-#define	VISMAC	0  /* update display during keyboard macros */
+#define CLRMSG	0  /* space clears the message line with no insert */
+#define TYPEAH	1  /* type ahead causes update to be skipped */
+#define VISMAC	0  /* update display during keyboard macros */
 #define ADDCR	0  /* ajout d'un CR en fin de chaque ligne (ST520) */
-#define	NBRACE	1  /* new style brace matching command */
-#define	REVSTA	1  /* Status line appears in reverse video */
+#define NBRACE	1  /* new style brace matching command */
+#define REVSTA	1  /* Status line appears in reverse video */
 
 #ifndef	AUTOCONF
 
-#define	COLOR	1  /* color commands and windows */
-#define	FILOCK	0  /* file locking under unix BSD 4.2 */
+#define COLOR	1  /* color commands and windows */
+#define FILOCK	0  /* file locking under unix BSD 4.2 */
 
 #else
 
-#define	COLOR	0
+#define COLOR	0
 #ifdef  SVR4
 #define FILOCK  1
 #else
-#define	FILOCK	BSD
+#define FILOCK	BSD
 #endif
 
 #endif /* AUTOCONF. */
 
-#define	CLEAN	0  /* de-alloc memory on exit */
+#define CLEAN	0  /* de-alloc memory on exit */
 
 #ifndef	AUTOCONF
-#define	XONXOFF	0  /* don't disable XON-XOFF flow control P.K. */
+#define XONXOFF	0  /* don't disable XON-XOFF flow control P.K. */
 #else
-#define	XONXOFF	UNIX
+#define XONXOFF	UNIX
 #endif /* AUTOCONF */
 
-#define	PKCODE	1      /* include my extensions P.K., define always */
+#define PKCODE	1      /* include my extensions P.K., define always */
 #define SCROLLCODE 1   /* scrolling code P.K. */
 
 
 /* Define some ability flags. */
 
 #if V7 | USG | BSD
-#define	ENVFUNC	1
+#define ENVFUNC	1
 #else
-#define	ENVFUNC	0
+#define ENVFUNC	0
 #endif
 
 /* Emacs global flag bit definitions (for gflags). */
 
-#define	GFREAD	1
+#define GFREAD	1
 
 /* Internal constants. */
 
 #define NFILEN  256		/* # of bytes, file name */
 #define NBUFN   16		/* # of bytes, buffer name */
 #define NLINE   256		/* # of bytes, input line */
-#define	NSTRING	128		/* # of bytes, string buffers */
+#define NSTRING	128		/* # of bytes, string buffers */
 #define NKBDM   256		/* # of strokes, keyboard macro */
 #define NPAT    128		/* # of bytes, pattern */
 #define HUGE    1000		/* Huge number */
-#define	NLOCKS	100		/* max # of file locks active */
-#define	NCOLORS	8		/* number of supported colors */
-#define	KBLOCK	250		/* sizeof kill buffer chunks */
+#define NLOCKS	100		/* max # of file locks active */
+#define NCOLORS	8		/* number of supported colors */
+#define KBLOCK	250		/* sizeof kill buffer chunks */
 
 #define CONTROL	0x2000		/* Control flag, or'ed in */
 #define META	0x4000		/* Meta flag, or'ed in */
@@ -148,34 +148,34 @@
 #define FALSE   0		/* False, no, bad, etc. */
 #define TRUE    1		/* True, yes, good, etc. */
 #define ABORT   2		/* Death, ^G, abort, etc. */
-#define	FAILED	3		/* not-quite fatal false return */
+#define FAILED	3		/* not-quite fatal false return */
 
-#define	STOP	0		/* keyboard macro not in use */
-#define	PLAY	1		/* playing */
-#define	RECORD	2		/* recording */
+#define STOP	0		/* keyboard macro not in use */
+#define PLAY	1		/* playing */
+#define RECORD	2		/* recording */
 
 /*
  * PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
  * the scan routines.
  */
 
-#define	PTBEG	0		/* Leave the point at the beginning on search */
-#define	PTEND	1		/* Leave the point at the end on search */
-#define	FORWARD	0		/* forward direction */
+#define PTBEG	0		/* Leave the point at the beginning on search */
+#define PTEND	1		/* Leave the point at the end on search */
+#define FORWARD	0		/* forward direction */
 #define REVERSE	1		/* backwards direction */
 
 #define FIOSUC  0		/* File I/O, success. */
 #define FIOFNF  1		/* File I/O, file not found. */
 #define FIOEOF  2		/* File I/O, end of file. */
 #define FIOERR  3		/* File I/O, error. */
-#define	FIOMEM	4		/* File I/O, out of memory */
-#define	FIOFUN	5		/* File I/O, eod of file/bad line */
+#define FIOMEM	4		/* File I/O, out of memory */
+#define FIOFUN	5		/* File I/O, eod of file/bad line */
 
 #define CFCPCN  0x0001		/* Last command was C-P, C-N */
 #define CFKILL  0x0002		/* Last command was a kill */
 
-#define	BELL	0x07		/* BELL character */
-#define	TAB	0x09		/* TAB character */
+#define BELL	0x07		/* BELL character */
+#define TAB	0x09		/* TAB character */
 #define ESC     0x1B		/* ESC character. */
 
 /*
@@ -185,7 +185,7 @@
  * case letters is the opposite of ascii in ebcdic.
  */
 
-#define	DIFCASE		0x20
+#define DIFCASE		0x20
 
 #ifdef islower
 #undef islower
@@ -203,12 +203,12 @@
 /* Dynamic RAM tracking and reporting redefinitions */
 
 #if RAMSIZE
-#define	malloc	allocate
-#define	free	release
+#define malloc	allocate
+#define free	release
 #endif
 
 #if CLEAN
-#define	exit(a)	cexit(a)
+#define exit(a)	cexit(a)
 #endif
 
 /*
@@ -238,12 +238,12 @@ struct window {
 #endif
 };
 
-#define	WFFORCE 0x01		/* Window needs forced reframe */
-#define	WFMOVE  0x02		/* Movement from line to line */
-#define	WFEDIT  0x04		/* Editing within a line */
-#define	WFHARD  0x08		/* Better to a full display */
-#define	WFMODE  0x10		/* Update mode line. */
-#define	WFCOLR	0x20		/* Needs a color change */
+#define WFFORCE 0x01		/* Window needs forced reframe */
+#define WFMOVE  0x02		/* Movement from line to line */
+#define WFEDIT  0x04		/* Editing within a line */
+#define WFHARD  0x08		/* Better to a full display */
+#define WFMODE  0x10		/* Update mode line. */
+#define WFCOLR	0x20		/* Needs a color change */
 
 #if SCROLLCODE
 #define WFKILLS 0x40		/* something was deleted */
@@ -279,13 +279,13 @@ struct buffer {
 
 #define BFINVS  0x01		/* Internal invisable buffer */
 #define BFCHG   0x02		/* Changed since last write */
-#define	BFTRUNC	0x04		/* buffer was truncated when read */
+#define BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define	MDVIEW	0x0001		/* read-only buffer */
-#define	MDEXACT	0x0002		/* Exact matching for searches */
-#define	MDOVER	0x0004		/* overwrite mode */
-#define	MDASAVE	0x0008		/* auto-save mode */
+#define MDVIEW	0x0001		/* read-only buffer */
+#define MDEXACT	0x0002		/* Exact matching for searches */
+#define MDOVER	0x0004		/* overwrite mode */
+#define MDASAVE	0x0008		/* auto-save mode */
 
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */
@@ -323,22 +323,22 @@ struct terminal {
 #endif
 };
 
-#define	TTopen		(*term.t_open)
-#define	TTclose		(*term.t_close)
-#define	TTkopen		(*term.t_kopen)
-#define	TTkclose	(*term.t_kclose)
-#define	TTgetc		(*term.t_getchar)
-#define	TTputc		(*term.t_putchar)
-#define	TTflush		(*term.t_flush)
-#define	TTmove		(*term.t_move)
-#define	TTeeol		(*term.t_eeol)
-#define	TTeeop		(*term.t_eeop)
-#define	TTbeep		(*term.t_beep)
-#define	TTrev		(*term.t_rev)
-#define	TTrez		(*term.t_rez)
+#define TTopen		(*term.t_open)
+#define TTclose		(*term.t_close)
+#define TTkopen		(*term.t_kopen)
+#define TTkclose	(*term.t_kclose)
+#define TTgetc		(*term.t_getchar)
+#define TTputc		(*term.t_putchar)
+#define TTflush		(*term.t_flush)
+#define TTmove		(*term.t_move)
+#define TTeeol		(*term.t_eeol)
+#define TTeeop		(*term.t_eeop)
+#define TTbeep		(*term.t_beep)
+#define TTrev		(*term.t_rev)
+#define TTrez		(*term.t_rez)
 #if COLOR
-#define	TTforg		(*term.t_setfor)
-#define	TTbacg		(*term.t_setback)
+#define TTforg		(*term.t_setfor)
+#define TTbacg		(*term.t_setback)
 #endif
 
 /* Structure for the table of initial key bindings. */
@@ -367,8 +367,8 @@ struct kill {
 
 /* Incremental search defines. */
 
-#define	CMDBUFLEN	256	/* Length of our command buffer */
+#define CMDBUFLEN	256	/* Length of our command buffer */
 
 #define IS_REVERSE	0x12	/* Search backward */
-#define	IS_FORWARD	0x13	/* Search forward */
+#define IS_FORWARD	0x13	/* Search forward */
 #define IS_STARTOVER	0x1F	/* Delete one char and re-search */
