@@ -62,7 +62,7 @@ int risearch(int f, int n)
 
 int isearch(int f, int n)
 {
-	struct line *curline = curwp->w_dotp;
+	struct line *curline = curwp->w_dotp;	/* Save curpos to restore */
 	int curoff = curwp->w_doto;
 	int init_direction = n;
 	char pat_save[NPAT];
@@ -75,30 +75,6 @@ int isearch(int f, int n)
 	/* `pat` is global, so 0-initialized on startup */
 	strncpy(pat_save, pat, NPAT - 1);
 
-	/* Display the prompt before any command */
-	promptpattern("ISearch: ", pat);
-
-	/* Fill the search string when necessary (^S or ^R again on start) */
-
-#define IS_INNERCTL_1 0x03	/* ^C is not used by Micro Emacs, safe */
-
-	c = ectoc(expc = get_char());
-	cmd_offset = 0;
-	if ((c == IS_FORWARD) || (c == IS_REVERSE)) {
-		for (cpos = 0; pat[cpos] != '\0'; cpos++)
-			cmd_buff[cmd_offset++] = pat[cpos];
-
-		/*
-		 * Store a command that can make was_searching 1, just like
-		 * a ^S or ^R is pressed.
-		 */
-		cmd_buff[cmd_offset++] = IS_INNERCTL_1;
-	} else {
-		cmd_buff[cmd_offset++] = c;
-	}
-	cmd_buff[cmd_offset] = '\0';
-
-	/* IS_STARTOVER will trigger the re-searching */
 start_over:
 	/* display prompt and clear rest contents in message line */
 	col = promptpattern("ISearch: ", pat_save);
@@ -107,9 +83,20 @@ start_over:
 	status = TRUE;
 	cpos = 0;
 
-char_loop:
 	c = ectoc(expc = get_char());
 
+	/* When ^S or ^R again, load the pattern and do a search */
+
+	if (pat[0] != '\0' && (c == IS_FORWARD || c == IS_REVERSE)) {
+		for (cpos = 0; pat[cpos] != '\0'; cpos++)
+			col = echo_char(pat[cpos], col);
+		n = (c == IS_REVERSE) ? -1 : 1;
+		status = scanmore(pat, n);
+		was_searching = 1;
+		c = ectoc(expc = get_char());
+	}
+
+char_loop:
 	/* ^M will finish the searching */
 	if (expc == enterc)
 		return TRUE;
@@ -125,16 +112,15 @@ char_loop:
 			was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
+		c = ectoc(expc = get_char());
 		goto char_loop;
 	}
 
-	if (c == IS_INNERCTL_1) {
-		if (pat[0] != '\0')
-			was_searching = 1;
-		goto char_loop;
-	}
-
-	if (c == IS_STARTOVER) {
+	if (c == '\b' || c == 0x7F) {
+		if (was_searching) {
+			reeat_char = c;
+			return TRUE;
+		}
 		if (cmd_offset <= 1) {
 			/* We don't want to lose the saved pattern */
 			strcpy(pat, pat_save);
@@ -149,7 +135,7 @@ char_loop:
 		goto start_over;
 	}
 
-	if ((c < ' ' && c != '\t') || c == 0x7F) {
+	if (c < ' ' && c != '\t') {
 		reeat_char = c;
 		return TRUE;
 	}
@@ -185,6 +171,7 @@ char_loop:
 		status = scanmore(pat, n);
 	}
 
+	c = ectoc(expc = get_char());
 	goto char_loop;
 }
 

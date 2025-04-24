@@ -371,4 +371,3 @@ struct kill {
 
 #define IS_REVERSE	0x12	/* Search backward */
 #define IS_FORWARD	0x13	/* Search forward */
-#define IS_STARTOVER	0x1F	/* Delete one char and re-search */
