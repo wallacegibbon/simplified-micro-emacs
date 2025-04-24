@@ -199,9 +199,7 @@ int boundry(struct line *curline, int curoff, int dir);
 int risearch(int f, int n);
 int fisearch(int f, int n);
 int isearch(int f, int n);
-int checknext(char chr, char *patrn, int dir);
 int scanmore(char *patrn, int dir);
-int match_pat(char *patrn);
 int promptpattern(const char *prompt, const char *pat);
 int get_char(void);
 

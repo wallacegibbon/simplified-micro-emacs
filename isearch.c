@@ -1,27 +1,3 @@
-/* isearch.c
- *
- * The functions in this file implement commands that perform incremental
- * searches in the forward and backward directions.  This "ISearch" command
- * is intended to emulate the same command from the original EMACS
- * implementation (ITS).  Contains references to routines internal to
- * SEARCH.C.
- *
- * REVISION HISTORY:
- *
- *	D. R. Banks 9-May-86
- *	- added ITS EMACSlike ISearch
- *
- *	John M. Gamble 5-Oct-86
- *	- Made iterative search use search.c's scanner() routine.
- *	  This allowed the elimination of bakscan().
- *	- Put isearch constants into estruct.h
- *	- Eliminated the passing of 'status' to scanmore() and
- *	  checknext(), since there were no circumstances where
- *	  it ever equalled FALSE.
- *
- *	Modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -97,11 +73,11 @@ start_over:
 	}
 
 char_loop:
-	/* ^M will finish the searching */
+	/* ^M finishs the searching and leave the pat as what it is */
 	if (expc == enterc)
 		return TRUE;
 
-	/* ^G will stop the searching and restore the search pattern */
+	/* ^G stops the searching and restore the search pattern */
 	if (expc == abortc) {
 		strcpy(pat, pat_save);
 		return FALSE;
@@ -155,100 +131,26 @@ char_loop:
 	col = echo_char(c, col);
 
 	/* If we lost on last char, no more check is needed */
-
 	if (!status) {
 		TTputc(BELL);
 		TTflush();
-
-	/* If we matched on last key, we can try easier check first */
-
-	} else if (!(status = checknext(c, pat, n))) {
-
-		/* Fix the "." position before a reverse scan */
-		if (n == -1)
-			forwchar(FALSE, cpos);
-
-		status = scanmore(pat, n);
+		c = ectoc(expc = get_char());
+		goto char_loop;
 	}
+
+	/* Still matching so far, keep going */
+
+	/*
+	 * The scan during a changing pattern is tricky.  A simple solution
+	 * is to restore the "." position before a scan.
+	 */
+	curwp->w_dotp = curline;
+	curwp->w_doto = curoff;
+
+	status = scanmore(pat, n);
 
 	c = ectoc(expc = get_char());
 	goto char_loop;
-}
-
-/*
- * Trivial routine to insure that the next character in the search string is
- * still true to whatever we're pointing to in the buffer.  This routine will
- * not attempt to move the "point" if the match fails, although it will
- * implicitly move the "point" if we're forward searching, and find a match,
- * since that's the way forward isearch works.
- *
- * If the compare fails, we return FALSE and assume the caller will call
- * scanmore or something.
- *
- * char chr;		Next char to look for
- * char *patrn;		The entire search string (incl chr)
- * int dir;		Search direction
- */
-int checknext(char chr, char *patrn, int dir)
-{
-	struct line *curline = curwp->w_dotp;
-	int curoff = curwp->w_doto;
-	int buffchar;
-	int status;
-
-	/* Reverse search need different check */
-	if (dir < 0)
-		return match_pat(patrn);
-
-	if (curoff == llength(curline)) { /* If at end of line */
-		curline = lforw(curline);
-		if (curline == curbp->b_linep)
-			return FALSE;
-
-		curoff = 0;
-		buffchar = '\n';
-	} else {
-		buffchar = lgetc(curline, curoff++);
-	}
-
-	/* Is it what we're looking for? */
-	if ((status = eq(buffchar, chr))) {
-		curwp->w_dotp = curline;
-		curwp->w_doto = curoff;
-		curwp->w_flag |= WFMOVE;
-	}
-	return status;
-}
-
-/*
- * The following is a worker subroutine used by the reverse search.  It
- * compares the pattern string with the characters at "." for equality. If
- * any characters mismatch, it will return FALSE.
- *
- * This isn't used for forward searches, because forward searches leave "."
- * at the end of the search string (instead of in front),
- * so all that needs to be done is match the last char input.
- */
-int match_pat(char *patrn)
-{
-	struct line *curline = curwp->w_dotp;
-	int curoff = curwp->w_doto;
-	int buffchar, i, len;
-
-	for (i = 0, len = (int)strlen(patrn); i < len; i++) {
-		if (curoff == llength(curline)) {
-			curline = lforw(curline);
-			curoff = 0;
-			if (curline == curbp->b_linep)
-				return FALSE;
-			buffchar = '\n';
-		} else {
-			buffchar = lgetc(curline, curoff++);
-		}
-		if (!eq(buffchar, patrn[i]))
-			return FALSE;
-	}
-	return TRUE;
 }
 
 /*

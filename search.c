@@ -1,62 +1,3 @@
-/* search.c
- *
- * The functions in this file implement commands that search in the forward
- * and backward directions.  There are no special characters in the search
- * strings.  Probably should have a regular expression search, or something
- * like that.
- *
- * Aug. 1986 John M. Gamble:
- *	Made forward and reverse search use the same scan routine.
- *
- *	Added a limited number of regular expressions - 'any',
- *	'character class', 'closure', 'beginning of line', and
- *	'end of line'.
- *
- *	Replacement metacharacters will have to wait for a re-write of
- *	the replaces function, and a new variation of ldelete().
- *
- *	For those curious as to my references, i made use of
- *	Kernighan & Plauger's "Software Tools."
- *	I deliberately did not look at any published grep or editor
- *	source (aside from this one) for inspiration.  I did make use of
- *	Allen Hollub's bitmap routines as published in Doctor Dobb's Journal,
- *	June, 1985 and modified them for the limited needs of character class
- *	matching.  Any inefficiences, bugs, stupid coding examples, etc.,
- *	are therefore my own responsibility.
- *
- * April 1987: John M. Gamble
- *	Deleted the "if (n == 0) n = 1;" statements in front of the
- *	search/hunt routines.  Since we now use a do loop, these
- *	checks are unnecessary.  Consolidated common code into the
- *	function delins().  Renamed global mclen matchlen,
- *	and added the globals matchline, matchoff, patmatch, and
- *	mlenold.
- *	This gave us the ability to unreplace regular expression searches,
- *	and to put the matched string into an evironment variable.
- *	SOON TO COME: Meta-replacement characters!
- *
- *	25-apr-87	DML
- *	- cleaned up an unneccessary if/else in forwsearch() and
- *	  backsearch()
- *	- savematch() failed to malloc room for the terminating byte
- *	  of the match string (stomp...stomp...). It does now. Also
- *	  it now returns gracefully if malloc fails
- *
- *	July 1987: John M. Gamble
- *	Set the variables matchlen and matchoff in the 'unreplace'
- *	section of replaces().  The function savematch() would
- *	get confused if you replaced, unreplaced, then replaced
- *	again (serves you right for being so wishy-washy...)
- *
- *	August 1987: John M. Gamble
- *	Put in new function rmcstr() to create the replacement
- *	meta-character array.  Modified delins() so that it knows
- *	whether or not to make use of the array.  And, put in the
- *	appropriate new structures and variables.
- *
- *	Modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -523,7 +464,6 @@ static int nextch(struct line **pcurline, int *pcuroff, int dir)
 			c = lgetc(curline, curoff++);
 		}
 	} else {
-
 		if (curoff == 0) {
 			curline = lback(curline);
 			curoff = llength(curline);
