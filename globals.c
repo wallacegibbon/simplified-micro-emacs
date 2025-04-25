@@ -27,14 +27,6 @@ int ttcol = HUGE;		/* Column location of HW cursor */
 int lbound = 0;			/* leftmost column of current line being displayed */
 int taboff = 0;			/* tab offset for display */
 
-int metac = (CONTROL | '[');	/* META character */
-int ctlxc = (CONTROL | 'X');	/* CONTROL-X prefix char */
-int abortc = (CONTROL | 'G');	/* ABORT command char */
-int enterc = (CONTROL | 'M');	/* ENTER/CR char */
-int reptc = (CONTROL | 'U');	/* Universal repeat char */
-
-int tabmask = 0x07;		/* tabulator mask */
-
 char *cname[] = {		/* names of colors */
 	"BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE"
 };

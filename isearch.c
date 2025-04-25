@@ -83,13 +83,18 @@ start_over:
 
 char_loop:
 	/* ^M finishs the searching and leave the pat as what it is */
-	if (expc == enterc)
+	if (expc == ENTERC)
 		return TRUE;
 
 	/* ^G stops the searching and restore the search pattern */
-	if (expc == abortc) {
+	if (expc == ABORTC) {
 		strcpy(pat, pat_save);
 		return FALSE;
+	}
+
+	if (expc == QUOTEC) {
+		c = ectoc(expc = get_char());
+		goto handle_char;
 	}
 
 	if (c == IS_REVERSE || c == IS_FORWARD) {
@@ -120,12 +125,14 @@ char_loop:
 		goto start_over;
 	}
 
-	if (c < ' ' && c != '\t') {
+	if (c < ' ') {
 		reeat_char = c;
 		return TRUE;
 	}
 
-	/* For other characters, check was_searching flag */
+	/* Now we are likely to insert c to pattern */
+
+handle_char:
 	if (was_searching) {
 		reeat_char = c;
 		return TRUE;
@@ -242,7 +249,7 @@ int get_char(void)
 	update(FALSE);
 	if (cmd_offset >= CMDBUFLEN - 1) {
 		mlwrite("? command too long");
-		return abortc;
+		return ABORTC;
 	}
 	c = get1key();
 	cmd_buff[cmd_offset++] = c;

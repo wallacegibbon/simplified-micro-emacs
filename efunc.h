@@ -121,16 +121,14 @@ int typahead(void);
 /* input.c */
 int mlyesno(char *prompt);
 int mlreply(char *prompt, char *buf, int nbuf);
-int mlreplyt(char *prompt, char *buf, int nbuf, int eolchar);
 int ectoc(int c);
 int ctoec(int c);
-fn_t getname(void);
 int tgetc(void);
 int get1key(void);
 int getcmd(void);
 int getstring(char *prompt, char *buf, int nbuf, int eolchar);
 int namedcmd(int f, int n);
-void outstring(char *s);
+void TTputs(char *s);
 
 /* buffer.c */
 int usebuffer(int f, int n);

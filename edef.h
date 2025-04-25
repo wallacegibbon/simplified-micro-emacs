@@ -42,14 +42,6 @@ extern int ttcol;		/* Column location of HW cursor */
 extern int lbound;		/* leftmost column of current line displayed */
 extern int taboff;		/* tab offset for display */
 
-extern int metac;		/* current meta character */
-extern int enterc;		/* current enter character */
-extern int ctlxc;		/* current control X prefix char */
-extern int reptc;		/* current universal repeat char */
-extern int abortc;		/* current abort command char */
-
-extern int tabmask;
-
 extern char *cname[];		/* names of colors */
 
 extern struct kill *kbufp;	/* current kill buffer chunk pointer */

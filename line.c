@@ -250,7 +250,7 @@ int lowrite(int c)
 {
 	if (curwp->w_doto < curwp->w_dotp->l_used &&
 			(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-			(curwp->w_doto & tabmask) == tabmask))
+			(curwp->w_doto & TABMASK) == TABMASK))
 		ldelchar(1, FALSE);
 	return linsert(1, c);
 }

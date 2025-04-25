@@ -1,11 +1,3 @@
-/* random.c
- *
- *      This file contains the command processing functions for a number of
- *      random commands. There is no functional grouping here, for sure.
- *
- *	Modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -123,7 +115,7 @@ int getccol(int bflg)
 		if (c != ' ' && c != '\t' && bflg)
 			break;
 		if (c == '\t')
-			col |= tabmask;
+			col |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++col;
 		else if (c >= 0xc0 && c <= 0xa0)
@@ -157,7 +149,7 @@ int setccol(int pos)
 		/* advance one character */
 		c = lgetc(curwp->w_dotp, i);
 		if (c == '\t')
-			col |= tabmask;
+			col |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++col;
 		++col;
@@ -324,7 +316,7 @@ int newline_and_indent(int f, int n)
 			if (c != ' ' && c != '\t')
 				break;
 			if (c == '\t')
-				nicol |= tabmask;
+				nicol |= TABMASK;
 			++nicol;
 		}
 		if (lnewline() == FALSE)

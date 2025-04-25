@@ -428,7 +428,8 @@ int filename(int f, int n)
 	int s;
 	char fname[NFILEN];
 
-	if ((s = mlreply("Name: ", fname, NFILEN)) == ABORT)
+	s = mlreply("Name: ", fname, NFILEN);
+	if (s == ABORT)
 		return s;
 	if (s == FALSE)
 		strcpy(curbp->b_fname, "");

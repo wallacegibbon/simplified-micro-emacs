@@ -188,7 +188,7 @@ static void vtputc(int c)
 	if (c == '\t') {
 		do {
 			vtputc(' ');
-		} while (((vtcol + taboff) & tabmask) != 0);
+		} while (((vtcol + taboff) & TABMASK) != 0);
 		return;
 	}
 
@@ -547,7 +547,7 @@ void updpos(void)
 		bytes = utf8_to_unicode(lp->l_text, i, curwp->w_doto, &c);
 		i += bytes;
 		if (c == '\t')
-			curcol |= tabmask;
+			curcol |= TABMASK;
 
 		++curcol;
 	}

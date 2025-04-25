@@ -202,14 +202,14 @@ loop:
 
 	/* do ^U repeat argument processing */
 
-	if (c == reptc) {
+	if (c == REPTC) {
 		f = TRUE;
 		n = 4;
 		mflag = 0;
 		mlwrite("Arg: 4");
-		while (((c = getcmd()) >= '0' && c <= '9') || c == reptc ||
+		while (((c = getcmd()) >= '0' && c <= '9') || c == REPTC ||
 				c == '-') {
-			if (c == reptc) {
+			if (c == REPTC) {
 				if ((n > 0) == ((n * 4) > 0))
 					n = n * 4;
 				else
@@ -327,7 +327,7 @@ int execute(int c, int f, int n)
 	/* ASCII is enough for coding, let's keep things simple */
 
 	/* If C-I is not bound, insert it */
-	if (c == (CONTROL | 'I'))
+	if (c == (CTL | 'I'))
 		c = '\t';
 
 	if (isvisible(c)) {

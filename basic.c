@@ -36,7 +36,7 @@ static int getgoal(struct line *dlp)
 
 		/* Take tabs, ^X and \xx hex characters into account */
 		if (c == '\t')
-			newcol |= tabmask;
+			newcol |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++newcol;
 		else if (c >= 0x80 && c <= 0xa0)

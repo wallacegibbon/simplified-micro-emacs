@@ -134,15 +134,15 @@
 #define NCOLORS	8		/* number of supported colors */
 #define KBLOCK	250		/* sizeof kill buffer chunks */
 
-#define CONTROL	0x2000		/* Control flag, or'ed in */
+#define CTL	0x2000		/* Control flag, or'ed in */
 #define META	0x4000		/* Meta flag, or'ed in */
 #define CTLX	0x8000		/* ^X flag, or'ed in */
 
-#ifdef	FALSE
-#undef	FALSE
+#ifdef FALSE
+#undef FALSE
 #endif
-#ifdef	TRUE
-#undef	TRUE
+#ifdef TRUE
+#undef TRUE
 #endif
 
 #define FALSE   0		/* False, no, bad, etc. */
@@ -372,5 +372,14 @@ struct kill {
 #define IS_REVERSE	0x12	/* Search backward */
 #define IS_FORWARD	0x13	/* Search forward */
 
+/* Common control keys */
+#define CTLXC		(CTL | 'X')	/* CTL-X prefix char */
+#define METAC		(CTL | '[')	/* META character */
+#define ABORTC		(CTL | 'G')	/* ABORT command char */
+#define ENTERC		(CTL | 'M')	/* ENTER char */
+#define QUOTEC		(CTL | 'Q')	/* QUOTE char */
+#define REPTC		(CTL | 'U')	/* Universal repeat char */
+
 /* Miscellaneous */
+#define TABMASK		0x07
 #define INDENT_NO_SPACE	1

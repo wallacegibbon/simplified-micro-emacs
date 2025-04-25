@@ -1,12 +1,3 @@
-/* word.c
- *
- *      The routines in this file implement commands that work word or a
- *      paragraph at a time.  There are all sorts of word mode commands.  If I
- *      do any sentence mode commands, they are likely to be put in this file.
- *
- *	Modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
