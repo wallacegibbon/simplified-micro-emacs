@@ -120,7 +120,7 @@ int ffgetline(void)
 		c = 0;
 		if (i > 0) {
 			c = fline[i - 1];
-			i--;
+			--i;
 		}
 	}
 	while (c != EOF && c != '\n') {

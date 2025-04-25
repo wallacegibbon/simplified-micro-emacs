@@ -14,10 +14,10 @@ static int nextch(struct line **pcurline, int *pcuroff, int dir);
  */
 int filter_buffer(int f, int n)
 {
-	int s;			/* return status from CLI */
-	struct buffer *bp;	/* pointer to buffer to zot */
-	char line[NLINE];	/* command line send to shell */
-	char tmpnam[NFILEN];	/* place to store real file name */
+	struct buffer *bp;		/* pointer to buffer to zot */
+	char line[NLINE];		/* command line send to shell */
+	char tmpnam[NFILEN];		/* place to store real file name */
+	int s;				/* return status from CLI */
 
 	static char bname1[] = "fltinp";
 	static char filnam1[] = "fltinp";
@@ -41,20 +41,11 @@ int filter_buffer(int f, int n)
 		strcpy(bp->b_fname, tmpnam);
 		return FALSE;
 	}
-#if MSDOS
-	strcat(line, " <fltinp >fltout");
-	movecursor(term.t_nrow - 1, 0);
-	TTkclose();
-	shellprog(line);
-	TTkopen();
-	sgarbf = TRUE;
-	s = TRUE;
-#endif
 
 #if V7 | USG | BSD
-	TTputc('\n');		/* Already have '\r' */
+	TTputc('\n');			/* Already have '\r' */
 	TTflush();
-	TTclose();		/* stty to old modes */
+	TTclose();			/* stty to old modes */
 	TTkclose();
 	strcat(line, " <fltinp >fltout");
 	system(line);
@@ -76,7 +67,7 @@ int filter_buffer(int f, int n)
 
 	/* reset file name */
 	strcpy(bp->b_fname, tmpnam);	/* restore name */
-	bp->b_flag |= BFCHG;	/* flag it as changed */
+	bp->b_flag |= BFCHG;		/* flag it as changed */
 
 	/* and get rid of the temporary file */
 	unlink(filnam1);
@@ -85,13 +76,9 @@ int filter_buffer(int f, int n)
 }
 
 /*
- * scanner -- Search for a pattern in either direction.  If found,
- * reset the "." to be at the start or just after the match string,
- * and (perhaps) repaint the display.
- *
- * unsigned char *patrn;	string to scan for
- * int direct;			which way to go.
- * int beg_or_end;		put point at beginning or end of pattern.
+ * scanner -- Search for a pattern in either direction.  If found, reset the
+ * "." to be at the start or just after the match string, and (perhaps)
+ * repaint the display.
  */
 int scanner(const char *patrn, int direct, int beg_or_end)
 {
@@ -99,7 +86,7 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 	int curoff = curwp->w_doto;
 	struct line *scanline;
 	int scanoff;
-	const char *patptr;	/* pointer into pattern */
+	const char *patptr;		/* pointer into pattern */
 	int c;
 
 	/*
@@ -234,7 +221,7 @@ void savematch(void)
 		curoff = matchoff;
 		curline = matchline;
 
-		for (j = 0; j < matchlen; j++)
+		for (j = 0; j < matchlen; ++j)
 			*ptr++ = nextch(&curline, &curoff, FORWARD);
 
 		*ptr = '\0';
@@ -379,7 +366,7 @@ qprompt:
 		if (status != TRUE)
 			return status;
 
-		numsub++;
+		++numsub;
 	}
 
 	if (last_char == 'n')
@@ -412,7 +399,7 @@ int expandp(const char *srcstr, char *deststr, int maxlength)
 		} else {
 
 			*deststr++ = c;
-			maxlength--;
+			--maxlength;
 		}
 
 		if (maxlength < 3) {

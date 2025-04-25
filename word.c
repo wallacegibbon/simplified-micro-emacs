@@ -12,55 +12,6 @@
 #include "efunc.h"
 #include "line.h"
 
-/* Word wrap on n-spaces. Back-over whatever precedes the point on the current
- * line and stop on the first word-break or the beginning of the line. If we
- * reach the beginning of the line, jump back to the end of the word and start
- * a new line.	Otherwise, break the line at the word-break, eat it, and jump
- * back to the end of the word.
- * Returns TRUE on success, FALSE on errors.
- */
-int wrapword(int f, int n)
-{
-	int cnt;	/* size of word wrapped to next line */
-	int c;		/* charector temporary */
-
-	/* backup from the <NL> 1 char */
-	if (!backchar(0, 1))
-		return FALSE;
-
-	/*
-	 * Back up until we aren't in a word, make sure there is a break
-	 * in the line.
-	 */
-	cnt = 0;
-	while (((c = lgetc(curwp->w_dotp, curwp->w_doto)) != ' ') &&
-			(c != '\t')) {
-		cnt++;
-		if (!backchar(0, 1))
-			return FALSE;
-		/* if we make it to the beginning, start a new line */
-		if (curwp->w_doto == 0) {
-			gotoeol(FALSE, 0);
-			return lnewline();
-		}
-	}
-
-	/* delete the forward white space */
-	if (!forwdel(0, 1))
-		return FALSE;
-
-	/* put in a end of line */
-	if (!lnewline())
-		return FALSE;
-
-	/* and past the first word */
-	while (cnt-- > 0) {
-		if (forwchar(FALSE, 1) == FALSE)
-			return FALSE;
-	}
-	return TRUE;
-}
-
 /*
  * Move the cursor backward by "n" words. All of the details of motion are
  * performed by the "backchar" and "forwchar" routines. Error if you try to

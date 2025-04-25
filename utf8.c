@@ -35,7 +35,7 @@ unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 	mask = 0x20;
 	bytes = 2;
 	while (c & mask) {
-		bytes++;
+		++bytes;
 		mask >>= 1;
 	}
 
@@ -48,7 +48,7 @@ unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 	value = c & (mask-1);
 
 	/* Ok, do the bytes */
-	for (i = 1; i < bytes; i++) {
+	for (i = 1; i < bytes; ++i) {
 		c = line[i];
 		if ((c & 0xc0) != 0x80)
 			return 1;
@@ -60,11 +60,11 @@ unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 
 static void reverse_string(char *begin, char *end)
 {
+	char a, b;
 	do {
-		char a = *begin, b = *end;
+		a = *begin; b = *end;
 		*end = a; *begin = b;
-		begin++; end--;
-	} while (begin < end);
+	} while (++begin < --end);
 }
 
 /*
@@ -88,7 +88,7 @@ unsigned int unicode_to_utf8(unsigned int c, char *utf8)
 		char *p = utf8;
 		do {
 			*p++ = 0x80 + (c & 0x3F);
-			bytes++;
+			++bytes;
 			prefix >>= 1;
 			c >>= 6;
 		} while (c > prefix);

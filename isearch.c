@@ -5,10 +5,9 @@
 
 static int echo_char(int c, int col);
 
-/* No `static` for easier debugging */
-int cmd_buff[CMDBUFLEN];	/* Save the command args here */
-int cmd_offset;			/* Current offset into command buff */
-int cmd_reexecute = -1;		/* > 0 if re-executing command */
+static int cmd_buff[CMDBUFLEN];		/* Save the command args here */
+static int cmd_offset;			/* Current offset into command buff */
+static int cmd_reexecute = -1;		/* > 0 if re-executing command */
 
 int fisearch(int f, int n)
 {
@@ -16,7 +15,10 @@ int fisearch(int f, int n)
 	int curoff = curwp->w_doto;
 
 	if (!(isearch(f, n))) {
-		/* When search failed, restore the original position */
+		/*
+		 * When search failed, restore the original position.
+		 * (This is necessary when we use ^G to cancel a search)
+		 */
 		curwp->w_dotp = curline;
 		curwp->w_doto = curoff;
 		curwp->w_flag |= WFMOVE;
@@ -44,7 +46,7 @@ int isearch(int f, int n)
 	char pat_save[NPAT];
 	int status, col, cpos, expc, c, was_searching;
 
-	cmd_reexecute = -1;	/* We're not re-executing (yet?) */
+	cmd_reexecute = -1;	/* We're not re-executing (yet) */
 	cmd_offset = 0;
 	cmd_buff[0] = '\0';
 
@@ -52,10 +54,16 @@ int isearch(int f, int n)
 	strncpy(pat_save, pat, NPAT - 1);
 
 start_over:
-	/* display prompt and clear rest contents in message line */
+	/* Display prompt and clear rest contents in message line */
 	col = promptpattern("ISearch: ", pat_save);
+
+	/* Restore n for a new loop */
+	n = init_direction;
+
+	/* Restore the pat for a new loop */
+	strcpy(pat, pat_save);
+
 	was_searching = 0;
-	cmd_reexecute = 0;
 	status = TRUE;
 	cpos = 0;
 
@@ -64,11 +72,12 @@ start_over:
 	/* When ^S or ^R again, load the pattern and do a search */
 
 	if (pat[0] != '\0' && (c == IS_FORWARD || c == IS_REVERSE)) {
-		for (cpos = 0; pat[cpos] != '\0'; cpos++)
+		for (cpos = 0; pat[cpos] != '\0'; ++cpos)
 			col = echo_char(pat[cpos], col);
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
-		was_searching = 1;
+		if (status)
+			was_searching = 1;
 		c = ectoc(expc = get_char());
 	}
 
@@ -84,7 +93,7 @@ char_loop:
 	}
 
 	if (c == IS_REVERSE || c == IS_FORWARD) {
-		if (pat[0] != '\0')
+		if (pat[0] != '\0' && status)
 			was_searching = 1;
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
@@ -102,12 +111,12 @@ char_loop:
 			strcpy(pat, pat_save);
 			return TRUE;
 		}
-		--cmd_offset;
+		--cmd_offset;			/* Ignore the '\b' or 0x7F */
 		cmd_buff[--cmd_offset] = '\0';	/* Delete last char */
+		cmd_reexecute = 0;
 		curwp->w_dotp = curline;
 		curwp->w_doto = curoff;
 		curwp->w_flag |= WFMOVE;
-		n = init_direction;
 		goto start_over;
 	}
 
@@ -148,6 +157,8 @@ char_loop:
 	curwp->w_doto = curoff;
 
 	status = scanmore(pat, n);
+	if (!status)
+		curwp->w_flag |= WFMOVE;
 
 	c = ectoc(expc = get_char());
 	goto char_loop;
@@ -201,9 +212,9 @@ static int echo_char(int c, int col)
 {
 	movecursor(term.t_nrow, col);
 	if (c == 0x7F) {
-		TTputc('^'); TTputc('?'); col++;
+		TTputc('^'); TTputc('?'); ++col;
 	} else if (c < ' ') {
-		TTputc('^'); TTputc(c + 0x40); col++;
+		TTputc('^'); TTputc(c + 0x40); ++col;
 	} else {
 		TTputc(c);
 	}

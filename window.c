@@ -52,17 +52,14 @@ int redraw(int f, int n)
 int nextwind(int f, int n)
 {
 	struct window *wp;
-	int nwindows;	/* total number of windows */
+	int nwindows;			/* total number of windows */
 
 	if (f) {
 
 		/* first count the # of windows */
-		wp = wheadp;
 		nwindows = 1;
-		while (wp->w_wndp != NULL) {
-			nwindows++;
-			wp = wp->w_wndp;
-		}
+		for (wp = wheadp; wp->w_wndp != NULL; wp = wp->w_wndp)
+			++nwindows;
 
 		/*
 		 * if the argument is negative, it is the nth window

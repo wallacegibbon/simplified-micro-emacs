@@ -94,7 +94,7 @@ int (*fncmatch(char *fname))(int, int)
 	struct name_bind *ffp;
 
 	/* scan through the table, returning any match */
-	for (ffp = names; ffp->n_func != NULL; ffp++) {
+	for (ffp = names; ffp->n_func != NULL; ++ffp) {
 		if (strcmp(fname, ffp->n_name) == 0)
 			return ffp->n_func;
 	}

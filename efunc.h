@@ -1,7 +1,6 @@
 #include "utf8.h"
 
 /* word.c */
-int wrapword(int f, int n);
 int backword(int f, int n);
 int forwword(int f, int n);
 int upperword(int f, int n);
@@ -58,7 +57,6 @@ int getccol(int bflg);
 int setccol(int pos);
 int twiddle(int f, int n);
 int quote(int f, int n);
-int trim(int f, int n);
 int openline(int f, int n);
 int insert_newline(int f, int n);
 int deblank(int f, int n);

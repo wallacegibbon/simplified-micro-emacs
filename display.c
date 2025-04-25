@@ -82,12 +82,13 @@ static void putline(int row, int col, char *buf);
  */
 void vtinit(void)
 {
-	int i;
 	struct video *vp;
+	int i;
 
 	TTopen();		/* open the screen */
 	TTkopen();		/* open the keyboard */
 	TTrev(FALSE);
+
 	vscreen = xmalloc(term.t_mrow * sizeof(struct video *));
 
 #if SCROLLCODE
@@ -300,7 +301,7 @@ int update(int force)
 	while (wp != NULL) {
 		if (wp->w_flag) {
 			/* if the window has changed, service it */
-			reframe(wp);	/* check the framing */
+			reframe(wp);
 #if SCROLLCODE
 			if (wp->w_flag & (WFKILLS | WFINS)) {
 				scrflags |= (wp->w_flag & (WFINS | WFKILLS));
@@ -370,10 +371,10 @@ static int reframe(struct window *wp)
 			i = -1;
 			lp = lp0;
 		}
-		for (; i <= wp->w_ntrows; i++)
+		for (; i <= wp->w_ntrows; ++i)
 #else
 		lp = wp->w_linep;
-		for (i = 0; i < wp->w_ntrows; i++)
+		for (i = 0; i < wp->w_ntrows; ++i)
 #endif
 		{
 			/* if the line is in the window, no reframe */
@@ -688,7 +689,7 @@ static int scrolls(int inserts)
 	cols = term.t_ncol;
 
 	first = -1;
-	for (i = 0; i < rows; i++) {	/* find first wrong line */
+	for (i = 0; i < rows; ++i) {	/* find first wrong line */
 		if (!texttest(i, i)) {
 			first = i;
 			break;
@@ -719,14 +720,15 @@ static int scrolls(int inserts)
 	longmatch = -1;
 	longcount = 0;
 	from = target;
-	for (i = from + 1; i < rows - longcount /* P.K. */ ; i++) {
+	for (i = from + 1; i < rows - longcount /* P.K. */ ; ++i) {
 		if (inserts ? texttest(i, from) : texttest(from, i)) {
 			match = i;
 			count = 1;
 			for (j = match + 1, k = from + 1;
-					j < rows && k < rows; j++, k++) {
+					j < rows && k < rows;
+					++j, ++k) {
 				if (inserts ? texttest(j, k) : texttest(k, j))
-					count++;
+					++count;
 				else
 					break;
 			}
@@ -742,9 +744,9 @@ static int scrolls(int inserts)
 	if (!inserts) {
 		/* full kill case? */
 		if (match > 0 && texttest(first, match - 1)) {
-			target--;
-			match--;
-			count++;
+			--target;
+			--match;
+			++count;
 		}
 	}
 
@@ -761,7 +763,7 @@ static int scrolls(int inserts)
 		if (2 * count < abs(from - to))
 			return FALSE;
 		scrscroll(from, to, count);
-		for (i = 0; i < count; i++) {
+		for (i = 0; i < count; ++i) {
 			vpp = pscreen[to + i];
 			vpv = vscreen[to + i];
 			memcpy(vpp->v_text, vpv->v_text, 4*cols);
@@ -778,7 +780,7 @@ static int scrolls(int inserts)
 			from = target + count;
 			to = match + count;
 		}
-		for (i = from; i < to; i++) {
+		for (i = from; i < to; ++i) {
 			unicode_t *txt;
 			txt = pscreen[i]->v_text;
 			for (j = 0; j < term.t_ncol; ++j)
@@ -816,7 +818,7 @@ static int texttest(int vrow, int prow)
 static int endofline(unicode_t *s, int n)
 {
 	int i;
-	for (i = n - 1; i >= 0; i--)
+	for (i = n - 1; i >= 0; --i)
 		if (s[i] != ' ')
 			return i + 1;
 	return 0;
@@ -1103,7 +1105,7 @@ static void modeline(struct window *wp)
 		firstm = FALSE;
 		strcat(tline, "Truncated");
 	}
-	for (i = 0; i < NUMMODES; i++) {
+	for (i = 0; i < NUMMODES; ++i) {
 		if (wp->w_bufp->b_mode & modevalue[i]) {
 			if (firstm != TRUE)
 				strcat(tline, " ");
@@ -1200,23 +1202,17 @@ static void modeline(struct window *wp)
 			}
 		}
 
-		cp = msg;
-		while ((c = *cp++) != 0) {
+		for (cp = msg; (c = *cp) != 0; ++cp, ++n)
 			vtputc(c);
-			++n;
-		}
 	}
 }
 
+/* update all the mode lines */
 void upmode(void)
-{				/* update all the mode lines */
+{
 	struct window *wp;
-
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
 		wp->w_flag |= WFMODE;
-		wp = wp->w_wndp;
-	}
 }
 
 /*
@@ -1250,7 +1246,7 @@ void mlerase(void)
 	if (eolexist == TRUE)
 		TTeeol();
 	else {
-		for (i = 0; i < term.t_ncol - 1; i++)
+		for (i = 0; i < term.t_ncol - 1; ++i)
 			TTputc(' ');
 		movecursor(term.t_nrow, 1);	/* force the move! */
 		movecursor(term.t_nrow, 0);

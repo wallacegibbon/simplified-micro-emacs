@@ -95,7 +95,6 @@ struct key_tab keytab[] = {
 	{CTLX | CONTROL | 'P', mvupwind},
 	{CTLX | CONTROL | 'R', fileread},
 	{CTLX | CONTROL | 'S', filesave},
-	{CTLX | CONTROL | 'T', trim},
 	{CTLX | CONTROL | 'U', upperregion},
 	{CTLX | CONTROL | 'V', viewfile},
 	{CTLX | CONTROL | 'W', filewrite},

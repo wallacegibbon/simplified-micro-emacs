@@ -84,11 +84,9 @@ struct name_bind names[] = {
 	{"shrink-window", shrinkwind},
 	{"split-current-window", splitwind},
 	{"transpose-characters", twiddle},
-	{"trim-line", trim},
 	{"unmark-buffer", unmark},
 	{"update-screen", upscreen},
 	{"view-file", viewfile},
-	{"wrap-word", wrapword},
 	{"write-file", filewrite},
 	{"yank", yank},
 

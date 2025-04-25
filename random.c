@@ -227,46 +227,6 @@ int quote(int f, int n)
 }
 
 /*
- * trim trailing whitespace from the point to eol
- */
-int trim(int f, int n)
-{
-	struct line *lp;	/* current line pointer */
-	int offset;		/* original line offset position */
-	int length;		/* current length */
-	int inc;		/* increment to next line [sgn(n)] */
-
-	if (curbp->b_mode & MDVIEW)
-		return rdonly();
-	if (f == FALSE)
-		n = 1;
-
-	/* loop thru trimming n lines */
-	inc = ((n > 0) ? 1 : -1);
-	while (n) {
-		lp = curwp->w_dotp;	/* find current line text */
-		offset = curwp->w_doto;	/* save original offset */
-		length = lp->l_used;	/* find current length */
-
-		/* trim the current line */
-		while (length > offset) {
-			if (lgetc(lp, length - 1) != ' ' &&
-					lgetc(lp, length - 1) != '\t')
-				break;
-			length--;
-		}
-		lp->l_used = length;
-
-		/* advance/or back to the next line */
-		forwline(TRUE, inc);
-		n -= inc;
-	}
-	lchange(WFEDIT);
-	thisflag &= ~CFCPCN;	/* flag that this resets the goal column */
-	return TRUE;
-}
-
-/*
  * Open up some blank space. The basic plan is to insert a bunch of newlines,
  * and then back up over them. Everything is done by the subcommand
  * procerssors. They even handle the looping. Normally this is bound to "C-O".
@@ -526,12 +486,12 @@ int adjustmode(int kind, int global)
 	while (*scan != 0) {
 		if (*scan >= 'a' && *scan <= 'z')
 			*scan = *scan - 32;
-		scan++;
+		++scan;
 	}
 
 	/* test it first against the colors we know */
 
-	for (i = 0; i < NCOLORS; i++) {
+	for (i = 0; i < NCOLORS; ++i) {
 		if (strcmp(cbuf, cname[i]) == 0) {
 			/* finding the match, we set the color */
 #if COLOR
@@ -560,7 +520,7 @@ int adjustmode(int kind, int global)
 
 	/* test it against the modes we know */
 
-	for (i = 0; i < NUMMODES; i++) {
+	for (i = 0; i < NUMMODES; ++i) {
 		if (strcmp(cbuf, modename[i]) == 0) {
 			int val = modevalue[i];
 			/* finding a match, we process it */

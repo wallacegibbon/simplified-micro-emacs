@@ -82,7 +82,7 @@ int backchar(int f, int n)
 		} else {
 			do {
 				unsigned char c;
-				curwp->w_doto--;
+				--curwp->w_doto;
 				c = lgetc(curwp->w_dotp, curwp->w_doto);
 				if (is_beginning_utf8(c))
 					break;
@@ -122,7 +122,7 @@ int forwchar(int f, int n)
 		} else {
 			do {
 				unsigned char c;
-				curwp->w_doto++;
+				++curwp->w_doto;
 				c = lgetc(curwp->w_dotp, curwp->w_doto);
 				if (is_beginning_utf8(c))
 					break;

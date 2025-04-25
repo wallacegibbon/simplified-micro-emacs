@@ -130,7 +130,7 @@ int linstr(char *instr)
 				mlwrite("%%Out of memory while inserting");
 				break;
 			}
-			instr++;
+			++instr;
 		}
 	return status;
 }
@@ -230,9 +230,9 @@ int linsert(int n, int c)
 
 	if (bytes == 1)
 		return linsert_byte(n, (unsigned char)utf8[0]);
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; ++i) {
 		int j;
-		for (j = 0; j < bytes; j++) {
+		for (j = 0; j < bytes; ++j) {
 			unsigned char c = utf8[j];
 			if (!linsert_byte(1, c))
 				return FALSE;
@@ -272,7 +272,7 @@ int lover(char *ostr)
 				mlwrite("%%Out of memory while overwriting");
 				break;
 			}
-			ostr++;
+			++ostr;
 		}
 	return status;
 }
