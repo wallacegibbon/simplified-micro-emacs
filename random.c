@@ -250,7 +250,7 @@ int openline(int f, int n)
 	return s;
 }
 
-int insert_newline(int f, int n)
+int newline(int f, int n)
 {
 	int s;
 
@@ -308,16 +308,15 @@ int deblank(int f, int n)
  * of tabs and spaces. Return TRUE if all ok. Return FALSE if one of the
  * subcomands failed. Normally bound to "C-J".
  */
-int indent(int f, int n)
+int newline_and_indent(int f, int n)
 {
-	int nicol;
-	int c;
-	int i;
+	int nicol, c, i;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
 	if (n < 0)
 		return FALSE;
+
 	while (n--) {
 		nicol = 0;
 		for (i = 0; i < llength(curwp->w_dotp); ++i) {
@@ -328,12 +327,22 @@ int indent(int f, int n)
 				nicol |= tabmask;
 			++nicol;
 		}
-		if (lnewline() == FALSE ||
-				((i = nicol / 8) != 0 &&
-						linsert(i, '\t') == FALSE) ||
-				((i = nicol % 8) != 0 &&
-						linsert(i, ' ') == FALSE))
+		if (lnewline() == FALSE)
 			return FALSE;
+#if SCROLLCODE
+		curwp->w_flag |= WFINS;
+#endif
+		if ((i = nicol / 8) != 0) {
+			if ((linsert(i, '\t') == FALSE))
+				return FALSE;
+		}
+		if ((i = nicol % 8) != 0) {
+#if (INDENT_NO_SPACE == 1)
+			return linsert(1, '\t');
+#else
+			return linsert(i, ' ');
+#endif
+		}
 	}
 	return TRUE;
 }

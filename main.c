@@ -147,7 +147,7 @@ loop:
 		update(FALSE);
 		do {
 			if (c == c1 && (execfunc = getbind(c1)) != NULL
-					&& execfunc != insert_newline)
+					&& execfunc != newline)
 				c1 = getcmd();
 			else
 				break;

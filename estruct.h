@@ -371,3 +371,6 @@ struct kill {
 
 #define IS_REVERSE	0x12	/* Search backward */
 #define IS_FORWARD	0x13	/* Search forward */
+
+/* Miscellaneous */
+#define INDENT_NO_SPACE	1
