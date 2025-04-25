@@ -94,7 +94,7 @@ char_loop:
 
 	if (expc == QUOTEC) {
 		c = ectoc(expc = get_char());
-		goto handle_char;
+		goto pat_append;
 	}
 
 	if (c == IS_REVERSE || c == IS_FORWARD) {
@@ -132,7 +132,7 @@ char_loop:
 
 	/* Now we are likely to insert c to pattern */
 
-handle_char:
+pat_append:
 	if (was_searching) {
 		reeat_char = c;
 		return TRUE;
