@@ -21,9 +21,6 @@ int spawncli(int f, int n)
 {
 #if V7 | USG | BSD
 	char *cp;
-#endif
-
-#if V7 | USG | BSD
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
 	TTclose();		/* stty to old settings */
@@ -64,8 +61,8 @@ int spawncli(int f, int n)
  */
 int spawn(int f, int n)
 {
-	int s;
 	char line[NLINE];
+	int s;
 
 #if V7 | USG | BSD
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
@@ -89,47 +86,18 @@ int spawn(int f, int n)
 }
 
 /*
- * Run an external program with arguments. When it returns, wait for a single
- * character to be typed, then mark the screen as garbage so a full repaint is
- * done. Bound to "C-X $".
- */
-
-int execprg(int f, int n)
-{
-	int s;
-	char line[NLINE];
-
-#if V7 | USG | BSD
-	if ((s = mlreply("!", line, NLINE)) != TRUE)
-		return s;
-	TTputc('\n');		/* Already have '\r' */
-	TTflush();
-	TTclose();		/* stty to old modes */
-	TTkclose();
-	system(line);
-	fflush(stdout);		/* to be sure P.K. */
-	TTopen();
-	mlputs("(End)");	/* Pause. */
-	TTflush();
-	while ((s = tgetc()) != '\r' && s != ' ');
-	sgarbf = TRUE;
-	return TRUE;
-#endif
-}
-
-/*
  * Pipe a one line command into a window
  * Bound to ^X @
  */
 int pipecmd(int f, int n)
 {
-	int s;		/* return status from CLI */
 	struct window *wp;	/* pointer to new window */
 	struct buffer *bp;	/* pointer to buffer to zot */
 	char line[NLINE];	/* command line send to shell */
-	static char bname[] = "command";
+	int s;			/* return status from CLI */
 
-	static char filnam[NSTRING] = "command";
+	static char bname[] = "_me_cmd_tmp";
+	static char filename[NSTRING] = "_me_cmd_tmp";
 
 	/* get the command to pipe in */
 	if ((s = mlreply("@", line, NLINE)) != TRUE)
@@ -155,7 +123,6 @@ int pipecmd(int f, int n)
 			wp = wp->w_wndp;
 		}
 		if (zotbuf(bp) != TRUE)
-
 			return FALSE;
 	}
 #if V7 | USG | BSD
@@ -163,7 +130,7 @@ int pipecmd(int f, int n)
 	TTclose();		/* stty to old modes */
 	TTkclose();
 	strcat(line, ">");
-	strcat(line, filnam);
+	strcat(line, filename);
 	system(line);
 	TTopen();
 	TTkopen();
@@ -180,7 +147,7 @@ int pipecmd(int f, int n)
 		return FALSE;
 
 	/* and read the stuff in */
-	if (getfile(filnam, FALSE) == FALSE)
+	if (getfile(filename, FALSE) == FALSE)
 		return FALSE;
 
 	/* make this window in VIEW mode, update all mode lines */
@@ -192,7 +159,76 @@ int pipecmd(int f, int n)
 	}
 
 	/* and get rid of the temporary file */
-	unlink(filnam);
+	unlink(filename);
 	return TRUE;
 }
 
+/*
+ * filter a buffer through an external program
+ * Bound to ^X #
+ */
+int filter_buffer(int f, int n)
+{
+	struct buffer *bp;		/* pointer to buffer to zot */
+	char line[NLINE];		/* command line send to shell */
+	char tmpnam[NFILEN];		/* place to store real file name */
+	int s;				/* return status from CLI */
+
+	static char bname[] = "_me_filter_tmp";
+	static char filename_in[] = "_me_filter_tmp_in";
+	static char filename_out[] = "_me_filter_tmp_out";
+
+	if (curbp->b_mode & MDVIEW)
+		return rdonly();
+
+	/* get the filter name and its args */
+	if ((s = mlreply("#", line, NLINE)) != TRUE)
+		return s;
+
+	/* setup the proper file names */
+	bp = curbp;
+	strcpy(tmpnam, bp->b_fname);	/* save the original name */
+	strcpy(bp->b_fname, bname);	/* set it to our new one */
+
+	/* write it out, checking for errors */
+	if (writeout(filename_in) != TRUE) {
+		mlwrite("(Cannot write filter file)");
+		strcpy(bp->b_fname, tmpnam);
+		return FALSE;
+	}
+
+#if V7 | USG | BSD
+	TTputc('\n');			/* Already have '\r' */
+	TTflush();
+	TTclose();			/* stty to old modes */
+	TTkclose();
+	strcat(line, "<");
+	strcat(line, filename_in);
+	strcat(line, ">");
+	strcat(line, filename_out);
+	system(line);
+	TTopen();
+	TTkopen();
+	TTflush();
+	sgarbf = TRUE;
+	s = TRUE;
+#endif
+
+	/* on failure, escape gracefully */
+	if (s != TRUE || (readin(filename_out, FALSE) == FALSE)) {
+		mlwrite("(Execution failed)");
+		strcpy(bp->b_fname, tmpnam);
+		unlink(filename_in);
+		unlink(filename_out);
+		return s;
+	}
+
+	/* reset file name */
+	strcpy(bp->b_fname, tmpnam);	/* restore name */
+	bp->b_flag |= BFCHG;		/* flag it as changed */
+
+	/* and get rid of the temporary file */
+	unlink(filename_in);
+	unlink(filename_out);
+	return TRUE;
+}

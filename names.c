@@ -35,7 +35,6 @@ struct name_bind names[] = {
 	{"end-of-line", gotoeol},
 	{"exchange-point-and-mark", swapmark},
 	{"execute-macro", ctlxe},
-	{"execute-program", execprg},
 	{"exit-emacs", quit},
 	{"filter-buffer", filter_buffer},
 	{"find-file", filefind},

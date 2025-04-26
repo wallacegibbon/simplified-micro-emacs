@@ -64,7 +64,6 @@ struct key_tab keytab[] = {
 	{CTLX | '!', spawn},
 	{CTLX | '@', pipecmd},
 	{CTLX | '#', filter_buffer},
-	{CTLX | '$', execprg},
 	{CTLX | '=', showcpos},
 	{CTLX | '(', ctlxlp},
 	{CTLX | ')', ctlxrp},
