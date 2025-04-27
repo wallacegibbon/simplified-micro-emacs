@@ -13,7 +13,7 @@ void sizesignal(int);
 #endif
 
 /*
- * Create a subjob with a copy of the command intrepreter in it. When the
+ * Create a subjob with a copy of the command intrepreter in it.  When the
  * command interpreter exits, mark the screen as garbage so that you do a full
  * repaint. Bound to "^X C".
  */
@@ -35,8 +35,9 @@ int spawncli(int f, int n)
 #endif
 	sgarbf = TRUE;
 
-	/* ?? what is this sleep for ?? (2025/03/19) */
-	//sleep(2);
+	/*
+	sleep(2);
+	*/
 
 	TTopen();
 	TTkopen();

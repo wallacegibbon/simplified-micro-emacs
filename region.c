@@ -1,22 +1,11 @@
-/* region.c
- *
- *      The routines in this file deal with the region, that magic space
- *      between "." and mark. Some functions are commands. Some functions are
- *      just for internal use.
- *
- *	Modified by Petri Kutvonen
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
 
 /*
- * Kill the region. Ask "getregion"
- * to figure out the bounds of the region.
- * Move "." to the start, and kill the characters.
- * Bound to "C-W".
+ * Kill the region. Ask "getregion" to figure out the bounds of the region.
+ * Move "." to the start, and kill the characters.  Bound to "C-W".
  */
 int killregion(int f, int n)
 {
@@ -36,17 +25,15 @@ int killregion(int f, int n)
 }
 
 /*
- * Copy all of the characters in the
- * region to the kill buffer. Don't move dot
- * at all. This is a bit like a kill region followed
- * by a yank. Bound to "M-W".
+ * Copy all of the characters in the region to the kill buffer.
+ * Don't move dot at all. This is a bit like a kill region followed by a yank.
+ * Bound to "M-W".
  */
 int copyregion(int f, int n)
 {
 	struct line *linep;
-	int loffs;
-	int s;
 	struct region region;
+	int loffs, s;
 
 	if ((s = getregion(&region)) != TRUE)
 		return s;
@@ -72,20 +59,16 @@ int copyregion(int f, int n)
 }
 
 /*
- * Lower case region. Zap all of the upper
- * case characters in the region to lower case. Use
- * the region code to set the limits. Scan the buffer,
- * doing the changes. Call "lchange" to ensure that
- * redisplay is done in all buffers. Bound to
- * "C-X C-L".
+ * Lower case region. Zap all of the upper case characters in the region to
+ * lower case. Use the region code to set the limits. Scan the buffer,
+ * doing the changes. Call "lchange" to ensure that redisplay is done in
+ * all buffers. Bound to "C-X C-L".
  */
 int lowerregion(int f, int n)
 {
 	struct line *linep;
-	int loffs;
-	int c;
-	int s;
 	struct region region;
+	int loffs, c, s;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -109,20 +92,17 @@ int lowerregion(int f, int n)
 }
 
 /*
- * Upper case region. Zap all of the lower
- * case characters in the region to upper case. Use
- * the region code to set the limits. Scan the buffer,
- * doing the changes. Call "lchange" to ensure that
- * redisplay is done in all buffers. Bound to
- * "C-X C-L".
+ * Upper case region. Zap all of the lower case characters in the region to
+ * upper case.  Use the region code to set the limits.  Scan the buffer,
+ * doing the changes. Call "lchange" to ensure that redisplay is done in all
+ * buffers.
+ * Bound to "C-X C-L".
  */
 int upperregion(int f, int n)
 {
 	struct line *linep;
-	int loffs;
-	int c;
-	int s;
 	struct region region;
+	int loffs, c, s;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -146,22 +126,19 @@ int upperregion(int f, int n)
 }
 
 /*
- * This routine figures out the
- * bounds of the region in the current window, and
- * fills in the fields of the "struct region" structure pointed
- * to by "rp". Because the dot and mark are usually very
- * close together, we scan outward from dot looking for
- * mark. This should save time. Return a standard code.
- * Callers of this routine should be prepared to get
- * an "ABORT" status; we might make this have the
- * conform thing later.
+ * This routine figures out the bounds of the region in the current window,
+ * and fills in the fields of the "struct region" structure pointed to by "rp".
+ * Because the dot and mark are usually very close together,
+ * we scan outward from dot looking for mark.
+ * This should save time. Return a standard code.
+ * Callers of this routine should be prepared to get an "ABORT" status;
+ * we might make this have the conform thing later.
  */
 int getregion(struct region *rp)
 {
 	struct line *flp;
 	struct line *blp;
-	long fsize;
-	long bsize;
+	long fsize, bsize;
 
 	if (curwp->w_markp == NULL) {
 		mlwrite("No mark set in this window");

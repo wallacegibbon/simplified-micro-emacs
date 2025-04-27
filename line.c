@@ -242,42 +242,6 @@ int linsert(int n, int c)
 }
 
 /*
- * Overwrite a character into the current line at the current position
- *
- * int c;	character to overwrite on current position
- */
-int lowrite(int c)
-{
-	if (curwp->w_doto < curwp->w_dotp->l_used &&
-			(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-			(curwp->w_doto & TABMASK) == TABMASK))
-		ldelchar(1, FALSE);
-	return linsert(1, c);
-}
-
-/*
- * lover -- Overwrite a string at the current point
- */
-int lover(char *ostr)
-{
-	int status = TRUE;
-	char tmpc;
-
-	if (ostr != NULL)
-		while ((tmpc = *ostr) && status == TRUE) {
-			status = tmpc == '\n' ? lnewline() : lowrite(tmpc);
-
-			/* Insertion error? */
-			if (status != TRUE) {
-				mlwrite("%%Out of memory while overwriting");
-				break;
-			}
-			++ostr;
-		}
-	return status;
-}
-
-/*
  * Insert a newline into the buffer at the current location of dot in the
  * current window. The funny ass-backwards way it does things is not a botch;
  * it just makes the last line in the file not a special case. Return TRUE if
@@ -434,56 +398,6 @@ int ldelete(long n, int kflag)
 		n -= chunk;
 	}
 	return TRUE;
-}
-
-/*
- * getctext:	grab and return a string with the text of
- *		the current line
- */
-char *getctext(void)
-{
-	struct line *lp;		/* line to copy */
-	int size;			/* length of line to return */
-	char *sp;			/* string pointer into line */
-	char *dp;			/* string pointer into returned line */
-	static char rline[NSTRING];	/* line to return */
-
-	/* find the contents of the current line and its length */
-	lp = curwp->w_dotp;
-	sp = lp->l_text;
-	size = lp->l_used;
-	if (size >= NSTRING)
-		size = NSTRING - 1;
-
-	/* copy it across */
-	dp = rline;
-	while (size--)
-		*dp++ = *sp++;
-	*dp = 0;
-	return rline;
-}
-
-/*
- * putctext:
- *	replace the current line with the passed in text
- *
- * char *iline;			contents of new line
- */
-int putctext(char *iline)
-{
-	int status;
-
-	/* delete the current line */
-	curwp->w_doto = 0;	/* starting at the beginning of the line */
-	if ((status = killtext(TRUE, 1)) != TRUE)
-		return status;
-
-	/* insert the new line */
-	if ((status = linstr(iline)) != TRUE)
-		return status;
-	status = lnewline();
-	backline(TRUE, 1);
-	return status;
 }
 
 /*

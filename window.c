@@ -1,10 +1,3 @@
-/* window.c
- *
- *      Window management. Some of the functions are internal, and some are
- *      attached to keys that the user actually types.
- *
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -230,7 +223,7 @@ int delwind(int f, int n)
 {
 	struct window *wp;	/* window to recieve deleted space */
 	struct window *lwp;	/* ptr window before curwp */
-	int target;	/* target line to search for */
+	int target;		/* target line to search for */
 
 	/* if there is only one window, don't delete it */
 	if (wheadp->w_wndp == NULL) {

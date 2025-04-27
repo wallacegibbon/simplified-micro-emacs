@@ -1,17 +1,10 @@
 #include <stdio.h>
 
-/* Make global definitions not external. */
-#define maindef
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
 #include "version.h"
-
-#ifndef GOOD
-#define GOOD    0
-#endif
 
 #if UNIX
 #include <signal.h>
@@ -24,34 +17,31 @@ void sizesignal(int);
 void usage(int status)
 {
 	printf("Usage: %s [options] [filenames]\n\n", PROGRAM_NAME);
-	fputs("      +          start at the end of file\n", stdout);
-	fputs("      +<n>       start at line <n>\n", stdout);
-	fputs("      -g[G]<n>   go to line <n>\n", stdout);
-	fputs("      --help     display this help and exit\n", stdout);
-	fputs("      --version  output version information and exit\n", stdout);
+	fputs("      -v[V]<n>   View only <n>\n", stdout);
+	fputs("      -g[G]<n>   Go to line <n>\n", stdout);
+	fputs("      --help     Display this help and exit\n", stdout);
+	fputs("      --version  Output version information and exit\n", stdout);
 	exit(status);
 }
 
 int main(int argc, char **argv)
 {
-	struct buffer *bp;	/* temp buffer pointer */
-	int firstfile = TRUE;	/* first file flag */
-	int carg;		/* current arg to scan */
-	struct buffer *firstbp = NULL;
-				/* ptr to first buffer in cmd line */
-	int viewflag = FALSE;	/* are we starting in view mode? */
-	int gotoflag = FALSE;	/* do we need to goto a line at start? */
-	int gline = 0;		/* if so, what line? */
-	int saveflag;		/* temp store for lastflag */
-	char bname[NBUFN];	/* buffer name of file to read */
+	struct buffer *firstbp = NULL;	/* ptr to first buffer in cmd line */
+	struct buffer *bp;		/* temp buffer pointer */
+	char bname[NBUFN];		/* buffer name of file to read */
+	int saveflag;			/* temp store for lastflag */
+	int carg;			/* current arg to scan */
+	int firstfile = TRUE;		/* first file flag */
+	int viewflag = FALSE;
+	int gotoflag = FALSE;
+	int gline = 0;
 	fn_t execfunc;
-	int f;			/* default flag */
-	int n;			/* numeric repeat count */
-	int mflag;		/* negative flag on repeat */
+	int mflag;			/* negative flag on repeat */
 	int c = 0, c1;
+	int f, n;
 
 #if PKCODE & BSD
-	sleep(1); /* Time for window manager. */
+	sleep(1);			/* Time for window manager. */
 #endif
 
 #if UNIX
@@ -75,28 +65,20 @@ int main(int argc, char **argv)
 	for (carg = 1; carg < argc; ++carg) {
 		if (argv[carg][0] == '-') {
 			switch (argv[carg][1]) {
-			case 'e':	/* -e for Edit file */
-			case 'E':
-				viewflag = FALSE;
-				break;
-			case 'v':	/* -v for View File */
+			case 'v':
 			case 'V':
 				viewflag = TRUE;
 				break;
-			case 'g':	/* -g for initial goto */
+			case 'g':
 			case 'G':
 				gotoflag = TRUE;
 				gline = atoi(&argv[carg][2]);
 				break;
 			default:
-				/* ignore this for now */
 				break;
 			}
-
 		} else {
-
 			/* Process an input file */
-
 			/* set up a buffer for this file */
 			makename(bname, argv[carg]);
 			unqname(bname);
@@ -431,7 +413,7 @@ int quit(int f, int n)
 		if (f)
 			exit(n);
 		else
-			exit(GOOD);
+			exit(0);
 	}
 	mlwrite("");
 	return s;
