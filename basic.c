@@ -284,16 +284,16 @@ int forwpage(int f, int n)
 
 	if (f == FALSE) {
 #if SCROLLCODE
-		if (term.t_scroll != NULL)
+		if (term.t_scroll != NULL) {
 			if (overlap == 0)
 				n = curwp->w_ntrows / 3 * 2;
 			else
 				n = curwp->w_ntrows - overlap;
-		else
+		} else
 #endif
 			n = curwp->w_ntrows - 2;  /* Default scroll. */
-		if (n <= 0)	/* Forget the overlap. */
-			n = 1;	/* If tiny window. */
+		if (n <= 0)	/* Forget the overlap on tiny window. */
+			n = 1;
 	} else if (n < 0)
 		return backpage(f, -n);
 #if CVMVAS
@@ -326,16 +326,16 @@ int backpage(int f, int n)
 
 	if (f == FALSE) {
 #if SCROLLCODE
-		if (term.t_scroll != NULL)
+		if (term.t_scroll != NULL) {
 			if (overlap == 0)
 				n = curwp->w_ntrows / 3 * 2;
 			else
 				n = curwp->w_ntrows - overlap;
-		else
+		} else
 #endif
 			n = curwp->w_ntrows - 2; /* Default scroll. */
-		if (n <= 0)	/* Don't blow up if the. */
-			n = 1;	/* Window is tiny. */
+		if (n <= 0)	/* Don't blow up on tiny window. */
+			n = 1;
 	} else if (n < 0)
 		return forwpage(f, -n);
 #if CVMVAS

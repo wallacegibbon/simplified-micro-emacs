@@ -47,7 +47,7 @@ char *fline = NULL;		/* dynamic return line */
 int flen = 0;			/* current length of fline */
 int rval = 0;			/* return value of a subprocess */
 
-int overlap = 0;		/* line overlap in forw/back page */
+int overlap = 1;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
 
 unsigned int matchlen = 0;	/* The length of the matched string */
