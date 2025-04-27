@@ -45,10 +45,6 @@ static void tcapopen(void);
 static void tcapclose(void);
 #endif
 
-#if COLOR
-static void tcapfcol(void);
-static void tcapbcol(void);
-#endif
 #if SCROLLCODE
 static void tcapscroll_reg(int from, int to, int linestoscroll);
 static void tcapscroll_delins(int from, int to, int linestoscroll);
@@ -94,11 +90,6 @@ struct terminal term = {
 	tcapbeep,
 	tcaprev,
 	tcapcres
-#if COLOR
-	,
-	tcapfcol,
-	tcapbcol
-#endif
 #if SCROLLCODE
 	,
 	NULL		/* set dynamically at open time */
@@ -330,17 +321,6 @@ static void tcapscrollregion(int top, int bot)
 	putpad(tgoto(CS, bot, top));
 }
 
-#endif
-
-#if COLOR
-/* No colors here, ignore this. */
-static void tcapfcol(void)
-{
-}
-/* No colors here, ignore this. */
-static void tcapbcol(void)
-{
-}
 #endif
 
 static void tcapbeep(void)

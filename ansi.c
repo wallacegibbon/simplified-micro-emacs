@@ -40,15 +40,6 @@ static void ansibeep(void);
 static void ansirev(int);
 static int ansicres(char *);
 
-#if COLOR
-static void ansifcol(int);
-static void ansibcol(int);
-
-int cfcolor = -1;		/* current forground color */
-int cbcolor = -1;		/* current background color */
-
-#endif
-
 /*
  * Standard terminal interface dispatch table. Most of the fields point into
  * "termio" code.
@@ -66,7 +57,7 @@ struct terminal term = {
 	SCRSIZ,
 	NPAUSE,
 	ansiopen,
-	ansiclose,
+	ttclose,
 	ansikopen,
 	ansikclose,
 	ttgetc,
@@ -78,40 +69,11 @@ struct terminal term = {
 	ansibeep,
 	ansirev,
 	ansicres
-#if COLOR
-	,
-	ansifcol,
-	ansibcol
-#endif
 #if SCROLLCODE
 	,
 	NULL
 #endif
 };
-
-#if COLOR
-static void ansifcol(int color)
-{
-	if (color == cfcolor)
-		return;
-	ttputc(ESC);
-	ttputc('[');
-	ansiparm(color + 30);
-	ttputc('m');
-	cfcolor = color;
-}
-
-static void ansibcol(int color)
-{
-	if (color == cbcolor)
-		return;
-	ttputc(ESC);
-	ttputc('[');
-	ansiparm(color + 40);
-	ttputc('m');
-	cbcolor = color;
-}
-#endif
 
 static void ansimove(int row, int col)
 {
@@ -132,10 +94,6 @@ static void ansieeol(void)
 
 static void ansieeop(void)
 {
-#if COLOR
-	ansifcol(gfcolor);
-	ansibcol(gbcolor);
-#endif
 	ttputc(ESC);
 	ttputc('[');
 	ttputc('J');
@@ -146,24 +104,10 @@ static void ansieeop(void)
  */
 static void ansirev(int state)
 {
-#if COLOR
-	int ftmp, btmp;		/* temporaries for colors */
-#endif
-
 	ttputc(ESC);
 	ttputc('[');
 	ttputc(state ? '7' : '0');
 	ttputc('m');
-#if COLOR
-	if (state == FALSE) {
-		ftmp = cfcolor;
-		btmp = cbcolor;
-		cfcolor = -1;
-		cbcolor = -1;
-		ansifcol(ftmp);
-		ansibcol(btmp);
-	}
-#endif
 }
 
 /* Change screen resolution. */
@@ -210,15 +154,6 @@ static void ansiopen(void)
 	strcpy(sres, "NORMAL");
 	revexist = TRUE;
 	ttopen();
-}
-
-static void ansiclose(void)
-{
-#if COLOR
-	ansifcol(7);
-	ansibcol(0);
-#endif
-	ttclose();
 }
 
 /* Open the keyboard (a noop here). */

@@ -147,11 +147,8 @@ loop:
 	if (mpresf != FALSE) {
 		mlerase();
 		update(FALSE);
-#if CLRMSG
-		if (c == ' ')	/* ITS EMACS does this */
-			goto loop;
-#endif
 	}
+
 	f = FALSE;
 	n = 1;
 
@@ -254,11 +251,6 @@ void edinit(char *bname)
 	wp->w_markp = NULL;
 	wp->w_marko = 0;
 	wp->w_toprow = 0;
-#if COLOR
-	/* initalize colors to global defaults */
-	wp->w_fcolor = gfcolor;
-	wp->w_bcolor = gbcolor;
-#endif
 	wp->w_ntrows = term.t_nrow - 1;	/* "-1" for mode line. */
 	wp->w_force = 0;
 	wp->w_flag = WFMODE | WFHARD;	/* Full. */
@@ -558,10 +550,6 @@ void dspram()
 	char *sp;
 
 	TTmove(term.t_nrow - 1, 70);
-#if COLOR
-	TTforg(7);
-	TTbacg(0);
-#endif
 	sprintf(mbuf, "[%lu]", envram);
 	sp = mbuf;
 	while (*sp)

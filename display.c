@@ -22,12 +22,6 @@
 
 struct video {
 	int v_flag;		/* Flags */
-#if COLOR
-	int v_fcolor;		/* current forground color */
-	int v_bcolor;		/* current background color */
-	int v_rfcolor;		/* requested forground color */
-	int v_rbcolor;		/* requested background color */
-#endif
 	unicode_t v_text[1];	/* Screen data. */
 };
 
@@ -35,7 +29,6 @@ struct video {
 #define VFEXT	0x0002		/* extended (beyond column 80) */
 #define VFREV	0x0004		/* reverse video status */
 #define VFREQ	0x0008		/* reverse video request */
-#define VFCOL	0x0010		/* color change requested */
 
 static struct video **vscreen;	/* Virtual screen. */
 #if SCROLLCODE
@@ -97,10 +90,6 @@ void vtinit(void)
 	for (i = 0; i < term.t_mrow; ++i) {
 		vp = xmalloc(sizeof(struct video) + term.t_mcol*4);
 		vp->v_flag = 0;
-#if COLOR
-		vp->v_rfcolor = 7;
-		vp->v_rbcolor = 0;
-#endif
 		vscreen[i] = vp;
 #if SCROLLCODE
 		vp = xmalloc(sizeof(struct video) + term.t_mcol*4);
@@ -475,10 +464,6 @@ static void updone(struct window *wp)
 	vscreen[sline]->v_flag &= ~VFREQ;
 	vtmove(sline, 0);
 	show_line(lp);
-#if COLOR
-	vscreen[sline]->v_rfcolor = wp->w_fcolor;
-	vscreen[sline]->v_rbcolor = wp->w_bcolor;
-#endif
 	vteeol();
 }
 
@@ -509,10 +494,6 @@ static void updall(struct window *wp)
 		}
 
 		/* on to the next one */
-#if COLOR
-		vscreen[sline]->v_rfcolor = wp->w_fcolor;
-		vscreen[sline]->v_rbcolor = wp->w_bcolor;
-#endif
 		vteeol();
 		++sline;
 	}
@@ -609,13 +590,7 @@ void updgar(void)
 
 	for (i = 0; i < term.t_nrow; ++i) {
 		vscreen[i]->v_flag |= VFCHG;
-#if REVSTA
 		vscreen[i]->v_flag &= ~VFREV;
-#endif
-#if COLOR
-		vscreen[i]->v_fcolor = gfcolor;
-		vscreen[i]->v_bcolor = gbcolor;
-#endif
 #if SCROLLCODE
 		txt = pscreen[i]->v_text;
 		for (j = 0; j < term.t_ncol; ++j)
@@ -627,9 +602,6 @@ void updgar(void)
 	(*term.t_eeop)();
 	sgarbf = FALSE;		/* Erase-page clears */
 	mpresf = FALSE;		/* the message area. */
-#if COLOR
-	mlerase();		/* needs to be cleared if colored */
-#endif
 }
 
 /*
@@ -859,8 +831,7 @@ static void updext(void)
 /*
  * Update a single line. This does not know how to use insert or delete
  * character sequences; we are using VT52 functionality. Update the physical
- * row and column variables. It does try an exploit erase to end of line. The
- * RAINBOW version of this routine uses fast video.
+ * row and column variables. It does try an exploit erase to end of line.
  */
 
 /*
@@ -872,66 +843,27 @@ static void updext(void)
  */
 static int updateline(int row, struct video *vp1, struct video *vp2)
 {
-#if RAINBOW
-/* UPDATELINE specific code for the DEC rainbow 100 micro */
-
-	unicode_t *cp1;
-	unicode_t *cp2;
-	int nch;
-
-	/* since we don't know how to make the rainbow do this, turn it off */
-	flags &= (~VFREV & ~VFREQ);
-
-	cp1 = &vp1->v_text[0];	/* Use fast video. */
-	cp2 = &vp2->v_text[0];
-	putline(row + 1, 1, cp1);
-	nch = term.t_ncol;
-
-	do {
-		*cp2 = *cp1;
-		++cp2;
-		++cp1;
-	} while (--nch);
-	*flags &= ~VFCHG;
-#else
-/* UPDATELINE code for all other versions */
-
-	unicode_t *cp1;
-	unicode_t *cp2;
-	unicode_t *cp3;
-	unicode_t *cp4;
-	unicode_t *cp5;
+	unicode_t *cp1, *cp2, *cp3, *cp4, *cp5;
 	int nbflag;		/* non-blanks to the right flag? */
 	int rev;		/* reverse video flag */
 	int req;		/* reverse video request flag */
-
 
 	/* set up pointers to virtual and physical lines */
 	cp1 = &vp1->v_text[0];
 	cp2 = &vp2->v_text[0];
 
-#if COLOR
-	TTforg(vp1->v_rfcolor);
-	TTbacg(vp1->v_rbcolor);
-#endif
-
-#if REVSTA | COLOR
 	/*
 	 * if we need to change the reverse video status of the
 	 * current line, we need to re-write the entire line
 	 */
 	rev = (vp1->v_flag & VFREV) == VFREV;
 	req = (vp1->v_flag & VFREQ) == VFREQ;
-	if ((rev != req)
-#if COLOR
-			|| (vp1->v_fcolor != vp1->v_rfcolor)
-			|| (vp1->v_bcolor != vp1->v_rbcolor)
-#endif
-			) {
+
+	if (rev != req) {
 		movecursor(row, 0);	/* Go to start of line. */
 		/* set rev video if needed */
 		if (rev != req)
-			(*term.t_rev)(req);
+			TTrev(req);
 
 		/*
 		 * scan through the line and dump it to the screen and
@@ -945,7 +877,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 		}
 		/* turn rev video off */
 		if (rev != req)
-			(*term.t_rev)(FALSE);
+			TTrev(FALSE);
 
 		/* update the needed flags */
 		vp1->v_flag &= ~VFCHG;
@@ -953,13 +885,8 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 			vp1->v_flag |= VFREV;
 		else
 			vp1->v_flag &= ~VFREV;
-#if COLOR
-		vp1->v_fcolor = vp1->v_rfcolor;
-		vp1->v_bcolor = vp1->v_rbcolor;
-#endif
 		return TRUE;
 	}
-#endif
 
 	/* advance past any common chars at the left */
 	while (cp1 != &vp1->v_text[term.t_ncol] && cp1[0] == cp2[0]) {
@@ -1003,9 +930,7 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 	}
 
 	movecursor(row, cp1 - &vp1->v_text[0]);	/* Go to start of line. */
-#if REVSTA
 	TTrev(rev);
-#endif
 
 	while (cp1 != cp5) {	/* Ordinary. */
 		TTputc(*cp1);
@@ -1018,11 +943,8 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
 		while (cp1 != cp3)
 			*cp2++ = *cp1++;
 	}
-#if REVSTA
 	TTrev(FALSE);
-#endif
 	vp1->v_flag &= ~VFCHG;	/* flag this line as updated */
-#endif
 	return TRUE;
 }
 
@@ -1034,32 +956,22 @@ static int updateline(int row, struct video *vp1, struct video *vp2)
  */
 static void modeline(struct window *wp)
 {
+	struct buffer *bp;
+	char tline[NLINE];	/* buffer for part of mode line */
 	int lchar;		/* character to draw line in buffer with */
 	int firstm;		/* is this the first mode? */
-	char tline[NLINE];	/* buffer for part of mode line */
-	struct buffer *bp;
 	char *cp;
 	int c, n, i;
 
 	n = wp->w_toprow + wp->w_ntrows;	/* Location. */
-	vscreen[n]->v_flag |= VFCHG | VFREQ | VFCOL;	/* Redraw next time. */
-#if COLOR
-	vscreen[n]->v_rfcolor = 0;	/* black on */
-	vscreen[n]->v_rbcolor = 7;	/* white..... */
-#endif
+	vscreen[n]->v_flag |= VFCHG | VFREQ;	/* Redraw next time. */
 	vtmove(n, 0);		/* Seek to right line. */
+
 	if (wp == curwp)	/* mark the current buffer */
-#if PKCODE
 		lchar = '-';
-#else
-		lchar = '=';
-#endif
-	else
-#if REVSTA
-	if (revexist)
+	else if (revexist)
 		lchar = ' ';
 	else
-#endif
 		lchar = '-';
 
 	bp = wp->w_bufp;
@@ -1075,20 +987,8 @@ static void modeline(struct window *wp)
 	else
 		vtputc(lchar);
 
-	n = 2;
-
-	strcpy(tline, " ");
-	/*
-	strcat(tline, PROGRAM_NAME_LONG);
-	strcat(tline, " ");
-	strcat(tline, VERSION);
-	strcat(tline, ": ");
-	*/
-	cp = tline;
-	while ((c = *cp++) != 0) {
-		vtputc(c);
-		++n;
-	}
+	vtputc(' ');
+	n = 3;
 
 	cp = &bp->b_bname[0];
 	while ((c = *cp++) != 0) {
@@ -1239,10 +1139,6 @@ void mlerase(void)
 	int i;
 
 	movecursor(term.t_nrow, 0);
-#if COLOR
-	TTforg(7);
-	TTbacg(0);
-#endif
 	if (eolexist == TRUE)
 		TTeeol();
 	else {
@@ -1268,12 +1164,6 @@ void mlwrite(const char *fmt, ...)
 {
 	int c;		/* current char in format string */
 	va_list ap;
-
-#if COLOR
-	/* set up the proper colors for the command line */
-	TTforg(7);
-	TTbacg(0);
-#endif
 
 	/* if we can not erase to end-of-line, do it manually */
 	if (eolexist == FALSE) {

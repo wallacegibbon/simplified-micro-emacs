@@ -1,21 +1,20 @@
 #include "estruct.h"
 #include "edef.h"
 
-int kbdm[NKBDM];		/* Keyboard Macro */
-
-char golabel[NPAT] = "";	/* current line to go to */
-int eolexist = TRUE;		/* does clear to EOL exist */
-int revexist = FALSE;		/* does reverse video exist? */
-int flickcode = FALSE;		/* do flicker supression? */
-
 const char *modename[NUMMODES] = {"ASAVE", "VIEW", "EXACT", "OVER"};
 int modevalue[NUMMODES] = {MDASAVE, MDVIEW, MDEXACT, MDOVER};
 char modecode[NUMMODES] = "AVEO";
 
+int kbdm[NKBDM];		/* Keyboard Macro */
+
+char golabel[NPAT] = "";	/* current line to go to */
+
+int eolexist = TRUE;		/* does clear to EOL exist */
+int revexist = FALSE;		/* does reverse video exist? */
+int flickcode = FALSE;		/* do flicker supression? */
+
 int gmode = MDASAVE;		/* global editor mode */
 int gflags = GFREAD;		/* global control flag */
-int gfcolor = 7;		/* global forgrnd color (white) */
-int gbcolor = 0;		/* global backgrnd color (black) */
 int gasave = 256;		/* global ASAVE size */
 int gacount = 256;		/* count until next ASAVE */
 int sgarbf = TRUE;		/* TRUE if screen is garbage */
@@ -26,10 +25,6 @@ int ttrow = HUGE;		/* Row location of HW cursor */
 int ttcol = HUGE;		/* Column location of HW cursor */
 int lbound = 0;			/* leftmost column of current line being displayed */
 int taboff = 0;			/* tab offset for display */
-
-char *cname[] = {		/* names of colors */
-	"BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE"
-};
 
 struct kill *kbufp = NULL;	/* current kill buffer chunk pointer */
 struct kill *kbufh = NULL;	/* kill buffer header pointer */

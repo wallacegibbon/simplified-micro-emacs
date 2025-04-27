@@ -294,12 +294,12 @@ int forwpage(int f, int n)
 			n = curwp->w_ntrows - 2;  /* Default scroll. */
 		if (n <= 0)	/* Forget the overlap on tiny window. */
 			n = 1;
-	} else if (n < 0)
+	} else if (n < 0) {
 		return backpage(f, -n);
-#if CVMVAS
-	else			/* Convert from pages. */
-		n *= curwp->w_ntrows;	/* To lines. */
-#endif
+	} else {
+		n *= curwp->w_ntrows;
+	}
+
 	lp = curwp->w_linep;
 	while (n-- && lp != curbp->b_linep)
 		lp = lforw(lp);
@@ -336,12 +336,12 @@ int backpage(int f, int n)
 			n = curwp->w_ntrows - 2; /* Default scroll. */
 		if (n <= 0)	/* Don't blow up on tiny window. */
 			n = 1;
-	} else if (n < 0)
+	} else if (n < 0) {
 		return forwpage(f, -n);
-#if CVMVAS
-	else  /* Convert from pages. */
-		n *= curwp->w_ntrows;  /* To lines. */
-#endif
+	} else {
+		n *= curwp->w_ntrows;
+	}
+
 	lp = curwp->w_linep;
 	while (n-- && lback(lp) != curbp->b_linep)
 		lp = lback(lp);

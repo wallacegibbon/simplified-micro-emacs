@@ -39,11 +39,6 @@ static void vt52beep(void);
 static void vt52rev(int);
 static int vt52cres(int, int);
 
-#if COLOR
-static void vt52fcol(int);
-static void vt52bcol(int);
-#endif
-
 /*
  * Dispatch table.
  * All the hard fields just point into the terminal I/O code.
@@ -69,11 +64,6 @@ struct terminal term = {
 	vt52beep,
 	vt52rev,
 	vt52cres
-#if COLOR
-	,
-	vt52fcol,
-	vt52bcol
-#endif
 #if SCROLLCODE
 	,
 	NULL
@@ -111,18 +101,6 @@ static int vt52cres(char *res)
 {
 	return TRUE;
 }
-
-#if COLOR
-/* set the forground color [NOT IMPLIMENTED] */
-static void vt52fcol(void)
-{
-}
-
-/* set the background color [NOT IMPLIMENTED] */
-static void vt52bcol(int color)
-{
-}
-#endif
 
 static void vt52beep(void)
 {

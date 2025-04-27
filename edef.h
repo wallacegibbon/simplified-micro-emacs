@@ -29,8 +29,6 @@ extern struct key_tab keytab[];		/* key to function table */
 
 extern int gmode;		/* global editor mode */
 extern int gflags;		/* global control flag */
-extern int gfcolor;		/* global forgrnd color (white) */
-extern int gbcolor;		/* global backgrnd color (black) */
 extern int gasave;		/* global ASAVE size */
 extern int gacount;		/* count until next ASAVE */
 extern int sgarbf;		/* State of screen unknown */
@@ -41,8 +39,6 @@ extern int ttrow;		/* Row location of HW cursor */
 extern int ttcol;		/* Column location of HW cursor */
 extern int lbound;		/* leftmost column of current line displayed */
 extern int taboff;		/* tab offset for display */
-
-extern char *cname[];		/* names of colors */
 
 extern struct kill *kbufp;	/* current kill buffer chunk pointer */
 extern struct kill *kbufh;	/* kill buffer header pointer */

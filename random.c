@@ -455,9 +455,6 @@ int adjustmode(int kind, int global)
 	char *scan;		/* scanning pointer to convert prompt */
 	int i;			/* loop index */
 	int status;		/* error return on input */
-#if COLOR
-	int uflag;		/* was modename uppercase? */
-#endif
 	char prompt[50];	/* string to prompt user with */
 	char cbuf[NPAT];	/* buffer to recieve mode name into */
 
@@ -481,42 +478,10 @@ int adjustmode(int kind, int global)
 	/* make it uppercase */
 
 	scan = cbuf;
-#if COLOR
-	uflag = (*scan >= 'A' && *scan <= 'Z');
-#endif
 	while (*scan != 0) {
 		if (*scan >= 'a' && *scan <= 'z')
 			*scan = *scan - 32;
 		++scan;
-	}
-
-	/* test it first against the colors we know */
-
-	for (i = 0; i < NCOLORS; ++i) {
-		if (strcmp(cbuf, cname[i]) == 0) {
-			/* finding the match, we set the color */
-#if COLOR
-			if (uflag) {
-				if (global)
-					gfcolor = i;
-#if PKCODE == 0
-				else
-#endif
-					curwp->w_fcolor = i;
-			} else {
-				if (global)
-					gbcolor = i;
-#if PKCODE == 0
-				else
-#endif
-					curwp->w_bcolor = i;
-			}
-
-			curwp->w_flag |= WFCOLR;
-#endif
-			mlerase();
-			return TRUE;
-		}
 	}
 
 	/* test it against the modes we know */
