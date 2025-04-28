@@ -84,7 +84,6 @@ struct name_bind names[] = {
 	{"split-current-window", splitwind},
 	{"transpose-characters", twiddle},
 	{"unmark-buffer", unmark},
-	{"update-screen", upscreen},
 	{"view-file", viewfile},
 	{"write-file", filewrite},
 	{"yank", yank},

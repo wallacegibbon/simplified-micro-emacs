@@ -326,11 +326,10 @@ int execute(int c, int f, int n)
 
 		status = linsert(n, c);
 
-		/* check auto-save mode */
+		/* check auto-save mode and save the file if needed */
 		if (curbp->b_mode & MDASAVE) {
 			if (--gacount == 0) {
-				/* and save the file if needed */
-				upscreen(FALSE, 0);
+				update(TRUE);
 				filesave(FALSE, 0);
 				gacount = gasave;
 			}
@@ -339,8 +338,8 @@ int execute(int c, int f, int n)
 		return status;
 	}
 	TTbeep();
-	mlwrite("(Key not bound)");	/* complain */
-	lastflag = 0;			/* Fake last flags. */
+	mlwrite("(Key not bound)");
+	lastflag = 0;	/* Fake last flags. */
 	return FALSE;
 }
 

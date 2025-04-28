@@ -75,7 +75,7 @@ int nextwind(int f, int n)
 	curwp = wp;
 	curbp = wp->w_bufp;
 	cknewwindow();
-	upmode();
+	update_modelines();
 	return TRUE;
 }
 
@@ -105,7 +105,7 @@ int prevwind(int f, int n)
 	curwp = wp1;
 	curbp = wp1->w_bufp;
 	cknewwindow();
-	upmode();
+	update_modelines();
 	return TRUE;
 }
 
@@ -284,7 +284,7 @@ int delwind(int f, int n)
 	wp->w_flag |= WFHARD;
 	curbp = wp->w_bufp;
 	cknewwindow();
-	upmode();
+	update_modelines();
 	return TRUE;
 }
 
@@ -537,7 +537,7 @@ int restwnd(int f, int n)
 		if (wp == swindow) {
 			curwp = wp;
 			curbp = wp->w_bufp;
-			upmode();
+			update_modelines();
 			return TRUE;
 		}
 		wp = wp->w_wndp;
@@ -552,10 +552,8 @@ int restwnd(int f, int n)
  */
 int newsize(int f, int n)
 {
-	struct window *wp;		/* current window being examined */
-	struct window *nextwp;	/* next window to scan */
-	struct window *lastwp;	/* last window scanned */
-	int lastline;		/* screen line of last line of current window */
+	struct window *wp, *nextwp, *lastwp;
+	int lastline;	/* screen line of last line of current window */
 
 	/* if the command defaults, assume the largest */
 	if (f == FALSE)

@@ -12,28 +12,11 @@
  */
 int showcpos(int f, int n)
 {
-	struct line *lp;	/* current line */
-	long numchars;	/* # of chars in file */
-	int numlines;	/* # of lines in file */
-	long predchars;	/* # chars preceding point */
-	int predlines;	/* # lines preceding point */
-	int curchar;	/* character under cursor */
-	int ratio;
-	int col;
-	int savepos;		/* temp save for current offset */
-	int ecol;		/* column pos/end of current line */
+	long numchars = 0, numlines = 0, predchars = 0, predlines = 0;
+	int ratio, col, ecol, saved_o, curchar = 0;
+	struct line *lp;
 
-	/* starting at the beginning of the buffer */
-	lp = lforw(curbp->b_linep);
-
-	/* start counting chars and lines */
-	numchars = 0;
-	numlines = 0;
-	predchars = 0;
-	predlines = 0;
-	curchar = 0;
-	while (lp != curbp->b_linep) {
-		/* if we are on the current line, record it */
+	for (lp = lforw(curbp->b_linep); lp != curbp->b_linep; lp = lforw(lp)) {
 		if (lp == curwp->w_dotp) {
 			predlines = numlines;
 			predchars = numchars + curwp->w_doto;
@@ -42,13 +25,10 @@ int showcpos(int f, int n)
 			else
 				curchar = lgetc(lp, curwp->w_doto);
 		}
-		/* on to the next line */
 		++numlines;
 		numchars += llength(lp) + 1;
-		lp = lforw(lp);
 	}
 
-	/* if at end of file, record it */
 	if (curwp->w_dotp == curbp->b_linep) {
 		predlines = numlines;
 		predchars = numchars;
@@ -59,33 +39,28 @@ int showcpos(int f, int n)
 
 	/* Get real column and end-of-line column. */
 	col = getccol(FALSE);
-	savepos = curwp->w_doto;
+	saved_o = curwp->w_doto;
 	curwp->w_doto = llength(curwp->w_dotp);
 	ecol = getccol(FALSE);
-	curwp->w_doto = savepos;
+	curwp->w_doto = saved_o;
 
 	ratio = 0;		/* Ratio before dot. */
 	if (numchars != 0)
 		ratio = (100L * predchars) / numchars;
 
-	/* summarize and report the info */
 	mlwrite("Line %d/%d Col %d/%d Char %D/%D (%d%%) char = 0x%x",
 		predlines + 1, numlines + 1, col, ecol,
 		predchars, numchars, ratio, curchar);
 	return TRUE;
 }
 
+/* get the current line number */
 int getcline(void)
-{				/* get the current line number */
-	struct line *lp;	/* current line */
-	int numlines;	/* # of lines before point */
+{
+	struct line *lp;
+	int numlines = 0;
 
-	/* starting at the beginning of the buffer */
-	lp = lforw(curbp->b_linep);
-
-	/* start counting lines */
-	numlines = 0;
-	while (lp != curbp->b_linep) {
+	for (lp = lforw(curbp->b_linep); lp != curbp->b_linep; lp = lforw(lp)) {
 		/* if we are on the current line, record it */
 		if (lp == curwp->w_dotp)
 			break;
@@ -93,7 +68,6 @@ int getcline(void)
 		lp = lforw(lp);
 	}
 
-	/* and return the resulting count */
 	return numlines + 1;
 }
 
@@ -102,12 +76,11 @@ int getcline(void)
  */
 int getccol(int bflg)
 {
-	int i, col;
 	struct line *dlp = curwp->w_dotp;
 	int byte_offset = curwp->w_doto;
 	int len = llength(dlp);
+	int i = 0, col = 0;
 
-	col = i = 0;
 	while (i < byte_offset) {
 		unicode_t c;
 
@@ -125,20 +98,10 @@ int getccol(int bflg)
 	return col;
 }
 
-/*
- * Set current column.
- *
- * int pos;		position to set cursor
- */
+/* Set current column. */
 int setccol(int pos)
 {
-	int c;		/* character being scanned */
-	int i;		/* index into current line */
-	int col;	/* current cursor column */
-	int llen;	/* length of line in bytes */
-
-	col = 0;
-	llen = llength(curwp->w_dotp);
+	int llen = llength(curwp->w_dotp), col = 0, c, i;
 
 	/* scan the line until we are at or past the target column */
 	for (i = 0; i < llen; ++i) {
@@ -172,12 +135,11 @@ int setccol(int pos)
 int twiddle(int f, int n)
 {
 	struct line *dotp;
-	int doto;
-	int cl;
-	int cr;
+	int doto, cl, cr;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
+
 	dotp = curwp->w_dotp;
 	doto = curwp->w_doto;
 	if (doto == llength(dotp) && --doto < 0)
@@ -486,7 +448,7 @@ int adjustmode(int kind, int global)
 
 	/* test it against the modes we know */
 
-	for (i = 0; i < NUMMODES; ++i) {
+	for (i = 0; i < NMODES; ++i) {
 		if (strcmp(cbuf, modename[i]) == 0) {
 			int val = modevalue[i];
 			/* finding a match, we process it */
@@ -503,7 +465,7 @@ int adjustmode(int kind, int global)
 			}
 			/* display new mode line */
 			if (global == 0)
-				upmode();
+				update_modelines();
 			mlerase();
 			return TRUE;
 		}

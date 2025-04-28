@@ -122,8 +122,10 @@
 #define NSTRING	128		/* # of bytes, string buffers */
 #define NKBDM   256		/* # of strokes, keyboard macro */
 #define NPAT    128		/* # of bytes, pattern */
-#define HUGE    1000		/* Huge number */
+#define NMODES	4		/* # of modes */
 #define NLOCKS	100		/* max # of file locks active */
+
+#define HUGE    1000		/* Huge number */
 #define KBLOCK	250		/* sizeof kill buffer chunks */
 
 #define CTL	0x2000		/* Control flag, or'ed in */
@@ -219,7 +221,7 @@ struct window {
 	struct line *w_markp;	/* Line containing "mark" */
 	int w_doto;		/* Byte offset for "." */
 	int w_marko;		/* Byte offset for "mark" */
-	int w_toprow;		/* Origin 0 top row of window */
+	int w_toprow;		/* Origin 0 top row of window (physical screen) */
 	int w_ntrows;		/* # of rows of text in window */
 	char w_force;		/* If NZ, forcing row. */
 	char w_flag;		/* Flags. */

@@ -4,28 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Some global fuction declarations. */
-typedef int (*fn_t)(int, int);
-
-/* Initialized global external declarations. */
-
 extern int kbdm[];		/* Holds keyboard macro data */
 
 extern char pat[];		/* Search pattern */
 extern char rpat[];		/* Replacement pattern */
 
-extern char golabel[];		/* current line to go to */
-
 extern int eolexist;		/* does clear to EOL exist? */
 extern int revexist;		/* does reverse video exist? */
 
-#define NUMMODES	4
-extern const char *modename[NUMMODES];	/* text names of modes */
-extern int modevalue[NUMMODES];		/* value of modes */
-extern char modecode[NUMMODES];		/* letters to represent modes */
+extern const char *modename[];	/* text names of modes */
+extern int modevalue[];		/* value of modes */
+extern char modecode[];		/* letters to represent modes */
 
-extern struct name_bind names[];	/* name to function table */
-extern struct key_tab keytab[];		/* key to function table */
+extern struct name_bind names[];/* name to function table */
+extern struct key_tab keytab[];	/* key to function table */
 
 extern int gmode;		/* global editor mode */
 extern int gflags;		/* global control flag */
@@ -91,5 +83,8 @@ extern int matchoff;
 extern struct terminal term;
 
 extern int reeat_char;
+
+/* Some global fuction declarations. */
+typedef int (*fn_t)(int, int);
 
 #endif
