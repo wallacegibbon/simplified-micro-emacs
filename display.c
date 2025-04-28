@@ -550,7 +550,7 @@ void update_garbage(void)
 	}
 
 	movecursor(0, 0);	/* Erase the screen. */
-	(*term.t_eeop)();
+	TTeeop();
 	sgarbf = FALSE;		/* Erase-page clears */
 	mpresf = FALSE;		/* the message area. */
 }
@@ -713,7 +713,7 @@ static int scrolls(int inserts)
 static void scrscroll(int from, int to, int count)
 {
 	ttrow = ttcol = -1;
-	(*term.t_scroll)(from, to, count);
+	TTscroll(from, to, count);
 }
 
 /*
@@ -726,7 +726,7 @@ static int texttest(int vrow, int prow)
 	struct video *vpv = vscreen[vrow];	/* virtual screen image */
 	struct video *vpp = pscreen[prow];	/* physical screen image */
 
-	return !memcmp(vpv->v_text, vpp->v_text, 4*term.t_ncol);
+	return !memcmp(vpv->v_text, vpp->v_text, 4 * term.t_ncol);
 }
 
 /*
@@ -910,7 +910,7 @@ static void modeline(struct window *wp)
 
 	n = wp->w_toprow + wp->w_ntrows;	/* Location. */
 	vscreen[n]->v_flag |= VFCHG | VFREQ;	/* Redraw next time. */
-	vtmove(n, 0);		/* Seek to right line. */
+	vtmove(n, 0);				/* Seek to right line. */
 
 	if (wp == curwp)	/* mark the current buffer */
 		lchar = '-';

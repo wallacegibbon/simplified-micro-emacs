@@ -313,6 +313,9 @@ struct terminal {
 #define TTbeep		(*term.t_beep)
 #define TTrev		(*term.t_rev)
 #define TTrez		(*term.t_rez)
+#if SCROLLCODE
+#define TTscroll	(*term.t_scroll)
+#endif
 
 /* Structure for the table of initial key bindings. */
 struct key_tab {
