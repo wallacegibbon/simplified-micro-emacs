@@ -11,7 +11,6 @@
  *	-lbt
  */
 #define USE_BROKEN_OPTIMIZATION 0
-#define termdef	1 /* Don't define "term" external. */
 
 #include "estruct.h"
 #include "edef.h"
