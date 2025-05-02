@@ -91,9 +91,8 @@ int ffputline(char *buf, int nbuf)
  */
 int ffgetline(void)
 {
-	int c;		/* current character read */
-	int i;		/* current index into fline */
 	char *tmpline;	/* temp storage for expanding line */
+	int c, i;
 
 	/* if we are at the end...return it */
 	if (eofflag)

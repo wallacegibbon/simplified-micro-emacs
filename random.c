@@ -234,8 +234,7 @@ int newline(int f, int n)
  */
 int deblank(int f, int n)
 {
-	struct line *lp1;
-	struct line *lp2;
+	struct line *lp1, *lp2;
 	long nld;
 
 	if (curbp->b_mode & MDVIEW)

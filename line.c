@@ -147,17 +147,14 @@ int linstr(char *instr)
 
 static int linsert_byte(int n, int c)
 {
-	char *cp1;
-	char *cp2;
-	struct line *lp1;
-	struct line *lp2;
-	struct line *lp3;
-	int doto;
-	int i;
+	struct line *lp1, *lp2, *lp3;
 	struct window *wp;
+	char *cp1, *cp2;
+	int doto, i;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
+
 	lchange(WFEDIT);
 	lp1 = curwp->w_dotp;	/* Current line */
 	if (lp1 == curbp->b_linep) {	/* At the end: special */
@@ -251,12 +248,10 @@ int linsert(int n, int c)
  */
 int lnewline(void)
 {
-	char *cp1;
-	char *cp2;
-	struct line *lp1;
-	struct line *lp2;
-	int doto;
+	struct line *lp1, *lp2;
 	struct window *wp;
+	char *cp1, *cp2;
+	int doto;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -337,12 +332,10 @@ int ldelchar(long n, int kflag)
  */
 int ldelete(long n, int kflag)
 {
-	char *cp1;
-	char *cp2;
-	struct line *dotp;
-	int doto;
-	int chunk;
 	struct window *wp;
+	struct line *dotp;
+	char *cp1, *cp2;
+	int doto, chunk;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -411,12 +404,9 @@ int ldelete(long n, int kflag)
  */
 int ldelnewline(void)
 {
-	char *cp1;
-	char *cp2;
-	struct line *lp1;
-	struct line *lp2;
-	struct line *lp3;
+	struct line *lp1, *lp2, *lp3;
 	struct window *wp;
+	char *cp1, *cp2;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();

@@ -44,7 +44,10 @@ int isearch(int f, int n)
 	int curoff = curwp->w_doto;
 	int init_direction = n;
 	char pat_save[NPAT];
-	int status, col, cpos, expc, c, was_searching;
+	int status, col, cpos, expc, c;
+#if ISEARCH_FLAVOR == 1
+	int was_searching;
+#endif
 
 	cmd_reexecute = -1;	/* We're not re-executing (yet) */
 	cmd_offset = 0;
@@ -63,7 +66,9 @@ start_over:
 	/* Restore the pat for a new loop */
 	strcpy(pat, pat_save);
 
+#if ISEARCH_FLAVOR == 1
 	was_searching = 0;
+#endif
 	status = TRUE;
 	cpos = 0;
 
@@ -76,8 +81,10 @@ start_over:
 			col = echo_char(pat[cpos], col);
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
+#if ISEARCH_FLAVOR == 1
 		if (status)
 			was_searching = 1;
+#endif
 		c = ectoc(expc = get_char());
 	}
 
@@ -98,8 +105,10 @@ char_loop:
 	}
 
 	if (c == IS_REVERSE || c == IS_FORWARD) {
+#if ISEARCH_FLAVOR == 1
 		if (pat[0] != '\0' && status)
 			was_searching = 1;
+#endif
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 		c = ectoc(expc = get_char());
@@ -107,10 +116,12 @@ char_loop:
 	}
 
 	if (c == '\b' || c == 0x7F) {
+#if ISEARCH_FLAVOR == 1
 		if (was_searching) {
 			reeat_char = c;
 			return TRUE;
 		}
+#endif
 		if (cmd_offset <= 1) {
 			/* We don't want to lose the saved pattern */
 			strcpy(pat, pat_save);
@@ -133,10 +144,13 @@ char_loop:
 	/* Now we are likely to insert c to pattern */
 
 pat_append:
+
+#if ISEARCH_FLAVOR == 1
 	if (was_searching) {
 		reeat_char = c;
 		return TRUE;
 	}
+#endif
 
 	pat[cpos++] = c;
 	if (cpos >= NPAT - 1) {

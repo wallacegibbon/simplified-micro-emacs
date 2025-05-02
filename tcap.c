@@ -97,10 +97,10 @@ struct terminal term = {
 
 static void tcapopen(void)
 {
-	char *t, *p;
 	char tcbuf[1024];
 	char *tv_stype;
 	char err_str[72];
+	char *t, *p;
 	int int_col, int_row;
 
 #if PKCODE && USE_BROKEN_OPTIMIZATION

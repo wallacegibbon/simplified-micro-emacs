@@ -9,8 +9,8 @@
  */
 int killregion(int f, int n)
 {
-	int s;
 	struct region region;
+	int s;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -136,8 +136,7 @@ int upperregion(int f, int n)
  */
 int getregion(struct region *rp)
 {
-	struct line *flp;
-	struct line *blp;
+	struct line *flp, *blp;
 	long fsize, bsize;
 
 	if (curwp->w_markp == NULL) {

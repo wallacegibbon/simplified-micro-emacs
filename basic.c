@@ -22,13 +22,8 @@
  */
 static int getgoal(struct line *dlp)
 {
-	int col;
-	int newcol;
-	int dbo;
-	int len = llength(dlp);
+	int col = 0, newcol, dbo = 0, len = llength(dlp);
 
-	col = 0;
-	dbo = 0;
 	while (dbo != len) {
 		unicode_t c;
 		int width = utf8_to_unicode(dlp->l_text, dbo, len, &c);
@@ -139,8 +134,8 @@ int forwchar(int f, int n)
  */
 int gotoline(int f, int n)
 {
-	int status;
 	char arg[NSTRING]; /* Buffer to hold argument. */
+	int status;
 
 	/* Get an argument if one doesnt exist. */
 	if (f == FALSE) {

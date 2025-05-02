@@ -16,9 +16,8 @@
 unsigned int utf8_to_unicode(char *line, unsigned index, unsigned len,
 		unicode_t *res)
 {
-	unsigned value;
 	unsigned char c = line[index];
-	unsigned bytes, mask, i;
+	unsigned value, bytes, mask, i;
 
 	*res = c;
 	line += index;

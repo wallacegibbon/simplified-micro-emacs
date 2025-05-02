@@ -11,8 +11,8 @@
 int usebuffer(int f, int n)
 {
 	struct buffer *bp;
-	int s;
 	char bufn[NBUFN];
+	int s;
 
 	if ((s = mlreply("Use buffer: ", bufn, NBUFN)) != TRUE)
 		return s;
@@ -128,8 +128,8 @@ int swbuffer(struct buffer *bp)
 int killbuffer(int f, int n)
 {
 	struct buffer *bp;
-	int s;
 	char bufn[NBUFN];
+	int s;
 
 	if ((s = mlreply("Kill buffer: ", bufn, NBUFN)) != TRUE)
 		return s;
@@ -147,8 +147,7 @@ int killbuffer(int f, int n)
  */
 int zotbuf(struct buffer *bp)
 {
-	struct buffer *bp1;
-	struct buffer *bp2;
+	struct buffer *bp1, *bp2;
 	int s;
 
 	/* Reset prevbp when that buffer is killed */
@@ -388,8 +387,7 @@ void e_ltoa(char *buf, int width, long num)
 int addline(char *text)
 {
 	struct line *lp;
-	int i;
-	int ntext;
+	int i, ntext;
 
 	ntext = strlen(text);
 	if ((lp = lalloc(ntext)) == NULL)
@@ -433,8 +431,7 @@ int anycb(void)
  */
 struct buffer *bfind(char *bname, int cflag, int bflag)
 {
-	struct buffer *bp;
-	struct buffer *sb;	/* buffer to insert after */
+	struct buffer *bp, *sb;
 	struct line *lp;
 
 	bp = bheadp;

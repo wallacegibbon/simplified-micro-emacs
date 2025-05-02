@@ -466,9 +466,7 @@ int shrinkwind(int f, int n)
 	return TRUE;
 }
 
-/*
- * Resize the current window to the requested size
- */
+/* Resize the current window to the requested size */
 int resize(int f, int n)
 {
 	int clines;		/* current # of lines in window */
@@ -505,30 +503,34 @@ struct window *wpopup(void)
 	return wp;
 }
 
+/* scroll the next window up (back) a page */
 int scrnextup(int f, int n)
-{				/* scroll the next window up (back) a page */
+{
 	nextwind(FALSE, 1);
 	backpage(f, n);
 	prevwind(FALSE, 1);
 	return TRUE;
 }
 
+/* scroll the next window down (forward) a page */
 int scrnextdw(int f, int n)
-{				/* scroll the next window down (forward) a page */
+{
 	nextwind(FALSE, 1);
 	forwpage(f, n);
 	prevwind(FALSE, 1);
 	return TRUE;
 }
 
+/* save ptr to current window */
 int savewnd(int f, int n)
-{				/* save ptr to current window */
+{
 	swindow = curwp;
 	return TRUE;
 }
 
+/* restore the saved screen */
 int restwnd(int f, int n)
-{				/* restore the saved screen */
+{
 	struct window *wp;
 
 	/* find the window */
@@ -547,9 +549,7 @@ int restwnd(int f, int n)
 	return FALSE;
 }
 
-/*
- * resize the screen, re-writing the screen
- */
+/* resize the screen, re-writing the screen */
 int newsize(int f, int n)
 {
 	struct window *wp, *nextwp, *lastwp;
@@ -629,9 +629,7 @@ int newsize(int f, int n)
 	return TRUE;
 }
 
-/*
- * resize the screen, re-writing the screen
- */
+/* resize the screen, re-writing the screen */
 int newwidth(int f, int n)
 {
 	struct window *wp;
@@ -662,10 +660,11 @@ int newwidth(int f, int n)
 	return TRUE;
 }
 
+/* get screen offset of current line in current window */
 int getwpos(void)
-{				/* get screen offset of current line in current window */
-	int sline;	/* screen line from top of window */
+{
 	struct line *lp;	/* scannile line pointer */
+	int sline;		/* screen line from top of window */
 
 	/* search down the line we want */
 	lp = curwp->w_linep;

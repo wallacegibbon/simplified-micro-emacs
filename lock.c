@@ -23,8 +23,7 @@ static int numlocks;			/* # of current locks active */
  */
 int lockchk(char *fname)
 {
-	int i;		/* loop indexes */
-	int status;	/* return status */
+	int status, i;
 
 	/* check to see if that file is already locked here */
 	if (numlocks > 0)
@@ -65,9 +64,7 @@ int lockchk(char *fname)
  */
 int lockrel(void)
 {
-	int i;		/* loop index */
-	int status;	/* status of locks */
-	int s;		/* status of one unlock */
+	int status, s, i;
 
 	status = TRUE;
 	if (numlocks > 0)
@@ -91,9 +88,9 @@ int lockrel(void)
  */
 int lock(char *fname)
 {
-	char *locker;	/* lock error message */
-	int status;	/* return status */
+	char *locker;		/* lock error message */
 	char msg[NSTRING];	/* message string */
+	int status;
 
 	/* attempt to lock the file */
 	locker = dolock(fname);

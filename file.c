@@ -27,8 +27,8 @@
  */
 int fileread(int f, int n)
 {
-	int s;
 	char fname[NFILEN];
+	int s;
 
 	if ((s = mlreply("Read file: ", fname, NFILEN)) != TRUE)
 		return s;
@@ -44,8 +44,8 @@ int fileread(int f, int n)
  */
 int insfile(int f, int n)
 {
-	int s;
 	char fname[NFILEN];
+	int s;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -77,9 +77,9 @@ int filefind(int f, int n)
 
 int viewfile(int f, int n)
 {
+	struct window *wp;	/* scan for windows that need updating */
 	char fname[NFILEN];	/* file user wishes to find */
 	int s;			/* status return */
-	struct window *wp;	/* scan for windows that need updating */
 
 	if ((s = mlreply("View file: ", fname, NFILEN)) != TRUE)
 		return s;
@@ -101,9 +101,8 @@ int getfile(char *fname, int lockfl)
 {
 	struct buffer *bp;
 	struct line *lp;
-	int i;
-	int s;
 	char bname[NBUFN];	/* buffer name to put file */
+	int i, s;
 
 	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
 		if ((bp->b_flag & BFINVS) == 0 &&
@@ -167,14 +166,10 @@ int getfile(char *fname, int lockfl)
  */
 int readin(char *fname, int lockfl)
 {
-	struct line *lp1;
-	struct line *lp2;
-	int i;
+	struct line *lp1, *lp2;
 	struct window *wp;
 	struct buffer *bp;
-	int s;
-	int nbytes;
-	int nline;
+	int s, i, nbytes, nline;
 	char mesg[NSTRING];
 
 #if (FILOCK && BSD) || SVR4
@@ -268,8 +263,7 @@ out:
  */
 void makename(char *bname, char *fname)
 {
-	char *cp1;
-	char *cp2;
+	char *cp1, *cp2;
 
 	cp1 = fname;
 	while (*cp1 != 0)
@@ -317,8 +311,8 @@ void unqname(char *name)
 int filewrite(int f, int n)
 {
 	struct window *wp;
-	int s;
 	char fname[NFILEN];
+	int s;
 
 	if ((s = mlreply("Write file: ", fname, NFILEN)) != TRUE)
 		return s;
@@ -384,9 +378,8 @@ int filesave(int f, int n)
  */
 int writeout(char *fn)
 {
-	int s;
 	struct line *lp;
-	int nline;
+	int nline, s;
 
 	if ((s = ffwopen(fn)) != FIOSUC) {	/* Open writes message. */
 		return FALSE;
@@ -425,8 +418,8 @@ int writeout(char *fn)
 int filename(int f, int n)
 {
 	struct window *wp;
-	int s;
 	char fname[NFILEN];
+	int s;
 
 	s = mlreply("Name: ", fname, NFILEN);
 	if (s == ABORT)
@@ -451,15 +444,10 @@ int filename(int f, int n)
  */
 int ifile(char *fname)
 {
-	struct line *lp0;
-	struct line *lp1;
-	struct line *lp2;
-	int i;
+	struct line *lp0, *lp1, *lp2;
 	struct buffer *bp;
-	int s;
-	int nbytes;
-	int nline;
 	char mesg[NSTRING];
+	int nbytes, nline, i, s;
 
 	bp = curbp;		/* Cheap. */
 	bp->b_flag |= BFCHG;	/* we have changed */
