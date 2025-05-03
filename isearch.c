@@ -40,8 +40,8 @@ int risearch(int f, int n)
 
 int isearch(int f, int n)
 {
-	struct line *curline = curwp->w_dotp;	/* Save curpos to restore */
-	int curoff = curwp->w_doto;
+	struct line *curline = curwp->w_dotp, *tmpline = NULL;
+	int curoff = curwp->w_doto, tmpoff = 0;
 	int init_direction = n;
 	char pat_save[NPAT];
 	int status, col, cpos, expc, c;
@@ -136,7 +136,7 @@ char_loop:
 		goto start_over;
 	}
 
-	if (c < ' ') {
+	if (c < ' ' && c != '\t') {
 		reeat_char = c;
 		return TRUE;
 	}
@@ -174,12 +174,19 @@ pat_append:
 	 * The scan during a changing pattern is tricky.  A simple solution
 	 * is to restore the "." position before a scan.
 	 */
+	tmpline = curwp->w_dotp;
+	tmpoff = curwp->w_doto;
 	curwp->w_dotp = curline;
 	curwp->w_doto = curoff;
 
 	status = scanmore(pat, n);
-	if (!status)
-		curwp->w_flag |= WFMOVE;
+	if (status == FALSE) {
+		/* When search failed, stay on previous success position */
+		curwp->w_dotp = tmpline;
+		curwp->w_doto = tmpoff;
+	}
+
+	curwp->w_flag |= WFMOVE;
 
 	c = ectoc(expc = get_char());
 	goto char_loop;
