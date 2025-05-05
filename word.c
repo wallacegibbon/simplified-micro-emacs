@@ -167,10 +167,10 @@ int capword(int f, int n)
  */
 int delfword(int f, int n)
 {
-	struct line *dotp;	/* original cursor line */
-	int doto;		/* and row */
-	int c;			/* temp char */
-	long size;		/* # of chars to delete */
+	struct line *dotp = curwp->w_dotp;
+	int doto = curwp->w_doto;
+	long size;
+	int c;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -180,13 +180,11 @@ int delfword(int f, int n)
 	/* Clear the kill buffer if last command wasn't a kill */
 	if ((lastflag & CFKILL) == 0)
 		kdelete();
+
 	thisflag |= CFKILL;	/* this command is a kill */
 
-	/* save the current cursor position */
-	dotp = curwp->w_dotp;
-	doto = curwp->w_doto;
-
 	/* figure out how many characters to give the axe */
+
 	size = 0;
 
 	/* get us into a word.... */

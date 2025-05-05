@@ -16,8 +16,7 @@ int tgetc(void)
 {
 	int c;
 
-	if (reeat_char != -1) {
-		c = reeat_char;
+	if ((c = reeat_char) != -1) {
 		reeat_char = -1;
 		return c;
 	}
