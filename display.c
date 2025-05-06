@@ -1068,7 +1068,7 @@ static void modeline(struct window *wp)
 			sprintf(mbuf, " %luG ", envram / GB);
 		else if (envram > 1024 * 1024)
 			sprintf(mbuf, " %luM ", envram / MB);
-		else if (envram > 1024)
+		else if (envram > 9999)
 			sprintf(mbuf, " %luK ", envram / KB);
 		else
 			sprintf(mbuf, " %lu ", envram);
