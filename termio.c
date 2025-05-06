@@ -1,18 +1,10 @@
-/* TERMIO.C
- *
- * The functions in this file negotiate with the operating system for
- * characters, and write characters in a barely buffered fashion on the display.
- * All operating systems.
- *
- *	modified by Petri Kutvonen
- */
-
 #ifndef POSIX
 
 #include "estruct.h"
 #include "edef.h"
 
-#if USG				/* System V */
+#if USG
+
 #include <signal.h>
 #include <termio.h>
 #include <fcntl.h>
@@ -25,9 +17,9 @@ struct termio ntermio;		/* charactoristics to use inside */
 #if XONXOFF
 #define XXMASK	0016000
 #endif
-#endif
 
-#if V7 | BSD
+#elif BSD
+
 #include <sgtty.h>		/* for stty/gtty functions */
 #include <signal.h>
 struct sgttyb ostate;		/* saved tty state */
@@ -40,32 +32,26 @@ struct tchars ntchars = {0xFF, 0xFF, 0x11, 0x13, 0xFF, 0xFF};
 struct tchars ntchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
 #endif
-#if BSD & PKCODE
+
+#if PKCODE
 struct ltchars oltchars;	/* Saved terminal local special character set */
 struct ltchars nltchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
 #endif
 
-#if BSD
 #include <sys/ioctl.h>		/* to get at the typeahead */
 #define TBUFSIZ	128
 char tobuf[TBUFSIZ];		/* terminal output buffer */
-#endif
+
 #endif
 
-#if __hpux | SVR4
-#define TBUFSIZ 128
-char tobuf[TBUFSIZ];		/* terminal output buffer */
-#endif
 
-/*
- * This function is called once to set up the terminal device streams.
- */
+/* This function is called once to set up the terminal device streams. */
 void ttopen(void)
 {
 #if USG
 	ioctl(0, TCGETA, &otermio);	/* save old settings */
-	ntermio.c_iflag = 0;	/* setup new settings */
+	ntermio.c_iflag = 0;		/* setup new settings */
 #if XONXOFF
 	ntermio.c_iflag = otermio.c_iflag & XXMASK;	/* save XON/XOFF P.K. */
 #endif
@@ -82,9 +68,9 @@ void ttopen(void)
 #endif
 	kbdflgs = fcntl(0, F_GETFL, 0);
 	kbdpoll = FALSE;
-#endif
 
-#if V7 | BSD
+#elif BSD
+
 	gtty(0, &ostate);	/* save old state */
 	gtty(0, &nstate);	/* get base of new state */
 #if XONXOFF
@@ -96,31 +82,19 @@ void ttopen(void)
 	stty(0, &nstate);	/* set mode */
 	ioctl(0, TIOCGETC, &otchars);	/* Save old characters */
 	ioctl(0, TIOCSETC, &ntchars);	/* Place new character into K */
-#if BSD & PKCODE
+#if PKCODE
 	ioctl(0, TIOCGLTC, &oltchars);	/* Save old local characters */
 	ioctl(0, TIOCSLTC, &nltchars);	/* New local characters */
 #endif
-#if BSD
 	/*
 	 * provide a smaller terminal output buffer so that
 	 * the type ahead detection works better (more often)
 	 */
 	setbuffer(stdout, tobuf, TBUFSIZ);
 #endif
-#endif
-
-#if __hpux | SVR4
-	/*
-	 * provide a smaller terminal output buffer so that
-	 * the type ahead detection works better (more often)
-	 */
-	setvbuf(stdout, tobuf, _IOFBF, TBUFSIZ);
-	TTflush();
-#endif /* __hpux */
 
 	/*
-	 * on all screens we are not sure of the initial position
-	 * of the cursor
+	 * on all screens we are not sure of the initial position of the cursor
 	 */
 	ttrow = 999;
 	ttcol = 999;
@@ -139,23 +113,18 @@ void ttclose(void)
 	ioctl(0, TCSETA, &otermio);	/* restore terminal settings */
 #endif
 	fcntl(0, F_SETFL, kbdflgs);
-#endif
-
-#if V7 | BSD
+#elif BSD
 	stty(0, &ostate);
 	ioctl(0, TIOCSETC, &otchars);	/* Place old character into K */
-#if BSD & PKCODE
+#if PKCODE
 	ioctl(0, TIOCSLTC, &oltchars);	/* Place old local character into K */
 #endif
 #endif
 }
 
-/*
- * Write a character to the display.
- */
 void ttputc(c)
 {
-#if V7 | USG | BSD
+#if UNIX
 	fputc(c, stdout);
 #endif
 }
@@ -166,7 +135,7 @@ void ttputc(c)
  */
 void ttflush(void)
 {
-#if V7 | USG | BSD
+#if UNIX
 /*
  * Add some terminal output success checking, sometimes an orphaned
  * process may be left looping on SunOS 4.1.
@@ -180,9 +149,7 @@ void ttflush(void)
 #include <errno.h>
 
 	int status;
-
 	status = fflush(stdout);
-
 	if (status != 0 && errno != EAGAIN) {
 		exit(errno);
 	}
@@ -195,10 +162,6 @@ void ttflush(void)
  */
 int ttgetc(void)
 {
-#if V7 | BSD
-	return fgetc(stdin) & 0xFF;	/* 8BIT P.K. */
-#endif
-
 #if USG
 	if (kbdqp)
 		kbdqp = FALSE;
@@ -209,22 +172,16 @@ int ttgetc(void)
 		while (read(0, &kbdq, 1) != 1);
 	}
 	return kbdq & 0xFF;
+#elif BSD
+	return fgetc(stdin) & 0xFF;	/* 8BIT P.K. */
 #endif
 }
 
 #if TYPEAH
-/* typahead:	Check to see if any characters are already in the
-		keyboard buffer
-*/
 
+/* Check to see if any characters are already in the keyboard buffer. */
 int typahead(void)
 {
-#if BSD
-	int x;			/* holds # of pending chars */
-
-	return (ioctl(0, FIONREAD, &x) < 0) ? 0 : x;
-#endif
-
 #if USG
 	if (!kbdqp) {
 		if (!kbdpoll && fcntl(0, F_SETFL, kbdflgs | O_NDELAY) < 0)
@@ -235,9 +192,10 @@ int typahead(void)
 		kbdqp = (1 == read(0, &kbdq, 1));
 	}
 	return kbdqp;
-#endif
-
-#if !UNIX
+#elif BSD
+	int x;
+	return (ioctl(0, FIONREAD, &x) < 0) ? 0 : x;
+#else /* !UNIX */
 	return FALSE;
 #endif
 }

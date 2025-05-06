@@ -1,17 +1,3 @@
-/* tcap.c
- *
- *	Unix V7 SysV and BS4 Termcap video driver
- *
- *	modified by Petri Kutvonen
- */
-
-/*
- * Defining this to 1 breaks tcapopen() - it doesn't check if the
- * sceen size has changed.
- *	-lbt
- */
-#define USE_BROKEN_OPTIMIZATION 0
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -55,9 +41,6 @@ static char *UP, PC, *CM, *CE, *CL, *SO, *SE;
 
 #if PKCODE
 static char *TI, *TE;
-#if USE_BROKEN_OPTIMIZATION
-static int term_init_ok = 0;
-#endif
 #endif
 
 #if SCROLLCODE
@@ -98,108 +81,100 @@ struct terminal term = {
 static void tcapopen(void)
 {
 	char tcbuf[1024];
-	char *tv_stype;
 	char err_str[72];
-	char *t, *p;
+	char *tv_stype, *t, *p;
 	int int_col, int_row;
 
-#if PKCODE && USE_BROKEN_OPTIMIZATION
-	if (!term_init_ok) {
-#endif
-		if ((tv_stype = getenv("TERM")) == NULL) {
-			puts("Environment variable TERM not defined!");
-			exit(1);
-		}
+	if ((tv_stype = getenv("TERM")) == NULL) {
+		puts("Environment variable TERM not defined!");
+		exit(1);
+	}
 
-		if ((tgetent(tcbuf, tv_stype)) != 1) {
-			sprintf(err_str, "Unknown terminal type %s!",
-				tv_stype);
-			puts(err_str);
-			exit(1);
-		}
+	if ((tgetent(tcbuf, tv_stype)) != 1) {
+		sprintf(err_str, "Unknown terminal type %s!",
+			tv_stype);
+		puts(err_str);
+		exit(1);
+	}
 
-		/* Get screen size from system, or else from termcap. */
-		getscreensize(&int_col, &int_row);
-		term.t_nrow = int_row - 1;
-		term.t_ncol = int_col;
+	/* Get screen size from system, or else from termcap. */
+	getscreensize(&int_col, &int_row);
+	term.t_nrow = int_row - 1;
+	term.t_ncol = int_col;
 
-		if ((term.t_nrow <= 0) &&
-				(term.t_nrow = (short)tgetnum("li") - 1)
-						== -1) {
-			puts("termcap entry incomplete (lines)");
-			exit(1);
-		}
+	if ((term.t_nrow <= 0) &&
+			(term.t_nrow = (short)tgetnum("li") - 1)
+					== -1) {
+		puts("termcap entry incomplete (lines)");
+		exit(1);
+	}
 
-		if ((term.t_ncol <= 0) &&
-				(term.t_ncol = (short)tgetnum("co")) == -1) {
-			puts("Termcap entry incomplete (columns)");
-			exit(1);
-		}
+	if ((term.t_ncol <= 0) &&
+			(term.t_ncol = (short)tgetnum("co")) == -1) {
+		puts("Termcap entry incomplete (columns)");
+		exit(1);
+	}
 #ifdef SIGWINCH
-		term.t_mrow = MAXROW;
-		term.t_mcol = MAXCOL;
+	term.t_mrow = MAXROW;
+	term.t_mcol = MAXCOL;
 #else
-		term.t_mrow = term.t_nrow > MAXROW ? MAXROW : term.t_nrow;
-		term.t_mcol = term.t_ncol > MAXCOL ? MAXCOL : term.t_ncol;
+	term.t_mrow = term.t_nrow > MAXROW ? MAXROW : term.t_nrow;
+	term.t_mcol = term.t_ncol > MAXCOL ? MAXCOL : term.t_ncol;
 #endif
-		p = tcapbuf;
-		t = tgetstr("pc", &p);
-		if (t)
-			PC = *t;
-		else
-			PC = 0;
+	p = tcapbuf;
+	t = tgetstr("pc", &p);
+	if (t)
+		PC = *t;
+	else
+		PC = 0;
 
-		CL = tgetstr("cl", &p);
-		CM = tgetstr("cm", &p);
-		CE = tgetstr("ce", &p);
-		UP = tgetstr("up", &p);
-		SE = tgetstr("se", &p);
-		SO = tgetstr("so", &p);
-		if (SO != NULL)
-			revexist = TRUE;
+	CL = tgetstr("cl", &p);
+	CM = tgetstr("cm", &p);
+	CE = tgetstr("ce", &p);
+	UP = tgetstr("up", &p);
+	SE = tgetstr("se", &p);
+	SO = tgetstr("so", &p);
+	if (SO != NULL)
+		revexist = TRUE;
 #if PKCODE
-		if (tgetnum("sg") > 0) {	/* can reverse be used? P.K. */
-			revexist = FALSE;
-			SE = NULL;
-			SO = NULL;
-		}
-		TI = tgetstr("ti", &p);	/* terminal init and exit */
-		TE = tgetstr("te", &p);
+	if (tgetnum("sg") > 0) {	/* can reverse be used? P.K. */
+		revexist = FALSE;
+		SE = NULL;
+		SO = NULL;
+	}
+	TI = tgetstr("ti", &p);	/* terminal init and exit */
+	TE = tgetstr("te", &p);
 #endif
 
-		if (CL == NULL || CM == NULL || UP == NULL) {
-			puts("Incomplete termcap entry\n");
-			exit(1);
-		}
+	if (CL == NULL || CM == NULL || UP == NULL) {
+		puts("Incomplete termcap entry\n");
+		exit(1);
+	}
 
-		if (CE == NULL)	/* will we be able to use clear to EOL? */
-			eolexist = FALSE;
+	if (CE == NULL)	/* will we be able to use clear to EOL? */
+		eolexist = FALSE;
 #if SCROLLCODE
-		CS = tgetstr("cs", &p);
-		SF = tgetstr("sf", &p);
-		SR = tgetstr("sr", &p);
-		DL = tgetstr("dl", &p);
-		AL = tgetstr("al", &p);
+	CS = tgetstr("cs", &p);
+	SF = tgetstr("sf", &p);
+	SR = tgetstr("sr", &p);
+	DL = tgetstr("dl", &p);
+	AL = tgetstr("al", &p);
 
-		if (CS && SR) {
-			if (SF == NULL)	/* assume '\n' scrolls forward */
-				SF = "\n";
-			term.t_scroll = tcapscroll_reg;
-		} else if (DL && AL) {
-			term.t_scroll = tcapscroll_delins;
-		} else {
-			term.t_scroll = NULL;
-		}
-#endif
-
-		if (p >= &tcapbuf[TCAPSLEN]) {
-			puts("Terminal description too big!\n");
-			exit(1);
-		}
-#if PKCODE && USE_BROKEN_OPTIMIZATION
-		term_init_ok = 1;
+	if (CS && SR) {
+		if (SF == NULL)	/* assume '\n' scrolls forward */
+			SF = "\n";
+		term.t_scroll = tcapscroll_reg;
+	} else if (DL && AL) {
+		term.t_scroll = tcapscroll_delins;
+	} else {
+		term.t_scroll = NULL;
 	}
 #endif
+
+	if (p >= &tcapbuf[TCAPSLEN]) {
+		puts("Terminal description too big!\n");
+		exit(1);
+	}
 	ttopen();
 }
 

@@ -137,7 +137,7 @@ static void ansiparm(int n)
 
 static void ansiopen(void)
 {
-#if V7 | USG | BSD
+#if UNIX
 	char *cp;
 
 	if ((cp = getenv("TERM")) == NULL) {

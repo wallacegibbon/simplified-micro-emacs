@@ -50,7 +50,7 @@ int ffclose(void)
 	}
 	eofflag = FALSE;
 
-#if V7 | USG | BSD
+#if UNIX
 	if (fclose(ffp) != FALSE) {
 		mlwrite("Error closing file");
 		return FIOERR;

@@ -1,67 +1,38 @@
-#define MAXCOL	500
 #define MAXROW	500
+#define MAXCOL	500
 
-/* Machine/OS definitions. */
+#if defined(BSD) || defined(sun) || defined(ultrix) || \
+		(defined(vax) && defined(unix)) || \
+		defined(ultrix) || defined(__osf__)
 
-#if defined(AUTOCONF) || defined(BSD) || defined(SYSV)
-
-/* Make an intelligent guess about the target system. */
-
-#if defined(BSD) || defined(sun) || defined(ultrix) || (defined(vax) && defined(unix)) || defined(ultrix) || defined(__osf__)
-#ifndef BSD
-#define BSD 1 /* Berkeley UNIX */
-#endif
+	#ifndef BSD
+	#define BSD 1
+	#endif
 #else
-#define BSD 0
+	#define BSD 0
 #endif
 
 #if defined(SVR4) || defined(__linux__)	/* ex. SunOS 5.3 */
-#define SVR4 1
-#define SYSV 1
-#undef BSD
+	#define SVR4 1
+	#define SYSV 1
+	#undef BSD
 #endif
 
-#if defined(SYSV) || defined(u3b2) || defined(_AIX) || (defined(i386) && defined(unix)) || defined(__hpux)
-#define USG 1 /* System V UNIX */
+#if defined(SYSV) || defined(u3b2) || defined(_AIX) || \
+		(defined(i386) && defined(unix)) || defined(__hpux)
+
+	#define USG 1 /* System V UNIX */
 #else
-#define USG 0
+	#define USG 0
 #endif
 
-#define V7 0 /* No more. */
+#define UNIX	(BSD | USG)
 
-#else
-
-#define V7      0		/* V7 UNIX or Coherent or BSD4.2 */
-#define BSD	0		/* UNIX BSD 4.2 and ULTRIX */
-#define USG	0		/* UNIX system V */
-
-#endif /* AUTOCONF || BSD || SYSV */
-
-#ifndef	AUTOCONF
-#define UNIX	0		/* a random UNIX compiler */
-#else
-#define UNIX	(V7 | BSD | USG)
-#endif /* AUTOCONF */
 
 /* Debugging options */
 
 #define RAMSIZE	0		/* dynamic RAM memory usage tracking */
 #define RAMSHOW	0		/* auto dynamic RAM reporting */
-
-#ifndef	AUTOCONF
-
-/* Special keyboard definitions */
-
-#define VT220	0		/* Use keypad escapes P.K. */
-#define VT100   0		/* Handle VT100 style keypad. */
-
-/* Terminal Output definitions */
-
-#define ANSI    0		/* ANSI escape sequences */
-#define VT52    0		/* VT52 terminal (Zenith). */
-#define TERMCAP 0		/* Use TERMCAP */
-
-#else
 
 #define VT220	UNIX
 #define VT100	0
@@ -69,34 +40,21 @@
 #define VT52	0
 #define TERMCAP	UNIX
 
-#endif /* AUTOCONF */
 
 /* Configuration options */
 
 #define TYPEAH	1  /* type ahead causes update to be skipped */
 #define VISMAC	0  /* update display during keyboard macros */
 
-#ifndef	AUTOCONF
-
-#define FILOCK	0  /* file locking under unix BSD 4.2 */
-
-#else
-
-#ifdef  SVR4
+#ifdef SVR4
 #define FILOCK  1
 #else
 #define FILOCK	BSD
 #endif
 
-#endif /* AUTOCONF. */
-
 #define CLEAN	0  /* de-alloc memory on exit */
 
-#ifndef	AUTOCONF
-#define XONXOFF	0  /* don't disable XON-XOFF flow control P.K. */
-#else
 #define XONXOFF	UNIX
-#endif /* AUTOCONF */
 
 #define PKCODE	1      /* include my extensions P.K., define always */
 #define SCROLLCODE 1   /* scrolling code P.K. */
@@ -104,7 +62,7 @@
 
 /* Define some ability flags. */
 
-#if V7 | USG | BSD
+#if UNIX
 #define ENVFUNC	1
 #else
 #define ENVFUNC	0

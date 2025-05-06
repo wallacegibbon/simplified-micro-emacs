@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#if V7 | USG | BSD
+#if UNIX
 #include <signal.h>
 #ifdef SIGWINCH
 extern int chg_width, chg_height;
@@ -19,7 +19,7 @@ void sizesignal(int);
  */
 int spawncli(int f, int n)
 {
-#if V7 | USG | BSD
+#if UNIX
 	char *cp;
 	movecursor(term.t_nrow, 0);	/* Seek to last line. */
 	TTflush();
@@ -65,7 +65,7 @@ int spawn(int f, int n)
 	char line[NLINE];
 	int s;
 
-#if V7 | USG | BSD
+#if UNIX
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
@@ -126,7 +126,7 @@ int pipecmd(int f, int n)
 		if (zotbuf(bp) != TRUE)
 			return FALSE;
 	}
-#if V7 | USG | BSD
+#if UNIX
 	TTflush();
 	TTclose();		/* stty to old modes */
 	TTkclose();
@@ -198,7 +198,7 @@ int filter_buffer(int f, int n)
 		return FALSE;
 	}
 
-#if V7 | USG | BSD
+#if UNIX
 	TTputc('\n');			/* Already have '\r' */
 	TTflush();
 	TTclose();			/* stty to old modes */

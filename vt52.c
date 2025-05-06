@@ -106,7 +106,7 @@ static void vt52beep(void)
 
 static void vt52open(void)
 {
-#if V7 | BSD
+#if BSD
 	char *cp;
 	char *getenv();
 

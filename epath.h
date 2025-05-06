@@ -2,7 +2,7 @@
 #define __EPATH_H
 
 static char *pathname[] =
-#if V7 | BSD | USG
+#if UNIX
 {
 	"me.hlp",
 #if PKCODE

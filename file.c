@@ -269,7 +269,7 @@ void makename(char *bname, char *fname)
 	while (*cp1 != 0)
 		++cp1;
 
-#if V7 | USG | BSD
+#if UNIX
 	while (cp1 != fname && cp1[-1] != '/')
 		--cp1;
 #endif
