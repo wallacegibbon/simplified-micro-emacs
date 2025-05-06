@@ -495,46 +495,50 @@ int nullproc(int f, int n)
 /* Compiler specific Library functions */
 
 #if RAMSIZE
+
 /*
- * These routines will allow me to track memory usage by placing a layer
- * on top of the standard system malloc() and free() calls.
- * With this code defined, the environment variable, $RAM, will
- * report on the number of bytes allocated via malloc.
+ * This is a HACK.
+ * If the size is not stored in the hidden header, or it's stored in
+ * unexpected address, it go wrong.
+ */
 
- * With SHOWRAM defined, the number is also posted on the
- * end of the bottom mode line and is updated whenever it is changed.
-*/
-
-#undef	malloc
-#undef	free
+/* Undefine macros defined in estruct.h to unshadow `malloc` and `free`. */
+#undef malloc
+#undef free
 
 void *malloc(unsigned long);
 void free(void *);
 
+/* This hack is doing dangerous pointer operations that compiler will warn */
+#pragma GCC diagnostic push
+
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+static inline size_t real_alloc_size(void *p)
+{
+	return *((size_t *)p - 1);
+}
+
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
 void *allocate(unsigned long nbytes)
 {
-	char *mp;
-	mp = malloc(nbytes);
+	char *mp = malloc(nbytes);
 	if (mp) {
-		envram += nbytes;
+		envram += real_alloc_size(mp);
 	}
 	return mp;
 }
 
 void release(void *mp)
 {
-	unsigned int *lp;
 	if (mp) {
-		/* update amount of ram currently malloced */
-		/*
-		 * This only work if the size of the allocated memory are
-		 * attached with it.
-		 */
-		lp = ((unsigned *)mp) - 1;
-		envram -= (long)*lp - 2;
+		envram -= real_alloc_size(mp);
 		free(mp);
 	}
 }
+
+#pragma GCC diagnostic pop
 
 #endif
 

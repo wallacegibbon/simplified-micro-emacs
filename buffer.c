@@ -172,7 +172,12 @@ int zotbuf(struct buffer *bp)
 		bheadp = bp2;
 	else
 		bp1->b_bufp = bp2;
+
 	free(bp);
+
+#if RAMSHOW
+	curwp->w_flag |= WFMODE;	/* update memory usage */
+#endif
 	return TRUE;
 }
 

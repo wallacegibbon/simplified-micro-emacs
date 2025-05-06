@@ -31,8 +31,8 @@
 
 /* Debugging options */
 
-#define RAMSIZE	0		/* dynamic RAM memory usage tracking */
-#define RAMSHOW	0		/* auto dynamic RAM reporting */
+#define RAMSIZE	1		/* dynamic RAM memory usage tracking */
+#define RAMSHOW	1		/* auto dynamic RAM reporting */
 
 #define VT220	UNIX
 #define VT100	0
