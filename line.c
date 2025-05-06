@@ -82,7 +82,7 @@ void lfree(struct line *lp)
 	}
 	lp->l_bp->l_fp = lp->l_fp;
 	lp->l_fp->l_bp = lp->l_bp;
-	free((char *)lp);
+	free(lp);
 }
 
 /*
@@ -187,7 +187,7 @@ static int linsert_byte(int n, int c)
 		lp2->l_fp = lp1->l_fp;
 		lp1->l_fp->l_bp = lp2;
 		lp2->l_bp = lp1->l_bp;
-		free((char *)lp1);
+		free(lp1);
 	} else {		/* Easy: in place */
 		lp2 = lp1;	/* Pretend new line */
 		lp2->l_used += n;
@@ -436,7 +436,7 @@ int ldelnewline(void)
 		lp1->l_used += lp2->l_used;
 		lp1->l_fp = lp2->l_fp;
 		lp2->l_fp->l_bp = lp1;
-		free((char *)lp2);
+		free(lp2);
 		return TRUE;
 	}
 	if ((lp3 = lalloc(lp1->l_used + lp2->l_used)) == NULL)
@@ -470,8 +470,8 @@ int ldelnewline(void)
 		}
 		wp = wp->w_wndp;
 	}
-	free((char *)lp1);
-	free((char *)lp2);
+	free(lp1);
+	free(lp2);
 	return TRUE;
 }
 

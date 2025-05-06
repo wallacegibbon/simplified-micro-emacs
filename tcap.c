@@ -5,6 +5,8 @@
 #include <term.h>
 #include <signal.h>
 
+#if TCAP
+
 #define MARGIN	8
 #define SCRSIZ	64
 #define NPAUSE	10    /* # times thru update to pause. */
@@ -301,3 +303,5 @@ static void putpad(char *str)
 {
 	tputs(str, 1, ttputc);
 }
+
+#endif

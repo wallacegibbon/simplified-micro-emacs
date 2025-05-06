@@ -1,10 +1,10 @@
-#include <stdio.h>
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
 #include "version.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #if UNIX
 #include <signal.h>
@@ -387,10 +387,8 @@ int quit(int f, int n)
 {
 	int s;
 
-	if (f != FALSE /* Argument forces it. */
-			|| anycb() == FALSE /* All buffers clean. */
-			/* User says it's OK. */
-			|| (s = mlyesno("Modified buffers exist. Leave anyway")) == TRUE) {
+	if (f != FALSE || anycb() == FALSE /* All buffers clean. */
+			|| (s = mlyesno("Modified buffers exist. Quit anyway")) == TRUE) {
 #if (FILOCK && BSD) || SVR4
 		if (lockrel() != TRUE) {
 			TTputc('\n');
@@ -510,67 +508,47 @@ int nullproc(int f, int n)
 #undef	malloc
 #undef	free
 
-char *allocate(unsigned int nbytes)
+void *malloc(unsigned long);
+void free(void *);
+
+void *allocate(unsigned long nbytes)
 {
 	char *mp;
-	char *malloc();
-
 	mp = malloc(nbytes);
 	if (mp) {
 		envram += nbytes;
-#if RAMSHOW
-		dspram();
-#endif
 	}
-
 	return mp;
 }
 
-void release(char *mp)
+void release(void *mp)
 {
 	unsigned int *lp;
-
 	if (mp) {
 		/* update amount of ram currently malloced */
+		/*
+		 * This only work if the size of the allocated memory are
+		 * attached with it.
+		 */
 		lp = ((unsigned *)mp) - 1;
 		envram -= (long)*lp - 2;
 		free(mp);
-#if RAMSHOW
-		dspram();
-#endif
 	}
 }
 
-#if RAMSHOW
-/* display the amount of RAM currently malloced */
-void dspram()
-{
-	char mbuf[20];
-	char *sp;
-
-	TTmove(term.t_nrow - 1, 70);
-	sprintf(mbuf, "[%lu]", envram);
-	sp = mbuf;
-	while (*sp)
-		TTputc(*sp++);
-	TTmove(term.t_nrow, 0);
-	movecursor(term.t_nrow, 0);
-}
-#endif
 #endif
 
-/* On some primitave operation systems, and when emacs is used as
-	a subprogram to a larger project, emacs needs to de-alloc its
-	own used memory
-*/
+/*
+ * On some primitave operation systems, and when emacs is used as a subprogram
+ * to a larger project, emacs needs to de-alloc its own used memory.
+ */
 
 #if CLEAN
 
 int cexit(int status)
 {
-	struct buffer *bp;	/* buffer list pointer */
-	struct window *wp;	/* window list pointer */
-	struct window *tp;	/* temporary window pointer */
+	struct buffer *bp;
+	struct window *wp, *tp;
 
 	/* first clean up the windows */
 	wp = wheadp;

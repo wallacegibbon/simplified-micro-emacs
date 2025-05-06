@@ -997,12 +997,17 @@ static void modeline(struct window *wp)
 		++n;
 	}
 
-	{	/* determine if top line, bottom line, or both are visible */
+#if RAMSHOW
+	vtcol = n - 5 - 2 - 7 - 2;
+#else
+	vtcol = n - 5 - 2;
+#endif
+
+	{
 		struct line *lp = wp->w_linep;
 		int rows = wp->w_ntrows;
 		char *msg = NULL;
 
-		vtcol = n - 7;	/* strlen(" top ") plus a couple */
 		while (rows--) {
 			lp = lforw(lp);
 			if (lp == wp->w_bufp->b_linep) {
@@ -1047,9 +1052,30 @@ static void modeline(struct window *wp)
 			}
 		}
 
-		for (cp = msg; (c = *cp) != 0; ++cp, ++n)
+		for (cp = msg; (c = *cp) != 0; ++cp)
 			vtputc(c);
 	}
+
+#if RAMSHOW
+	vtcol += 1;
+
+	{
+#define GB (1024 * 1024 * 1024)
+#define MB (1024 * 1024)
+#define KB 1024
+		char mbuf[20];
+		if (envram > GB)
+			sprintf(mbuf, " %luG ", envram / GB);
+		else if (envram > 1024 * 1024)
+			sprintf(mbuf, " %luM ", envram / MB);
+		else if (envram > 1024)
+			sprintf(mbuf, " %luK ", envram / KB);
+		else
+			sprintf(mbuf, " %lu ", envram);
+		for (cp = mbuf; (c = *cp) != 0; ++cp)
+			vtputc(c);
+	}
+#endif
 }
 
 void update_modelines(void)

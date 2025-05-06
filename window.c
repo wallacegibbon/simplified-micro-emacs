@@ -187,7 +187,7 @@ int onlywind(int f, int n)
 			wp->w_bufp->b_markp = wp->w_markp;
 			wp->w_bufp->b_marko = wp->w_marko;
 		}
-		free((char *)wp);
+		free(wp);
 	}
 	while (curwp->w_wndp != NULL) {
 		wp = curwp->w_wndp;
@@ -198,7 +198,7 @@ int onlywind(int f, int n)
 			wp->w_bufp->b_markp = wp->w_markp;
 			wp->w_bufp->b_marko = wp->w_marko;
 		}
-		free((char *)wp);
+		free(wp);
 	}
 	lp = curwp->w_linep;
 	i = curwp->w_toprow;
@@ -279,7 +279,7 @@ int delwind(int f, int n)
 		wheadp = curwp->w_wndp;
 	else
 		lwp->w_wndp = curwp->w_wndp;
-	free((char *)curwp);
+	free(curwp);
 	curwp = wp;
 	wp->w_flag |= WFHARD;
 	curbp = wp->w_bufp;
@@ -606,8 +606,7 @@ int newsize(int f, int n)
 				if (lastwp != NULL)
 					lastwp->w_wndp = NULL;
 
-				/* free the structure */
-				free((char *)wp);
+				free(wp);
 				wp = NULL;
 
 			} else {
