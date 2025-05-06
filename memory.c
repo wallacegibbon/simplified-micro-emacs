@@ -23,7 +23,8 @@ void free(void *);
 
 static inline size_t allocated_size(void *p)
 {
-	return *((size_t *)p - 1);
+	/* The LSB is a sign, which become 0 when this memory got `free`ed */
+	return *((size_t *)p - 1) & ~1;
 }
 
 #pragma GCC diagnostic ignored "-Warray-bounds"
