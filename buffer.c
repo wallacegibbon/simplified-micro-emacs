@@ -453,7 +453,7 @@ struct buffer *bfind(char *bname, int cflag, int bflag)
 
 	/* create a buffer */
 
-	if ((bp = (struct buffer *)malloc(sizeof(struct buffer))) == NULL)
+	if ((bp = malloc(sizeof(struct buffer))) == NULL)
 		return NULL;
 	if ((lp = lalloc(0)) == NULL) {
 		free(bp);

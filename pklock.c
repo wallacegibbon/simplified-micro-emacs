@@ -69,7 +69,7 @@ char *dolock(char *fname)
 	}
 	if ((n = read(fd, locker, MAXNAME)) < 1) {
 		lseek(fd, 0, SEEK_SET);
-/* strcpy(locker, getlogin()); */
+		/* strcpy(locker, getlogin()); */
 		cuserid(locker);
 		strcat(locker + strlen(locker), "@");
 		gethostname(locker + strlen(locker), 64);
@@ -82,12 +82,8 @@ char *dolock(char *fname)
 }
 
 /*
- *
- * undolock -- unlock the file fname
- *
  * if successful, returns NULL
  * if other error, returns "LOCK ERROR: explanation"
- *
  */
 char *undolock(char *fname)
 {

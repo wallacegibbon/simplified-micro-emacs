@@ -1,10 +1,3 @@
-/* LOCK.C
- *
- *	File locking command routines
- *
- *	written by Daniel Lawrence
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -15,12 +8,7 @@
 static char *lname[NLOCKS];		/* names of all locked files */
 static int numlocks;			/* # of current locks active */
 
-/*
- * lockchk:
- *	check a file for locking and add it to the list
- *
- * char *fname;			file to check for a lock
- */
+/* check a file for locking and add it to the list */
 int lockchk(char *fname)
 {
 	int status, i;
@@ -45,7 +33,7 @@ int lockchk(char *fname)
 		return TRUE;
 
 	/* we have now locked it, add it to our table */
-	lname[++numlocks - 1] = (char *)malloc(strlen(fname) + 1);
+	lname[++numlocks - 1] = malloc(strlen(fname) + 1);
 	if (lname[numlocks - 1] == NULL) {	/* malloc failure */
 		undolock(fname);	/* free the lock */
 		mlwrite("Cannot lock, out of memory");
@@ -58,10 +46,7 @@ int lockchk(char *fname)
 	return TRUE;
 }
 
-/*
- * lockrel:
- *	release all the file locks so others may edit
- */
+/* Release all the file locks so others may edit */
 int lockrel(void)
 {
 	int status, s, i;
@@ -78,18 +63,15 @@ int lockrel(void)
 }
 
 /*
- * lock:
- *	Check and lock a file from access by others
- *	returns	TRUE = files was not locked and now is
+ * Check and lock a file from access by others
+ * returns	TRUE = files was not locked and now is
  *		FALSE = file was locked and overridden
  *		ABORT = file was locked, abort command
- *
- * char *fname;		file name to lock
  */
 int lock(char *fname)
 {
-	char *locker;		/* lock error message */
-	char msg[NSTRING];	/* message string */
+	char *locker;
+	char msg[NSTRING];
 	int status;
 
 	/* attempt to lock the file */
@@ -114,13 +96,7 @@ int lock(char *fname)
 		return ABORT;
 }
 
-/*
- * unlock:
- *	Unlock a file
- *	this only warns the user if it fails
- *
- * char *fname;		file to unlock
- */
+/* Unlock a file.  This only warns the user if it fails */
 int unlock(char *fname)
 {
 	char *locker;	/* undolock return string */
@@ -135,18 +111,14 @@ int unlock(char *fname)
 	return FALSE;
 }
 
-/*
- * report a lock error
- *
- * char *errstr;	lock error string to print out
- */
 void lckerror(char *errstr)
 {
-	char obuf[NSTRING];	/* output buffer for error message */
+	char obuf[NSTRING];
 
 	strcpy(obuf, errstr);
 	strcat(obuf, " - ");
 	strcat(obuf, strerror(errno));
 	mlwrite(obuf);
 }
+
 #endif

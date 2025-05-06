@@ -32,7 +32,7 @@ struct line *lalloc(int used)
 	size = (used + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
 	if (size == 0)	/* Assume that is an empty. */
 		size = BLOCK_SIZE;  /* Line is for type-in. */
-	if ((lp = (struct line *)malloc(sizeof(struct line) + size)) == NULL) {
+	if ((lp = malloc(sizeof(struct line) + size)) == NULL) {
 		mlwrite("(OUT OF MEMORY)");
 		return NULL;
 	}
@@ -506,12 +506,11 @@ void kdelete(void)
  */
 int kinsert(int c)
 {
-	struct kill *nchunk;		/* ptr to newly malloced chunk */
+	struct kill *nchunk;
 
 	/* check to see if we need a new chunk */
 	if (kused >= KBLOCK) {
-		if ((nchunk = (struct kill *)malloc(sizeof(struct kill)))
-				== NULL)
+		if ((nchunk = malloc(sizeof(struct kill))) == NULL)
 			return FALSE;
 		if (kbufh == NULL)	/* set head ptr if first time */
 			kbufh = nchunk;
