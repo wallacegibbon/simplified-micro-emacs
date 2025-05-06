@@ -491,56 +491,7 @@ int nullproc(int f, int n)
 	return TRUE;
 }
 
-
 /* Compiler specific Library functions */
-
-#if RAMSIZE
-
-/*
- * This is a HACK.
- * If the size is not stored in the hidden header, or it's stored in
- * unexpected address, it go wrong.
- */
-
-/* Undefine macros defined in estruct.h to unshadow `malloc` and `free`. */
-#undef malloc
-#undef free
-
-void *malloc(unsigned long);
-void free(void *);
-
-/* This hack is doing dangerous pointer operations that compiler will warn */
-#pragma GCC diagnostic push
-
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-
-static inline size_t real_alloc_size(void *p)
-{
-	return *((size_t *)p - 1);
-}
-
-#pragma GCC diagnostic ignored "-Warray-bounds"
-
-void *allocate(unsigned long nbytes)
-{
-	char *mp = malloc(nbytes);
-	if (mp) {
-		envram += real_alloc_size(mp);
-	}
-	return mp;
-}
-
-void release(void *mp)
-{
-	if (mp) {
-		envram -= real_alloc_size(mp);
-		free(mp);
-	}
-}
-
-#pragma GCC diagnostic pop
-
-#endif
 
 /*
  * On some primitave operation systems, and when emacs is used as a subprogram

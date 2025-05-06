@@ -146,10 +146,10 @@
 #undef isupper
 #endif
 
+#define isvisible(c)	(((c) >= 0x20 && (c) <= 0x7E) || (c) == '\t')
 #define islower(c)	('a' <= (c) && (c) <= 'z')
 #define isupper(c)	('A' <= (c) && (c) <= 'Z')
 #define isletter(c)	(islower(c) || isupper(c))
-#define isvisible(c)	(((c) >= 0x20 && (c) <= 0x7E) || (c) == '\t')
 
 /* Dynamic RAM tracking and reporting redefinitions */
 

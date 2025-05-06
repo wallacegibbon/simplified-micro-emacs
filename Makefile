@@ -18,13 +18,13 @@ SRC = ansi.c basic.c buffer.c display.c ebind.c names.c \
 	file.c fileio.c input.c isearch.c line.c lock.c main.c \
 	pklock.c posix.c random.c region.c search.c spawn.c tcap.c \
 	termio.c vt52.c window.c word.c globals.c version.c \
-	usage.c wrapper.c utf8.c
+	usage.c wrapper.c utf8.c memory.c
 
 OBJ = ansi.o basic.o buffer.o display.o ebind.o names.o \
 	file.o fileio.o input.o isearch.o line.o lock.o main.o \
 	pklock.o posix.o random.o region.o search.o spawn.o tcap.o \
 	termio.o vt52.o window.o word.o globals.o version.o \
-	usage.o wrapper.o utf8.o
+	usage.o wrapper.o utf8.o memory.o
 
 HDR = edef.h efunc.h epath.h estruct.h version.h
 
@@ -102,4 +102,5 @@ utf8.o: utf8.c utf8.h
 vt52.o: vt52.c estruct.h edef.h
 window.o: window.c estruct.h edef.h
 word.o: word.c estruct.h edef.h
-globals.o: estruct.h
+globals.o: estruct.h edef.h
+memory.o: estruct.h edef.h

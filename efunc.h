@@ -205,3 +205,7 @@ void lckerror(char *errstr);
 /* pklock.c */
 char *dolock(char *fname);
 char *undolock(char *fname);
+
+/* memory.c */
+void *allocate(unsigned long nbytes);
+void release(void *mp);
