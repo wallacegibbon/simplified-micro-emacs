@@ -21,7 +21,7 @@
 #if defined(SYSV) || defined(u3b2) || defined(_AIX) || \
 		(defined(i386) && defined(unix)) || defined(__hpux)
 
-	#define USG 1 /* System V UNIX */
+	#define USG 1
 #else
 	#define USG 0
 #endif

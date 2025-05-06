@@ -30,12 +30,9 @@ HDR = edef.h efunc.h epath.h estruct.h version.h
 
 CC = gcc
 WARNINGS = -Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
+
 #CFLAGS = -O0 $(WARNINGS) -g
 CFLAGS = -O2 $(WARNINGS) -g
-#CC = c89 +O3			# HP
-#CFLAGS = -D_HPUX_SOURCE -DSYSV
-#CFLAGS = -O4 -DSVR4		# Sun
-#CFLAGS = -O -qchars=signed	# RS/6000
 
 ifeq ($(uname_S), Linux)
 DEFINES = -DPOSIX -DUSG -D_XOPEN_SOURCE=600 -D_GNU_SOURCE
@@ -51,8 +48,8 @@ DEFINES = -DPOSIX -DSYSV -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_SVID_SOURCE \
 	-D_DARWIN_C_SOURCE
 endif
 
-#LIBS = -ltermcap		# BSD
-LIBS = -lcurses			# SYSV
+#LIBS = -ltermcap
+LIBS = -lcurses
 #LIBS = -ltermlib
 #LIBS = -L/usr/lib/termcap -ltermcap
 
