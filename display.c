@@ -1064,12 +1064,12 @@ static void modeline(struct window *wp)
 #define MB (1024 * 1024)
 #define KB 1024
 		char mbuf[20];
-		if (envram > GB)
-			sprintf(mbuf, " %luG ", envram / GB);
-		else if (envram > 1024 * 1024)
-			sprintf(mbuf, " %luM ", envram / MB);
-		else if (envram > 9999)
-			sprintf(mbuf, " %luK ", envram / KB);
+		if (envram >= 1000 * MB)
+			sprintf(mbuf, " %.1FG ", (double)envram / GB);
+		else if (envram >= 1000 * KB)
+			sprintf(mbuf, " %.1FM ", (double)envram / MB);
+		else if (envram >= 10000)
+			sprintf(mbuf, " %.1FK ", (double)envram / KB);
 		else
 			sprintf(mbuf, " %lu ", envram);
 		for (cp = mbuf; (c = *cp) != 0; ++cp)
