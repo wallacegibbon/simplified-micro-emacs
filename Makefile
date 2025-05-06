@@ -77,30 +77,30 @@ install: $(PROGRAM)
 
 # Write the dependencies by hand to work on different make programs.
 
-names.o: edef.h efunc.h estruct.h
-ebind.o: edef.h efunc.h estruct.h
+names.o: edef.h efunc.h estruct.h line.h
+ebind.o: edef.h efunc.h estruct.h line.h
 ansi.o: ansi.c estruct.h edef.h
-basic.o: basic.c estruct.h edef.h
-buffer.o: buffer.c estruct.h edef.h
-display.o: display.c estruct.h edef.h utf8.h
-file.o: file.c estruct.h edef.h
+basic.o: basic.c estruct.h edef.h line.h
+buffer.o: buffer.c estruct.h edef.h line.h
+display.o: display.c estruct.h edef.h utf8.h line.h
+file.o: file.c estruct.h edef.h line.h
 fileio.o: fileio.c estruct.h edef.h
 input.o: input.c estruct.h edef.h
-isearch.o: isearch.c estruct.h edef.h
-line.o: line.c estruct.h edef.h
+isearch.o: isearch.c estruct.h edef.h line.h
+line.o: line.c estruct.h edef.h line.h
 lock.o: lock.c estruct.h edef.h
-main.o: main.c estruct.h efunc.h edef.h
+main.o: main.c estruct.h efunc.h edef.h line.h
 pklock.o: pklock.c estruct.h
 posix.o: posix.c estruct.h utf8.h
-random.o: random.c estruct.h edef.h
-region.o: region.c estruct.h edef.h
-search.o: search.c estruct.h edef.h
+random.o: random.c estruct.h edef.h line.h
+region.o: region.c estruct.h edef.h line.h
+search.o: search.c estruct.h edef.h line.h
 spawn.o: spawn.c estruct.h edef.h
 tcap.o: tcap.c estruct.h edef.h
 termio.o: termio.c estruct.h edef.h
 utf8.o: utf8.c utf8.h
 vt52.o: vt52.c estruct.h edef.h
-window.o: window.c estruct.h edef.h
-word.o: word.c estruct.h edef.h
+window.o: window.c estruct.h edef.h line.h
+word.o: word.c estruct.h edef.h line.h
 globals.o: estruct.h edef.h
 memory.o: estruct.h edef.h

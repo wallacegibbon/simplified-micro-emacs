@@ -31,8 +31,8 @@
 
 /* Debugging options */
 
-#define RAMSIZE	1		/* dynamic RAM memory usage tracking */
-#define RAMSHOW	1		/* auto dynamic RAM reporting */
+#define RAMSIZE	1		/* Dynamic RAM memory usage tracking */
+#define RAMSHOW	1		/* Auto dynamic RAM reporting */
 
 #define VT220	UNIX
 #define VT100	0
@@ -56,7 +56,7 @@
 #define XONXOFF	UNIX
 
 #define PKCODE	1      /* include my extensions P.K., define always */
-#define SCROLLCODE 1   /* scrolling code P.K. */
+#define SCROLLCODE	1   /* scrolling code P.K. */
 
 
 /* Define some ability flags. */
