@@ -71,9 +71,6 @@ static void mlputf(int s);
 #ifdef SIGWINCH
 static int newscreensize(int h, int w);
 #endif
-#if RAINBOW
-static void putline(int row, int col, char *buf);
-#endif
 
 /*
  * Initialize the data structures used by the display code. The edge vectors
@@ -586,20 +583,17 @@ static int flush_to_physcr(int force)
 #if SCROLLCODE
 
 /*
- * optimize out scrolls (line breaks, and newlines)
- * arg. chooses between looking for inserts or deletes
+ * Optimize out scrolls (line breaks, and newlines) arg.
+ * Chooses between looking for inserts or deletes.
  */
 static int scrolls(int inserts)
-{				/* returns true if it does something */
-	struct video *vpv;	/* virtual screen image */
-	struct video *vpp;	/* physical screen image */
-	int i, j, k;
-	int rows, cols;
+{
+	struct video *vpv, *vpp;	/* virtual, physical screen */
 	int first, match, count, target, end;
-	int longmatch, longcount;
-	int from, to;
+	int longmatch, longcount, from, to;
+	int rows, cols, i, j, k;
 
-	if (!term.t_scroll)	/* no way to scroll */
+	if (!term.t_scroll)
 		return FALSE;
 
 	rows = term.t_nrow;
@@ -789,9 +783,7 @@ static void update_extended(void)
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
 	unicode_t *cp1, *cp2, *cp3, *cp4, *cp5;
-	int nbflag;		/* non-blanks to the right flag? */
-	int rev;		/* reverse video flag */
-	int req;		/* reverse video request flag */
+	int rev, req, nbflag;
 
 	/* set up pointers to virtual and physical lines */
 	cp1 = &vp1->v_text[0];
@@ -1063,18 +1055,22 @@ static void modeline(struct window *wp)
 #define GB (1024 * 1024 * 1024)
 #define MB (1024 * 1024)
 #define KB 1024
-		char mbuf[20];
+#define I(v, unit) ((short)((v) / (unit)))
+#define D(v, unit) ((char)((v) * 10 / (unit) % 10))
+		char mbuf[16];
 		if (envram >= 1000 * MB)
-			sprintf(mbuf, " %.1FG ", (double)envram / GB);
+			sprintf(mbuf, " %d.%dG ", I(envram, GB), D(envram, GB));
 		else if (envram >= 1000 * KB)
-			sprintf(mbuf, " %.1FM ", (double)envram / MB);
+			sprintf(mbuf, " %d.%dM ", I(envram, MB), D(envram, MB));
 		else if (envram >= 10000)
-			sprintf(mbuf, " %.1FK ", (double)envram / KB);
+			sprintf(mbuf, " %d.%dK ", I(envram, KB), D(envram, KB));
 		else
-			sprintf(mbuf, " %lu ", envram);
+			sprintf(mbuf, " %d ", (int)envram);
 		for (cp = mbuf; (c = *cp) != 0; ++cp)
 			vtputc(c);
 	}
+#undef I
+#undef D
 #endif
 }
 
@@ -1281,23 +1277,11 @@ static void mlputf(int s)
 	ttcol += 3;
 }
 
-#if RAINBOW
-
-static void putline(int row, int col, char *buf)
-{
-	int n;
-
-	n = strlen(buf);
-	if (col + n - 1 > term.t_ncol)
-		n = term.t_ncol - col + 1;
-	Put_Data(row, col, n, buf);
-}
-#endif
-
-/* Get terminal size from system.
-   Store number of lines into *heightp and width into *widthp.
-   If zero or a negative number is stored, the value is not valid. */
-
+/*
+ * Get terminal size from system.
+ * Store number of lines into *heightp and width into *widthp.
+ * If zero or a negative number is stored, the value is not valid.
+ */
 void getscreensize(int *widthp, int *heightp)
 {
 #ifdef TIOCGWINSZ
