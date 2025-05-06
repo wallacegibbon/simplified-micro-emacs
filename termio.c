@@ -163,9 +163,9 @@ void ttflush(void)
 int ttgetc(void)
 {
 #if USG
-	if (kbdqp)
+	if (kbdqp) {
 		kbdqp = FALSE;
-	else {
+	} else {
 		if (kbdpoll && fcntl(0, F_SETFL, kbdflgs) < 0)
 			return FALSE;
 		kbdpoll = FALSE;

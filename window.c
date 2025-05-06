@@ -25,9 +25,9 @@ int reposition(int f, int n)
  */
 int redraw(int f, int n)
 {
-	if (f == FALSE)
+	if (f == FALSE) {
 		sgarbf = TRUE;
-	else {
+	} else {
 		curwp->w_force = 0;	/* Center dot. */
 		curwp->w_flag |= WFFORCE;
 	}

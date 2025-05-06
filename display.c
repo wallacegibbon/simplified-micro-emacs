@@ -329,9 +329,9 @@ static int reframe(struct window *wp)
 		/* loop from one line above the window to one line after */
 		lp = wp->w_linep;
 		lp0 = lback(lp);
-		if (lp0 == wp->w_bufp->b_linep)
+		if (lp0 == wp->w_bufp->b_linep) {
 			i = 0;
-		else {
+		} else {
 			i = -1;
 			lp = lp0;
 		}
@@ -1094,9 +1094,9 @@ void mlerase(void)
 	int i;
 
 	movecursor(term.t_nrow, 0);
-	if (eolexist == TRUE)
+	if (eolexist == TRUE) {
 		TTeeol();
-	else {
+	} else {
 		for (i = 0; i < term.t_ncol - 1; ++i)
 			TTputc(' ');
 		movecursor(term.t_nrow, 1);	/* force the move! */

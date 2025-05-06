@@ -3,12 +3,7 @@
 #include "efunc.h"
 #include <curses.h>
 #include <term.h>
-
-#if TERMCAP
-
-#if UNIX
 #include <signal.h>
-#endif
 
 #define MARGIN	8
 #define SCRSIZ	64
@@ -103,8 +98,7 @@ static void tcapopen(void)
 	term.t_ncol = int_col;
 
 	if ((term.t_nrow <= 0) &&
-			(term.t_nrow = (short)tgetnum("li") - 1)
-					== -1) {
+			(term.t_nrow = (short)tgetnum("li") - 1) == -1) {
 		puts("termcap entry incomplete (lines)");
 		exit(1);
 	}
@@ -233,8 +227,9 @@ static void tcaprev(int state)
 	if (state) {
 		if (SO != NULL)
 			putpad(SO);
-	} else if (SE != NULL)
+	} else if (SE != NULL) {
 		putpad(SE);
+	}
 }
 
 /* Change screen resolution. */
@@ -256,7 +251,7 @@ static void tcapscroll_reg(int from, int to, int howmanylines)
 		tcapmove(from + howmanylines - 1, 0);
 		for (i = from - to; i > 0; i--)
 			putpad(SF);
-	} else {		/* from < to */
+	} else {
 		tcapscrollregion(from, to + howmanylines - 1);
 		tcapmove(from, 0);
 		for (i = to - from; i > 0; i--)
@@ -306,4 +301,3 @@ static void putpad(char *str)
 {
 	tputs(str, 1, ttputc);
 }
-#endif /* TERMCAP */

@@ -38,7 +38,6 @@
 #define VT100	0
 #define ANSI	0
 #define VT52	0
-#define TERMCAP	UNIX
 
 
 /* Configuration options */
