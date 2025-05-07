@@ -297,13 +297,9 @@ int delwind(int f, int n)
  */
 int splitwind(int f, int n)
 {
-	struct window *wp;
+	struct window *wp, *wp1, *wp2;
 	struct line *lp;
-	int ntru;
-	int ntrl;
-	int ntrd;
-	struct window *wp1;
-	struct window *wp2;
+	int ntru, ntrl, ntrd;
 
 	if (curwp->w_ntrows < 3) {
 		mlwrite("Cannot split a %d line window", curwp->w_ntrows);

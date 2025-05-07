@@ -188,10 +188,9 @@ static void vtputc(int c)
 	}
 
 	if (c >= 0x80 && c <= 0xA0) {
-		static const char hex[] = "0123456789abcdef";
 		vtputc('\\');
-		vtputc(hex[c >> 4]);
-		vtputc(hex[c & 15]);
+		vtputc(hexdigits[c >> 4]);
+		vtputc(hexdigits[c & 15]);
 		return;
 	}
 
@@ -1222,8 +1221,6 @@ void mlputs(char *s)
 static void mlputi(int i, int r)
 {
 	int q;
-	static char hexdigits[] = "0123456789ABCDEF";
-
 	if (i < 0) {
 		i = -i;
 		TTputc('-');

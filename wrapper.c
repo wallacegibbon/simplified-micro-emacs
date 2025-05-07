@@ -1,3 +1,4 @@
+#include "estruct.h"
 #include "usage.h"
 #include <stdlib.h>
 

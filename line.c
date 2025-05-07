@@ -10,8 +10,8 @@
  *
  */
 
-#include "line.h"
 #include "estruct.h"
+#include "line.h"
 #include "edef.h"
 #include "efunc.h"
 #include "utf8.h"

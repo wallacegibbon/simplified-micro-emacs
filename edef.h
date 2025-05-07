@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern struct name_bind names[];/* name to function table */
+extern struct key_tab keytab[];	/* key to function table */
+
+extern const char *modename[];	/* text names of modes */
+extern int modevalue[];		/* value of modes */
+extern char modecode[];		/* letters to represent modes */
+
+extern char hexdigits[];
+
 extern int kbdm[];		/* Holds keyboard macro data */
 
 extern char pat[];		/* Search pattern */
@@ -11,13 +20,6 @@ extern char rpat[];		/* Replacement pattern */
 
 extern int eolexist;		/* does clear to EOL exist? */
 extern int revexist;		/* does reverse video exist? */
-
-extern const char *modename[];	/* text names of modes */
-extern int modevalue[];		/* value of modes */
-extern char modecode[];		/* letters to represent modes */
-
-extern struct name_bind names[];/* name to function table */
-extern struct key_tab keytab[];	/* key to function table */
 
 extern int gmode;		/* global editor mode */
 extern int gflags;		/* global control flag */

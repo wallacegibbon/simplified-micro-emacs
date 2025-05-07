@@ -5,6 +5,8 @@ const char *modename[NMODES] = {"ASAVE", "VIEW", "EXACT", "OVER"};
 int modevalue[NMODES] = {MDASAVE, MDVIEW, MDEXACT, MDOVER};
 char modecode[NMODES] = "AVEO";
 
+char hexdigits[] = "0123456789ABCDEF";
+
 int kbdm[NKBDM];		/* Keyboard Macro */
 int *kbdptr;			/* current position in keyboard buf */
 int *kbdend = kbdm;		/* ptr to end of the keyboard */

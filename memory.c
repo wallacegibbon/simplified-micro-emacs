@@ -23,7 +23,7 @@ void free(void *);
 
 static inline size_t allocated_size(void *p)
 {
-	/* The LSB is a sign, which become 0 when this memory got `free`ed */
+	/* The LSB is a sign, which become 0 after `free` */
 	return *((size_t *)p - 1) & ~1;
 }
 
