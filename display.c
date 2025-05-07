@@ -984,13 +984,17 @@ static void modeline(struct window *wp)
 		++n;
 	}
 
+	/* For very long filename, no space for other messages */
+	if (n > term.t_ncol)
+		return;
+
 	while (n < term.t_ncol) {	/* Pad to full width. */
 		vtputc(lchar);
 		++n;
 	}
 
 #if RAMSHOW
-	vtcol = n - 5 - 2 - 7 - 2;
+	vtcol = n - 5 - 2 - 8 - 2;
 #else
 	vtcol = n - 5 - 2;
 #endif
@@ -1049,7 +1053,7 @@ static void modeline(struct window *wp)
 	}
 
 #if RAMSHOW
-	vtcol += 1;
+	vtcol += 2;
 
 	{
 #define GB (1024 * 1024 * 1024)
@@ -1057,16 +1061,16 @@ static void modeline(struct window *wp)
 #define KB 1024
 #define I(v, unit) ((short)((v) / (unit)))
 #define D(v, unit) ((char)((v) * 10 / (unit) % 10))
-		char mbuf[16];
+		char s[16];
 		if (envram >= 1000 * MB)
-			sprintf(mbuf, " %d.%dG ", I(envram, GB), D(envram, GB));
+			sprintf(s, " %3d.%dG ", I(envram, GB), D(envram, GB));
 		else if (envram >= 1000 * KB)
-			sprintf(mbuf, " %d.%dM ", I(envram, MB), D(envram, MB));
+			sprintf(s, " %3d.%dM ", I(envram, MB), D(envram, MB));
 		else if (envram >= 10000)
-			sprintf(mbuf, " %d.%dK ", I(envram, KB), D(envram, KB));
+			sprintf(s, " %3d.%dK ", I(envram, KB), D(envram, KB));
 		else
-			sprintf(mbuf, " %d ", (int)envram);
-		for (cp = mbuf; (c = *cp) != 0; ++cp)
+			sprintf(s, "  %4d  ", (int)envram);
+		for (cp = s; (c = *cp) != 0; ++cp)
 			vtputc(c);
 	}
 #undef I
@@ -1255,15 +1259,10 @@ static void mlputli(long l, int r)
 	++ttcol;
 }
 
-/*
- * write out a scaled integer with two decimal places
- *
- * int s;		scaled integer to output
- */
+/* write out a scaled integer with two decimal places */
 static void mlputf(int s)
 {
-	int i;			/* integer portion of number */
-	int f;			/* fractional portion of number */
+	int i, f;
 
 	/* break it up */
 	i = s / 100;
