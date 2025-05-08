@@ -1,6 +1,3 @@
-#define MAXROW	500
-#define MAXCOL	500
-
 #if defined(BSD) || defined(sun) || defined(ultrix) || \
 		(defined(vax) && defined(unix)) || \
 		defined(ultrix) || defined(__osf__)
@@ -41,6 +38,10 @@
 #define TCAP	UNIX
 
 /* Configuration options */
+
+/* Size of terminal for a 1080p screen with terminus-font-16x32 is 120x33 */
+#define MAXCOL	128
+#define MAXROW	40
 
 #define TYPEAH	1  /* type ahead causes update to be skipped */
 #define VISMAC	0  /* update display during keyboard macros */

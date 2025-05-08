@@ -561,10 +561,9 @@ int newsize(int f, int n)
 		return FALSE;
 	}
 
-	if (term.t_nrow == n - 1)
+	if (term.t_nrow == n - 1) {
 		return TRUE;
-	else if (term.t_nrow < n - 1) {
-
+	} else if (term.t_nrow < n - 1) {
 		/* go to the last window */
 		wp = wheadp;
 		while (wp->w_wndp != NULL)

@@ -117,6 +117,13 @@ static void tcapopen(void)
 	term.t_mrow = term.t_nrow > MAXROW ? MAXROW : term.t_nrow;
 	term.t_mcol = term.t_ncol > MAXCOL ? MAXCOL : term.t_ncol;
 #endif
+
+	/* Fix cases when MAXROW and MAXCOL are smaller than terminal size */
+	if (term.t_mrow < term.t_nrow)
+		term.t_nrow = term.t_mrow;
+	if (term.t_mcol < term.t_ncol)
+		term.t_ncol = term.t_mcol;
+
 	p = tcapbuf;
 	t = tgetstr("pc", &p);
 	if (t)
