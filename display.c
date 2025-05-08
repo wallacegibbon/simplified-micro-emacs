@@ -610,7 +610,7 @@ static int scrolls(int inserts)
 		end = endofline(vpv->v_text, cols);
 		if (end == 0)
 			target = first;	/* newlines */
-		else if (memcmp(vpp->v_text, vpv->v_text, 4*end) == 0)
+		else if (memcmp(vpp->v_text, vpv->v_text, end) == 0)
 			target = first + 1;	/* broken line newlines */
 		else
 			target = first;
@@ -669,7 +669,7 @@ static int scrolls(int inserts)
 		for (i = 0; i < count; ++i) {
 			vpp = pscreen[to + i];
 			vpv = vscreen[to + i];
-			memcpy(vpp->v_text, vpv->v_text, 4*cols);
+			memcpy(vpp->v_text, vpv->v_text, cols);
 			vpp->v_flag = vpv->v_flag;	/* XXX */
 			if (vpp->v_flag & VFREV) {
 				vpp->v_flag &= ~VFREV;
