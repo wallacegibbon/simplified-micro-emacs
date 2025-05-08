@@ -334,7 +334,7 @@ int makelist(int iflag)
 		*cp1++ = ' ';	/* space */
 
 		/* output the mode codes */
-		for (i = 0; i < NMODES; i++) {
+		for (i = 0; i < NMODES; ++i) {
 			if (bp->b_mode & modevalue[i])
 				*cp1++ = modecode[i];
 			else

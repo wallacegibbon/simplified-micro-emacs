@@ -13,7 +13,6 @@
 #include "efunc.h"
 #include "line.h"
 #include "wrapper.h"
-#include "utf8.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -21,7 +20,7 @@
 
 struct video {
 	int v_flag;		/* Flags */
-	unicode_t v_text[];	/* Row data on screen. */
+	char v_text[];		/* Row data on screen. */
 };
 
 #define VFCHG   0x0001		/* Changed flag */
@@ -61,7 +60,7 @@ static int scrolls(int inserts);
 static void scrscroll(int from, int to, int count);
 
 static int texttest(int vrow, int prow);
-static int endofline(unicode_t *s, int n);
+static int endofline(char *s, int n);
 
 static void mlputi(int i, int r);
 static void mlputli(long l, int r);
@@ -93,11 +92,11 @@ void vtinit(void)
 	pscreen = xmalloc(term.t_mrow * sizeof(struct video *));
 #endif
 	for (i = 0; i < term.t_mrow; ++i) {
-		vp = xmalloc(sizeof(struct video) + term.t_mcol * 4);
+		vp = xmalloc(sizeof(struct video) + term.t_mcol);
 		vp->v_flag = 0;
 		vscreen[i] = vp;
 #if SCROLLCODE
-		vp = xmalloc(sizeof(struct video) + term.t_mcol * 4);
+		vp = xmalloc(sizeof(struct video) + term.t_mcol);
 		vp->v_flag = 0;
 		pscreen[i] = vp;
 #endif
@@ -186,7 +185,7 @@ static void vtputc(int c)
 		return;
 	}
 
-	if (c >= 0x80 && c <= 0xA0) {
+	if (c >= 0x80) {
 		vtputc('\\');
 		vtputc(hexdigits[c >> 4]);
 		vtputc(hexdigits[c & 15]);
@@ -204,9 +203,8 @@ static void vtputc(int c)
  */
 static void vteeol(void)
 {
-	unicode_t *vcp = vscreen[vtrow]->v_text;
+	char *vcp = vscreen[vtrow]->v_text;
 	while (vtcol < term.t_ncol)
-		/* vp->v_text[vtcol++] = ' '; */
 		vcp[vtcol++] = ' ';
 }
 
@@ -215,11 +213,12 @@ static int scrflags;
 #endif
 
 /*
- * Make sure that the display is right. This is a three part process. First,
- * scan through all of the windows looking for dirty ones. Check the framing,
- * and refresh the screen. Second, make sure that "currow" and "curcol" are
- * correct for the current window. Third, make the virtual and physical
- * screens the same.
+ * Make sure that the display is right. This is a three part process.
+ * First, scan through all of the windows looking for dirty ones.
+ * 	Check the framing, and refresh the screen.
+ * Second, make sure that "currow" and "curcol" are correct for
+ * 	the current window.
+ * Third, make the virtual and physical screens the same.
  *
  * int force;		force update past type ahead?
  */
@@ -394,13 +393,9 @@ static int reframe(struct window *wp)
 
 static void show_line(struct line *lp)
 {
-	int i = 0, len = llength(lp);
-
-	while (i < len) {
-		unicode_t c;
-		i += utf8_to_unicode(lp->l_text, i, len, &c);
-		vtputc(c);
-	}
+	int i, len;
+	for (i = 0, len = llength(lp); i < len; ++i)
+		vtputc(lgetc(lp, i));
 }
 
 /*
@@ -474,15 +469,14 @@ static void update_pos(void)
 
 	/* find the current column */
 	curcol = 0;
-	i = 0;
-	while (i < curwp->w_doto) {
-		unicode_t c;
-		int bytes;
-
-		bytes = utf8_to_unicode(lp->l_text, i, curwp->w_doto, &c);
-		i += bytes;
+	for (i = 0; i < curwp->w_doto; ++i) {
+		unsigned char c = lgetc(lp, i);
 		if (c == '\t')
 			curcol |= TABMASK;
+		else if (c < 0x20 || c == 0x7F)
+			++curcol;
+		else if (c >= 0x80)
+			curcol += 2;
 
 		++curcol;
 	}
@@ -491,8 +485,9 @@ static void update_pos(void)
 	if (curcol >= term.t_ncol - 1) {
 		vscreen[currow]->v_flag |= (VFEXT | VFCHG);
 		update_extended();
-	} else
+	} else {
 		lbound = 0;
+	}
 }
 
 /* de-extend any line that derserves it */
@@ -505,8 +500,7 @@ static void update_de_extend(void)
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		lp = wp->w_linep;
 		for (i = wp->w_toprow, j = wp->w_toprow + wp->w_ntrows;
-				i < j;
-				++i) {
+				i < j; ++i) {
 			if (vscreen[i]->v_flag & VFEXT) {
 				if ((wp != curwp) || (lp != wp->w_dotp) ||
 						(curcol < term.t_ncol - 1)) {
@@ -531,7 +525,7 @@ static void update_de_extend(void)
  */
 void update_garbage(void)
 {
-	unicode_t *txt;
+	char *txt;
 	int i, j;
 
 	for (i = 0; i < term.t_nrow; ++i) {
@@ -690,8 +684,7 @@ static int scrolls(int inserts)
 			to = match + count;
 		}
 		for (i = from; i < to; ++i) {
-			unicode_t *txt;
-			txt = pscreen[i]->v_text;
+			char *txt = pscreen[i]->v_text;
 			for (j = 0; j < term.t_ncol; ++j)
 				txt[j] = ' ';
 			vscreen[i]->v_flag |= VFCHG;
@@ -724,7 +717,7 @@ static int texttest(int vrow, int prow)
 /*
  * return the index of the first blank of trailing whitespace
  */
-static int endofline(unicode_t *s, int n)
+static int endofline(char *s, int n)
 {
 	int i;
 	for (i = n - 1; i >= 0; --i) {
@@ -780,7 +773,7 @@ static void update_extended(void)
  */
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
-	unicode_t *cp1, *cp2, *cp3, *cp4, *cp5;
+	char *cp1, *cp2, *cp3, *cp4, *cp5;
 	int rev, req, nbflag;
 
 	/* set up pointers to virtual and physical lines */
@@ -1084,8 +1077,8 @@ void update_modelines(void)
 }
 
 /*
- * Set the virtual cursor to the specified row and column on the virtual
- * screen. There is no checking for nonsense values; this might be a good
+ * Set the virtual cursor to the specified row and column on the virtual screen.
+ * There is no checking for nonsense values; this might be a good
  * idea during the early stages.
  */
 void vtmove(int row, int col)

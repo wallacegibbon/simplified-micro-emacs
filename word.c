@@ -283,7 +283,7 @@ int delbword(int f, int n)
 		return FALSE;
 
 bckdel:
-	return ldelchar(size, TRUE);
+	return ldelete(size, TRUE);
 }
 
 /*

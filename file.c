@@ -202,8 +202,7 @@ int readin(char *fname, int lockfl)
 	/* read the file in */
 	mlwrite("(Reading file)");
 	nline = 0;
-	while ((s = ffgetline()) == FIOSUC) {
-		nbytes = strlen(fline);
+	while ((s = ffgetline(&nbytes)) == FIOSUC) {
 		if ((lp1 = lalloc(nbytes)) == NULL) {
 			s = FIOMEM;	/* Keep message on the */
 			break;	/* display. */
@@ -467,8 +466,7 @@ int ifile(char *fname)
 	curwp->w_marko = 0;
 
 	nline = 0;
-	while ((s = ffgetline()) == FIOSUC) {
-		nbytes = strlen(fline);
+	while ((s = ffgetline(&nbytes)) == FIOSUC) {
 		if ((lp1 = lalloc(nbytes)) == NULL) {
 			s = FIOMEM;	/* Keep message on the */
 			break;	/* display. */

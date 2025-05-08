@@ -76,29 +76,26 @@ int getcline(void)
  */
 int getccol(int bflg)
 {
-	struct line *dlp = curwp->w_dotp;
+	struct line *lp = curwp->w_dotp;
 	int byte_offset = curwp->w_doto;
-	int len = llength(dlp);
 	int i = 0, col = 0;
 
 	while (i < byte_offset) {
-		unicode_t c;
-
-		i += utf8_to_unicode(dlp->l_text, i, len, &c);
+		unsigned char c = lgetc(lp, i++);
 		if (c != ' ' && c != '\t' && bflg)
 			break;
+		/* Take TAB, ^X and \xx hex characters into account */
 		if (c == '\t')
 			col |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++col;
-		else if (c >= 0xc0 && c <= 0xa0)
+		else if (c >= 0x80)
 			col += 2;
 		++col;
 	}
 	return col;
 }
 
-/* Set current column. */
 int setccol(int pos)
 {
 	int llen = llength(curwp->w_dotp), col = 0, c, i;
@@ -109,12 +106,14 @@ int setccol(int pos)
 		if (col >= pos)
 			break;
 
-		/* advance one character */
 		c = lgetc(curwp->w_dotp, i);
+		/* Take TAB, ^X and \xx hex characters into account */
 		if (c == '\t')
 			col |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++col;
+		else if (c >= 0x80)
+			col += 2;
 		++col;
 	}
 
@@ -317,7 +316,7 @@ int forwdel(int f, int n)
 			kdelete();
 		thisflag |= CFKILL;
 	}
-	return ldelchar((long)n, f);
+	return ldelete((long)n, f);
 }
 
 /*
@@ -340,7 +339,7 @@ int backdel(int f, int n)
 		thisflag |= CFKILL;
 	}
 	if ((s = backchar(f, n)) == TRUE)
-		s = ldelchar(n, f);
+		s = ldelete(n, f);
 	return s;
 }
 

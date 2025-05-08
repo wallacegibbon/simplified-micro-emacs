@@ -13,35 +13,32 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include "utf8.h"
 
 /*
  * This routine, given a pointer to a struct line, and the current cursor goal
- * column, return the best choice for the offset. The offset is returned.
+ * column, return the best choice for the offset.  The offset is returned.
  * Used by "C-N" and "C-P".
  */
-static int getgoal(struct line *dlp)
+static int getgoal(struct line *lp)
 {
-	int col = 0, newcol, dbo = 0, len = llength(dlp);
+	int col = 0, newcol, dbo, len = llength(lp);
 
-	while (dbo != len) {
-		unicode_t c;
-		int width = utf8_to_unicode(dlp->l_text, dbo, len, &c);
+	for (dbo = 0; dbo != len; dbo++) {
+		unsigned char c = lgetc(lp, dbo);
 		newcol = col;
 
-		/* Take tabs, ^X and \xx hex characters into account */
+		/* Take TAB, ^X and \xx hex characters into account */
 		if (c == '\t')
 			newcol |= TABMASK;
 		else if (c < 0x20 || c == 0x7F)
 			++newcol;
-		else if (c >= 0x80 && c <= 0xa0)
+		else if (c >= 0x80)
 			newcol += 2;
 
 		++newcol;
 		if (newcol > curgoal)
 			break;
 		col = newcol;
-		dbo += width;
 	}
 	return dbo;
 }
@@ -75,13 +72,7 @@ int backchar(int f, int n)
 			curwp->w_doto = llength(lp);
 			curwp->w_flag |= WFMOVE;
 		} else {
-			do {
-				unsigned char c;
-				--curwp->w_doto;
-				c = lgetc(curwp->w_dotp, curwp->w_doto);
-				if (is_beginning_utf8(c))
-					break;
-			} while (curwp->w_doto);
+			--curwp->w_doto;
 		}
 	}
 	return TRUE;
@@ -115,13 +106,7 @@ int forwchar(int f, int n)
 			curwp->w_doto = 0;
 			curwp->w_flag |= WFMOVE;
 		} else {
-			do {
-				unsigned char c;
-				++curwp->w_doto;
-				c = lgetc(curwp->w_dotp, curwp->w_doto);
-				if (is_beginning_utf8(c))
-					break;
-			} while (curwp->w_doto < len);
+			++curwp->w_doto;
 		}
 	}
 	return TRUE;
@@ -197,7 +182,7 @@ int gotoeob(int f, int n)
  */
 int forwline(int f, int n)
 {
-	struct line *dlp;
+	struct line *lp;
 
 	if (n < 0)
 		return backline(f, -n);
@@ -217,13 +202,13 @@ int forwline(int f, int n)
 	thisflag |= CFCPCN;
 
 	/* and move the point down */
-	dlp = curwp->w_dotp;
-	while (n-- && dlp != curbp->b_linep)
-		dlp = lforw(dlp);
+	lp = curwp->w_dotp;
+	while (n-- && lp != curbp->b_linep)
+		lp = lforw(lp);
 
 	/* reseting the current position */
-	curwp->w_dotp = dlp;
-	curwp->w_doto = getgoal(dlp);
+	curwp->w_dotp = lp;
+	curwp->w_doto = getgoal(lp);
 	curwp->w_flag |= WFMOVE;
 	return TRUE;
 }
@@ -236,7 +221,7 @@ int forwline(int f, int n)
  */
 int backline(int f, int n)
 {
-	struct line *dlp;
+	struct line *lp;
 
 	if (n < 0)
 		return forwline(f, -n);
@@ -256,13 +241,13 @@ int backline(int f, int n)
 	thisflag |= CFCPCN;
 
 	/* and move the point up */
-	dlp = curwp->w_dotp;
-	while (n-- && lback(dlp) != curbp->b_linep)
-		dlp = lback(dlp);
+	lp = curwp->w_dotp;
+	while (n-- && lback(lp) != curbp->b_linep)
+		lp = lback(lp);
 
 	/* reseting the current position */
-	curwp->w_dotp = dlp;
-	curwp->w_doto = getgoal(dlp);
+	curwp->w_dotp = lp;
+	curwp->w_doto = getgoal(lp);
 	curwp->w_flag |= WFMOVE;
 	return TRUE;
 }

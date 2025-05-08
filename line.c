@@ -14,7 +14,6 @@
 #include "line.h"
 #include "edef.h"
 #include "efunc.h"
-#include "utf8.h"
 
 #define BLOCK_SIZE 16 /* Line block chunk size. */
 
@@ -133,16 +132,16 @@ int linstr(char *instr)
 }
 
 /*
- * Insert "n" copies of the character "c" at the current location of dot. In
- * the easy case all that happens is the text is stored in the line. In the
- * hard case, the line has to be reallocated. When the window list is updated,
- * take special care; I screwed it up once. You always update dot in the
- * current window. You update mark, and a dot in another window, if it is
- * greater than the place where you did the insert. Return TRUE if all is
- * well, and FALSE on errors.
+ * Insert "n" copies of the character "c" at the current location of dot.
+ * In the easy case all that happens is the text is stored in the line.
+ * In the hard case, the line has to be reallocated.
+ * When the window list is updated, take special care; I screwed it up once.
+ * You always update dot in the current window.
+ * You update mark, and a dot in another window, if it is greater than
+ * the place where you did the insert.
+ * Return TRUE if all is well, and FALSE on errors.
  */
-
-static int linsert_byte(int n, int c)
+int linsert(int n, int c)
 {
 	struct line *lp1, *lp2, *lp3;
 	struct window *wp;
@@ -217,24 +216,6 @@ static int linsert_byte(int n, int c)
 	return TRUE;
 }
 
-int linsert(int n, int c)
-{
-	char utf8[6];
-	int bytes = unicode_to_utf8(c, utf8), i;
-
-	if (bytes == 1)
-		return linsert_byte(n, (unsigned char)utf8[0]);
-	for (i = 0; i < n; ++i) {
-		int j;
-		for (j = 0; j < bytes; ++j) {
-			unsigned char c = utf8[j];
-			if (!linsert_byte(1, c))
-				return FALSE;
-		}
-	}
-	return TRUE;
-}
-
 /*
  * Insert a newline into the buffer at the current location of dot in the
  * current window. The funny ass-backwards way it does things is not a botch;
@@ -290,30 +271,6 @@ int lnewline(void)
 				wp->w_marko -= doto;
 		}
 		wp = wp->w_wndp;
-	}
-	return TRUE;
-}
-
-int lgetchar(unicode_t *c)
-{
-	int len = llength(curwp->w_dotp);
-	char *buf = curwp->w_dotp->l_text;
-	return utf8_to_unicode(buf, curwp->w_doto, len, c);
-}
-
-/*
- * ldelete() really fundamentally works on bytes, not characters.
- * It is used for things like "scan 5 words forwards, and remove
- * the bytes we scanned".
- *
- * If you want to delete characters, use ldelchar().
- */
-int ldelchar(long n, int kflag)
-{
-	while (n-- > 0) {
-		unicode_t c;
-		if (!ldelete(lgetchar(&c), kflag))
-			return FALSE;
 	}
 	return TRUE;
 }
@@ -559,7 +516,7 @@ int yank(int f, int n)
 					if (lnewline() == FALSE)
 						return FALSE;
 				} else {
-					if (linsert_byte(1, c) == FALSE)
+					if (linsert(1, c) == FALSE)
 						return FALSE;
 				}
 			}

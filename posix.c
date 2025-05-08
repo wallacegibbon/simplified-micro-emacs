@@ -15,7 +15,6 @@
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
-#include "utf8.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -95,16 +94,10 @@ void ttclose(void)
 	tcsetattr(0, TCSADRAIN, &otermios);	/* restore terminal settings */
 }
 
-/*
- * Write a character to the display.
- */
+/* Write a character to the display. */
 int ttputc(int c)
 {
-	char utf8[6];
-	int bytes;
-
-	bytes = unicode_to_utf8(c, utf8);
-	fwrite(utf8, 1, bytes, stdout);
+	fputc(c, stdout);
 	return 0;
 }
 
@@ -144,7 +137,7 @@ int ttgetc(void)
 {
 	static char buffer[32];
 	static int pending;
-	unicode_t c;
+	unsigned char c;
 	int count, bytes = 1, expected;
 
 	count = pending;
@@ -160,21 +153,10 @@ int ttgetc(void)
 		goto done;
 
 	/*
-	 * Lazy. We don't bother calculating the exact
-	 * expected length. We want at least two characters
-	 * for the special character case (ESC+[) and for
-	 * the normal short UTF8 sequence that starts with
-	 * the 110xxxxx pattern.
-	 *
-	 * But if we have any of the other patterns, just
-	 * try to get more characters. At worst, that will
-	 * just result in a barely perceptible 0.1 second
-	 * delay for some *very* unusual utf8 character
-	 * input.
+	 * We don't bother calculating the exact expected length.
+	 * We want at least 2 chars for the special char case (ESC + [).
 	 */
 	expected = 2;
-	if ((c & 0xe0) == 0xe0)
-		expected = 6;
 
 	/* Special character - try to fill buffer */
 	if (count < expected) {
@@ -194,30 +176,22 @@ int ttgetc(void)
 			pending += n;
 	}
 	if (pending > 1) {
-		unsigned char second = buffer[1];
-
-		/* Turn ESC+'[' into CSI */
-		if (c == 27 && second == '[') {
+		/* Turn ESC + '[' into CSI */
+		if (c == 27 && buffer[1] == '[') {
 			bytes = 2;
-			c = 128+27;
-			goto done;
+			c = 128 + 27;
 		}
 	}
-	bytes = utf8_to_unicode(buffer, 0, pending, &c);
 
-	/* Hackety hack! Turn no-break space into regular space */
-	if (c == 0xa0)
-		c = ' ';
 done:
 	pending -= bytes;
-	memmove(buffer, buffer+bytes, pending);
+	memmove(buffer, buffer + bytes, pending);
 	return c;
 }
 
 /* typahead:	Check to see if any characters are already in the
 		keyboard buffer
 */
-
 int typahead(void)
 {
 	int x;			/* holds # of pending chars */

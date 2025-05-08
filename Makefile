@@ -5,14 +5,14 @@ PROGRAM = me
 SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
 	posix.c file.c fileio.c input.c search.c isearch.c lock.c pklock.c \
 	region.c spawn.c tcap.c ebind.c names.c globals.c \
-	utf8.c wrapper.c memory.c
+	wrapper.c memory.c
 
 #SRC += termio.c vt52.c ansi.c
 
 OBJ = main.o buffer.o window.o line.o word.o display.o basic.o random.o \
 	posix.o file.o fileio.o input.o search.o isearch.o lock.o pklock.o \
 	region.o spawn.o tcap.o ebind.o names.o globals.o \
-	utf8.o wrapper.o memory.o
+	wrapper.o memory.o
 
 #OBJ += termio.o vt52.o ansi.o
 
@@ -66,7 +66,7 @@ ebind.o: edef.h efunc.h estruct.h line.h
 ansi.o: ansi.c estruct.h edef.h
 basic.o: basic.c estruct.h edef.h line.h
 buffer.o: buffer.c estruct.h edef.h line.h
-display.o: display.c estruct.h edef.h utf8.h line.h
+display.o: display.c estruct.h edef.h line.h
 file.o: file.c estruct.h edef.h line.h
 fileio.o: fileio.c estruct.h edef.h
 input.o: input.c estruct.h edef.h
@@ -75,14 +75,13 @@ line.o: line.c estruct.h edef.h line.h
 lock.o: lock.c estruct.h edef.h
 main.o: main.c estruct.h efunc.h edef.h line.h
 pklock.o: pklock.c estruct.h
-posix.o: posix.c estruct.h utf8.h
+posix.o: posix.c estruct.h
 random.o: random.c estruct.h edef.h line.h
 region.o: region.c estruct.h edef.h line.h
 search.o: search.c estruct.h edef.h line.h
 spawn.o: spawn.c estruct.h edef.h
 tcap.o: tcap.c estruct.h edef.h
 termio.o: termio.c estruct.h edef.h
-utf8.o: utf8.c utf8.h
 vt52.o: vt52.c estruct.h edef.h
 window.o: window.c estruct.h edef.h line.h
 word.o: word.c estruct.h edef.h line.h

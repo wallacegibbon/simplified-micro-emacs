@@ -44,9 +44,10 @@ struct window *swindow;		/* saved window pointer */
 
 int lastkey;			/* last keystoke */
 long envram;			/* # of bytes current in use by malloc */
-int saveflag;			/* Flags, saved with the $target var */
+
 char *fline;			/* dynamic return line */
 int flen;			/* current length of fline */
+
 int rval;			/* return value of a subprocess */
 
 int overlap = 1;		/* line overlap in forw/back page */
@@ -69,6 +70,7 @@ int curgoal;			/* Goal for C-P, C-N */
 
 int thisflag;			/* Flags, this command */
 int lastflag;			/* Flags, last command */
+int saveflag;
 
 char sres[NBUFN];		/* Current screen resolution */
 char pat[NPAT];			/* Search pattern */

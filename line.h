@@ -1,8 +1,6 @@
 #ifndef __LINE_H
 #define __LINE_H
 
-#include "utf8.h"
-
 struct line {
 	struct line *l_fp;	/* Link to the next line */
 	struct line *l_bp;	/* Link to the previous line */
@@ -23,8 +21,6 @@ int linstr(char *instr);
 int linsert(int n, int c);
 int lnewline(void);
 int ldelete(long n, int kflag);
-int ldelchar(long n, int kflag);
-int lgetchar(unicode_t *);
 int ldelnewline(void);
 void kdelete(void);
 int kinsert(int c);

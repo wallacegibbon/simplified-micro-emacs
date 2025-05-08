@@ -14,9 +14,6 @@
 static FILE *ffp;			/* File pointer, all functions. */
 static int eofflag;			/* end-of-file flag */
 
-/*
- * Open a file for reading.
- */
 int ffropen(char *fn)
 {
 	if ((ffp = fopen(fn, "r")) == NULL)
@@ -89,7 +86,7 @@ int ffputline(char *buf, int nbuf)
  * at the end of the file that don't have a newline present. Check for I/O
  * errors too. Return status.
  */
-int ffgetline(void)
+int ffgetline(int *count)
 {
 	char *tmpline;	/* temp storage for expanding line */
 	int c, i;
@@ -110,40 +107,17 @@ int ffgetline(void)
 			return FIOMEM;
 
 	/* read the line in */
-#if PKCODE
-	if (fgets(fline, NSTRING, ffp) == (char *)NULL) {	/* EOF ? */
-		i = 0;
-		c = EOF;
-	} else {
-		i = strlen(fline);
-		c = 0;
-		if (i > 0) {
-			c = fline[i - 1];
-			--i;
-		}
-	}
-	while (c != EOF && c != '\n') {
-#else
 	i = 0;
 	while ((c = fgetc(ffp)) != EOF && c != '\n') {
-#endif
-#if PKCODE
-		if (c) {
-#endif
-			fline[i++] = c;
-			/* if it's longer, get more room */
-			if (i >= flen) {
-				if ((tmpline = malloc(flen + NSTRING)) == NULL)
-					return FIOMEM;
-				strncpy(tmpline, fline, flen);
-				flen += NSTRING;
-				free(fline);
-				fline = tmpline;
-			}
-#if PKCODE
+		fline[i++] = c;
+		if (i >= flen) {
+			if ((tmpline = malloc(flen + NSTRING)) == NULL)
+				return FIOMEM;
+			strncpy(tmpline, fline, flen);
+			flen += NSTRING;
+			free(fline);
+			fline = tmpline;
 		}
-		c = fgetc(ffp);
-#endif
 	}
 
 	/* test for any errors that may have occured */
@@ -152,35 +126,22 @@ int ffgetline(void)
 			mlwrite("File read error");
 			return FIOERR;
 		}
-
 		if (i != 0)
 			eofflag = TRUE;
 		else
 			return FIOEOF;
 	}
 
-	/* terminate the string */
-	fline[i] = 0;
+	*count = i;
 	return FIOSUC;
 }
 
-/*
- * does <fname> exist on disk?
- *
- * char *fname;		file to check for existance
- */
 int fexist(char *fname)
 {
-	FILE *fp;
-
-	/* try to open the file for reading */
-	fp = fopen(fname, "r");
-
-	/* if it fails, just return false! */
+	FILE *fp = fopen(fname, "r");
 	if (fp == NULL)
 		return FALSE;
 
-	/* otherwise, close it and report true */
 	fclose(fp);
 	return TRUE;
 }

@@ -1,5 +1,3 @@
-#include "utf8.h"
-
 /* word.c */
 int backword(int f, int n);
 int forwword(int f, int n);
@@ -164,7 +162,7 @@ int ffropen(char *fn);
 int ffwopen(char *fn);
 int ffclose(void);
 int ffputline(char *buf, int nbuf);
-int ffgetline(void);
+int ffgetline(int *count);
 int fexist(char *fname);
 
 /* spawn.c */
