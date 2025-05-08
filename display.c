@@ -711,7 +711,7 @@ static int texttest(int vrow, int prow)
 	struct video *vpv = vscreen[vrow];	/* virtual screen image */
 	struct video *vpp = pscreen[prow];	/* physical screen image */
 
-	return !memcmp(vpv->v_text, vpp->v_text, 4 * term.t_ncol);
+	return !memcmp(vpv->v_text, vpp->v_text, term.t_ncol);
 }
 
 /*
