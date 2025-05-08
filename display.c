@@ -12,7 +12,6 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include "version.h"
 #include "wrapper.h"
 #include "utf8.h"
 #include <errno.h>

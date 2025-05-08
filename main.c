@@ -2,7 +2,6 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
-#include "version.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,7 +15,7 @@ void sizesignal(int);
 
 void usage(int status)
 {
-	printf("%s version %s\n\n", PROGRAM_NAME_LONG, VERSION);
+	printf("%s (version %s)\n\n", PROGRAM_NAME_LONG, VERSION);
 	printf("\tUsage: %s [options] [filenames]\n\n", PROGRAM_NAME);
 	fputs("\t+<n>\tGo to line <n>\n", stdout);
 	fputs("\t-v\tView only\n", stdout);
