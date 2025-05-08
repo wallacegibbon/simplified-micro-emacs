@@ -16,11 +16,11 @@ void sizesignal(int);
 
 void usage(int status)
 {
-	printf("Usage: %s [options] [filenames]\n\n", PROGRAM_NAME);
-	fputs("      -v[V]<n>   View only <n>\n", stdout);
-	fputs("      -g[G]<n>   Go to line <n>\n", stdout);
-	fputs("      --help     Display this help and exit\n", stdout);
-	fputs("      --version  Output version information and exit\n", stdout);
+	printf("%s version %s\n\n", PROGRAM_NAME_LONG, VERSION);
+	printf("\tUsage: %s [options] [filenames]\n\n", PROGRAM_NAME);
+	fputs("\t+<n>\tGo to line <n>\n", stdout);
+	fputs("\t-v\tView only\n", stdout);
+	fputs("\t--help\tDisplay this help and exit\n", stdout);
 	exit(status);
 }
 
@@ -50,36 +50,21 @@ int main(int argc, char **argv)
 #endif
 #endif
 	if (argc == 2) {
-		if (strcmp(argv[1], "--help") == 0) {
-			usage(EXIT_FAILURE);
-		}
-		if (strcmp(argv[1], "--version") == 0) {
-			version();
-			exit(EXIT_SUCCESS);
-		}
+		if (strcmp(argv[1], "--help") == 0)
+			usage(EXIT_SUCCESS);
 	}
 
-	vtinit();		/* Display */
-	edinit("main");		/* Buffers, windows */
+	vtinit();
+	edinit("main");
 
 	for (carg = 1; carg < argc; ++carg) {
-		if (argv[carg][0] == '-') {
-			switch (argv[carg][1]) {
-			case 'v':
-			case 'V':
-				viewflag = TRUE;
-				break;
-			case 'g':
-			case 'G':
-				gotoflag = TRUE;
-				gline = atoi(&argv[carg][2]);
-				break;
-			default:
-				break;
-			}
+		if (argv[carg][0] == '-' && (argv[carg][1] | DIFCASE) == 'v') {
+			viewflag = TRUE;
+		} else if (argv[carg][0] == '+') {
+			gotoflag = TRUE;
+			gline = atoi(&argv[carg][1]);
 		} else {
 			/* Process an input file */
-			/* set up a buffer for this file */
 			makename(bname, argv[carg]);
 			unqname(bname);
 
@@ -91,8 +76,6 @@ int main(int argc, char **argv)
 				firstbp = bp;
 				firstfile = FALSE;
 			}
-
-			/* set the modes appropriatly */
 			if (viewflag)
 				bp->b_mode |= MDVIEW;
 		}

@@ -5,14 +5,14 @@ PROGRAM = me
 SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
 	posix.c file.c fileio.c input.c search.c isearch.c lock.c pklock.c \
 	region.c spawn.c tcap.c ebind.c names.c globals.c \
-	utf8.c wrapper.c memory.c usage.c version.c
+	utf8.c wrapper.c memory.c
 
 #SRC += termio.c vt52.c ansi.c
 
 OBJ = main.o buffer.o window.o line.o word.o display.o basic.o random.o \
 	posix.o file.o fileio.o input.o search.o isearch.o lock.o pklock.o \
 	region.o spawn.o tcap.o ebind.o names.o globals.o \
-	utf8.o wrapper.o memory.o usage.o version.o
+	utf8.o wrapper.o memory.o
 
 #OBJ += termio.o vt52.o ansi.o
 
