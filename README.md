@@ -1,7 +1,7 @@
 ## Introduction
 
 This is a tiny emacs-like editor modified from
-[uEmacs/PK 4.0][https://github.com/torvalds/uemacs].
+[uEmacs/PK 4.0](https://github.com/torvalds/uemacs).
 
 
 ## Goal
