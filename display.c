@@ -21,7 +21,7 @@
 
 struct video {
 	int v_flag;		/* Flags */
-	unicode_t v_text[1];	/* Row data on screen. */
+	unicode_t v_text[];	/* Row data on screen. */
 };
 
 #define VFCHG   0x0001		/* Changed flag */
@@ -1064,10 +1064,10 @@ static void modeline(struct window *wp)
 			sprintf(s, " %3d.%dG ", I(envram, GB), D(envram, GB));
 		else if (envram >= 1000 * KB)
 			sprintf(s, " %3d.%dM ", I(envram, MB), D(envram, MB));
-		else if (envram >= 10000)
+		else if (envram >= 100000)
 			sprintf(s, " %3d.%dK ", I(envram, KB), D(envram, KB));
 		else
-			sprintf(s, "  %4d  ", (int)envram);
+			sprintf(s, " %5d  ", (int)envram);
 		for (cp = s; (c = *cp) != 0; ++cp)
 			vtputc(c);
 	}
