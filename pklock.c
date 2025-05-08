@@ -26,6 +26,9 @@ int gethostname(char *name, int namelen)
 }
 #endif
 
+/* lock name buffer shared by dolock and undolock */
+static char lname[MAXLOCK];
+
 /*
  * if successful, returns NULL
  * if file locked, returns username of person locking the file
@@ -33,7 +36,7 @@ int gethostname(char *name, int namelen)
  */
 char *dolock(char *fname)
 {
-	static char lname[MAXLOCK], locker[MAXNAME + 1];
+	static char locker[MAXNAME + 1];
 	struct stat sbuf;
 	int mask, fd, n;
 
@@ -87,8 +90,6 @@ char *dolock(char *fname)
  */
 char *undolock(char *fname)
 {
-	static char lname[MAXLOCK];
-
 	strcat(strcpy(lname, fname), ".lock~");
 	if (unlink(lname) != 0) {
 		if (errno == EACCES || errno == ENOENT)

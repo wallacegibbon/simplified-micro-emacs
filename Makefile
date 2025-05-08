@@ -1,32 +1,20 @@
-# Make the build silent by default
-V =
-
-ifeq ($(strip $(V)), )
-	E = @echo
-	Q = @
-else
-	E = @\#
-	Q =
-endif
-export E Q
-
-uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
-
+UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+BINDIR = /usr/bin
 PROGRAM = me
 
-SRC = ansi.c basic.c buffer.c display.c ebind.c names.c \
-	file.c fileio.c input.c isearch.c line.c lock.c main.c \
-	pklock.c posix.c random.c region.c search.c spawn.c tcap.c \
-	termio.c vt52.c window.c word.c globals.c version.c \
-	usage.c wrapper.c utf8.c memory.c
+SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
+	posix.c file.c fileio.c input.c search.c isearch.c lock.c pklock.c \
+	region.c spawn.c tcap.c ebind.c names.c globals.c \
+	utf8.c wrapper.c memory.c usage.c version.c
 
-OBJ = ansi.o basic.o buffer.o display.o ebind.o names.o \
-	file.o fileio.o input.o isearch.o line.o lock.o main.o \
-	pklock.o posix.o random.o region.o search.o spawn.o tcap.o \
-	termio.o vt52.o window.o word.o globals.o version.o \
-	usage.o wrapper.o utf8.o memory.o
+#SRC += termio.c vt52.c ansi.c
 
-HDR = edef.h efunc.h epath.h estruct.h version.h
+OBJ = main.o buffer.o window.o line.o word.o display.o basic.o random.o \
+	posix.o file.o fileio.o input.o search.o isearch.o lock.o pklock.o \
+	region.o spawn.o tcap.o ebind.o names.o globals.o \
+	utf8.o wrapper.o memory.o usage.o version.o
+
+#OBJ += termio.o vt52.o ansi.o
 
 CC = gcc
 WARNINGS = -Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
@@ -34,16 +22,16 @@ WARNINGS = -Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
 #CFLAGS = -O0 $(WARNINGS) -g
 CFLAGS = -O2 $(WARNINGS) -g
 
-ifeq ($(uname_S), Linux)
+ifeq ($(UNAME_S), Linux)
 DEFINES = -DPOSIX -DUSG -D_XOPEN_SOURCE=600 -D_GNU_SOURCE
 endif
 
-ifeq ($(uname_S), FreeBSD)
+ifeq ($(UNAME_S), FreeBSD)
 DEFINES = -DPOSIX -DSYSV -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_SVID_SOURCE \
 	-D_FREEBSD_C_SOURCE
 endif
 
-ifeq ($(uname_S), Darwin)
+ifeq ($(UNAME_S), Darwin)
 DEFINES = -DPOSIX -DSYSV -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_SVID_SOURCE \
 	-D_DARWIN_C_SOURCE
 endif
@@ -53,27 +41,23 @@ LIBS = -lcurses
 #LIBS = -ltermlib
 #LIBS = -L/usr/lib/termcap -ltermcap
 
-LFLAGS = -hbx
-BINDIR = /usr/bin
-LIBDIR = /usr/lib
-
 $(PROGRAM): $(OBJ)
-	$(E) "	LINK	$@"
-	$(Q) $(CC) $(LDFLAGS) $(DEFINES) -o $@ $(OBJ) $(LIBS)
+	@echo "	LINK	$@"
+	@$(CC) $(LDFLAGS) $(DEFINES) -o $@ $(OBJ) $(LIBS)
 
 clean:
-	$(Q) rm -f $(PROGRAM) core *.o
+	@rm -f $(PROGRAM) core *.o
 
 install: $(PROGRAM)
-	$(E) "	$(BINDIR)/$(PROGRAM)"
-	$(Q) cp me $(BINDIR)
-	$(Q) strip $(BINDIR)/$(PROGRAM)
-	$(Q) chmod 755 $(BINDIR)/$(PROGRAM)
-	$(Q) echo
+	@echo "	$(BINDIR)/$(PROGRAM)"
+	@cp me $(BINDIR)
+	@strip $(BINDIR)/$(PROGRAM)
+	@chmod 755 $(BINDIR)/$(PROGRAM)
+	@echo
 
 .c.o:
-	$(E) "	CC	$@"
-	$(Q) $(CC) $(CFLAGS) $(DEFINES) -c $*.c
+	@echo "	CC	$@"
+	@$(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
 # Write the dependencies by hand to work on different make programs.
 
