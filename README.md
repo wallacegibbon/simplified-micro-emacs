@@ -1,6 +1,7 @@
 ## Introduction
 
-This is a tiny emacs-like editor simplified from <https://github.com/torvalds/uemacs>.
+This is a tiny emacs-like editor modified from
+[uEmacs/PK 4.0][https://github.com/torvalds/uemacs].
 
 
 ## Goal
@@ -11,7 +12,8 @@ This is a tiny emacs-like editor simplified from <https://github.com/torvalds/ue
 
 ## Miscellaneous
 
-We can make `me` the default `editor` of the system with `update-alternatives`.
+We can make `me` (**M**odified micro **E**macs) the default `editor` of the
+system with `update-alternatives`.
 
 To get the priority of `editor`:
 ```sh
