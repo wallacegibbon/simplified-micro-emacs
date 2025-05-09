@@ -94,7 +94,6 @@ void vtinit(void)
 }
 
 #if CLEAN
-
 void vtfree(void)
 {
 	int i;

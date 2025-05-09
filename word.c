@@ -4,8 +4,8 @@
 #include "line.h"
 
 /*
- * Move the cursor backward by "n" words. All of the details of motion are
- * performed by the "backchar" and "forwchar" routines. Error if you try to
+ * Move the cursor backward by "n" words.  All of the details of motion are
+ * performed by the "backchar" and "forwchar" routines.  Error if you try to
  * move beyond the buffers.
  */
 int backword(int f, int n)
@@ -19,7 +19,7 @@ int backword(int f, int n)
 			if (backchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
-		while (inword() != FALSE) {
+		while (inword() == TRUE) {
 			if (backchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
@@ -28,20 +28,19 @@ int backword(int f, int n)
 }
 
 /*
- * Move the cursor forward by the specified number of words. All of the motion
- * is done by "forwchar". Error if you try and move beyond the buffer's end.
+ * Move the cursor forward by the specified number of words.  All of the motion
+ * is done by "forwchar".  Error if you try and move beyond the buffer's end.
  */
 int forwword(int f, int n)
 {
 	if (n < 0)
 		return backword(f, -n);
 	while (n--) {
-		while (inword() == TRUE) {
+		while (inword() == FALSE) {
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
-
-		while (inword() == FALSE) {
+		while (inword() == TRUE) {
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
@@ -68,7 +67,7 @@ int upperword(int f, int n)
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
-		while (inword() != FALSE) {
+		while (inword() == TRUE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
 			if (islower(c)) {
 				c -= 'a' - 'A';
@@ -101,7 +100,7 @@ int lowerword(int f, int n)
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
-		while (inword() != FALSE) {
+		while (inword() == TRUE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
 			if (isupper(c)) {
 				c += 'a' - 'A';
@@ -135,7 +134,7 @@ int capword(int f, int n)
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
 		}
-		if (inword() != FALSE) {
+		if (inword() == TRUE) {
 			c = lgetc(curwp->w_dotp, curwp->w_doto);
 			if (islower(c)) {
 				c -= 'a' - 'A';
@@ -144,7 +143,7 @@ int capword(int f, int n)
 			}
 			if (forwchar(FALSE, 1) == FALSE)
 				return FALSE;
-			while (inword() != FALSE) {
+			while (inword() == TRUE) {
 				c = lgetc(curwp->w_dotp, curwp->w_doto);
 				if (isupper(c)) {
 					c += 'a' - 'A';
@@ -273,7 +272,7 @@ int delbword(int f, int n)
 				return FALSE;
 			++size;
 		}
-		while (inword() != FALSE) {
+		while (inword() == TRUE) {
 			++size;
 			if (backchar(FALSE, 1) == FALSE)
 				goto bckdel;
@@ -293,7 +292,6 @@ bckdel:
 int inword(void)
 {
 	int c;
-
 	if (curwp->w_doto == llength(curwp->w_dotp))
 		return FALSE;
 	c = lgetc(curwp->w_dotp, curwp->w_doto);

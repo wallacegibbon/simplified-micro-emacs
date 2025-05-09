@@ -479,9 +479,7 @@ int nullproc(int f, int n)
  * On some primitave operation systems, and when emacs is used as a subprogram
  * to a larger project, emacs needs to de-alloc its own used memory.
  */
-
 #if CLEAN
-
 int cexit(int status)
 {
 	struct buffer *bp;
@@ -511,7 +509,7 @@ int cexit(int status)
 	/* and the video buffers */
 	vtfree();
 
-#undef	exit
+#undef exit
 	exit(status);
 }
 #endif
