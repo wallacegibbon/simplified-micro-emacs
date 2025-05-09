@@ -213,7 +213,6 @@ int update(int force)
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_flag & WFMODE) {
 			if (wp->w_bufp->b_nwnd > 1) {
-				/* make sure all previous windows have this */
 				for (w = wheadp; w != NULL; w = w->w_wndp) {
 					if (w->w_bufp == wp->w_bufp)
 						w->w_flag |= WFMODE;
@@ -285,7 +284,7 @@ static int reframe(struct window *wp)
 			i = -1;
 			lp = lp0;
 		}
-		for (; i <= wp->w_ntrows; ++i) {
+		for (; i <= wp->w_ntrows; ++i, lp = lforw(lp)) {
 			/* if the line is in the window, no reframe */
 			if (lp == wp->w_dotp) {
 				/* if not _quite_ in, we'll reframe gently */
@@ -300,8 +299,6 @@ static int reframe(struct window *wp)
 			/* if we are at the end of the file, reframe */
 			if (lp == wp->w_bufp->b_linep)
 				break;
-
-			lp = lforw(lp);
 		}
 	}
 	if (i == -1) {			/* we're just above the window */
@@ -351,16 +348,16 @@ static void show_line(struct line *lp)
 static void update_one(struct window *wp)
 {
 	struct line *lp = wp->w_linep;
-	int sline= wp->w_toprow;
+	int i= wp->w_toprow;
 
 	/* search down the line we want */
 	for (; lp != wp->w_dotp; lp = lforw(lp))
-		++sline;
+		++i;
 
 	/* and update the virtual line */
-	vscreen[sline]->v_flag |= VFCHG;
-	vscreen[sline]->v_flag &= ~VFREQ;
-	vtmove(sline, 0);
+	vscreen[i]->v_flag |= VFCHG;
+	vscreen[i]->v_flag &= ~VFREQ;
+	vtmove(i, 0);
 	show_line(lp);
 	vteeol();
 }
@@ -369,18 +366,17 @@ static void update_one(struct window *wp)
 static void update_all(struct window *wp)
 {
 	struct line *lp = wp->w_linep;
-	int sline = wp->w_toprow;
+	int i = wp->w_toprow, j = i + wp->w_ntrows;
 
-	while (sline < wp->w_toprow + wp->w_ntrows) {
-		vscreen[sline]->v_flag |= VFCHG;
-		vscreen[sline]->v_flag &= ~VFREQ;
-		vtmove(sline, 0);
+	for (; i < j; ++i) {
+		vscreen[i]->v_flag |= VFCHG;
+		vscreen[i]->v_flag &= ~VFREQ;
+		vtmove(i, 0);
 		if (lp != wp->w_bufp->b_linep) {
 			show_line(lp);
 			lp = lforw(lp);
 		}
 		vteeol();
-		++sline;
 	}
 }
 
@@ -417,13 +413,11 @@ static void update_pos(void)
 static void update_de_extend(void)
 {
 	struct window *wp;
-	struct line *lp;
-	int i, j;
 
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
-		lp = wp->w_linep;
-		for (i = wp->w_toprow, j = wp->w_toprow + wp->w_ntrows;
-				i < j; ++i) {
+		struct line *lp = wp->w_linep;
+		int i = wp->w_toprow, j = i + wp->w_ntrows;
+		for (lp = wp->w_linep; i < j; lp = lforw(lp), ++i) {
 			if (vscreen[i]->v_flag & VFEXT) {
 				if ((wp != curwp) || (lp != wp->w_dotp) ||
 						(curcol < term.t_ncol - 1)) {
@@ -435,7 +429,6 @@ static void update_de_extend(void)
 					vscreen[i]->v_flag |= VFCHG;
 				}
 			}
-			lp = lforw(lp);
 		}
 	}
 }
@@ -476,8 +469,7 @@ static int flush_to_physcr()
 
 	for (i = 0; i < term.t_nrow; ++i) {
 		vp1 = vscreen[i];
-		/* for each line that needs to be updated */
-		if ((vp1->v_flag & VFCHG) != 0)
+		if (vp1->v_flag & VFCHG)
 			update_line(i, vp1, pscreen[i]);
 	}
 	return TRUE;
@@ -660,17 +652,9 @@ static void update_extended(void)
 }
 
 /*
- * Update a single line. This does not know how to use insert or delete
- * character sequences; we are using VT52 functionality. Update the physical
- * row and column variables. It does try an exploit erase to end of line.
- */
-
-/*
- * update_line()
- *
- * int row;		row of screen to update
- * struct video *vp1;	virtual screen image
- * struct video *vp2;	physical screen image
+ * Update a single line.  This does not know how to use insert or delete
+ * character sequences; we are using VT52 functionality.  Update the physical
+ * row and column variables.  It does try an exploit erase to end of line.
  */
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
@@ -787,10 +771,8 @@ static void modeline(struct window *wp)
 {
 	struct buffer *bp;
 	char tline[NLINE];	/* buffer for part of mode line */
-	int lchar;		/* character to draw line in buffer with */
-	int firstm;		/* is this the first mode? */
 	char *cp;
-	int c, n, i;
+	int firstm = TRUE, lchar, c, n, i;
 
 	n = wp->w_toprow + wp->w_ntrows;	/* Location. */
 	vscreen[n]->v_flag |= VFCHG | VFREQ;	/* Redraw next time. */
@@ -824,7 +806,6 @@ static void modeline(struct window *wp)
 
 	/* display the modes */
 
-	firstm = TRUE;
 	if ((bp->b_flag & BFTRUNC) != 0) {
 		firstm = FALSE;
 		strcat(tline, "Truncated");
