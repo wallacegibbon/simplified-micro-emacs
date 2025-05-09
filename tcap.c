@@ -7,9 +7,9 @@
 
 #if TCAP
 
+#define NPAUSE	10    /* # times thru update to pause. */
 #define MARGIN	8
 #define SCRSIZ	64
-#define NPAUSE	10    /* # times thru update to pause. */
 
 static void tcapkopen(void);
 static void tcapkclose(void);
@@ -99,6 +99,12 @@ static void tcapopen(void)
 	term.t_nrow = int_row - 1;
 	term.t_ncol = int_col;
 
+	/* Fix cases when MAXROW and MAXCOL are smaller than terminal size */
+	if (term.t_nrow > MAXROW)
+		term.t_nrow = MAXROW;
+	if (term.t_ncol > MAXCOL)
+		term.t_ncol = MAXCOL;
+
 	if ((term.t_nrow <= 0) &&
 			(term.t_nrow = (short)tgetnum("li") - 1) == -1) {
 		puts("termcap entry incomplete (lines)");
@@ -114,15 +120,9 @@ static void tcapopen(void)
 	term.t_mrow = MAXROW;
 	term.t_mcol = MAXCOL;
 #else
-	term.t_mrow = term.t_nrow > MAXROW ? MAXROW : term.t_nrow;
-	term.t_mcol = term.t_ncol > MAXCOL ? MAXCOL : term.t_ncol;
+	term.t_mrow = term.t_nrow;
+	term.t_mcol = term.t_ncol;
 #endif
-
-	/* Fix cases when MAXROW and MAXCOL are smaller than terminal size */
-	if (term.t_mrow < term.t_nrow)
-		term.t_nrow = term.t_mrow;
-	if (term.t_mcol < term.t_ncol)
-		term.t_ncol = term.t_mcol;
 
 	p = tcapbuf;
 	t = tgetstr("pc", &p);
