@@ -47,6 +47,7 @@ int forwpage(int f, int n);
 int backpage(int f, int n);
 int setmark(int f, int n);
 int swapmark(int f, int n);
+int next_col(int col, unsigned char c);
 
 /* random.c */
 int showcpos(int f, int n);

@@ -63,10 +63,10 @@ int lockrel(void)
 }
 
 /*
- * Check and lock a file from access by others
- * returns	TRUE = files was not locked and now is
- *		FALSE = file was locked and overridden
- *		ABORT = file was locked, abort command
+ * Check and lock a file from access by others.  Returns
+ * TRUE  = files was not locked and now is;
+ * FALSE = file was locked and overridden;
+ * ABORT = file was locked, abort command.
  */
 int lock(char *fname)
 {

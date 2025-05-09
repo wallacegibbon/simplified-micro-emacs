@@ -40,7 +40,7 @@ int chg_width, chg_height;	/* for window size changes */
 #endif
 
 static int reframe(struct window *wp);
-static int flush_to_physcr(int force);
+static int flush_to_physcr(void);
 static void update_one(struct window *wp);
 static void update_all(struct window *wp);
 static int update_line(int row, struct video *vp1, struct video *vp2);
@@ -64,16 +64,22 @@ static void mlputf(int s);
 static int newscreensize(int h, int w);
 #endif
 
+static struct video *video_new(size_t text_size)
+{
+	struct video *vp = xmalloc(sizeof(*vp) + text_size);
+	vp->v_flag = 0;
+	return vp;
+}
+
 /*
- * Initialize the data structures used by the display code. The edge vectors
- * used to access the screens are set up. The operating system's terminal I/O
- * channel is set up. All the other things get initialized at compile time.
+ * Initialize the data structures used by the display code.  The edge vectors
+ * used to access the screens are set up.  The operating system's terminal I/O
+ * channel is set up.  All the other things get initialized at compile time.
  * The original window has "WFCHG" set, so that it will get completely
  * redrawn on the first call to "update".
  */
 void vtinit(void)
 {
-	struct video *vp;
 	int i;
 
 	TTopen();		/* open the screen */
@@ -84,12 +90,8 @@ void vtinit(void)
 	pscreen = xmalloc(term.t_mrow * sizeof(struct video *));
 
 	for (i = 0; i < term.t_mrow; ++i) {
-		vp = xmalloc(sizeof(struct video) + term.t_mcol);
-		vp->v_flag = 0;
-		vscreen[i] = vp;
-		vp = xmalloc(sizeof(struct video) + term.t_mcol);
-		vp->v_flag = 0;
-		pscreen[i] = vp;
+		vscreen[i] = video_new(term.t_mcol);
+		pscreen[i] = video_new(term.t_mcol);
 	}
 }
 
@@ -193,16 +195,6 @@ static void vteeol(void)
 
 static int scrflags;
 
-/*
- * Make sure that the display is right. This is a three part process.
- * First, scan through all of the windows looking for dirty ones.
- * 	Check the framing, and refresh the screen.
- * Second, make sure that "currow" and "curcol" are correct for
- * 	the current window.
- * Third, make the virtual and physical screens the same.
- *
- * int force;		force update past type ahead?
- */
 int update(int force)
 {
 	struct window *wp, *w;
@@ -233,7 +225,6 @@ int update(int force)
 	/* update any windows that need refreshing */
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_flag) {
-			/* if the window has changed, service it */
 			reframe(wp);
 			if (wp->w_flag & (WFKILLS | WFINS)) {
 				scrflags |= (wp->w_flag & (WFINS | WFKILLS));
@@ -250,7 +241,10 @@ int update(int force)
 		}
 	}
 
-	/* recalc the current hardware cursor location */
+	/*
+	 * Recalculate the current hardware cursor location.
+	 * Make "currow" and "curcol" correct for the current window.
+	 */
 	update_pos();
 
 	/* check for lines to de-extend */
@@ -260,11 +254,9 @@ int update(int force)
 	if (sgarbf != FALSE)
 		update_garbage();
 
-	/* update the virtual screen to the physical screen */
-	flush_to_physcr(force);
-
-	/* update the cursor and flush the buffers */
+	flush_to_physcr();
 	movecursor(currow, curcol - lbound);
+
 	TTflush();
 	displaying = FALSE;
 #if SIGWINCH
@@ -275,9 +267,7 @@ int update(int force)
 }
 
 /*
- * reframe:
- *	check to see if the cursor is on in the window
- *	and re-frame it if needed or wanted
+ * Check to see if the cursor is on in the window and re-frame it if needed.
  */
 static int reframe(struct window *wp)
 {
@@ -357,12 +347,7 @@ static void show_line(struct line *lp)
 		vtputc(lgetc(lp, i));
 }
 
-/*
- * update_one:
- *	update the current line	to the virtual screen
- *
- * struct window *wp;		window to update current line in
- */
+/* Update the current line to the virtual screen */
 static void update_one(struct window *wp)
 {
 	struct line *lp = wp->w_linep;
@@ -380,12 +365,7 @@ static void update_one(struct window *wp)
 	vteeol();
 }
 
-/*
- * update_all:
- *	update all the lines in a window on the virtual screen
- *
- * struct window *wp;		window to update lines in
- */
+/* Update all the lines in a window on the virtual screen */
 static void update_all(struct window *wp)
 {
 	struct line *lp = wp->w_linep;
@@ -404,6 +384,7 @@ static void update_all(struct window *wp)
 	}
 }
 
+
 /*
  * Update the position of the hardware cursor and handle extended lines.
  * This is the only update for simple moves.
@@ -414,22 +395,14 @@ static void update_pos(void)
 	int i;
 
 	/* find the current row */
-	for (currow = curwp->w_toprow; lp != curwp->w_dotp; ++currow)
-		lp = lforw(lp);
+	currow = curwp->w_toprow;
+	for (; lp != curwp->w_dotp; lp = lforw(lp))
+		++currow;
 
 	/* find the current column */
 	curcol = 0;
-	for (i = 0; i < curwp->w_doto; ++i) {
-		unsigned char c = lgetc(lp, i);
-		if (c == '\t')
-			curcol |= TABMASK;
-		else if (c < 0x20 || c == 0x7F)
-			++curcol;
-		else if (c >= 0x80)
-			curcol += 2;
-
-		++curcol;
-	}
+	for (i = 0; i < curwp->w_doto; ++i)
+		curcol = next_col(curcol, lgetc(lp, i));
 
 	/* if extended, flag so and update the virtual line image */
 	if (curcol >= term.t_ncol - 1) {
@@ -468,9 +441,8 @@ static void update_de_extend(void)
 }
 
 /*
- * update_garbage:
- *	if the screen is garbage, clear the physical screen and
- *	the virtual screen and force a full update
+ * If the screen is garbage, clear the physical screen and the virtual screen
+ * and force a full update.
  */
 void update_garbage(void)
 {
@@ -491,7 +463,7 @@ void update_garbage(void)
 	mpresf = FALSE;		/* the message area. */
 }
 
-static int flush_to_physcr(int force)
+static int flush_to_physcr()
 {
 	struct video *vp1;
 	int i;
@@ -661,11 +633,9 @@ static int endofline(char *s, int n)
 }
 
 /*
- * update_extended:
- *	update the extended line which the cursor is currently
- *	on at a column greater than the terminal width. The line
- *	will be scrolled right or left to let the user see where
- *	the cursor is
+ * Update the extended line which the cursor is currently on at a column
+ * greater than the terminal width.  The line will be scrolled right or left
+ * to let the user see where the cursor is.
  */
 static void update_extended(void)
 {

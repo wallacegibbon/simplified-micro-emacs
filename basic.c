@@ -18,26 +18,29 @@
  */
 static int getgoal(struct line *lp)
 {
-	int col = 0, newcol, dbo, len = llength(lp);
+	int col = 0, dbo, len;
 
-	for (dbo = 0; dbo != len; dbo++) {
-		unsigned char c = lgetc(lp, dbo);
-		newcol = col;
-
-		/* Take TAB, ^X and \xx hex characters into account */
-		if (c == '\t')
-			newcol |= TABMASK;
-		else if (c < 0x20 || c == 0x7F)
-			++newcol;
-		else if (c >= 0x80)
-			newcol += 2;
-
-		++newcol;
+	for (dbo = 0, len = llength(lp); dbo != len; dbo++) {
+		int newcol = next_col(col, lgetc(lp, dbo));
 		if (newcol > curgoal)
 			break;
 		col = newcol;
 	}
 	return dbo;
+}
+
+/*
+ * Calculate the next column number.  'A', '\t', '^M', '\AB' are all covered.
+ */
+int next_col(int col, unsigned char c)
+{
+	if (c == '\t')
+		col |= TABMASK;
+	else if (c < 0x20 || c == 0x7F)
+		++col;
+	else if (c >= 0x80)
+		col += 2;
+	return col + 1;
 }
 
 /*

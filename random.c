@@ -76,49 +76,28 @@ int getccol(int bflg)
 {
 	struct line *lp = curwp->w_dotp;
 	int byte_offset = curwp->w_doto;
-	int i = 0, col = 0;
+	int col = 0, i;
 
-	while (i < byte_offset) {
-		unsigned char c = lgetc(lp, i++);
+	for (i = 0; i < byte_offset; ++i) {
+		unsigned char c = lgetc(lp, i);
 		if (c != ' ' && c != '\t' && bflg)
 			break;
-		/* Take TAB, ^X and \xx hex characters into account */
-		if (c == '\t')
-			col |= TABMASK;
-		else if (c < 0x20 || c == 0x7F)
-			++col;
-		else if (c >= 0x80)
-			col += 2;
-		++col;
+		col = next_col(col, c);
 	}
 	return col;
 }
 
 int setccol(int pos)
 {
-	int llen = llength(curwp->w_dotp), col = 0, c, i;
+	int col = 0, i = 0, len;
 
 	/* scan the line until we are at or past the target column */
-	for (i = 0; i < llen; ++i) {
-		/* upon reaching the target, drop out */
-		if (col >= pos)
-			break;
+	for (len = llength(curwp->w_dotp); i < len && col < pos; ++i)
+		col = next_col(col, lgetc(curwp->w_dotp, i));
 
-		c = lgetc(curwp->w_dotp, i);
-		/* Take TAB, ^X and \xx hex characters into account */
-		if (c == '\t')
-			col |= TABMASK;
-		else if (c < 0x20 || c == 0x7F)
-			++col;
-		else if (c >= 0x80)
-			col += 2;
-		++col;
-	}
-
-	/* set us at the new position */
 	curwp->w_doto = i;
 
-	/* and tell weather we made it */
+	/* Tell weather we made it */
 	return col >= pos;
 }
 

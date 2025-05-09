@@ -42,11 +42,10 @@ int spawncli(int f, int n)
 	TTopen();
 	TTkopen();
 #ifdef SIGWINCH
-/*
- * This fools the update routines to force a full
- * redraw with complete window size checking.
- *		-lbt
- */
+	/*
+	 * This fools the update routines to force a full redraw with
+	 * complete window size checking.
+	 */
 	chg_width = term.t_ncol;
 	chg_height = term.t_nrow + 1;
 	term.t_nrow = term.t_ncol = 0;
