@@ -1,12 +1,9 @@
-/* basic.c
- *
- * The routines in this file move the cursor around on the screen. They
- * compute a new value for the cursor, then adjust ".". The display code
+/*
+ * The routines in this file move the cursor around on the screen.  They
+ * compute a new value for the cursor, then adjust ".".  The display code
  * always updates the cursor location, so only moves between lines, or
  * functions that adjust the top line in the window and invalidate the
  * framing, are hard.
- *
- *	modified by Petri Kutvonen
  */
 
 #include "estruct.h"

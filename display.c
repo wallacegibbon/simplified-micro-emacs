@@ -1,11 +1,8 @@
-/* display.c
- *
- *      The functions in this file handle redisplay. There are two halves, the
- *      ones that update the virtual display screen, and the ones that make the
- *      physical display screen the same as the virtual display screen. These
- *      functions use hints that are left in the windows by the commands.
- *
- *	Modified by Petri Kutvonen
+/*
+ * The functions in this file handle redisplay.  There are two halves, the
+ * ones that update the virtual display screen, and the ones that make the
+ * physical display screen the same as the virtual display screen.  These
+ * functions use hints that are left in the windows by the commands.
  */
 
 #include "estruct.h"

@@ -1,10 +1,7 @@
-/* ANSI.C
- *
- * The routines in this file provide support for ANSI style terminals
- * over a serial line.  The serial I/O services are provided by routines in
+/*
+ * The routines in this file provide support for ANSI style terminals over a
+ * serial line.  The serial I/O services are provided by routines in
  * "termio.c".  It compiles into nothing if not an ANSI device.
- *
- *	modified by Petri Kutvonen
  */
 
 #include "estruct.h"

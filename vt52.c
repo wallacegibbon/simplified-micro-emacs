@@ -1,12 +1,9 @@
-/* vt52.c
- *
+/*
  * The routines in this file provide support for VT52 style terminals over
- * a serial line. The serial I/O services are provided by routines in
+ * a serial line.  The serial I/O services are provided by routines in
  * "termio.c".  It compiles into nothing if not a VT52 style device.
  * The bell on the VT52 is terrible, so the "beep" routine is conditionalized
  * on defining BEL.
- *
- *	modified by Petri Kutvonen
  */
 
 #include "estruct.h"

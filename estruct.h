@@ -1,7 +1,5 @@
-#if defined(BSD) || defined(sun) || defined(ultrix) || \
-		(defined(vax) && defined(unix)) || \
-		defined(ultrix) || defined(__osf__)
-
+#if defined(BSD) || defined(sun) || defined(ultrix) || defined(__osf__) || \
+		(defined(vax) && defined(unix))
 	#ifndef BSD
 	#define BSD 1
 	#endif
@@ -15,9 +13,8 @@
 	#undef BSD
 #endif
 
-#if defined(SYSV) || defined(u3b2) || defined(_AIX) || \
-		(defined(i386) && defined(unix)) || defined(__hpux)
-
+#if defined(SYSV) || defined(u3b2) || defined(_AIX) || defined(__hpux) || \
+		(defined(i386) && defined(unix))
 	#define USG 1
 #else
 	#define USG 0
@@ -290,14 +287,12 @@ struct kill {
 	char d_chunk[KBLOCK];  /* Deleted text. */
 };
 
-/* Incremental search defines. */
-
 #define CMDBUFLEN	256	/* Length of our command buffer */
 
+/* Incremental search defines. */
 #define IS_REVERSE	0x12	/* Search backward */
 #define IS_FORWARD	0x13	/* Search forward */
 
-/* Common control keys */
 #define CTLXC		(CTL | 'X')	/* CTL-X prefix char */
 #define METAC		(CTL | '[')	/* META character */
 #define ABORTC		(CTL | 'G')	/* ABORT command char */

@@ -9,9 +9,8 @@ static int replaces(int kind, int f, int n);
 static int nextch(struct line **pcurline, int *pcuroff, int dir);
 
 /*
- * scanner -- Search for a pattern in either direction.  If found, reset the
- * "." to be at the start or just after the match string, and (perhaps)
- * repaint the display.
+ * Search for a pattern in either direction.  If found, reset the "." to be at
+ * the start or just after the match string, and (perhaps) repaint the display.
  */
 int scanner(const char *patrn, int direct, int beg_or_end)
 {
@@ -76,8 +75,8 @@ fail:
 }
 
 /*
- * eq -- Compare two characters.  The "bc" comes from the buffer, "pc"
- * from the pattern.  If we are not in EXACT mode, fold out the case.
+ * Compare two characters.  The "bc" comes from the buffer, "pc" from the
+ * pattern.  If we are not in EXACT mode, fold out the case.
  */
 int eq(unsigned char bc, unsigned char pc)
 {
@@ -93,13 +92,9 @@ int eq(unsigned char bc, unsigned char pc)
 }
 
 /*
- * readpattern -- Read a pattern.  Stash it in apat.
- * Apat is not updated if the user types in an empty line.  If
- * the user typed an empty line, and there is no old pattern, it is
- * an error.  Display the old pattern, in the style of Jeff Lomicka.
- * There is some do-it-yourself control expansion.  Change to using
- * <META> to delimit the end-of-pattern to allow <NL>s in the search
- * string.
+ * Read a pattern.  Stash it in apat.
+ * Apat is not updated if the user types in an empty line.  If the user typed
+ * an empty line, and there is no old pattern, it is an error.
  */
 static int readpattern(char *prompt, char *apat, int srch)
 {
@@ -111,7 +106,8 @@ static int readpattern(char *prompt, char *apat, int srch)
 	expandp(apat, &tpat[strlen(tpat)], NPAT / 2);
 	strcat(tpat, ")<CR>: ");
 
-	/* Read a pattern.  Either we get one,
+	/*
+	 * Read a pattern.  Either we get one,
 	 * or we just get the CR charater, and use the previous pattern.
 	 * Then, if it's the search string, make a reversed pattern.
 	 * *Then*, make the meta-pattern, if we are defined that way.
@@ -132,19 +128,14 @@ static int readpattern(char *prompt, char *apat, int srch)
 	return status;
 }
 
-/*
- * savematch -- We found the pattern?  Let's save it away.
- */
+/* We found the pattern?  Let's save it away. */
 void savematch(void)
 {
-	char *ptr;		/* pointer to last match string */
-	unsigned int j;
 	struct line *curline;	/* line of last match */
 	int curoff;		/* offset "      " */
+	char *ptr;		/* pointer to last match string */
+	unsigned int j;
 
-	/* Free any existing match string, then
-	 * attempt to allocate a new one.
-	 */
 	if (patmatch != NULL)
 		free(patmatch);
 
@@ -161,9 +152,7 @@ void savematch(void)
 	}
 }
 
-/*
- * rvstrcpy -- Reverse string copy.
- */
+/* Reverse string copy. */
 void rvstrcpy(char *rvstr, char *str)
 {
 	int i;
@@ -174,18 +163,15 @@ void rvstrcpy(char *rvstr, char *str)
 	*rvstr = '\0';
 }
 
-/*
- * qreplace -- search and replace with query.
- */
+/* search and replace with query. */
 int qreplace(int f, int n)
 {
 	return replaces(TRUE, f, n);
 }
 
 /*
- * delins -- Delete a specified length from the current point
- * then either insert the string directly, or make use of
- * replacement meta-array.
+ * Delete a specified length from the current point then either insert the
+ * string directly, or make use of replacement meta-array.
  */
 int delins(int dlength, char *instr, int use_meta)
 {
@@ -201,17 +187,15 @@ int delins(int dlength, char *instr, int use_meta)
 }
 
 /*
- * replaces -- Search for a string and replace it with another
- * string.  Query might be enabled (according to kind).
+ * Search for a string and replace it with another string.
+ * Query might be enabled (according to kind).
  *
  * int kind;		Query enabled flag
  */
 static int replaces(int kind, int f, int n)
 {
-	int nlflag;		/* last char of search string a <NL>? */
-	int nlrepl;		/* was a replace done on the last line? */
+	int nlflag, nlrepl, numsub, nummatch, status, c, last_char = 0;
 	char tpat[NPAT];
-	int numsub, nummatch, status, c, last_char = 0;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -309,13 +293,7 @@ qprompt:
 	return TRUE;
 }
 
-/*
- * expandp -- Expand control key sequences for output.
- *
- * char *srcstr;		string to expand
- * char *deststr;		destination of expanded string
- * int maxlength;		maximum chars in destination
- */
+/* Expand control key sequences for output. */
 int expandp(const char *srcstr, char *deststr, int maxlength)
 {
 	unsigned char c;
@@ -346,8 +324,6 @@ int expandp(const char *srcstr, char *deststr, int maxlength)
 }
 
 /*
- * boundry
- *
  * Return information depending on whether we may search no further.
  * Beginning of file and end of file are the obvious cases.
  */
@@ -362,8 +338,8 @@ int boundry(struct line *curline, int curoff, int dir)
 }
 
 /*
- * nextch -- retrieve the next/previous character in the buffer,
- * and advance/retreat the point.
+ * Retrieve the next/previous character in the buffer, and advance/retreat the
+ * point.
  * The order in which this is done is significant, and depends upon the
  * direction of the search.
  * Forward searches look at the current character and move;

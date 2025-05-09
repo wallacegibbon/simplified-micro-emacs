@@ -1,9 +1,6 @@
-/* FILEIO.C
- *
- * The routines in this file read and write ASCII files from the disk. All of
+/*
+ * The routines in this file read and write ASCII files from the disk.  All of
  * the knowledge about files are here.
- *
- *	modified by Petri Kutvonen
  */
 
 #include "estruct.h"

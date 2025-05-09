@@ -86,8 +86,7 @@ int nextwind(int f, int n)
  */
 int prevwind(int f, int n)
 {
-	struct window *wp1;
-	struct window *wp2;
+	struct window *wp1, *wp2;
 
 	/* if we have an argument, we mean the nth window from the bottom */
 	if (f)

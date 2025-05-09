@@ -1,10 +1,7 @@
-/* file.c
- *
- *	The routines in this file handle the reading, writing
- *	and lookup of disk files.  All of details about the
- *	reading and writing of the disk are in "fileio.c".
- *
- *	modified by Petri Kutvonen
+/*
+ * The routines in this file handle the reading, writing and lookup of disk
+ * files.  All of details about the reading and writing of the disk are in
+ * "fileio.c".
  */
 
 #include "estruct.h"

@@ -1,13 +1,10 @@
-/* posix.c
+/*
+ * The functions in this file negotiate with the operating system for
+ * characters, and write characters in a barely buffered fashion on the display.
+ * All operating systems.
  *
- *      The functions in this file negotiate with the operating system for
- *      characters, and write characters in a barely buffered fashion on the
- *      display. All operating systems.
- *
- *	modified by Petri Kutvonen
- *
- *	based on termio.c, with all the old cruft removed, and
- *	fixed for termios rather than the old termio.. Linus Torvalds
+ * Based on termio.c, with all the old cruft removed, and fixed for termios
+ * rather than the old termio.
  */
 
 #ifdef POSIX
