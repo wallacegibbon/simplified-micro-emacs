@@ -32,9 +32,7 @@ int showcpos(int f, int n)
 	if (curwp->w_dotp == curbp->b_linep) {
 		predlines = numlines;
 		predchars = numchars;
-#if PKCODE
 		curchar = 0;
-#endif
 	}
 
 	/* Get real column and end-of-line column. */
@@ -216,9 +214,7 @@ int newline(int f, int n)
 	while (n--) {
 		if ((s = lnewline()) != TRUE)
 			return s;
-#if SCROLLCODE
 		curwp->w_flag |= WFINS;
-#endif
 	}
 	return TRUE;
 }
@@ -281,9 +277,7 @@ int newline_and_indent(int f, int n)
 		}
 		if (lnewline() == FALSE)
 			return FALSE;
-#if SCROLLCODE
 		curwp->w_flag |= WFINS;
-#endif
 		if ((i = nicol / 8) != 0) {
 			if ((linsert(i, '\t') == FALSE))
 				return FALSE;

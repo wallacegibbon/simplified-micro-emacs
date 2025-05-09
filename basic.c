@@ -263,15 +263,14 @@ int forwpage(int f, int n)
 	struct line *lp;
 
 	if (f == FALSE) {
-#if SCROLLCODE
 		if (term.t_scroll != NULL) {
 			if (overlap == 0)
 				n = curwp->w_ntrows / 3 * 2;
 			else
 				n = curwp->w_ntrows - overlap;
-		} else
-#endif
+		} else {
 			n = curwp->w_ntrows - 2;  /* Default scroll. */
+		}
 		if (n <= 0)	/* Forget the overlap on tiny window. */
 			n = 1;
 	} else if (n < 0) {
@@ -286,11 +285,7 @@ int forwpage(int f, int n)
 	curwp->w_linep = lp;
 	curwp->w_dotp = lp;
 	curwp->w_doto = 0;
-#if SCROLLCODE
 	curwp->w_flag |= WFHARD | WFKILLS;
-#else
-	curwp->w_flag |= WFHARD;
-#endif
 	return TRUE;
 }
 
@@ -305,15 +300,14 @@ int backpage(int f, int n)
 	struct line *lp;
 
 	if (f == FALSE) {
-#if SCROLLCODE
 		if (term.t_scroll != NULL) {
 			if (overlap == 0)
 				n = curwp->w_ntrows / 3 * 2;
 			else
 				n = curwp->w_ntrows - overlap;
-		} else
-#endif
+		} else {
 			n = curwp->w_ntrows - 2; /* Default scroll. */
+		}
 		if (n <= 0)	/* Don't blow up on tiny window. */
 			n = 1;
 	} else if (n < 0) {
@@ -328,11 +322,7 @@ int backpage(int f, int n)
 	curwp->w_linep = lp;
 	curwp->w_dotp = lp;
 	curwp->w_doto = 0;
-#if SCROLLCODE
 	curwp->w_flag |= WFHARD | WFINS;
-#else
-	curwp->w_flag |= WFHARD;
-#endif
 	return TRUE;
 }
 

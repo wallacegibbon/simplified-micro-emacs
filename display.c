@@ -29,10 +29,7 @@ struct video {
 #define VFREQ	0x0008		/* reverse video request */
 
 static struct video **vscreen;	/* Virtual screen. */
-
-#if SCROLLCODE
 static struct video **pscreen;	/* Physical screen. */
-#endif
 
 static int displaying = TRUE;
 
@@ -59,7 +56,7 @@ static void update_pos(void);
 static int scrolls(int inserts);
 static void scrscroll(int from, int to, int count);
 
-static int texttest(int vrow, int prow);
+static inline int texttest(int vrow, int prow);
 static int endofline(char *s, int n);
 
 static void mlputi(int i, int r);
@@ -87,19 +84,15 @@ void vtinit(void)
 	TTrev(FALSE);
 
 	vscreen = xmalloc(term.t_mrow * sizeof(struct video *));
-
-#if SCROLLCODE
 	pscreen = xmalloc(term.t_mrow * sizeof(struct video *));
-#endif
+
 	for (i = 0; i < term.t_mrow; ++i) {
 		vp = xmalloc(sizeof(struct video) + term.t_mcol);
 		vp->v_flag = 0;
 		vscreen[i] = vp;
-#if SCROLLCODE
 		vp = xmalloc(sizeof(struct video) + term.t_mcol);
 		vp->v_flag = 0;
 		pscreen[i] = vp;
-#endif
 	}
 }
 
@@ -110,14 +103,10 @@ void vtfree(void)
 	int i;
 	for (i = 0; i < term.t_mrow; ++i) {
 		free(vscreen[i]);
-#if SCROLLCODE
 		free(pscreen[i]);
-#endif
 	}
 	free(vscreen);
-#if SCROLLCODE
 	free(pscreen);
-#endif
 }
 #endif
 
@@ -134,9 +123,7 @@ void vttidy(void)
 	TTflush();
 	TTclose();
 	TTkclose();
-#ifdef PKCODE
 	write(1, "\r", 1);
-#endif
 }
 
 /*
@@ -208,9 +195,7 @@ static void vteeol(void)
 		vcp[vtcol++] = ' ';
 }
 
-#if SCROLLCODE
 static int scrflags;
-#endif
 
 /*
  * Make sure that the display is right. This is a three part process.
@@ -226,18 +211,12 @@ int update(int force)
 {
 	struct window *wp, *w;
 
-#if TYPEAH && ! PKCODE
-	if (force == FALSE && typahead())
-		return TRUE;
-#endif
 #if VISMAC == 0
 	if (force == FALSE && kbdmode == PLAY)
 		return TRUE;
 #endif
 
 	displaying = TRUE;
-
-#if SCROLLCODE
 
 	/*
 	 * first, propagate mode line changes to all instances of a buffer
@@ -255,28 +234,20 @@ int update(int force)
 		}
 	}
 
-#endif
-
 	/* update any windows that need refreshing */
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_flag) {
 			/* if the window has changed, service it */
 			reframe(wp);
-#if SCROLLCODE
 			if (wp->w_flag & (WFKILLS | WFINS)) {
 				scrflags |= (wp->w_flag & (WFINS | WFKILLS));
 				wp->w_flag &= ~(WFKILLS | WFINS);
 			}
-#endif
 			if ((wp->w_flag & ~WFMODE) == WFEDIT)
 				update_one(wp);
 			else if (wp->w_flag & ~WFMOVE)
 				update_all(wp);
-#if SCROLLCODE
 			if (scrflags || (wp->w_flag & WFMODE))
-#else
-			if (wp->w_flag & WFMODE)
-#endif
 				modeline(wp);
 			wp->w_flag = 0;
 			wp->w_force = 0;
@@ -319,7 +290,6 @@ static int reframe(struct window *wp)
 
 	/* if not a requested reframe, check for a needed one */
 	if ((wp->w_flag & WFFORCE) == 0) {
-#if SCROLLCODE
 		/* loop from one line above the window to one line after */
 		lp = wp->w_linep;
 		lp0 = lback(lp);
@@ -329,22 +299,15 @@ static int reframe(struct window *wp)
 			i = -1;
 			lp = lp0;
 		}
-		for (; i <= wp->w_ntrows; ++i)
-#else
-		lp = wp->w_linep;
-		for (i = 0; i < wp->w_ntrows; ++i)
-#endif
-		{
+		for (; i <= wp->w_ntrows; ++i) {
 			/* if the line is in the window, no reframe */
 			if (lp == wp->w_dotp) {
-#if SCROLLCODE
 				/* if not _quite_ in, we'll reframe gently */
 				if (i < 0 || i == wp->w_ntrows) {
 					if (term.t_scroll == NULL)
 						i = wp->w_force;
 					break;
 				}
-#endif
 				return TRUE;
 			}
 
@@ -355,16 +318,15 @@ static int reframe(struct window *wp)
 			lp = lforw(lp);
 		}
 	}
-#if SCROLLCODE
 	if (i == -1) {			/* we're just above the window */
 		i = scrollcount;	/* put dot at first line */
 		scrflags |= WFINS;
 	} else if (i == wp->w_ntrows) {	/* we're just below the window */
 		i = -scrollcount;	/* put dot at last line */
 		scrflags |= WFKILLS;
-	} else				/* put dot where requested */
-#endif
+	} else {			/* put dot where requested */
 		i = wp->w_force;	/* (is 0, unless reposition() was called) */
+	}
 
 	wp->w_flag |= WFMODE;
 
@@ -376,8 +338,9 @@ static int reframe(struct window *wp)
 		i += wp->w_ntrows;
 		if (i < 0)
 			i = 0;
-	} else
+	} else {
 		i = wp->w_ntrows / 2;
+	}
 
 	/* backup to new line at top of window */
 	lp = wp->w_dotp;
@@ -406,16 +369,12 @@ static void show_line(struct line *lp)
  */
 static void update_one(struct window *wp)
 {
-	struct line *lp;	/* line to update */
-	int sline;	/* physical screen line to update */
+	struct line *lp = wp->w_linep;
+	int sline= wp->w_toprow;
 
 	/* search down the line we want */
-	lp = wp->w_linep;
-	sline = wp->w_toprow;
-	while (lp != wp->w_dotp) {
+	for (; lp != wp->w_dotp; lp = lforw(lp))
 		++sline;
-		lp = lforw(lp);
-	}
 
 	/* and update the virtual line */
 	vscreen[sline]->v_flag |= VFCHG;
@@ -437,21 +396,16 @@ static void update_all(struct window *wp)
 	int sline = wp->w_toprow;
 
 	while (sline < wp->w_toprow + wp->w_ntrows) {
-		/* and update the virtual line */
 		vscreen[sline]->v_flag |= VFCHG;
 		vscreen[sline]->v_flag &= ~VFREQ;
 		vtmove(sline, 0);
 		if (lp != wp->w_bufp->b_linep) {
-			/* if we are not at the end */
 			show_line(lp);
 			lp = lforw(lp);
 		}
-
-		/* on to the next one */
 		vteeol();
 		++sline;
 	}
-
 }
 
 /*
@@ -507,7 +461,6 @@ static void update_de_extend(void)
 					vtmove(i, 0);
 					show_line(lp);
 					vteeol();
-
 					/* this line no longer is extended */
 					vscreen[i]->v_flag &= ~VFEXT;
 					vscreen[i]->v_flag |= VFCHG;
@@ -531,11 +484,9 @@ void update_garbage(void)
 	for (i = 0; i < term.t_nrow; ++i) {
 		vscreen[i]->v_flag |= VFCHG;
 		vscreen[i]->v_flag &= ~VFREV;
-#if SCROLLCODE
 		txt = pscreen[i]->v_text;
 		for (j = 0; j < term.t_ncol; ++j)
 			txt[j] = ' ';
-#endif
 	}
 
 	movecursor(0, 0);	/* Erase the screen. */
@@ -549,30 +500,20 @@ static int flush_to_physcr(int force)
 	struct video *vp1;
 	int i;
 
-#if SCROLLCODE
 	if (scrflags & WFKILLS)
 		scrolls(FALSE);
 	if (scrflags & WFINS)
 		scrolls(TRUE);
 	scrflags = 0;
-#endif
 
 	for (i = 0; i < term.t_nrow; ++i) {
 		vp1 = vscreen[i];
-
 		/* for each line that needs to be updated */
-		if ((vp1->v_flag & VFCHG) != 0) {
-#if TYPEAH && ! PKCODE
-			if (force == FALSE && typahead())
-				return TRUE;
-#endif
+		if ((vp1->v_flag & VFCHG) != 0)
 			update_line(i, vp1, pscreen[i]);
-		}
 	}
 	return TRUE;
 }
-
-#if SCROLLCODE
 
 /*
  * Optimize out scrolls (line breaks, and newlines) arg.
@@ -701,12 +642,8 @@ static void scrscroll(int from, int to, int count)
 	TTscroll(from, to, count);
 }
 
-/*
- * return TRUE on text match
- *
- * int vrow, prow;		virtual, physical rows
- */
-static int texttest(int vrow, int prow)
+/* return TRUE on text match */
+static inline int texttest(int vrow, int prow)
 {
 	struct video *vpv = vscreen[vrow];	/* virtual screen image */
 	struct video *vpp = pscreen[prow];	/* physical screen image */
@@ -726,8 +663,6 @@ static int endofline(char *s, int n)
 	}
 	return 0;
 }
-
-#endif /* SCROLLCODE */
 
 /*
  * update_extended:
@@ -903,12 +838,7 @@ static void modeline(struct window *wp)
 		lchar = '-';
 
 	bp = wp->w_bufp;
-#if PKCODE == 0
-	if ((bp->b_flag & BFTRUNC) != 0)
-		vtputc('#');
-	else
-#endif
-		vtputc(lchar);
+	vtputc(lchar);
 
 	if ((bp->b_flag & BFCHG) != 0)	/* "*" if changed. */
 		vtputc('*');
@@ -949,28 +879,12 @@ static void modeline(struct window *wp)
 		++n;
 	}
 
-#if PKCODE
-	if (bp->b_fname[0] != 0 && strcmp(bp->b_bname, bp->b_fname) != 0)
-#else
-	if (bp->b_fname[0] != 0)	/* File name. */
-#endif
-	{
-#if PKCODE == 0
-		cp = "File: ";
-
-		while ((c = *cp++) != 0) {
-			vtputc(c);
-			++n;
-		}
-#endif
-
+	if (bp->b_fname[0] != 0 && strcmp(bp->b_bname, bp->b_fname) != 0) {
 		cp = &bp->b_fname[0];
-
 		while ((c = *cp++) != 0) {
 			vtputc(c);
 			++n;
 		}
-
 		vtputc(' ');
 		++n;
 	}
@@ -1124,18 +1038,15 @@ void mlerase(void)
 }
 
 /*
- * Write a message into the message line. Keep track of the physical cursor
- * position. A small class of printf like format items is handled. Assumes the
- * stack grows down; this assumption is made by the "++" in the argument scan
- * loop. Set the "message line" flag TRUE.
- *
- * char *fmt;		format string for output
- * char *arg;		pointer to first argument to print
+ * Write a message into the message line.  Keep track of the physical cursor
+ * position.  A small class of printf like format items is handled.
+ * Assumes the stack grows down; this assumption is made by the "++" in the
+ * argument scan loop. Set the "message line" flag TRUE.
  */
 void mlwrite(const char *fmt, ...)
 {
-	int c;		/* current char in format string */
 	va_list ap;
+	int c;
 
 	/* if we can not erase to end-of-line, do it manually */
 	if (eolexist == FALSE) {

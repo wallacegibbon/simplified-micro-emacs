@@ -1,3 +1,10 @@
+/*
+ * This file use legacy names from `termcap`.  (read ./termcap.md)
+ *
+ * We can use `infocmp` command to list all terminfo names on our system.
+ * $ infocmp -1 | sed 's/[,\\]//g' | awk '{print $1}'
+ */
+
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -23,29 +30,18 @@ static void tcapscrollregion(int top, int bot);
 static void putpad(char *str);
 
 static void tcapopen(void);
-#if PKCODE
 static void tcapclose(void);
-#endif
 
-#if SCROLLCODE
 static void tcapscroll_reg(int from, int to, int linestoscroll);
 static void tcapscroll_delins(int from, int to, int linestoscroll);
-#endif
 
 #define TCAPSLEN 315
 static char tcapbuf[TCAPSLEN];
-static char *UP, PC, *CM, *CE, *CL, *SO, *SE;
-
-#if PKCODE
-static char *TI, *TE;
-#endif
-
-#if SCROLLCODE
-static char *CS, *DL, *AL, *SF, *SR;
-#endif
+static char *UP, PC, *CM, *CE, *CL, *SO, *SE, *TI, *TE,
+		*CS, *DL, *AL, *SF, *SR;
 
 struct terminal term = {
-	0, /* These four values are set dynamically at open time. */
+	0,	/* These four values are set dynamically at open time. */
 	0,
 	0,
 	0,
@@ -53,11 +49,7 @@ struct terminal term = {
 	SCRSIZ,
 	NPAUSE,
 	tcapopen,
-#if PKCODE
 	tcapclose,
-#else
-	ttclose,
-#endif
 	tcapkopen,
 	tcapkclose,
 	ttgetc,
@@ -68,11 +60,8 @@ struct terminal term = {
 	tcapeeop,
 	tcapbeep,
 	tcaprev,
-	tcapcres
-#if SCROLLCODE
-	,
-	NULL		/* set dynamically at open time */
-#endif
+	tcapcres,
+	NULL	/* set dynamically at open time */
 };
 
 static void tcapopen(void)
@@ -88,8 +77,7 @@ static void tcapopen(void)
 	}
 
 	if ((tgetent(tcbuf, tv_stype)) != 1) {
-		sprintf(err_str, "Unknown terminal type %s!",
-			tv_stype);
+		sprintf(err_str, "Unknown terminal type %s!", tv_stype);
 		puts(err_str);
 		exit(1);
 	}
@@ -139,7 +127,6 @@ static void tcapopen(void)
 	SO = tgetstr("so", &p);
 	if (SO != NULL)
 		revexist = TRUE;
-#if PKCODE
 	if (tgetnum("sg") > 0) {	/* can reverse be used? P.K. */
 		revexist = FALSE;
 		SE = NULL;
@@ -147,7 +134,6 @@ static void tcapopen(void)
 	}
 	TI = tgetstr("ti", &p);	/* terminal init and exit */
 	TE = tgetstr("te", &p);
-#endif
 
 	if (CL == NULL || CM == NULL || UP == NULL) {
 		puts("Incomplete termcap entry\n");
@@ -156,7 +142,7 @@ static void tcapopen(void)
 
 	if (CE == NULL)	/* will we be able to use clear to EOL? */
 		eolexist = FALSE;
-#if SCROLLCODE
+
 	CS = tgetstr("cs", &p);
 	SF = tgetstr("sf", &p);
 	SR = tgetstr("sr", &p);
@@ -172,7 +158,6 @@ static void tcapopen(void)
 	} else {
 		term.t_scroll = NULL;
 	}
-#endif
 
 	if (p >= &tcapbuf[TCAPSLEN]) {
 		puts("Terminal description too big!\n");
@@ -181,7 +166,6 @@ static void tcapopen(void)
 	ttopen();
 }
 
-#if PKCODE
 static void tcapclose(void)
 {
 	putpad(tgoto(CM, 0, term.t_nrow));
@@ -189,26 +173,21 @@ static void tcapclose(void)
 	ttflush();
 	ttclose();
 }
-#endif
 
 static void tcapkopen(void)
 {
-#if PKCODE
 	putpad(TI);
 	ttflush();
 	ttrow = 999;
 	ttcol = 999;
 	sgarbf = TRUE;
-#endif
 	strcpy(sres, "NORMAL");
 }
 
 static void tcapkclose(void)
 {
-#if PKCODE
 	putpad(TE);
 	ttflush();
-#endif
 }
 
 static void tcapmove(int row, int col)
@@ -246,8 +225,6 @@ static int tcapcres(char *res)
 {
 	return TRUE;
 }
-
-#if SCROLLCODE
 
 /* move howmanylines lines starting at from to to */
 static void tcapscroll_reg(int from, int to, int howmanylines)
@@ -298,8 +275,6 @@ static void tcapscrollregion(int top, int bot)
 	ttputc(PC);
 	putpad(tgoto(CS, bot, top));
 }
-
-#endif
 
 static void tcapbeep(void)
 {

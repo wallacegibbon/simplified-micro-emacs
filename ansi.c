@@ -15,9 +15,7 @@
 #define NROW    25		/* Screen size. */
 #define NCOL    80		/* Edit if you want to. */
 
-#if PKCODE
 #define MROW	64
-#endif
 #define NPAUSE	100		/* # times thru update to pause */
 #define MARGIN	8		/* size of minimim margin and */
 #define SCRSIZ	64		/* scroll size for extended lines */
@@ -43,11 +41,7 @@ static int ansicres(char *);
  * "termio" code.
  */
 struct terminal term = {
-#if PKCODE
 	MROW - 1,
-#else
-	NROW - 1,
-#endif
 	NROW - 1,
 	NCOL,
 	NCOL,
@@ -66,11 +60,8 @@ struct terminal term = {
 	ansieeop,
 	ansibeep,
 	ansirev,
-	ansicres
-#if SCROLLCODE
-	,
+	ansicres,
 	NULL
-#endif
 };
 
 static void ansimove(int row, int col)

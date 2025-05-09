@@ -41,7 +41,7 @@
 
 /* Size of terminal for a 1080p screen with terminus-font-16x32 is 120x33 */
 #define MAXCOL	128
-#define MAXROW	40
+#define MAXROW	128
 
 #define TYPEAH	1  /* type ahead causes update to be skipped */
 #define VISMAC	0  /* update display during keyboard macros */
@@ -55,10 +55,6 @@
 #define CLEAN	0  /* de-alloc memory on exit */
 
 #define XONXOFF	UNIX
-
-#define PKCODE	1      /* include my extensions P.K., define always */
-#define SCROLLCODE	1   /* scrolling code P.K. */
-
 
 /* Define some ability flags. */
 
@@ -190,11 +186,8 @@ struct window {
 #define WFEDIT  0x04		/* Editing within a line */
 #define WFHARD  0x08		/* Better to a full display */
 #define WFMODE  0x10		/* Update mode line. */
-
-#if SCROLLCODE
-#define WFKILLS 0x40		/* something was deleted */
-#define WFINS   0x80		/* something was inserted */
-#endif
+#define WFKILLS 0x40		/* Something was deleted */
+#define WFINS   0x80		/* Something was inserted */
 
 
 /*
@@ -240,6 +233,7 @@ struct terminal {
 	short t_margin;		/* min margin for extended lines */
 	short t_scrsiz;		/* size of scroll region " */
 	int t_pause;		/* # times thru update to pause */
+
 	void (*t_open)(void);	/* Open terminal at the start. */
 	void (*t_close)(void);	/* Close terminal at end. */
 	void (*t_kopen)(void);	/* Open keyboard */
@@ -247,15 +241,15 @@ struct terminal {
 	int (*t_getchar)(void);	/* Get character from keyboard. */
 	int (*t_putchar)(int);	/* Put character to display. */
 	void (*t_flush)(void);	/* Flush output buffers. */
-	void (*t_move)(int, int);/* Move the cursor, origin 0. */
+	void (*t_move)(int, int);
+				/* Move the cursor, origin 0. */
 	void (*t_eeol)(void);	/* Erase to end of line. */
 	void (*t_eeop)(void);	/* Erase to end of page. */
 	void (*t_beep)(void);	/* Beep. */
 	void (*t_rev)(int);	/* set reverse video state */
 	int (*t_rez)(char *);	/* change screen resolution */
-#if SCROLLCODE
-	void (*t_scroll)(int, int, int);/* scroll a region of the screen */
-#endif
+	void (*t_scroll)(int, int, int);
+				/* scroll a region of the screen */
 };
 
 #define TTopen		(*term.t_open)
@@ -271,9 +265,7 @@ struct terminal {
 #define TTbeep		(*term.t_beep)
 #define TTrev		(*term.t_rev)
 #define TTrez		(*term.t_rez)
-#if SCROLLCODE
 #define TTscroll	(*term.t_scroll)
-#endif
 
 /* Structure for the table of initial key bindings. */
 struct key_tab {

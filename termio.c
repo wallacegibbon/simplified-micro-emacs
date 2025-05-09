@@ -33,11 +33,9 @@ struct tchars ntchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
 #endif
 
-#if PKCODE
 struct ltchars oltchars;	/* Saved terminal local special character set */
 struct ltchars nltchars = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 				/* A lot of nothing */
-#endif
 
 #include <sys/ioctl.h>		/* to get at the typeahead */
 #define TBUFSIZ	128
@@ -61,11 +59,7 @@ void ttopen(void)
 	ntermio.c_line = otermio.c_line;
 	ntermio.c_cc[VMIN] = 1;
 	ntermio.c_cc[VTIME] = 0;
-#if PKCODE
 	ioctl(0, TCSETAW, &ntermio);	/* and activate them */
-#else
-	ioctl(0, TCSETA, &ntermio);	/* and activate them */
-#endif
 	kbdflgs = fcntl(0, F_GETFL, 0);
 	kbdpoll = FALSE;
 
@@ -82,10 +76,9 @@ void ttopen(void)
 	stty(0, &nstate);	/* set mode */
 	ioctl(0, TIOCGETC, &otchars);	/* Save old characters */
 	ioctl(0, TIOCSETC, &ntchars);	/* Place new character into K */
-#if PKCODE
 	ioctl(0, TIOCGLTC, &oltchars);	/* Save old local characters */
 	ioctl(0, TIOCSLTC, &nltchars);	/* New local characters */
-#endif
+
 	/*
 	 * provide a smaller terminal output buffer so that
 	 * the type ahead detection works better (more often)
@@ -107,18 +100,12 @@ void ttopen(void)
 void ttclose(void)
 {
 #if USG
-#if PKCODE
 	ioctl(0, TCSETAW, &otermio);	/* restore terminal settings */
-#else
-	ioctl(0, TCSETA, &otermio);	/* restore terminal settings */
-#endif
 	fcntl(0, F_SETFL, kbdflgs);
 #elif BSD
 	stty(0, &ostate);
 	ioctl(0, TIOCSETC, &otchars);	/* Place old character into K */
-#if PKCODE
 	ioctl(0, TIOCSLTC, &oltchars);	/* Place old local character into K */
-#endif
 #endif
 }
 
@@ -186,9 +173,7 @@ int typahead(void)
 	if (!kbdqp) {
 		if (!kbdpoll && fcntl(0, F_SETFL, kbdflgs | O_NDELAY) < 0)
 			return FALSE;
-#if PKCODE
 		kbdpoll = 1;
-#endif
 		kbdqp = (1 == read(0, &kbdq, 1));
 	}
 	return kbdqp;

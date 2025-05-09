@@ -27,9 +27,7 @@ int fisearch(int f, int n)
 	} else {
 		mlerase();
 	}
-#if PKCODE
 	matchlen = strlen(pat);
-#endif
 	return TRUE;
 }
 

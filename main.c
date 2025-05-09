@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	int c = 0, c1;
 	int f, n;
 
-#if PKCODE & BSD
+#if BSD
 	sleep(1);			/* Time for window manager. */
 #endif
 
@@ -105,7 +105,7 @@ loop:
 	saveflag = lastflag;
 	lastflag = saveflag;
 
-#if TYPEAH && PKCODE
+#if TYPEAH
 	if (typahead()) {
 		c1 = getcmd();
 		update(FALSE);

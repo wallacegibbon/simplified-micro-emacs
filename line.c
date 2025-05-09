@@ -233,11 +233,8 @@ int lnewline(void)
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
-#if SCROLLCODE
+
 	lchange(WFHARD | WFINS);
-#else
-	lchange(WFHARD);
-#endif
 	lp1 = curwp->w_dotp;		/* Get the address and */
 	doto = curwp->w_doto;		/* offset of "." */
 	if ((lp2 = lalloc(doto)) == NULL)	/* New first half line */
@@ -302,11 +299,7 @@ int ldelete(long n, int kflag)
 		if (chunk > n)
 			chunk = n;
 		if (chunk == 0) {	/* End of line, merge. */
-#if SCROLLCODE
 			lchange(WFHARD | WFKILLS);
-#else
-			lchange(WFHARD);
-#endif
 			if (ldelnewline() == FALSE ||
 					(kflag != FALSE &&
 					kinsert('\n') == FALSE))

@@ -59,11 +59,8 @@ struct terminal term = {
 	vt52eeop,
 	vt52beep,
 	vt52rev,
-	vt52cres
-#if SCROLLCODE
-	,
+	vt52cres,
 	NULL
-#endif
 };
 
 static void vt52move(int row, int col)
