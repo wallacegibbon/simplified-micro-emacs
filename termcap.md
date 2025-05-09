@@ -1,4 +1,4 @@
-* Legacy `termcap` to Modern `terminfo` Mapping
+# Legacy `termcap` to Modern `terminfo` Mapping
 
 | `termcap` | `terminfo` | Description              |
 | --------- | ---------- | ------------------------ |
@@ -44,9 +44,9 @@
 | `vi`      | `civis`    | Make cursor invisible    |
 
 
-* Ordered `terminfo` Names
+# Ordered `terminfo` Names
 
-** Cursor Movement
+## Cursor Movement
 
 | Name   | Description                  |
 | ------ | ---------------------------- |
@@ -65,7 +65,7 @@
 | `cud`  | Cursor down n lines          |
 
 
-** Screen/Line Manipulation
+## Screen/Line Manipulation
 
 | Name    | Description                   |
 | ------- | ----------------------------- |
@@ -81,7 +81,7 @@
 | `rmcup` | Exit alternate screen buffer  |
 
 
-** Text Attributes
+## Text Attributes
 
 | Name    | Description                           |
 | ------- | ------------------------------------- |
@@ -96,7 +96,7 @@
 | `sgr`   | Set graphic rendition (combined form) |
 
 
-** Colors
+## Colors
 
 | Name    | Description                         |
 | ------- | ----------------------------------- |
@@ -105,7 +105,7 @@
 | `op`    | Reset foreground/background colors  |
 
 
-** Key Mappings
+## Key Mappings
 
 | Name    | Key          |
 | ------- | ------------ |
@@ -123,7 +123,7 @@
 | `kpp`   | Page Up      |
 
 
-** Mouse (if supported)
+## Mouse (if supported)
 
 | Name    | Description      |
 | ------- | ---------------- |
