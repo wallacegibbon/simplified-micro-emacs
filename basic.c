@@ -53,9 +53,9 @@ int gotobol(int f, int n)
 }
 
 /*
- * Move the cursor backwards by "n" characters. If "n" is less than zero call
- * "forwchar" to actually do the move. Otherwise compute the new cursor
- * location. Error if you try and move out of the buffer. Set the flag if the
+ * Move the cursor backwards by "n" characters.  If "n" is less than zero call
+ * "forwchar" to actually do the move.  Otherwise compute the new cursor
+ * location.  Error if you try and move out of the buffer.  Set the flag if the
  * line pointer for dot changes.
  */
 int backchar(int f, int n)
@@ -79,7 +79,7 @@ int backchar(int f, int n)
 }
 
 /*
- * Move the cursor to the end of the current line. Trivial. No errors.
+ * Move the cursor to the end of the current line.  Trivial.  No errors.
  */
 int gotoeol(int f, int n)
 {
@@ -88,10 +88,10 @@ int gotoeol(int f, int n)
 }
 
 /*
- * Move the cursor forwards by "n" characters. If "n" is less than zero call
- * "backchar" to actually do the move. Otherwise compute the new cursor
- * location, and move ".". Error if you try and move off the end of the
- * buffer. Set the flag if the line pointer for dot changes.
+ * Move the cursor forwards by "n" characters.  If "n" is less than zero call
+ * "backchar" to actually do the move.  Otherwise compute the new cursor
+ * location, and move ".".  Error if you try and move off the end of the
+ * buffer.  Set the flag if the line pointer for dot changes.
  */
 int forwchar(int f, int n)
 {
@@ -149,9 +149,9 @@ int gotoline(int f, int n)
 }
 
 /*
- * Goto the beginning of the buffer. Massive adjustment of dot. This is
+ * Goto the beginning of the buffer.  Massive adjustment of dot.  This is
  * considered to be hard motion; it really isn't if the original value of dot
- * is the same as the new value of dot. Normally bound to "M-<".
+ * is the same as the new value of dot.  Normally bound to "M-<".
  */
 int gotobob(int f, int n)
 {
@@ -162,8 +162,8 @@ int gotobob(int f, int n)
 }
 
 /*
- * Move to the end of the buffer. Dot is always put at the end of the file
- * (ZJ). The standard screen code does most of the hard parts of update.
+ * Move to the end of the buffer.  Dot is always put at the end of the file
+ * (ZJ).  The standard screen code does most of the hard parts of update.
  * Bound to "M->".
  */
 int gotoeob(int f, int n)
@@ -175,9 +175,9 @@ int gotoeob(int f, int n)
 }
 
 /*
- * Move forward by full lines. If the number of lines to move is less than
- * zero, call the backward line function to actually do it. The last command
- * controls how the goal column is set. Bound to "C-N". No errors are
+ * Move forward by full lines.  If the number of lines to move is less than
+ * zero, call the backward line function to actually do it.  The last command
+ * controls how the goal column is set.  Bound to "C-N".  No errors are
  * possible.
  */
 int forwline(int f, int n)
@@ -214,10 +214,10 @@ int forwline(int f, int n)
 }
 
 /*
- * This function is like "forwline", but goes backwards. The scheme is exactly
- * the same. Check for arguments that are less than zero and call your
- * alternate. Figure out the new line and call "movedot" to perform the
- * motion. No errors are possible. Bound to "C-P".
+ * This function is like "forwline", but goes backwards.  The scheme is exactly
+ * the same.  Check for arguments that are less than zero and call your
+ * alternate.  Figure out the new line and call "movedot" to perform the
+ * motion.  No errors are possible.  Bound to "C-P".
  */
 int backline(int f, int n)
 {
@@ -254,8 +254,8 @@ int backline(int f, int n)
 
 /*
  * Scroll forward by a specified number of lines, or by a full page if no
- * argument. Bound to "C-V". The "2" in the arithmetic on the window size is
- * the overlap; this value is the default overlap value in ITS EMACS. Because
+ * argument.  Bound to "C-V".  The "2" in the arithmetic on the window size is
+ * the overlap; this value is the default overlap value in ITS EMACS.  Because
  * this zaps the top line in the display window, we have to do a hard update.
  */
 int forwpage(int f, int n)
@@ -290,9 +290,9 @@ int forwpage(int f, int n)
 }
 
 /*
- * This command is like "forwpage", but it goes backwards. The "2", like
- * above, is the overlap between the two windows. The value is from the ITS
- * EMACS manual. Bound to "M-V". We do a hard update for exactly the same
+ * This command is like "forwpage", but it goes backwards.  The "2", like
+ * above, is the overlap between the two windows.  The value is from the ITS
+ * EMACS manual.  Bound to "M-V".  We do a hard update for exactly the same
  * reason.
  */
 int backpage(int f, int n)
@@ -327,8 +327,8 @@ int backpage(int f, int n)
 }
 
 /*
- * Set the mark in the current window to the value of "." in the window. No
- * errors are possible. Bound to "M-.".
+ * Set the mark in the current window to the value of "." in the window.  No
+ * errors are possible.  Bound to "M-.".
  */
 int setmark(int f, int n)
 {
@@ -339,9 +339,9 @@ int setmark(int f, int n)
 }
 
 /*
- * Swap the values of "." and "mark" in the current window. This is pretty
+ * Swap the values of "." and "mark" in the current window.  This is pretty
  * easy, bacause all of the hard work gets done by the standard routine
- * that moves the mark about. The only possible error is "no mark". Bound to
+ * that moves the mark about.  The only possible error is "no mark".  Bound to
  * "C-X C-X".
  */
 int swapmark(int f, int n)

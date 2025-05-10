@@ -88,7 +88,7 @@ int swbuffer(struct buffer *bp)
 		curbp->b_dotp = lforw(curbp->b_linep);
 		curbp->b_doto = 0;
 		curbp->b_active = TRUE;
-		curbp->b_mode |= gmode;	/* P.K. */
+		curbp->b_mode |= gmode;
 	}
 	curwp->w_bufp = bp;
 	curwp->w_linep = bp->b_linep;	/* For macros, ignored. */
@@ -118,7 +118,7 @@ int swbuffer(struct buffer *bp)
 
 /*
  * Dispose of a buffer, by name.
- * Ask for the name. Look it up (don't get too upset if it isn't there at all!).
+ * Ask for the name.  Look it up (don't get too upset if it isn't there at all!).
  * Get quite upset if the buffer is being displayed.
  * Clear the buffer (ask if the buffer has been changed).
  * Then free the header line and the buffer header.
@@ -386,7 +386,7 @@ void e_ltoa(char *buf, int width, long num)
 
 /*
  * The argument "text" points to a string.
- * Append this line to the buffer list buffer. Handcraft the EOL on the end.
+ * Append this line to the buffer list buffer.  Handcraft the EOL on the end.
  * Return TRUE if it worked and FALSE if you ran out of room.
  */
 int addline(char *text)
@@ -429,7 +429,7 @@ int anycb(void)
 }
 
 /*
- * Find a buffer, by name. Return a pointer to the buffer structure
+ * Find a buffer, by name.  Return a pointer to the buffer structure
  * associated with it.
  * If the buffer is not found and the "cflag" is TRUE, create it.
  * The "bflag" is the settings for the flags in in buffer.

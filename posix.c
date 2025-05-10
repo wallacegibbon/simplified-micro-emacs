@@ -99,8 +99,8 @@ int ttputc(int c)
 }
 
 /*
- * Flush terminal buffer. Does real work where the terminal output is buffered
- * up. A no-operation on systems where byte at a time terminal I/O is done.
+ * Flush terminal buffer.  Does real work where the terminal output is buffered
+ * up.  A no-operation on systems where byte at a time terminal I/O is done.
  */
 void ttflush(void)
 {

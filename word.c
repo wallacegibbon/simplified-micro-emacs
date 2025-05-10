@@ -49,9 +49,9 @@ int forwword(int f, int n)
 }
 
 /*
- * Move the cursor forward by the specified number of words. As you move,
- * convert any characters to upper case. Error if you try and move beyond the
- * end of the buffer. Bound to "M-U".
+ * Move the cursor forward by the specified number of words.  As you move,
+ * convert any characters to upper case.  Error if you try and move beyond the
+ * end of the buffer.  Bound to "M-U".
  */
 int upperword(int f, int n)
 {
@@ -82,9 +82,9 @@ int upperword(int f, int n)
 }
 
 /*
- * Move the cursor forward by the specified number of words. As you move
- * convert characters to lower case. Error if you try and move over the end of
- * the buffer. Bound to "M-L".
+ * Move the cursor forward by the specified number of words.  As you move
+ * convert characters to lower case.  Error if you try and move over the end of
+ * the buffer.  Bound to "M-L".
  */
 int lowerword(int f, int n)
 {
@@ -115,10 +115,10 @@ int lowerword(int f, int n)
 }
 
 /*
- * Move the cursor forward by the specified number of words. As you move
+ * Move the cursor forward by the specified number of words.  As you move
  * convert the first character of the word to upper case, and subsequent
- * characters to lower case. Error if you try and move past the end of the
- * buffer. Bound to "M-C".
+ * characters to lower case.  Error if you try and move past the end of the
+ * buffer.  Bound to "M-C".
  */
 int capword(int f, int n)
 {
@@ -159,10 +159,10 @@ int capword(int f, int n)
 }
 
 /*
- * Kill forward by "n" words. Remember the location of dot. Move forward by
- * the right number of words. Put dot back where it was and issue the kill
- * command for the right number of characters. With a zero argument, just
- * kill one word and no whitespace. Bound to "M-D".
+ * Kill forward by "n" words.  Remember the location of dot.  Move forward by
+ * the right number of words.  Put dot back where it was and issue the kill
+ * command for the right number of characters.  With a zero argument, just
+ * kill one word and no whitespace.  Bound to "M-D".
  */
 int delfword(int f, int n)
 {
@@ -245,9 +245,9 @@ int delfword(int f, int n)
 }
 
 /*
- * Kill backwards by "n" words. Move backwards by the desired number of words,
- * counting the characters. When dot is finally moved to its resting place,
- * fire off the kill command. Bound to "M-Rubout" and to "M-Backspace".
+ * Kill backwards by "n" words.  Move backwards by the desired number of words,
+ * counting the characters.  When dot is finally moved to its resting place,
+ * fire off the kill command.  Bound to "M-Rubout" and to "M-Backspace".
  */
 int delbword(int f, int n)
 {
@@ -287,7 +287,7 @@ bckdel:
 
 /*
  * Return TRUE if the character at dot is a character that is considered to be
- * part of a word. The word character list is hard coded. Should be setable.
+ * part of a word.  The word character list is hard coded.  Should be setable.
  */
 int inword(void)
 {

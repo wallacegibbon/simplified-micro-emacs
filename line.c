@@ -17,8 +17,8 @@
 
 /*
  * This routine allocates a block of memory large enough to hold a struct line
- * containing "used" characters. The block is always rounded up a bit. Return
- * a pointer to the new block, or NULL if there isn't any memory left. Print a
+ * containing "used" characters.  The block is always rounded up a bit.  Return
+ * a pointer to the new block, or NULL if there isn't any memory left.  Print a
  * message in the message line if no space.
  */
 struct line *lalloc(int used)
@@ -39,9 +39,9 @@ struct line *lalloc(int used)
 }
 
 /*
- * Delete line "lp". Fix all of the links that might point at it (they are
- * moved to offset 0 of the next line. Unlink the line from whatever buffer it
- * might be in. Release the memory. The buffers are updated too; the magic
+ * Delete line "lp".  Fix all of the links that might point at it (they are
+ * moved to offset 0 of the next line.  Unlink the line from whatever buffer it
+ * might be in.  Release the memory.  The buffers are updated too; the magic
  * conditions described in the above comments don't hold here.
  */
 void lfree(struct line *lp)
@@ -84,9 +84,9 @@ void lfree(struct line *lp)
 
 /*
  * This routine gets called when a character is changed in place in the current
- * buffer. It updates all of the required flags in the buffer and window
- * system. The flag used is passed as an argument; if the buffer is being
- * displayed in more than 1 window we change EDIT t HARD. Set MODE if the
+ * buffer.  It updates all of the required flags in the buffer and window
+ * system.  The flag used is passed as an argument; if the buffer is being
+ * displayed in more than 1 window we change EDIT t HARD.  Set MODE if the
  * mode line needs to be updated (the "*" has to be set).
  */
 void lchange(int flag)
@@ -216,9 +216,9 @@ int linsert(int n, int c)
 
 /*
  * Insert a newline into the buffer at the current location of dot in the
- * current window. The funny ass-backwards way it does things is not a botch;
- * it just makes the last line in the file not a special case. Return TRUE if
- * everything works out and FALSE on error (memory allocation failure). The
+ * current window.  The funny ass-backwards way it does things is not a botch;
+ * it just makes the last line in the file not a special case.  Return TRUE if
+ * everything works out and FALSE on error (memory allocation failure).  The
  * update of dot and mark is a bit easier then in the above case, because the
  * split forces more updating.
  */
@@ -271,10 +271,10 @@ int lnewline(void)
 }
 
 /*
- * This function deletes "n" bytes, starting at dot. It understands how do deal
- * with end of lines, etc. It returns TRUE if all of the characters were
+ * This function deletes "n" bytes, starting at dot.  It understands how do deal
+ * with end of lines, etc.  It returns TRUE if all of the characters were
  * deleted, and FALSE if they were not (because dot ran into the end of the
- * buffer. The "kflag" is TRUE if the text should be put in the kill buffer.
+ * buffer.  The "kflag" is TRUE if the text should be put in the kill buffer.
  *
  * long n;		# of chars to delete
  * int kflag;		 put killed text in kill buffer flag
@@ -339,12 +339,12 @@ int ldelete(long n, int kflag)
 }
 
 /*
- * Delete a newline. Join the current line with the next line. If the next line
+ * Delete a newline.  Join the current line with the next line.  If the next line
  * is the magic header line always return TRUE; merging the last line with the
  * header line can be thought of as always being a successful operation, even
- * if nothing is done, and this makes the kill buffer work "right". Easy cases
- * can be done by shuffling data around. Hard cases require that lines be moved
- * about in memory. Return FALSE on error and TRUE if all looks ok. Called by
+ * if nothing is done, and this makes the kill buffer work "right".  Easy cases
+ * can be done by shuffling data around.  Hard cases require that lines be moved
+ * about in memory.  Return FALSE on error and TRUE if all looks ok.  Called by
  * "ldelete" only.
  */
 int ldelnewline(void)
@@ -424,9 +424,9 @@ int ldelnewline(void)
 }
 
 /*
- * Delete all of the text saved in the kill buffer. Called by commands when a
- * new kill context is being created. The kill buffer array is released, just
- * in case the buffer has grown to immense size. No errors.
+ * Delete all of the text saved in the kill buffer.  Called by commands when a
+ * new kill context is being created.  The kill buffer array is released, just
+ * in case the buffer has grown to immense size.  No errors.
  */
 void kdelete(void)
 {
@@ -475,9 +475,9 @@ int kinsert(int c)
 }
 
 /*
- * Yank text back from the kill buffer. This is really easy. All of the work
- * is done by the standard insert routines. All you do is run the loop, and
- * check for errors. Bound to "C-Y".
+ * Yank text back from the kill buffer.  This is really easy.  All of the work
+ * is done by the standard insert routines.  All you do is run the loop, and
+ * check for errors.  Bound to "C-Y".
  */
 int yank(int f, int n)
 {

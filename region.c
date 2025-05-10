@@ -4,7 +4,7 @@
 #include "line.h"
 
 /*
- * Kill the region. Ask "getregion" to figure out the bounds of the region.
+ * Kill the region.  Ask "getregion" to figure out the bounds of the region.
  * Move "." to the start, and kill the characters.  Bound to "C-W".
  */
 int killregion(int f, int n)
@@ -26,7 +26,7 @@ int killregion(int f, int n)
 
 /*
  * Copy all of the characters in the region to the kill buffer.
- * Don't move dot at all. This is a bit like a kill region followed by a yank.
+ * Don't move dot at all.  This is a bit like a kill region followed by a yank.
  * Bound to "M-W".
  */
 int copyregion(int f, int n)
@@ -59,10 +59,10 @@ int copyregion(int f, int n)
 }
 
 /*
- * Lower case region. Zap all of the upper case characters in the region to
- * lower case. Use the region code to set the limits. Scan the buffer,
- * doing the changes. Call "lchange" to ensure that redisplay is done in
- * all buffers. Bound to "C-X C-L".
+ * Lower case region.  Zap all of the upper case characters in the region to
+ * lower case.  Use the region code to set the limits.  Scan the buffer,
+ * doing the changes.  Call "lchange" to ensure that redisplay is done in
+ * all buffers.  Bound to "C-X C-L".
  */
 int lowerregion(int f, int n)
 {
@@ -92,9 +92,9 @@ int lowerregion(int f, int n)
 }
 
 /*
- * Upper case region. Zap all of the lower case characters in the region to
+ * Upper case region.  Zap all of the lower case characters in the region to
  * upper case.  Use the region code to set the limits.  Scan the buffer,
- * doing the changes. Call "lchange" to ensure that redisplay is done in all
+ * doing the changes.  Call "lchange" to ensure that redisplay is done in all
  * buffers.
  * Bound to "C-X C-L".
  */
@@ -130,7 +130,7 @@ int upperregion(int f, int n)
  * and fills in the fields of the "struct region" structure pointed to by "rp".
  * Because the dot and mark are usually very close together,
  * we scan outward from dot looking for mark.
- * This should save time. Return a standard code.
+ * This should save time.  Return a standard code.
  * Callers of this routine should be prepared to get an "ABORT" status;
  * we might make this have the conform thing later.
  */

@@ -110,8 +110,8 @@ void vtfree(void)
 
 /*
  * Clean up the virtual terminal system, in anticipation for a return to the
- * operating system. Move down to the last line and clear it out (the next
- * system prompt will be written in the line). Shut down the channel to the
+ * operating system.  Move down to the last line and clear it out (the next
+ * system prompt will be written in the line).  Shut down the channel to the
  * terminal.
  */
 void vttidy(void)
@@ -125,12 +125,12 @@ void vttidy(void)
 }
 
 /*
- * Write a character to the virtual screen. The virtual row and
- * column are updated. If we are not yet on left edge, don't print
- * it yet. If the line is too long put a "$" in the last column.
+ * Write a character to the virtual screen.  The virtual row and
+ * column are updated.  If we are not yet on left edge, don't print
+ * it yet.  If the line is too long put a "$" in the last column.
  *
  * This routine only puts printing characters into the virtual
- * terminal buffers. Only column overflow is checked.
+ * terminal buffers.  Only column overflow is checked.
  */
 static void vtputc(int c)
 {
@@ -524,13 +524,12 @@ static int scrolls(int inserts)
 	longmatch = -1;
 	longcount = 0;
 	from = target;
-	for (i = from + 1; i < rows - longcount /* P.K. */ ; ++i) {
+	for (i = from + 1; i < rows - longcount; ++i) {
 		if (inserts ? texttest(i, from) : texttest(from, i)) {
 			match = i;
 			count = 1;
 			for (j = match + 1, k = from + 1;
-					j < rows && k < rows;
-					++j, ++k) {
+					j < rows && k < rows; ++j, ++k) {
 				if (inserts ? texttest(j, k) : texttest(k, j))
 					++count;
 				else
@@ -708,9 +707,9 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 	}
 
 /* This can still happen, even though we only call this routine on changed
- * lines. A hard update is always done when a line splits, a massive
- * change is done, or a buffer is displayed twice. This optimizes out most
- * of the excess updating. A lot of computes are used, but these tend to
+ * lines.  A hard update is always done when a line splits, a massive
+ * change is done, or a buffer is displayed twice.  This optimizes out most
+ * of the excess updating.  A lot of computes are used, but these tend to
  * be hard operations that do a lot of update, so I don't really care.
  */
 	/* if both lines are the same, no update needs to be done */
@@ -762,9 +761,9 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 }
 
 /*
- * Redisplay the mode line for the window pointed to by the "wp". This is the
- * only routine that has any idea of how the modeline is formatted. You can
- * change the modeline format by hacking at this routine. Called by "update"
+ * Redisplay the mode line for the window pointed to by the "wp".  This is the
+ * only routine that has any idea of how the modeline is formatted.  You can
+ * change the modeline format by hacking at this routine.  Called by "update"
  * any time there is a dirty window.
  */
 static void modeline(struct window *wp)
@@ -950,8 +949,8 @@ void vtmove(int row, int col)
 
 /*
  * Send a command to the terminal to move the hardware cursor to row "row"
- * and column "col". The row and column arguments are origin 0. Optimize out
- * random calls. Update "ttrow" and "ttcol".
+ * and column "col".  The row and column arguments are origin 0.  Optimize out
+ * random calls.  Update "ttrow" and "ttcol".
  */
 void movecursor(int row, int col)
 {
@@ -963,8 +962,8 @@ void movecursor(int row, int col)
 }
 
 /*
- * Erase the message line. This is a special routine because the message line
- * is not considered to be part of the virtual screen. It always works
+ * Erase the message line.  This is a special routine because the message line
+ * is not considered to be part of the virtual screen.  It always works
  * immediately; the terminal buffer is flushed via a call to the flusher.
  */
 void mlerase(void)
@@ -988,7 +987,7 @@ void mlerase(void)
  * Write a message into the message line.  Keep track of the physical cursor
  * position.  A small class of printf like format items is handled.
  * Assumes the stack grows down; this assumption is made by the "++" in the
- * argument scan loop. Set the "message line" flag TRUE.
+ * argument scan loop.  Set the "message line" flag TRUE.
  */
 void mlwrite(const char *fmt, ...)
 {
@@ -1050,7 +1049,7 @@ void mlwrite(const char *fmt, ...)
 }
 
 /*
- * Write out a string. Update the physical cursor position. This assumes that
+ * Write out a string.  Update the physical cursor position.  This assumes that
  * the characters in the string all have width "1"; if this is not the case
  * things will get screwed up a little.
  */
@@ -1065,7 +1064,7 @@ void mlputs(char *s)
 }
 
 /*
- * Write out an integer, in the specified radix. Update the physical cursor
+ * Write out an integer, in the specified radix.  Update the physical cursor
  * position.
  */
 static void mlputi(int i, int r)

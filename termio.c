@@ -51,7 +51,7 @@ void ttopen(void)
 	ioctl(0, TCGETA, &otermio);	/* save old settings */
 	ntermio.c_iflag = 0;		/* setup new settings */
 #if XONXOFF
-	ntermio.c_iflag = otermio.c_iflag & XXMASK;	/* save XON/XOFF P.K. */
+	ntermio.c_iflag = otermio.c_iflag & XXMASK;	/* save XON/XOFF */
 #endif
 	ntermio.c_oflag = 0;
 	ntermio.c_cflag = otermio.c_cflag;
@@ -117,8 +117,8 @@ void ttputc(c)
 }
 
 /*
- * Flush terminal buffer. Does real work where the terminal output is buffered
- * up. A no-operation on systems where byte at a time terminal I/O is done.
+ * Flush terminal buffer.  Does real work where the terminal output is buffered
+ * up.  A no-operation on systems where byte at a time terminal I/O is done.
  */
 void ttflush(void)
 {
@@ -160,7 +160,7 @@ int ttgetc(void)
 	}
 	return kbdq & 0xFF;
 #elif BSD
-	return fgetc(stdin) & 0xFF;	/* 8BIT P.K. */
+	return fgetc(stdin) & 0xFF;	/* 8BIT */
 #endif
 }
 

@@ -15,7 +15,7 @@ void sizesignal(int);
 /*
  * Create a subjob with a copy of the command intrepreter in it.  When the
  * command interpreter exits, mark the screen as garbage so that you do a full
- * repaint. Bound to "^X C".
+ * repaint.  Bound to "^X C".
  */
 int spawncli(int f, int n)
 {
@@ -55,9 +55,9 @@ int spawncli(int f, int n)
 }
 
 /*
- * Run a one-liner in a subjob. When the command returns, wait for a single
+ * Run a one-liner in a subjob.  When the command returns, wait for a single
  * character to be typed, then mark the screen as garbage so a full repaint is
- * done. Bound to "C-X !".
+ * done.  Bound to "C-X !".
  */
 int spawn(int f, int n)
 {
@@ -71,7 +71,7 @@ int spawn(int f, int n)
 	TTclose();		/* stty to old modes */
 	TTkclose();
 	system(line);
-	fflush(stdout);		/* to be sure P.K. */
+	fflush(stdout);		/* to be sure */
 	TTopen();
 
 	mlputs("(End)");	/* Pause. */

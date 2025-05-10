@@ -60,7 +60,7 @@ int tgetc(void)
 	return c;
 }
 
-/* Get one keystroke. The only prefixs legal here are the CTL prefixes. */
+/* Get one keystroke.  The only prefixs legal here are the CTL prefixes. */
 int get1key(void)
 {
 	return ctoec(tgetc());
@@ -79,7 +79,7 @@ static int transform_csi_1(int ch)
 	}
 }
 
-/* Get a command from the keyboard. Process all applicable prefix keys. */
+/* Get a command from the keyboard.  Process all applicable prefix keys. */
 int getcmd(void)
 {
 	int c = get1key();

@@ -5,10 +5,10 @@
 #include "wrapper.h"
 
 /*
- * Reposition dot in the current window to line "n". If the argument is
- * positive, it is that line. If it is negative it is that line from the
- * bottom. If it is 0 the window is centered (this is what the standard
- * redisplay code does). With no argument it defaults to 0. Bound to M-!.
+ * Reposition dot in the current window to line "n".  If the argument is
+ * positive, it is that line.  If it is negative it is that line from the
+ * bottom.  If it is 0 the window is centered (this is what the standard
+ * redisplay code does).  With no argument it defaults to 0.
  */
 int reposition(int f, int n)
 {
@@ -20,8 +20,8 @@ int reposition(int f, int n)
 }
 
 /*
- * Refresh the screen. With no argument, it just does the refresh. With an
- * argument it recenters "." in the current window. Bound to "C-L".
+ * Refresh the screen.  With no argument, it just does the refresh.  With an
+ * argument it recenters "." in the current window.  Bound to "C-L".
  */
 int redraw(int f, int n)
 {
@@ -37,8 +37,8 @@ int redraw(int f, int n)
 
 /*
  * The command make the next window (next => down the screen) the current
- * window. There are no real errors, although the command does nothing if
- * there is only 1 window on the screen. Bound to "C-X C-N".
+ * window.  There are no real errors, although the command does nothing if
+ * there is only 1 window on the screen.  Bound to "C-X C-N".
  *
  * with an argument this command finds the <n>th window from the top
  */
@@ -81,7 +81,7 @@ int nextwind(int f, int n)
 
 /*
  * This command makes the previous window (previous => up the screen) the
- * current window. There arn't any errors, although the command does not do a
+ * current window.  There arn't any errors, although the command does not do a
  * lot if there is 1 window.
  */
 int prevwind(int f, int n)
@@ -109,11 +109,11 @@ int prevwind(int f, int n)
 }
 
 /*
- * This command moves the current window down by "arg" lines. Recompute the
- * top line in the window. The move up and move down code is almost completely
+ * This command moves the current window down by "arg" lines.  Recompute the
+ * top line in the window.  The move up and move down code is almost completely
  * the same; most of the work has to do with reframing the window, and picking
- * a new dot. We share the code by having "move down" just be an interface to
- * "move up". Magic. Bound to "C-X C-N".
+ * a new dot.  We share the code by having "move down" just be an interface to
+ * "move up".  Magic.  Bound to "C-X C-N".
  */
 int mvdnwind(int f, int n)
 {
@@ -121,10 +121,10 @@ int mvdnwind(int f, int n)
 }
 
 /*
- * Move the current window up by "arg" lines. Recompute the new top line of
- * the window. Look to see if "." is still on the screen. If it is, you win.
+ * Move the current window up by "arg" lines.  Recompute the new top line of
+ * the window.  Look to see if "." is still on the screen.  If it is, you win.
  * If it isn't, then move "." to center it in the new framing of the window
- * (this command does not really move "."; it moves the frame). Bound to
+ * (this command does not really move "."; it moves the frame).  Bound to
  * "C-X C-P".
  */
 int mvupwind(int f, int n)
@@ -165,9 +165,9 @@ int mvupwind(int f, int n)
 }
 
 /*
- * This command makes the current window the only window on the screen. Bound
- * to "C-X 1". Try to set the framing so that "." does not have to move on the
- * display. Some care has to be taken to keep the values of dot and mark in
+ * This command makes the current window the only window on the screen.  Bound
+ * to "C-X 1".  Try to set the framing so that "." does not have to move on the
+ * display.  Some care has to be taken to keep the values of dot and mark in
  * the buffer structures right if the distruction of a window makes a buffer
  * become undisplayed.
  */
@@ -214,7 +214,7 @@ int onlywind(int f, int n)
 
 /*
  * Delete the current window, placing its space in the window above,
- * or, if it is the top window, the window below. Bound to C-X 0.
+ * or, if it is the top window, the window below.  Bound to C-X 0.
  *
  * int f, n;	arguments are ignored for this command
  */
@@ -359,10 +359,10 @@ int splitwind(int f, int n)
 }
 
 /*
- * Enlarge the current window. Find the window that loses space. Make sure it
- * is big enough. If so, hack the window descriptions, and ask redisplay to do
- * all the hard work. You don't just set "force reframe" because dot would
- * move. Bound to "C-X Z".
+ * Enlarge the current window.  Find the window that loses space.  Make sure it
+ * is big enough.  If so, hack the window descriptions, and ask redisplay to do
+ * all the hard work.  You don't just set "force reframe" because dot would
+ * move.  Bound to "C-X Z".
  */
 int enlargewind(int f, int n)
 {
@@ -406,8 +406,8 @@ int enlargewind(int f, int n)
 }
 
 /*
- * Shrink the current window. Find the window that gains space. Hack at the
- * window descriptions. Ask the redisplay to do all the hard work. Bound to
+ * Shrink the current window.  Find the window that gains space.  Hack at the
+ * window descriptions.  Ask the redisplay to do all the hard work.  Bound to
  * "C-X C-Z".
  */
 int shrinkwind(int f, int n)
@@ -471,9 +471,9 @@ int resize(int f, int n)
 }
 
 /*
- * Pick a window for a pop-up. Split the screen if there is only one window.
- * Pick the uppermost window that isn't the current window. An LRU algorithm
- * might be better. Return a pointer, or NULL on error.
+ * Pick a window for a pop-up.  Split the screen if there is only one window.
+ * Pick the uppermost window that isn't the current window.  An LRU algorithm
+ * might be better.  Return a pointer, or NULL on error.
  */
 struct window *wpopup(void)
 {

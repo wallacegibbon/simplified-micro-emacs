@@ -127,7 +127,7 @@ static void tcapopen(void)
 	SO = tgetstr("so", &p);
 	if (SO != NULL)
 		revexist = TRUE;
-	if (tgetnum("sg") > 0) {	/* can reverse be used? P.K. */
+	if (tgetnum("sg") > 0) {	/* can reverse be used? */
 		revexist = FALSE;
 		SE = NULL;
 		SO = NULL;

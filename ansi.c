@@ -34,7 +34,7 @@ static void ansirev(int);
 static int ansicres(char *);
 
 /*
- * Standard terminal interface dispatch table. Most of the fields point into
+ * Standard terminal interface dispatch table.  Most of the fields point into
  * "termio" code.
  */
 struct terminal term = {

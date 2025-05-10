@@ -207,7 +207,7 @@ loop:
 }
 
 /*
- * Initialize all of the buffers and windows. The buffer name is passed down
+ * Initialize all of the buffers and windows.  The buffer name is passed down
  * as an argument, because the main routine may have been told to read in a
  * file by default, and we want the buffer name to be right.
  */
@@ -255,10 +255,10 @@ int (*getbind(int c))(int, int)
 }
 
 /*
- * This is the general command execution routine. It handles the fake binding
- * of all the keys to "self-insert". It also clears out the "thisflag" word,
+ * This is the general command execution routine.  It handles the fake binding
+ * of all the keys to "self-insert".  It also clears out the "thisflag" word,
  * and arranges to move it to the "lastflag", so that the next command can
- * look at it. Return the status of command.
+ * look at it.  Return the status of command.
  */
 int execute(int c, int f, int n)
 {
@@ -327,7 +327,7 @@ int execute(int c, int f, int n)
 }
 
 /*
- * Fancy quit command, as implemented by Norm. If the any buffer has
+ * Fancy quit command, as implemented by Norm.  If the any buffer has
  * changed do a write on that buffer and exit emacs, otherwise simply exit.
  */
 int quickexit(int f, int n)
@@ -341,8 +341,8 @@ int quickexit(int f, int n)
 	bp = bheadp;
 	while (bp != NULL) {
 		if ((bp->b_flag & BFCHG) != 0 /* Changed. */
-				&& (bp->b_flag & BFTRUNC) == 0 /* Not truncated P.K. */
-				&& (bp->b_flag & BFINVS) == 0) { /* Real. */
+				&& (bp->b_flag & BFTRUNC) == 0 /* Not truncated */
+				&& (bp->b_flag & BFINVS) == 0) { /* Real */
 			curbp = bp;
 			mlwrite("(Saving %s)", bp->b_fname);
 			if ((status = filesave(f, n)) != TRUE) {
@@ -363,15 +363,15 @@ static void emergencyexit(int signr)
 }
 
 /*
- * Quit command. If an argument, always quit. Otherwise confirm if a buffer
- * has been changed and not written out. Normally bound to "C-X C-C".
+ * Quit command.  If an argument, always quit.  Otherwise confirm if a buffer
+ * has been changed and not written out.  Normally bound to "C-X C-C".
  */
 int quit(int f, int n)
 {
 	int s;
 
 	if (f != FALSE || anycb() == FALSE /* All buffers clean. */
-			|| (s = mlyesno("Modified buffers exist. Quit anyway")) == TRUE) {
+			|| (s = mlyesno("Modified buffers exist.  Quit")) == TRUE) {
 #if (FILOCK && BSD) || SVR4
 		if (lockrel() != TRUE) {
 			TTputc('\n');
@@ -393,7 +393,7 @@ int quit(int f, int n)
 
 /*
  * Begin a keyboard macro.
- * Error if not at the top level in keyboard processing. Set up variables and
+ * Error if not at the top level in keyboard processing.  Set up variables and
  * return.
  */
 int ctlxlp(int f, int n)
@@ -410,8 +410,8 @@ int ctlxlp(int f, int n)
 }
 
 /*
- * End keyboard macro. Check for the same limit conditions as the above
- * routine. Set up the variables and return to the caller.
+ * End keyboard macro.  Check for the same limit conditions as the above
+ * routine.  Set up the variables and return to the caller.
  */
 int ctlxrp(int f, int n)
 {
@@ -428,8 +428,8 @@ int ctlxrp(int f, int n)
 
 /*
  * Execute a macro.
- * The command argument is the number of times to loop. Quit as soon as a
- * command gets an error. Return TRUE if all ok, else FALSE.
+ * The command argument is the number of times to loop.  Quit as soon as a
+ * command gets an error.  Return TRUE if all ok, else FALSE.
  */
 int ctlxe(int f, int n)
 {
@@ -447,7 +447,7 @@ int ctlxe(int f, int n)
 
 /*
  * Abort.
- * Beep the beeper. Kill off any keyboard macro, etc., that is in progress.
+ * Beep the beeper.  Kill off any keyboard macro, etc., that is in progress.
  * Sometimes called as a routine, to do general aborting of stuff.
  */
 int ctrlg(int f, int n)
