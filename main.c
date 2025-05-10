@@ -85,13 +85,14 @@ int main(int argc, char **argv)
 	signal(SIGTERM, emergencyexit);
 #endif
 
-	/* if there are any files to read, read the first one! */
+	/* If there are any files to read, read the first one! */
 	bp = bfind("main", FALSE, 0);
-	if (firstfile == FALSE && (gflags & GFREAD)) {
+	if (firstfile == FALSE) {
 		swbuffer(firstbp);
 		zotbuf(bp);
-	} else
+	} else {
 		bp->b_mode |= gmode;
+	}
 
 	/* Deal with startup gotos */
 	if (gotoflag) {

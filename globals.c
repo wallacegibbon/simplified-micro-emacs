@@ -18,7 +18,7 @@ int revexist = FALSE;		/* does reverse video exist? */
 int flickcode = FALSE;		/* do flicker supression? */
 
 int gmode = MDASAVE;		/* global editor mode */
-int gflags = GFREAD;		/* global control flag */
+
 int gasave = 256;		/* global ASAVE size */
 int gacount = 256;		/* count until next ASAVE */
 

@@ -22,9 +22,6 @@
 
 #define UNIX	(BSD | USG)
 
-
-/* Debugging options */
-
 #define RAMSIZE	1		/* Dynamic RAM memory usage tracking */
 #define RAMSHOW	1		/* Auto dynamic RAM reporting */
 
@@ -34,11 +31,9 @@
 #define VT52	0
 #define TCAP	UNIX
 
-/* Configuration options */
-
 /* Size of terminal for a 1080p screen with terminus-font-16x32 is 120x33 */
 #define MAXCOL	128
-#define MAXROW	128
+#define MAXROW	64
 
 #define TYPEAH	1  /* type ahead causes update to be skipped */
 #define VISMAC	0  /* update display during keyboard macros */
@@ -52,20 +47,6 @@
 #define CLEAN	0  /* de-alloc memory on exit */
 
 #define XONXOFF	UNIX
-
-/* Define some ability flags. */
-
-#if UNIX
-#define ENVFUNC	1
-#else
-#define ENVFUNC	0
-#endif
-
-/* Emacs global flag bit definitions (for gflags). */
-
-#define GFREAD	1
-
-/* Internal constants. */
 
 #define NFILEN  256		/* # of bytes, file name */
 #define NBUFN   16		/* # of bytes, buffer name */
@@ -99,11 +80,6 @@
 #define PLAY	1		/* playing */
 #define RECORD	2		/* recording */
 
-/*
- * PTBEG, PTEND, FORWARD, and REVERSE are all toggle-able values for
- * the scan routines.
- */
-
 #define PTBEG	0		/* Leave the point at the beginning on search */
 #define PTEND	1		/* Leave the point at the end on search */
 #define FORWARD	0		/* forward direction */
@@ -123,13 +99,7 @@
 #define TAB	0x09		/* TAB character */
 #define ESC     0x1B		/* ESC character. */
 
-/*
- * DIFCASE represents the integer difference between upper
- * and lower case letters.  It is an xor-able value, which is
- * fortunate, since the relative positions of upper to lower
- * case letters is the opposite of ascii in ebcdic.
- */
-
+/* Integer difference between upper and lower case letters. */
 #define DIFCASE		0x20
 
 #ifdef islower
@@ -145,8 +115,6 @@
 #define isupper(c)	('A' <= (c) && (c) <= 'Z')
 #define isletter(c)	(islower(c) || isupper(c))
 
-/* Dynamic RAM tracking and reporting redefinitions */
-
 #if RAMSIZE
 #define malloc	allocate
 #define free	release
@@ -160,7 +128,7 @@
  * The windows are kept in a big list, in top to bottom screen order, with the
  * listhead at "wheadp".
  * The flag field contains some bits that are set by commands to guide
- * redisplay. Although this is a bit of a compromise in terms of decoupling,
+ * redisplay.  Although this is a bit of a compromise in terms of decoupling,
  * the full blown redisplay is just too expensive to run for every input
  * character.
  */
@@ -189,7 +157,7 @@ struct window {
 
 /*
  * Buffers may be "Inactive" which means the files associated with them
- * have not been read in yet. These get read in at "use buffer" time.
+ * have not been read in yet.  These get read in at "use buffer" time.
  */
 struct buffer {
         struct buffer *b_bufp;	/* Link to next struct buffer */
@@ -211,10 +179,10 @@ struct buffer {
 #define BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define MDVIEW	0x0001		/* read-only buffer */
+#define MDASAVE	0x0008		/* Auto-save mode */
+#define MDVIEW	0x0001		/* View (read-only) buffer */
 #define MDEXACT	0x0002		/* Exact matching for searches */
-#define MDOVER	0x0004		/* overwrite mode */
-#define MDASAVE	0x0008		/* auto-save mode */
+#define MDOVER	0x0004		/* Overwrite mode */
 
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */
@@ -264,13 +232,11 @@ struct terminal {
 #define TTrez		(*term.t_rez)
 #define TTscroll	(*term.t_scroll)
 
-/* Structure for the table of initial key bindings. */
 struct key_tab {
 	int k_code;		 /* Key code */
 	int (*k_fp)(int, int);	 /* Routine to handle it */
 };
 
-/* Structure for the name binding table. */
 struct name_bind {
 	const char *n_name;	 /* name of function key */
 	int (*n_func)(int, int); /* function name is bound to */
@@ -279,8 +245,8 @@ struct name_bind {
 /*
  * The kill buffer is logically a stream of ascii characters, however
  * due to its unpredicatable size, it gets implemented as a linked
- * list of chunks. (The d_ prefix is for "deleted" text, as k_
- * was taken up by the keycode structure).
+ * list of chunks.
+ * `d_` prefix is for "deleted" text, as `k_` was taken up by the keycode.
  */
 struct kill {
 	struct kill *d_next;   /* Link to next chunk, NULL if last. */

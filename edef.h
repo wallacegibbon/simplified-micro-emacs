@@ -22,7 +22,6 @@ extern int eolexist;		/* does clear to EOL exist? */
 extern int revexist;		/* does reverse video exist? */
 
 extern int gmode;		/* global editor mode */
-extern int gflags;		/* global control flag */
 extern int gasave;		/* global ASAVE size */
 extern int gacount;		/* count until next ASAVE */
 extern int sgarbf;		/* State of screen unknown */
