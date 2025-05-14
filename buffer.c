@@ -142,9 +142,7 @@ int killbuffer(int f, int n)
 	return zotbuf(bp);
 }
 
-/*
- * kill the buffer pointed to by bp
- */
+/* Kill the buffer pointed to by bp, and update bheadp when necessary */
 int zotbuf(struct buffer *bp)
 {
 	struct buffer *bp1, *bp2;
@@ -255,9 +253,8 @@ int listbuffers(int f, int n)
 }
 
 /*
- * This routine rebuilds the text in the special secret buffer
- * that holds the buffer list.
- * It is called by the list buffers command.
+ * This routine rebuilds the text in the special secret buffer that holds the
+ * buffer list.  It is called by the list buffers command.
  * Return TRUE if everything works.
  * Return FALSE if there is an error (if there is no memory).
  * Iflag indicates wether to list hidden buffers.
@@ -409,11 +406,9 @@ int addline(char *text)
 }
 
 /*
- * Look through the list of buffers.
- * Return TRUE if there are any changed buffers.
- * Buffers that hold magic internal stuff are not considered;
- * who cares if the list of buffer names is hacked.
- * Return FALSE if no buffers have been changed.
+ * Look through the list of buffers, return TRUE if there are any changed
+ * buffers.  Return FALSE if no buffers have been changed.
+ * Buffers that hold magic internal stuff are not considered.
  */
 int anycb(void)
 {
@@ -522,9 +517,7 @@ int bclear(struct buffer *bp)
 	return TRUE;
 }
 
-/*
- * unmark the current buffers change flag
- */
+/* unmark the current buffers change flag */
 int unmark(int f, int n)
 {
 	curbp->b_flag &= ~BFCHG;

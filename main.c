@@ -283,47 +283,48 @@ int execute(int c, int f, int n)
 
 	/* ASCII is enough for coding, let's keep things simple */
 
-	/* If C-I is not bound, insert it */
+	/* If C-I is not bound, turn it into untagged value */
 	if (c == (CTL | 'I'))
 		c = '\t';
 
-	if (isvisible(c)) {
-		/* Do not insert when n <= 0 */
-		if (n <= 0) {
-			lastflag = 0;
-			return n < 0 ? FALSE : TRUE;
-		}
-
-		thisflag = 0;	/* For the future. */
-
-		/*
-		 * if we are in overwrite mode, not at eol,
-		 * and next char is not a tab or we are at a tab stop,
-		 * delete a char forword
-		 */
-		if (curwp->w_bufp->b_mode & MDOVER &&
-				curwp->w_doto < curwp->w_dotp->l_used &&
-				(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-						(curwp->w_doto) % 8 == 7))
-			ldelete(1, FALSE);
-
-		status = linsert(n, c);
-
-		/* check auto-save mode and save the file if needed */
-		if (curbp->b_mode & MDASAVE) {
-			if (--gacount == 0) {
-				update(TRUE);
-				filesave(FALSE, 0);
-				gacount = gasave;
-			}
-		}
-		lastflag = thisflag;
-		return status;
+	/* If the key is unbound and invisible, no operation to do. */
+	if (!isvisible(c)) {
+		TTbeep();
+		mlwrite("(Key not bound)");
+		lastflag = 0;	/* Fake last flags. */
+		return FALSE;
 	}
-	TTbeep();
-	mlwrite("(Key not bound)");
-	lastflag = 0;	/* Fake last flags. */
-	return FALSE;
+
+	/* For self-insert keys, do not insert when n <= 0 */
+	if (n <= 0) {
+		lastflag = 0;
+		return n < 0 ? FALSE : TRUE;
+	}
+
+	thisflag = 0;	/* For the future. */
+
+	/*
+	 * If we are in overwrite mode, not at eol, and next char is not a tab
+	 * or we are at a tab stop, delete a char forword.
+	 */
+	if ((curwp->w_bufp->b_mode & MDOVER) &&
+			(curwp->w_doto < curwp->w_dotp->l_used) &&
+			(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
+					(curwp->w_doto) % 8 == 7))
+		ldelete(1, FALSE);
+
+	status = linsert(n, c);
+
+	/* check auto-save mode and save the file if needed */
+	if (curbp->b_mode & MDASAVE) {
+		if (--gacount == 0) {
+			update(TRUE);
+			filesave(FALSE, 0);
+			gacount = gasave;
+		}
+	}
+	lastflag = thisflag;
+	return status;
 }
 
 /*
@@ -332,27 +333,22 @@ int execute(int c, int f, int n)
  */
 int quickexit(int f, int n)
 {
-	struct buffer *bp;	/* scanning pointer to buffers */
-	struct buffer *oldcb;	/* original current buffer */
+	struct buffer *curbp_bak = curbp, *bp;
 	int status;
 
-	oldcb = curbp;		/* save in case we fail */
-
-	bp = bheadp;
-	while (bp != NULL) {
+	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
 		if ((bp->b_flag & BFCHG) != 0 /* Changed. */
 				&& (bp->b_flag & BFTRUNC) == 0 /* Not truncated */
-				&& (bp->b_flag & BFINVS) == 0) { /* Real */
+				&& (bp->b_flag & BFINVS) == 0) {
 			curbp = bp;
 			mlwrite("(Saving %s)", bp->b_fname);
 			if ((status = filesave(f, n)) != TRUE) {
-				curbp = oldcb;	/* restore curbp */
+				curbp = curbp_bak;
 				return status;
 			}
 		}
-		bp = bp->b_bufp;	/* on to the next buffer */
 	}
-	quit(f, n);		/* conditionally quit */
+	quit(f, n);
 	return TRUE;
 }
 
@@ -391,11 +387,7 @@ int quit(int f, int n)
 	return s;
 }
 
-/*
- * Begin a keyboard macro.
- * Error if not at the top level in keyboard processing.  Set up variables and
- * return.
- */
+/* Begin a keyboard macro. */
 int ctlxlp(int f, int n)
 {
 	if (kbdmode != STOP) {
@@ -409,10 +401,7 @@ int ctlxlp(int f, int n)
 	return TRUE;
 }
 
-/*
- * End keyboard macro.  Check for the same limit conditions as the above
- * routine.  Set up the variables and return to the caller.
- */
+/* End keyboard macro. */
 int ctlxrp(int f, int n)
 {
 	if (kbdmode == STOP) {
@@ -426,11 +415,7 @@ int ctlxrp(int f, int n)
 	return TRUE;
 }
 
-/*
- * Execute a macro.
- * The command argument is the number of times to loop.  Quit as soon as a
- * command gets an error.  Return TRUE if all ok, else FALSE.
- */
+/* Execute a macro. */
 int ctlxe(int f, int n)
 {
 	if (kbdmode != STOP) {
@@ -458,9 +443,7 @@ int ctrlg(int f, int n)
 	return ABORT;
 }
 
-/*
- * Tell the user that this command is illegal while we are in VIEW mode.
- */
+/* Tell the user that this command is illegal while we are in VIEW mode. */
 int rdonly(void)
 {
 	TTbeep();
@@ -468,13 +451,10 @@ int rdonly(void)
 	return FALSE;
 }
 
-/* User function that does NOTHING */
 int nullproc(int f, int n)
 {
 	return TRUE;
 }
-
-/* Compiler specific Library functions */
 
 /*
  * On some primitave operation systems, and when emacs is used as a subprogram
@@ -483,10 +463,10 @@ int nullproc(int f, int n)
 #if CLEAN
 int cexit(int status)
 {
-	struct buffer *bp;
 	struct window *wp, *tp;
+	struct buffer *bp;
 
-	/* first clean up the windows */
+	/* First clean up the windows */
 	wp = wheadp;
 	while (wp) {
 		tp = wp->w_wndp;
@@ -495,21 +475,17 @@ int cexit(int status)
 	}
 	wheadp = NULL;
 
-	/* then the buffers */
-	bp = bheadp;
-	while (bp) {
+	/* Then the buffers */
+	for (bp = bheadp; bp; bp = bheadp) {
 		bp->b_nwnd = 0;
 		bp->b_flag = 0;	/* don't say anything about a changed buffer! */
 		zotbuf(bp);
-		bp = bheadp;
 	}
 
 	/* and the kill buffer */
 	kdelete();
-
 	/* and the video buffers */
 	vtfree();
-
 #undef exit
 	exit(status);
 }
