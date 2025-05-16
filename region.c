@@ -16,9 +16,9 @@ int killregion(int f, int n)
 		return rdonly();
 	if ((s = getregion(&region)) != TRUE)
 		return s;
-	if ((lastflag & CFKILL) == 0)	/* This is a kill type */
-		kdelete();	/* command, so do magic */
-	thisflag |= CFKILL;	/* kill buffer stuff. */
+	if ((lastflag & CFKILL) == 0)
+		kdelete();
+	thisflag |= CFKILL;
 	curwp->w_dotp = region.r_linep;
 	curwp->w_doto = region.r_offset;
 	return ldelete(region.r_size, TRUE);

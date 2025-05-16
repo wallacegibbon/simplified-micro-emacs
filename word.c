@@ -158,18 +158,12 @@ int capword(int f, int n)
 	return TRUE;
 }
 
-/*
- * Kill forward by "n" words.  Remember the location of dot.  Move forward by
- * the right number of words.  Put dot back where it was and issue the kill
- * command for the right number of characters.  With a zero argument, just
- * kill one word and no whitespace.  Bound to "M-D".
- */
+/* Kill forward by "n" words. */
 int delfword(int f, int n)
 {
 	struct line *dotp = curwp->w_dotp;
 	int doto = curwp->w_doto;
 	long size;
-	int c;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -180,78 +174,34 @@ int delfword(int f, int n)
 	if ((lastflag & CFKILL) == 0)
 		kdelete();
 
-	thisflag |= CFKILL;	/* this command is a kill */
-
-	/* figure out how many characters to give the axe */
+	thisflag |= CFKILL;
 
 	size = 0;
-
-	/* get us into a word.... */
-	while (inword() == FALSE) {
-		if (forwchar(FALSE, 1) == FALSE)
-			return FALSE;
-		++size;
-	}
-
-	if (n == 0) {
-		/* skip one word, no whitespace! */
+	while (n--) {
+		while (inword() == FALSE) {
+			if (forwchar(FALSE, 1) == FALSE)
+				goto ready;
+			++size;
+		}
 		while (inword() == TRUE) {
 			if (forwchar(FALSE, 1) == FALSE)
-				return FALSE;
-			++size;
-		}
-	} else {
-		/* skip n words.... */
-		while (n--) {
-
-			/* if we are at EOL; skip to the beginning of the next */
-			while (curwp->w_doto == llength(curwp->w_dotp)) {
-				if (forwchar(FALSE, 1) == FALSE)
-					return FALSE;
-				++size;
-			}
-
-			/* move forward till we are at the end of the word */
-			while (inword() == TRUE) {
-				if (forwchar(FALSE, 1) == FALSE)
-					return FALSE;
-				++size;
-			}
-
-			/* if there are more words, skip the interword stuff */
-			if (n != 0)
-				while (inword() == FALSE) {
-					if (forwchar(FALSE, 1) == FALSE)
-						return FALSE;
-					++size;
-				}
-		}
-
-		/* skip whitespace and newlines */
-		while ((curwp->w_doto == llength(curwp->w_dotp)) ||
-				((c = lgetc(curwp->w_dotp, curwp->w_doto))
-						== ' ') ||
-				(c == '\t')) {
-			if (forwchar(FALSE, 1) == FALSE)
-				break;
+				goto ready;
 			++size;
 		}
 	}
 
+ready:
 	/* restore the original position and delete the words */
 	curwp->w_dotp = dotp;
 	curwp->w_doto = doto;
 	return ldelete(size, TRUE);
 }
 
-/*
- * Kill backwards by "n" words.  Move backwards by the desired number of words,
- * counting the characters.  When dot is finally moved to its resting place,
- * fire off the kill command.  Bound to "M-Rubout" and to "M-Backspace".
- */
+/* Kill backwards by "n" words. */
 int delbword(int f, int n)
 {
 	long size;
+	int s = FALSE;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -261,27 +211,29 @@ int delbword(int f, int n)
 	/* Clear the kill buffer if last command wasn't a kill */
 	if ((lastflag & CFKILL) == 0)
 		kdelete();
-	thisflag |= CFKILL;	/* this command is a kill */
+
+	thisflag |= CFKILL;
 
 	if (backchar(FALSE, 1) == FALSE)
 		return FALSE;
-	size = 0;
+	size = 1;
 	while (n--) {
 		while (inword() == FALSE) {
-			if (backchar(FALSE, 1) == FALSE)
-				return FALSE;
+			if ((s = backchar(FALSE, 1)) == FALSE)
+				goto ready;
 			++size;
 		}
 		while (inword() == TRUE) {
+			if ((s = backchar(FALSE, 1)) == FALSE)
+				goto ready;
 			++size;
-			if (backchar(FALSE, 1) == FALSE)
-				goto bckdel;
 		}
 	}
-	if (forwchar(FALSE, 1) == FALSE)
-		return FALSE;
-
-bckdel:
+	if (s == TRUE) {
+		forwchar(FALSE, 1);
+		--size;
+	}
+ready:
 	return ldelete(size, TRUE);
 }
 
