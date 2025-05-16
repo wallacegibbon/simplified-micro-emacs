@@ -301,6 +301,7 @@ int forwdel(int f, int n)
 int backdel(int f, int n)
 {
 	int s = TRUE;
+	long nn = 0;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -311,11 +312,11 @@ int backdel(int f, int n)
 			kdelete();
 		thisflag |= CFKILL;
 	}
-	while (n--) {
-		if ((s = backchar(f, 1)) != TRUE)
-			break;
-		s = ldelete(1, f);
-	}
+
+	while (n-- && (backchar(f, 1) == TRUE))
+		nn++;
+
+	s = ldelete(nn, f);
 	return s;
 }
 
