@@ -300,7 +300,7 @@ int forwdel(int f, int n)
  */
 int backdel(int f, int n)
 {
-	int s;
+	int s = TRUE;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -311,8 +311,11 @@ int backdel(int f, int n)
 			kdelete();
 		thisflag |= CFKILL;
 	}
-	if ((s = backchar(f, n)) == TRUE)
-		s = ldelete(n, f);
+	while (n--) {
+		if ((s = backchar(f, 1)) != TRUE)
+			break;
+		s = ldelete(1, f);
+	}
 	return s;
 }
 
@@ -346,7 +349,7 @@ int killtext(int f, int n)
 		nextp = lforw(curwp->w_dotp);
 		while (--n) {
 			if (nextp == curbp->b_linep)
-				return FALSE;
+				break;
 			chunk += llength(nextp) + 1;
 			nextp = lforw(nextp);
 		}
