@@ -141,6 +141,7 @@ loop:
 	/* do ^U repeat argument processing */
 
 	if (c == REPTC) {
+		i = 0;	/* A sign for the first loop */
 		f = TRUE;
 		n = 4;
 		mlwrite("Arg: 4");
@@ -149,8 +150,12 @@ loop:
 			if (c == REPTC) {
 				n = n * 4;
 			} else {
-				n = 10 * n + c - '0';
+				if (i == 0)
+					n = c - '0';
+				else
+					n = 10 * n + c - '0';
 			}
+			i = 1;
 			mlwrite("Arg: %d", n);
 			c = getcmd();
 		}
