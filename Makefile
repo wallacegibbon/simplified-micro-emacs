@@ -3,14 +3,14 @@ BINDIR = /usr/bin
 PROGRAM = me
 
 SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
-	posix.c file.c fileio.c input.c search.c isearch.c lock.c pklock.c \
+	posix.c file.c fileio.c input.c search.c isearch.c lock.c \
 	region.c spawn.c tcap.c ebind.c names.c globals.c \
 	wrapper.c memory.c
 
 #SRC += termio.c vt52.c ansi.c
 
 OBJ = main.o buffer.o window.o line.o word.o display.o basic.o random.o \
-	posix.o file.o fileio.o input.o search.o isearch.o lock.o pklock.o \
+	posix.o file.o fileio.o input.o search.o isearch.o lock.o \
 	region.o spawn.o tcap.o ebind.o names.o globals.o \
 	wrapper.o memory.o
 
@@ -74,7 +74,6 @@ isearch.o: isearch.c estruct.h edef.h line.h
 line.o: line.c estruct.h edef.h line.h
 lock.o: lock.c estruct.h edef.h
 main.o: main.c estruct.h efunc.h edef.h line.h
-pklock.o: pklock.c estruct.h
 posix.o: posix.c estruct.h
 random.o: random.c estruct.h edef.h line.h
 region.o: region.c estruct.h edef.h line.h

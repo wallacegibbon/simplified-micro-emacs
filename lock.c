@@ -1,23 +1,36 @@
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
+#include <errno.h>
+#include <string.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
-#if BSD | SVR4
-#include <sys/errno.h>
+#define LOCK_POSTFIX ".lock~"
+
+/* lock name buffer shared by dolock and undolock */
+static char lname_buf[NFILEN + 8];	/* filename + LOCK_POSTFIX */
 
 static char *lname[NLOCKS];		/* names of all locked files */
 static int numlocks;			/* # of current locks active */
 
+static int dolock(char *fname, char **errstr);
+static int undolock(char *fname, char **errstr);
+
 /* check a file for locking and add it to the list */
 int lockchk(char *fname)
 {
-	int status, i;
+	char *errstr;
+	int s, i;
 
 	/* check to see if that file is already locked here */
-	if (numlocks > 0)
+	if (numlocks > 0) {
 		for (i = 0; i < numlocks; ++i)
 			if (strcmp(fname, lname[i]) == 0)
 				return TRUE;
+	}
 
 	/* if we have a full locking table, bitch and leave */
 	if (numlocks == NLOCKS) {
@@ -26,16 +39,16 @@ int lockchk(char *fname)
 	}
 
 	/* next, try to lock it */
-	status = lock(fname);
-	if (status == ABORT)	/* file is locked, no override */
+	s = lock(fname);
+	if (s == ABORT)	/* file is locked, no override */
 		return ABORT;
-	if (status == FALSE)	/* locked, overriden, dont add to table */
+	if (s == FALSE)	/* locked, overriden, dont add to table */
 		return TRUE;
 
 	/* we have now locked it, add it to our table */
 	lname[++numlocks - 1] = malloc(strlen(fname) + 1);
 	if (lname[numlocks - 1] == NULL) {	/* malloc failure */
-		undolock(fname);	/* free the lock */
+		undolock(fname, &errstr);	/* free the lock */
 		mlwrite("Cannot lock, out of memory");
 		--numlocks;
 		return ABORT;
@@ -49,17 +62,17 @@ int lockchk(char *fname)
 /* Release all the file locks so others may edit */
 int lockrel(void)
 {
-	int status, s, i;
+	int s1, s2, i;
 
-	status = TRUE;
+	s1 = TRUE;
 	if (numlocks > 0)
 		for (i = 0; i < numlocks; ++i) {
-			if ((s = unlock(lname[i])) != TRUE)
-				status = s;
+			if ((s2 = unlock(lname[i])) != TRUE)
+				s1 = s2;
 			free(lname[i]);
 		}
 	numlocks = 0;
-	return status;
+	return s1;
 }
 
 /*
@@ -70,27 +83,21 @@ int lockrel(void)
  */
 int lock(char *fname)
 {
-	char *locker;
+	char *errstr;
 	char msg[NSTRING];
-	int status;
+	int s;
 
-	/* attempt to lock the file */
-	locker = dolock(fname);
-	if (locker == NULL)	/* we win */
+	if ((s = dolock(fname, &errstr)) == 0)
 		return TRUE;
 
-	/* file failed...abort */
-	if (strncmp(locker, "LOCK", 4) == 0) {
-		lckerror(locker);
+	if (s < 0) {
+		lckerror(errstr);
 		return ABORT;
 	}
 
-	/* someone else has it....override? */
-	strcpy(msg, "File in use by ");
-	strcat(msg, locker);
-	strcat(msg, ", override?");
-	status = mlyesno(msg);	/* ask them */
-	if (status == TRUE)
+	strcpy(msg, "File in use, override?");
+	s = mlyesno(msg);
+	if (s == TRUE)
 		return FALSE;
 	else
 		return ABORT;
@@ -99,26 +106,75 @@ int lock(char *fname)
 /* Unlock a file.  This only warns the user if it fails */
 int unlock(char *fname)
 {
-	char *locker;	/* undolock return string */
+	char *errstr;
 
-	/* unclock and return */
-	locker = undolock(fname);
-	if (locker == NULL)
+	if (undolock(fname, &errstr) == 0)
 		return TRUE;
 
-	/* report the error and come back */
-	lckerror(locker);
+	lckerror(errstr);
 	return FALSE;
 }
 
 void lckerror(char *errstr)
 {
 	char obuf[NSTRING];
-
 	strcpy(obuf, errstr);
 	strcat(obuf, " - ");
 	strcat(obuf, strerror(errno));
 	mlwrite(obuf);
 }
 
+/* Return 0 on success, 1 on fail, -1 on error. */
+static int dolock(char *fname, char **errstr)
+{
+	struct stat sbuf;
+	int mask, fd;
+
+	strcat(strcpy(lname_buf, fname), LOCK_POSTFIX);
+
+	/* check that we are not being cheated, qname must point to */
+	/* a regular file - even this code leaves a small window of */
+	/* vulnerability but it is rather hard to exploit it */
+
+#if defined(S_IFLNK)
+	if (lstat(lname_buf, &sbuf) == 0) {
+#else
+	if (stat(lname_buf, &sbuf) == 0) {
 #endif
+
+#if defined(S_ISREG)
+		if (!S_ISREG(sbuf.st_mode)) {
+#else
+		if (!(((sbuf.st_mode) & 070000) == 0)) {	/* SysV R2 */
+#endif
+			*errstr = "LOCK ERROR: not a regular file";
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+
+	mask = umask(0);
+	fd = open(lname_buf, O_RDWR | O_CREAT, 0666);
+	if (fd < 0) {
+		*errstr = "LOCK ERROR: cannot access lock file";
+		return -1;
+	}
+	umask(mask);
+	if (close(fd)) {
+		*errstr = "LOCK ERROR: cannot close lock file";
+		return -1;
+	}
+
+	return 0;
+}
+
+static int undolock(char *fname, char **errstr)
+{
+	strcat(strcpy(lname_buf, fname), LOCK_POSTFIX);
+	if (unlink(lname_buf) != 0) {
+		*errstr = "LOCK ERROR: cannot remove lock file";
+		return -1;
+	}
+	return 0;
+}
