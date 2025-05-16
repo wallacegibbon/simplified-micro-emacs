@@ -295,7 +295,7 @@ int inword(void)
 	if (curwp->w_doto == llength(curwp->w_dotp))
 		return FALSE;
 	c = lgetc(curwp->w_dotp, curwp->w_doto);
-	if (isletter(c))
+	if (isalpha(c))
 		return TRUE;
 	if (c >= '0' && c <= '9')
 		return TRUE;

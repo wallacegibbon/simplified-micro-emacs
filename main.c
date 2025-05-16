@@ -16,31 +16,24 @@ void sizesignal(int);
 void usage(int status)
 {
 	printf("%s (version %s)\n\n", PROGRAM_NAME_LONG, VERSION);
-	printf("\tUsage: %s [options] [filenames]\n\n", PROGRAM_NAME);
+	printf("\tUSAGE: %s [OPTIONS] [FILENAMES]\n\n", PROGRAM_NAME);
 	fputs("\t+<n>\tGo to line <n>\n", stdout);
-	fputs("\t-v\tView only\n", stdout);
+	fputs("\t-v\tOpen read only (VIEW mode on)\n", stdout);
 	fputs("\t--help\tDisplay this help and exit\n", stdout);
 	exit(status);
 }
 
 int main(int argc, char **argv)
 {
-	struct buffer *firstbp = NULL;	/* ptr to first buffer in cmd line */
-	struct buffer *bp;		/* temp buffer pointer */
-	char bname[NBUFN];		/* buffer name of file to read */
-	int saveflag;			/* temp store for lastflag */
-	int carg;			/* current arg to scan */
-	int firstfile = TRUE;		/* first file flag */
-	int viewflag = FALSE;
-	int gotoflag = FALSE;
-	int gline = 0;
-	fn_t execfunc;
-	int mflag;			/* negative flag on repeat */
-	int c = 0, c1;
+	struct buffer *firstbp = NULL, *bp;
+	char bname[NBUFN];
+	int firstfile = TRUE, viewflag = FALSE, gotoflag = FALSE, gline = 0;
 	int f, n;
+	int c = 0, c1, i;
+	fn_t execfunc;
 
 #if BSD
-	sleep(1);			/* Time for window manager. */
+	sleep(1);	/* Time for window manager. */
 #endif
 
 #if UNIX
@@ -56,20 +49,17 @@ int main(int argc, char **argv)
 	vtinit();
 	edinit("main");
 
-	for (carg = 1; carg < argc; ++carg) {
-		if (argv[carg][0] == '-' && (argv[carg][1] | DIFCASE) == 'v') {
+	for (i = 1; i < argc; ++i) {
+		if (argv[i][0] == '-' && (argv[i][1] | DIFCASE) == 'v') {
 			viewflag = TRUE;
-		} else if (argv[carg][0] == '+') {
+		} else if (argv[i][0] == '+') {
 			gotoflag = TRUE;
-			gline = atoi(&argv[carg][1]);
+			gline = atoi(&argv[i][1]);
 		} else {
-			/* Process an input file */
-			makename(bname, argv[carg]);
+			makename(bname, argv[i]);
 			unqname(bname);
-
-			/* set this to inactive */
 			bp = bfind(bname, TRUE, 0);
-			strncpy(bp->b_fname, argv[carg], NFILEN - 1);
+			strncpy(bp->b_fname, argv[i], NFILEN - 1);
 			bp->b_active = FALSE;
 			if (firstfile) {
 				firstbp = bp;
@@ -103,8 +93,6 @@ int main(int argc, char **argv)
 	}
 
 loop:
-	saveflag = lastflag;
-	lastflag = saveflag;
 
 #if TYPEAH
 	if (typahead()) {
@@ -138,28 +126,16 @@ loop:
 	/* do META-# processing if needed */
 
 	c1 = c & ~META;
-	if ((c & META) && ((c1 >= '0' && c1 <= '9') || c1 == '-')) {
+
+	if ((c & META) && isdigit(c1)) {
 		f = TRUE;
 		n = 0;
-		mflag = 1;	/* current minus flag */
 		c = c1;
-		while ((c >= '0' && c <= '9') || (c == '-')) {
-			if (c == '-') {
-				/* already hit a minus or digit? */
-				if ((mflag == -1) || (n != 0))
-					break;
-				mflag = -1;
-			} else {
-				n = n * 10 + (c - '0');
-			}
-			if ((n == 0) && (mflag == -1))
-				mlwrite("Arg:");
-			else
-				mlwrite("Arg: %d", n * mflag);
-
+		while (isdigit(c)) {
+			n = n * 10 + (c - '0');
+			mlwrite("Arg: %d", n);
 			c = getcmd();
 		}
-		n = n * mflag;
 	}
 
 	/* do ^U repeat argument processing */
@@ -167,38 +143,16 @@ loop:
 	if (c == REPTC) {
 		f = TRUE;
 		n = 4;
-		mflag = 0;
 		mlwrite("Arg: 4");
-		while (((c = getcmd()) >= '0' && c <= '9') || c == REPTC ||
-				c == '-') {
+		c = getcmd();
+		while (isdigit(c) || c == REPTC) {
 			if (c == REPTC) {
-				if ((n > 0) == ((n * 4) > 0))
-					n = n * 4;
-				else
-					n = 1;
-			} else if (c == '-') {
-				if (mflag)
-					break;
-				n = 0;
-				mflag = -1;
+				n = n * 4;
 			} else {
-				if (!mflag) {
-					n = 0;
-					mflag = 1;
-				}
 				n = 10 * n + c - '0';
 			}
-			mlwrite("Arg: %d",
-				(mflag >= 0) ? n : (n ? -n : -1));
-		}
-		/*
-		 * Make arguments preceded by a minus sign negative and change
-		 * the special argument "^U -" to an effective "^U -1".
-		 */
-		if (mflag == -1) {
-			if (n == 0)
-				++n;
-			n = -n;
+			mlwrite("Arg: %d", n);
+			c = getcmd();
 		}
 	}
 
@@ -298,7 +252,7 @@ int execute(int c, int f, int n)
 	/* For self-insert keys, do not insert when n <= 0 */
 	if (n <= 0) {
 		lastflag = 0;
-		return n < 0 ? FALSE : TRUE;
+		return n == 0 ? TRUE : FALSE;
 	}
 
 	thisflag = 0;	/* For the future. */

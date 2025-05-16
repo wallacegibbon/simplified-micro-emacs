@@ -111,9 +111,12 @@
 #endif
 
 #define isvisible(c)	(((c) >= 0x20 && (c) <= 0x7E) || (c) == '\t')
+
+/* The simplified macro version of functions in ctype.h */
 #define islower(c)	('a' <= (c) && (c) <= 'z')
 #define isupper(c)	('A' <= (c) && (c) <= 'Z')
-#define isletter(c)	(islower(c) || isupper(c))
+#define isalpha(c)	(islower(c) || isupper(c))
+#define isdigit(c)	('0' <= (c) && (c) <= '9')
 
 #if RAMSIZE
 #define malloc	allocate
