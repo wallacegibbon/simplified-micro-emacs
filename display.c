@@ -56,9 +56,9 @@ static void scrscroll(int from, int to, int count);
 static inline int texttest(int vrow, int prow);
 static int endofline(char *s, int n);
 
-static void mlputi(int i, int r);
-static void mlputli(long l, int r);
-static void mlputf(int s);
+static int mlputi(int i, int r);
+static int mlputli(long l, int r);
+static int mlputf(int s);
 
 #ifdef SIGWINCH
 static int newscreensize(int h, int w);
@@ -975,10 +975,10 @@ void mlerase(void)
  * Assumes the stack grows down; this assumption is made by the "++" in the
  * argument scan loop.  Set the "message line" flag TRUE.
  */
-void mlwrite(const char *fmt, ...)
+int mlwrite(const char *fmt, ...)
 {
 	va_list ap;
-	int c;
+	int n = 0, c, tmp;
 
 	/* if we can not erase to end-of-line, do it manually */
 	if (eolexist == FALSE) {
@@ -990,37 +990,40 @@ void mlwrite(const char *fmt, ...)
 	va_start(ap, fmt);
 	while ((c = *fmt++) != 0) {
 		if (c != '%') {
-			ttcol += put_c(c, TTputc);
+			tmp = put_c(c, TTputc);
+			ttcol += tmp;
+			n += tmp;
 		} else {
 			c = *fmt++;
 			switch (c) {
 			case 'd':
-				mlputi(va_arg(ap, int), 10);
+				n += mlputi(va_arg(ap, int), 10);
 				break;
 
 			case 'o':
-				mlputi(va_arg(ap, int), 8);
+				n += mlputi(va_arg(ap, int), 8);
 				break;
 
 			case 'x':
-				mlputi(va_arg(ap, int), 16);
+				n += mlputi(va_arg(ap, int), 16);
 				break;
 
 			case 'D':
-				mlputli(va_arg(ap, long), 10);
+				n += mlputli(va_arg(ap, long), 10);
 				break;
 
 			case 's':
-				mlputs(va_arg(ap, char *));
+				n += mlputs(va_arg(ap, char *));
 				break;
 
 			case 'f':
-				mlputf(va_arg(ap, int));
+				n += mlputf(va_arg(ap, int));
 				break;
 
 			default:
 				TTputc(c);
 				++ttcol;
+				++n;
 			}
 		}
 	}
@@ -1032,6 +1035,7 @@ void mlwrite(const char *fmt, ...)
 
 	TTflush();
 	mpresf = TRUE;
+	return n;
 }
 
 /*
@@ -1039,69 +1043,76 @@ void mlwrite(const char *fmt, ...)
  * the characters in the string all have width "1"; if this is not the case
  * things will get screwed up a little.
  */
-void mlputs(char *s)
+int mlputs(char *s)
 {
-	int c;
+	int n = 0, c, tmp;
 	while ((c = *s++) != 0) {
-		TTputc(c);
-		++ttcol;
+		tmp = put_c(c, TTputc);
+		n += tmp;
+		ttcol += tmp;
 	}
+	return n;
 }
 
 /*
  * Write out an integer, in the specified radix.  Update the physical cursor
  * position.
  */
-static void mlputi(int i, int r)
+static int mlputi(int i, int r)
 {
-	int q;
+	int q, n = 0;
 	if (i < 0) {
 		i = -i;
 		TTputc('-');
+		++n;
 	}
 
 	q = i / r;
 	if (q != 0)
-		mlputi(q, r);
+		n += mlputi(q, r);
 
 	TTputc(hex[i % r]);
 	++ttcol;
+	return n + 1;
 }
 
 /*
  * do the same except as a long integer.
  */
-static void mlputli(long l, int r)
+static int mlputli(long l, int r)
 {
-	long q;
+	long q, n = 0;
 	if (l < 0) {
 		l = -l;
 		TTputc('-');
+		++n;
 	}
 
 	q = l / r;
 	if (q != 0)
-		mlputli(q, r);
+		n += mlputli(q, r);
 
 	TTputc((int)(l % r) + '0');
 	++ttcol;
+	return n + 1;
 }
 
 /* write out a scaled integer with two decimal places */
-static void mlputf(int s)
+static int mlputf(int s)
 {
-	int i, f;
+	int i, f, n = 0;
 
 	/* break it up */
 	i = s / 100;
 	f = s % 100;
 
 	/* send out the integer portion */
-	mlputi(i, 10);
+	n += mlputi(i, 10);
 	TTputc('.');
 	TTputc((f / 10) + '0');
 	TTputc((f % 10) + '0');
 	ttcol += 3;
+	return n + 3;
 }
 
 /*
@@ -1160,15 +1171,13 @@ static int newscreensize(int h, int w)
 
 #endif
 
-int put_c(int c, int (*p)(int))
+int put_c(unsigned char c, int (*p)(int))
 {
 	if (c < 0x20 || c == 0x7F) {
 		p('^'); p(c ^ 0x40); return 2;
 	} else if (c >= 0x20 && c < 0x7F) {
 		p(c); return 1;
-	} else if (c >= 0x80 && c <= 0xFF) {
-		p('\\'); p(hex[(c >> 4) & 0xF]); p(hex[c & 0xF]); return 3;
 	} else {
-		p('?'); return 1; /* should not reach this branch */
+		p('\\'); p(hex[(c >> 4) & 0xF]); p(hex[c & 0xF]); return 3;
 	}
 }

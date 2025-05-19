@@ -74,7 +74,7 @@ start_over:
 	if (pat[0] != '\0' && (c == IS_FORWARD || c == IS_REVERSE)) {
 		for (cpos = 0; pat[cpos] != '\0'; ++cpos) {
 			movecursor(term.t_nrow, col);
-			col += put_c((unsigned char)pat[cpos], TTputc);
+			col += put_c(pat[cpos], TTputc);
 		}
 		TTflush();
 		n = (c == IS_REVERSE) ? -1 : 1;
@@ -225,15 +225,14 @@ int scanmore(char *patrn, int dir)
 
 int promptpattern(const char *prompt, const char *pat)
 {
-	char tpat[NPAT + 20];
+	char tpat[NPAT + 64];
 
 	strcpy(tpat, prompt);
 	strcat(tpat, " (");
-	expandp(pat, &tpat[strlen(tpat)], NPAT / 2);
-	strcat(tpat, ")<CR>: ");
+	strcat(tpat, pat);
+	strcat(tpat, "): ");
 
-	mlwrite(tpat);
-	return strlen(tpat);
+	return mlwrite(tpat);
 }
 
 /*

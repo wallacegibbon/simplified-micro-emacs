@@ -98,13 +98,13 @@ int eq(unsigned char bc, unsigned char pc)
  */
 static int readpattern(char *prompt, char *apat, int srch)
 {
-	char tpat[NPAT + 20];
+	char tpat[NPAT + 64];
 	int status;
 
 	strcpy(tpat, prompt);
 	strcat(tpat, " (");
-	expandp(apat, &tpat[strlen(tpat)], NPAT / 2);
-	strcat(tpat, ")<CR>: ");
+	strcat(tpat, apat);
+	strcat(tpat, "): ");
 
 	/*
 	 * Read a pattern.  Either we get one,
@@ -115,10 +115,6 @@ static int readpattern(char *prompt, char *apat, int srch)
 	if ((status = getstring(tpat, tpat, NPAT, ENTERC)) == TRUE) {
 		strcpy(apat, tpat);
 		if (srch) {	/* If we are doing the search string. */
-			/*
-			 * Reverse string copy, and remember the length for
-			 * substitution purposes.
-			 */
 			rvstrcpy(tap, apat);
 			mlenold = matchlen = strlen(apat);
 		}
@@ -195,7 +191,7 @@ int delins(int dlength, char *instr, int use_meta)
 static int replaces(int kind, int f, int n)
 {
 	int nlflag, nlrepl, numsub, nummatch, status, c, last_char = 0;
-	char tpat[NPAT];
+	char tpat[NPAT + 64];
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
@@ -222,9 +218,9 @@ static int replaces(int kind, int f, int n)
 	if (kind) {
 		/* Build query replace question string. */
 		strcpy(tpat, "Replace '");
-		expandp(pat, &tpat[strlen(tpat)], NPAT / 2);
+		strcat(tpat, pat);
 		strcat(tpat, "' with '");
-		expandp(rpat, &tpat[strlen(tpat)], NPAT / 2);
+		strcat(tpat, rpat);
 		strcat(tpat, "'? ");
 	}
 
@@ -290,38 +286,6 @@ qprompt:
 		backchar(FALSE, 1);
 
 	mlwrite("%d substitutions", numsub);
-	return TRUE;
-}
-
-/* Expand control key sequences for output. */
-int expandp(const char *srcstr, char *deststr, int maxlength)
-{
-	unsigned char c;
-
-	while ((c = *srcstr++) != 0) {
-		if (c < 0x20 || c == 0x7F) {
-			*deststr++ = '^';
-			*deststr++ = c ^ 0x40;
-			maxlength -= 2;
-		} else if (c == '%') {
-			*deststr++ = '%';
-			*deststr++ = '%';
-			maxlength -= 2;
-		} else if (c >= 0x20 && c < 0x7F) {
-			*deststr++ = c;
-			--maxlength;
-		} else {
-			*deststr++ = '*';
-			--maxlength;
-		}
-
-		if (maxlength < 3) {
-			*deststr++ = '$';
-			*deststr = '\0';
-			return FALSE;
-		}
-	}
-	*deststr = '\0';
 	return TRUE;
 }
 

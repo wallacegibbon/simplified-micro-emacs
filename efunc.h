@@ -93,11 +93,11 @@ void update_garbage(void);
 void update_modelines(void);
 void movecursor(int row, int col);
 void mlerase(void);
-void mlwrite(const char *fmt, ...);
-void mlputs(char *s);
+int mlwrite(const char *fmt, ...);
+int mlputs(char *s);
 void getscreensize(int *widthp, int *heightp);
 void sizesignal(int signr);
-int put_c(int c, int (*p)(int));
+int put_c(unsigned char c, int (*p)(int));
 
 /* region.c */
 int killregion(int f, int n);
@@ -180,7 +180,6 @@ void savematch(void);
 void rvstrcpy(char *rvstr, char *str);
 int qreplace(int f, int n);
 int delins(int dlength, char *instr, int use_meta);
-int expandp(const char *srcstr, char *deststr, int maxlength);
 int boundry(struct line *curline, int curoff, int dir);
 
 /* isearch.c */
