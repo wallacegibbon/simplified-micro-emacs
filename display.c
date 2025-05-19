@@ -1044,6 +1044,7 @@ void mlwrite(const char *fmt, ...)
 	/* if we can, erase to the end of screen */
 	if (eolexist == TRUE)
 		TTeeol();
+
 	TTflush();
 	mpresf = TRUE;
 }
@@ -1056,7 +1057,6 @@ void mlwrite(const char *fmt, ...)
 void mlputs(char *s)
 {
 	int c;
-
 	while ((c = *s++) != 0) {
 		TTputc(c);
 		++ttcol;
@@ -1076,7 +1076,6 @@ static void mlputi(int i, int r)
 	}
 
 	q = i / r;
-
 	if (q != 0)
 		mlputi(q, r);
 
@@ -1090,14 +1089,12 @@ static void mlputi(int i, int r)
 static void mlputli(long l, int r)
 {
 	long q;
-
 	if (l < 0) {
 		l = -l;
 		TTputc('-');
 	}
 
 	q = l / r;
-
 	if (q != 0)
 		mlputli(q, r);
 

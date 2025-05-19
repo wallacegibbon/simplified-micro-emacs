@@ -4,12 +4,12 @@
 #include "wrapper.h"
 
 /*
- * CAUTION:
- * Prefixed characters (like `CTL | 'A'`) may be put into this variable,
+ * CAUTION: Prefixed chars (e.g. `CTL | 'A'`) may be stored in this variable,
  * which should be okay since functions like `ctoec` will keep it unchanged.
  */
 int reeat_char = -1;
 
+void tputs(char *s);
 
 /* Get a key from the terminal driver, resolve any keyboard macro action */
 int tgetc(void)
@@ -23,7 +23,6 @@ int tgetc(void)
 
 	/* if we are playing a keyboard macro back, */
 	if (kbdmode == PLAY) {
-
 		if (kbdptr < kbdend)
 			return (int)*kbdptr++;
 
@@ -45,7 +44,6 @@ int tgetc(void)
 	c = TTgetc();
 	lastkey = c;
 
-	/* save it if we need to */
 	if (kbdmode == RECORD) {
 		*kbdptr++ = c;
 		kbdend = kbdptr;
@@ -185,15 +183,15 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 		} else if ((c == 0x7F || c == '\b') && quotef == FALSE) {
 			/* rubout/erase */
 			if (cpos != 0) {
-				TTputs("\b \b");
+				tputs("\b \b");
 				--ttcol;
 
 				if (buf[--cpos] < 0x20) {
-					TTputs("\b \b");
+					tputs("\b \b");
 					--ttcol;
 				}
 				if (buf[cpos] == '\n') {
-					TTputs("\b\b  \b\b");
+					tputs("\b\b  \b\b");
 					ttcol -= 2;
 				}
 
@@ -289,7 +287,7 @@ int ctoec(int c)
 	return c;
 }
 
-void TTputs(char *s)
+void tputs(char *s)
 {
 	while (*s)
 		TTputc(*s++);

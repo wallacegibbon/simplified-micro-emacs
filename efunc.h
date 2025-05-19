@@ -29,7 +29,7 @@ int newsize(int f, int n);
 int newwidth(int f, int n);
 int getwpos(void);
 void cknewwindow(void);
-struct window *wpopup(void);  /* Pop up window creation. */
+struct window *wpopup(void);
 
 /* basic.c */
 int gotobol(int f, int n);
@@ -123,7 +123,6 @@ int get1key(void);
 int getcmd(void);
 int getstring(char *prompt, char *buf, int nbuf, int eolchar);
 int namedcmd(int f, int n);
-void TTputs(char *s);
 
 /* buffer.c */
 int usebuffer(int f, int n);
@@ -132,7 +131,6 @@ int prevbuffer(int f, int n);
 int swbuffer(struct buffer *bp);
 int killbuffer(int f, int n);
 int zotbuf(struct buffer *bp);
-int namebuffer(int f, int n);
 int listbuffers(int f, int n);
 int makelist(int iflag);
 void e_ltoa(char *buf, int width, long num);
@@ -140,7 +138,6 @@ int addline(char *text);
 int anycb(void);
 int bclear(struct buffer *bp);
 int unmark(int f, int n);
-/* Lookup a buffer by name. */
 struct buffer *bfind(char *bname, int cflag, int bflag);
 
 /* file.c */
@@ -155,7 +152,6 @@ void unqname(char *name);
 int filewrite(int f, int n);
 int filesave(int f, int n);
 int writeout(char *fn);
-int filename(int f, int n);
 int ifile(char *fname);
 
 /* fileio.c */
