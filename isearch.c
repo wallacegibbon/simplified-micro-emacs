@@ -134,7 +134,7 @@ char_loop:
 		goto start_over;
 	}
 
-	if (c < ' ' && c != '\t') {
+	if (c < 0x20 && c != '\t') {
 		reeat_char = c;
 		return TRUE;
 	}

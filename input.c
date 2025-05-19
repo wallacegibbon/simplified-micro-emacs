@@ -205,13 +205,7 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 			quotef = FALSE;
 			if (cpos < nbuf - 1) {
 				buf[cpos++] = c;
-				if (c < ' ') {
-					TTputc('^');
-					++ttcol;
-					c ^= 0x40;
-				}
-				TTputc(c);
-				++ttcol;
+				ttcol += put_c(c, TTputc);
 				TTflush();
 			}
 		}
