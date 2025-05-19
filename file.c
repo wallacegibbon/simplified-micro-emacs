@@ -396,36 +396,6 @@ int writeout(char *fn)
 }
 
 /*
- * The command allows the user to modify the file name associated with the
- * current buffer.  It is like the "f" command in UNIX "ed".
- * The operation is simple; just zap the name in the buffer structure,
- * and mark the windows as needing an update.
- * You can type a blank line at the prompt if you wish.
- */
-int filename(int f, int n)
-{
-	struct window *wp;
-	char fname[NFILEN];
-	int s;
-
-	s = mlreply("Name: ", fname, NFILEN);
-	if (s == ABORT)
-		return s;
-	if (s == FALSE)
-		strcpy(curbp->b_fname, "");
-	else
-		strcpy(curbp->b_fname, fname);
-	wp = wheadp;		/* Update mode lines. */
-	while (wp != NULL) {
-		if (wp->w_bufp == curbp)
-			wp->w_flag |= WFMODE;
-		wp = wp->w_wndp;
-	}
-	curbp->b_mode &= ~MDVIEW;	/* no longer read only mode */
-	return TRUE;
-}
-
-/*
  * Insert file "fname" into the current buffer, Called by insert file command.
  * Return the final status of the read.
  */

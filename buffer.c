@@ -179,33 +179,6 @@ int zotbuf(struct buffer *bp)
 	return TRUE;
 }
 
-int namebuffer(int f, int n)
-{
-	struct buffer *bp;	/* pointer to scan through all buffers */
-	char bufn[NBUFN];	/* buffer to hold buffer name */
-
-	/* prompt for and get the new buffer name */
-ask:
-	if (mlreply("Change buffer name to: ", bufn, NBUFN) != TRUE)
-		return FALSE;
-
-	/* and check for duplicates */
-	bp = bheadp;
-	while (bp != NULL) {
-		if (bp != curbp) {
-			/* if the names the same */
-			if (strcmp(bufn, bp->b_bname) == 0)
-				goto ask;	/* try again */
-		}
-		bp = bp->b_bufp;	/* onward */
-	}
-
-	strcpy(curbp->b_bname, bufn);	/* copy buffer name to structure */
-	curwp->w_flag |= WFMODE;	/* make mode line replot */
-	mlerase();
-	return TRUE;
-}
-
 /*
  * List all of the active buffers.  First update the special
  * buffer that holds the list.  Next make sure at least 1 window is displaying
