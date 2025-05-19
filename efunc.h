@@ -97,6 +97,7 @@ void mlwrite(const char *fmt, ...);
 void mlputs(char *s);
 void getscreensize(int *widthp, int *heightp);
 void sizesignal(int signr);
+int put_c(int c, int (*p)(int));
 
 /* region.c */
 int killregion(int f, int n);

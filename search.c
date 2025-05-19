@@ -222,9 +222,9 @@ static int replaces(int kind, int f, int n)
 	if (kind) {
 		/* Build query replace question string. */
 		strcpy(tpat, "Replace '");
-		expandp(pat, &tpat[strlen(tpat)], NPAT / 3);
+		expandp(pat, &tpat[strlen(tpat)], NPAT / 2);
 		strcat(tpat, "' with '");
-		expandp(rpat, &tpat[strlen(tpat)], NPAT / 3);
+		expandp(rpat, &tpat[strlen(tpat)], NPAT / 2);
 		strcat(tpat, "'? ");
 	}
 
@@ -299,7 +299,7 @@ int expandp(const char *srcstr, char *deststr, int maxlength)
 	unsigned char c;
 
 	while ((c = *srcstr++) != 0) {
-		if (c < 0x20 || c == 0x7F) {	/* control character */
+		if (c < 0x20 || c == 0x7F) {
 			*deststr++ = '^';
 			*deststr++ = c ^ 0x40;
 			maxlength -= 2;
@@ -307,9 +307,11 @@ int expandp(const char *srcstr, char *deststr, int maxlength)
 			*deststr++ = '%';
 			*deststr++ = '%';
 			maxlength -= 2;
-		} else {
-
+		} else if (c >= 0x20 && c < 0x7F) {
 			*deststr++ = c;
+			--maxlength;
+		} else {
+			*deststr++ = '*';
 			--maxlength;
 		}
 

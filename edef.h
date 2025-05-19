@@ -11,9 +11,9 @@ extern const char *modename[];	/* text names of modes */
 extern int modevalue[];		/* value of modes */
 extern char modecode[];		/* letters to represent modes */
 
-extern char hexdigits[];
-
 extern int kbdm[];		/* Holds keyboard macro data */
+
+extern char hex[];
 
 extern char pat[];		/* Search pattern */
 extern char rpat[];		/* Replacement pattern */

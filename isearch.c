@@ -3,8 +3,6 @@
 #include "efunc.h"
 #include "line.h"
 
-static int echo_char(int c, int col);
-
 static int cmd_buff[CMDBUFLEN];		/* Save the command args here */
 static int cmd_offset;			/* Current offset into command buff */
 static int cmd_reexecute = -1;		/* > 0 if re-executing command */
@@ -55,8 +53,7 @@ int isearch(int f, int n)
 	strncpy(pat_save, pat, NPAT - 1);
 
 start_over:
-	/* Display prompt and clear rest contents in message line */
-	col = promptpattern("ISearch: ", pat_save);
+	col = promptpattern("ISearch:", pat_save);
 
 	/* Restore n for a new loop */
 	n = init_direction;
@@ -75,8 +72,11 @@ start_over:
 	/* When ^S or ^R again, load the pattern and do a search */
 
 	if (pat[0] != '\0' && (c == IS_FORWARD || c == IS_REVERSE)) {
-		for (cpos = 0; pat[cpos] != '\0'; ++cpos)
-			col = echo_char(pat[cpos], col);
+		for (cpos = 0; pat[cpos] != '\0'; ++cpos) {
+			movecursor(term.t_nrow, col);
+			col += put_c((unsigned char)pat[cpos], TTputc);
+		}
+		TTflush();
 		n = (c == IS_REVERSE) ? -1 : 1;
 		status = scanmore(pat, n);
 #if ISEARCH_FLAVOR == 1
@@ -156,7 +156,9 @@ pat_append:
 		return TRUE;
 	}
 	pat[cpos] = '\0';
-	col = echo_char(c, col);
+	movecursor(term.t_nrow, col);
+	col += put_c(c, TTputc);
+	TTflush();
 
 	/* If we lost on last char, no more check is needed */
 	if (!status) {
@@ -232,20 +234,6 @@ int promptpattern(const char *prompt, const char *pat)
 
 	mlwrite(tpat);
 	return strlen(tpat);
-}
-
-static int echo_char(int c, int col)
-{
-	movecursor(term.t_nrow, col);
-	if (c == 0x7F) {
-		TTputc('^'); TTputc('?'); ++col;
-	} else if (c < ' ') {
-		TTputc('^'); TTputc(c + 0x40); ++col;
-	} else {
-		TTputc(c);
-	}
-	TTflush();
-	return ++col;
 }
 
 /*

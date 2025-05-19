@@ -132,7 +132,7 @@ void vttidy(void)
  * This routine only puts printing characters into the virtual
  * terminal buffers.  Only column overflow is checked.
  */
-static void vtputc(int c)
+static int vtputc(int c)
 {
 	struct video *vp;	/* ptr to line being updated */
 
@@ -140,7 +140,7 @@ static void vtputc(int c)
 	if (c < 0) {
 		c += 256;
 		if (c < 0)
-			return;
+			return 0;
 	}
 
 	vp = vscreen[vtrow];
@@ -148,38 +148,24 @@ static void vtputc(int c)
 	if (vtcol >= term.t_ncol) {
 		++vtcol;
 		vp->v_text[term.t_ncol - 1] = '$';
-		return;
+		return 0;
 	}
 
 	if (c == '\t') {
 		do {
 			vtputc(' ');
 		} while (((vtcol + taboff) & TABMASK) != 0);
-		return;
+		return 0;
 	}
 
-	if (c < 0x20) {
-		vtputc('^');
-		vtputc(c ^ 0x40);
-		return;
-	}
-
-	if (c == 0x7F) {
-		vtputc('^');
-		vtputc('?');
-		return;
-	}
-
-	if (c >= 0x80) {
-		vtputc('\\');
-		vtputc(hexdigits[c >> 4]);
-		vtputc(hexdigits[c & 15]);
-		return;
-	}
+	if (!isvisible(c))
+		return put_c(c, vtputc);
 
 	if (vtcol >= 0)
 		vp->v_text[vtcol] = c;
+
 	++vtcol;
+	return 0;
 }
 
 /*
@@ -1004,8 +990,7 @@ void mlwrite(const char *fmt, ...)
 	va_start(ap, fmt);
 	while ((c = *fmt++) != 0) {
 		if (c != '%') {
-			TTputc(c);
-			++ttcol;
+			ttcol += put_c(c, TTputc);
 		} else {
 			c = *fmt++;
 			switch (c) {
@@ -1079,7 +1064,7 @@ static void mlputi(int i, int r)
 	if (q != 0)
 		mlputi(q, r);
 
-	TTputc(hexdigits[i % r]);
+	TTputc(hex[i % r]);
 	++ttcol;
 }
 
@@ -1174,3 +1159,16 @@ static int newscreensize(int h, int w)
 }
 
 #endif
+
+int put_c(int c, int (*p)(int))
+{
+	if (c < 0x20 || c == 0x7F) {
+		p('^'); p(c ^ 0x40); return 2;
+	} else if (c >= 0x20 && c < 0x7F) {
+		p(c); return 1;
+	} else if (c >= 0x80 && c <= 0xFF) {
+		p('\\'); p(hex[(c >> 4) & 0xF]); p(hex[c & 0xF]); return 3;
+	} else {
+		p('?'); return 1; /* should not reach this branch */
+	}
+}
