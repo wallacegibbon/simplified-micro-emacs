@@ -54,7 +54,7 @@
 #define NSTRING	128		/* # of bytes, string buffers */
 #define NKBDM   256		/* # of strokes, keyboard macro */
 #define NPAT    128		/* # of bytes, pattern */
-#define NMODES	4		/* # of modes */
+#define NMODES	3		/* # of modes */
 #define NLOCKS	100		/* max # of file locks active */
 
 #define HUGE    1000		/* Huge number */
@@ -182,10 +182,9 @@ struct buffer {
 #define BFTRUNC	0x04		/* buffer was truncated when read */
 
 /* mode flags */
-#define MDASAVE	0x0008		/* Auto-save mode */
-#define MDVIEW	0x0001		/* View (read-only) buffer */
-#define MDEXACT	0x0002		/* Exact matching for searches */
-#define MDOVER	0x0004		/* Overwrite mode */
+#define MDEXACT	0x0001		/* Exact matching for searches */
+#define MDVIEW	0x0002		/* View (read-only) buffer */
+#define MDASAVE	0x0004		/* Auto-save mode */
 
 struct region {
 	struct line *r_linep;	/* Origin struct line address. */

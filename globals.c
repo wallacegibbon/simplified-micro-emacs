@@ -1,9 +1,9 @@
 #include "estruct.h"
 #include "edef.h"
 
-const char *modename[NMODES] = {"ASAVE", "VIEW", "EXACT", "OVER"};
-int modevalue[NMODES] = {MDASAVE, MDVIEW, MDEXACT, MDOVER};
-char modecode[NMODES] = "AVEO";
+const char *modename[NMODES] = {"EXACT", "VIEW", "ASAVE"};
+int modevalue[NMODES] = {MDEXACT, MDVIEW, MDASAVE};
+char modecode[NMODES] = "EVA";
 
 char hex[] = "0123456789ABCDEF";
 

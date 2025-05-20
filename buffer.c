@@ -237,31 +237,30 @@ int listbuffers(int f, int n)
 #define MAXLINE	MAXCOL
 int makelist(int iflag)
 {
-	char *cp1, *cp2;
+#define CHAR_WIDTH_FOR_SIZE 10
 	struct buffer *bp;
 	struct line *lp;
+	char line[MAXLINE];
+	char b[CHAR_WIDTH_FOR_SIZE + 1];
+	char *cp1, *cp2;
 	int c, s, i;
 	long nbytes;
-	char b[7 + 1];
-	char line[MAXLINE];
 
 	blistp->b_flag &= ~BFCHG;	/* Don't complain! */
 	if ((s = bclear(blistp)) != TRUE)	/* Blow old text away */
 		return s;
 	strcpy(blistp->b_fname, "");
-	if (addline("ACT MODE    SIZE BUFFER          FILE") == FALSE)
+	if (addline("ACT MODE       SIZE BUFFER          FILE") == FALSE)
 		return FALSE;
-	if (addline("--- ----    ---- ------          ----") == FALSE)
+	if (addline("--- ----       ---- ------          ----") == FALSE)
 		return FALSE;
 
 	bp = bheadp;		/* For all buffers */
 
 	/* build line to report global mode settings */
 	cp1 = line;
-	*cp1++ = ' ';
-	*cp1++ = ' ';
-	*cp1++ = ' ';
-	*cp1++ = ' ';
+	for (i = 0; i < 4; ++i)
+		*cp1++ = ' ';
 
 	/* output the mode codes */
 	for (i = 0; i < NMODES; ++i) {
@@ -270,7 +269,7 @@ int makelist(int iflag)
 		else
 			*cp1++ = '.';
 	}
-	strcpy(cp1, "         Global Modes");
+	strcpy(cp1, "             Global Modes");
 	if (addline(line) == FALSE)
 		return FALSE;
 
@@ -310,14 +309,15 @@ int makelist(int iflag)
 			else
 				*cp1++ = '.';
 		}
-		*cp1++ = ' ';	/* Gap. */
+		for (i = NMODES; i < 5 /* 4 + 1 */; ++i)
+			*cp1++ = ' ';
 		nbytes = 0L;	/* Count bytes in buf. */
 		lp = lforw(bp->b_linep);
 		while (lp != bp->b_linep) {
 			nbytes += (long)llength(lp) + 1L;
 			lp = lforw(lp);
 		}
-		e_ltoa(b, 7, nbytes);	/* 7 digit buffer size. */
+		e_ltoa(b, CHAR_WIDTH_FOR_SIZE, nbytes);
 		cp2 = b;
 		while ((c = *cp2++) != 0)
 			*cp1++ = c;
@@ -327,7 +327,7 @@ int makelist(int iflag)
 			*cp1++ = c;
 		cp2 = &bp->b_fname[0];	/* File name */
 		if (*cp2 != 0) {
-			while (cp1 < &line[3 + 1 + 4 + 1 + 7 + 1 + NBUFN])
+			while (cp1 < &line[3 + 1 + 4 + 1 + 10 + 1 + NBUFN])
 				*cp1++ = ' ';
 			while ((c = *cp2++) != 0) {
 				if (cp1 < &line[MAXLINE - 1])
@@ -344,13 +344,17 @@ int makelist(int iflag)
 
 void e_ltoa(char *buf, int width, long num)
 {
-	buf[width] = 0;		/* End of string. */
-	while (num >= 10) {	/* Conditional digits. */
+	buf[width] = '\0';
+	while (num >= 10 && width > 1) {
 		buf[--width] = (int)(num % 10L) + '0';
 		num /= 10L;
 	}
-	buf[--width] = (int)num + '0';	/* Always 1 digit. */
-	while (width != 0)	/* Pad with blanks. */
+	if (num < 10)
+		buf[--width] = (int)num + '0';
+	else
+		buf[--width] = '?';
+
+	while (width != 0)
 		buf[--width] = ' ';
 }
 

@@ -260,17 +260,7 @@ int execute(int c, int f, int n)
 		return n == 0 ? TRUE : FALSE;
 	}
 
-	thisflag = 0;	/* For the future. */
-
-	/*
-	 * If we are in overwrite mode, not at eol, and next char is not a tab
-	 * or we are at a tab stop, delete a char forword.
-	 */
-	if ((curwp->w_bufp->b_mode & MDOVER) &&
-			(curwp->w_doto < curwp->w_dotp->l_used) &&
-			(lgetc(curwp->w_dotp, curwp->w_doto) != '\t' ||
-					(curwp->w_doto) % 8 == 7))
-		ldelete(1, FALSE);
+	thisflag = 0;
 
 	status = linsert(n, c);
 
@@ -282,6 +272,7 @@ int execute(int c, int f, int n)
 			gacount = gasave;
 		}
 	}
+
 	lastflag = thisflag;
 	return status;
 }
