@@ -265,7 +265,7 @@ int execute(int c, int f, int n)
 	status = linsert(n, c);
 
 	/* check auto-save mode and save the file if needed */
-	if (curbp->b_mode & MDASAVE) {
+	if (status == TRUE && (curbp->b_mode & MDASAVE)) {
 		if (--gacount == 0) {
 			update(TRUE);
 			filesave(FALSE, 0);
