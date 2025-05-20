@@ -251,10 +251,10 @@ int mlreply(char *prompt, char *buf, int nbuf)
 
 int mlyesno(char *prompt)
 {
-	char buf[NPAT];
+	char buf[64 /* prompt */ + 8 /* " (y/n)? " */ + 1];
 
 	for (;;) {
-		strcpy(buf, prompt);
+		strncpy(buf, prompt, 64);
 		strcat(buf, " (y/n)? ");
 		mlwrite(buf);
 

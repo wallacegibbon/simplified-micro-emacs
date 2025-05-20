@@ -225,9 +225,9 @@ int scanmore(char *patrn, int dir)
 
 int promptpattern(const char *prompt, const char *pat)
 {
-	char tpat[NPAT + 64];
+	char tpat[NPAT + 64 /* prompt */ + 5 /* " (", "): " */ + 1];
 
-	strcpy(tpat, prompt);
+	strncpy(tpat, prompt, 64);
 	strcat(tpat, " (");
 	strcat(tpat, pat);
 	strcat(tpat, "): ");

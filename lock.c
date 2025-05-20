@@ -84,7 +84,6 @@ int lockrel(void)
 int lock(char *fname)
 {
 	char *errstr;
-	char msg[NSTRING];
 	int s;
 
 	if ((s = dolock(fname, &errstr)) == 0)
@@ -95,9 +94,7 @@ int lock(char *fname)
 		return ABORT;
 	}
 
-	strcpy(msg, "File in use, override?");
-	s = mlyesno(msg);
-	if (s == TRUE)
+	if (mlyesno("File in use, override? ") == TRUE)
 		return FALSE;
 	else
 		return ABORT;

@@ -389,13 +389,11 @@ int delgmode(int f, int n)
  */
 int adjustmode(int kind, int global)
 {
-	char *scan;		/* scanning pointer to convert prompt */
-	int i;			/* loop index */
-	int status;		/* error return on input */
-	char prompt[50];	/* string to prompt user with */
-	char cbuf[NPAT];	/* buffer to recieve mode name into */
+	char modname_buf[8];	/* 8 is enough for any mode name */
+	char prompt[32];	/* 32 is enough for prompt in this function */
+	char *scan;
+	int status, i;
 
-	/* build the proper prompt string */
 	if (global)
 		strcpy(prompt, "Global mode to ");
 	else
@@ -406,25 +404,21 @@ int adjustmode(int kind, int global)
 	else
 		strcat(prompt, "delete: ");
 
-	/* prompt the user and get an answer */
-
-	status = mlreply(prompt, cbuf, NPAT - 1);
+	status = mlreply(prompt, modname_buf, 8 - 1);
 	if (status != TRUE)
 		return status;
 
 	/* make it uppercase */
 
-	scan = cbuf;
-	while (*scan != 0) {
-		if (*scan >= 'a' && *scan <= 'z')
-			*scan = *scan - 32;
-		++scan;
+	for (scan = modname_buf; *scan != 0; ++scan) {
+		if (islower(*scan))
+			*scan ^= DIFCASE;
 	}
 
 	/* test it against the modes we know */
 
 	for (i = 0; i < NMODES; ++i) {
-		if (strcmp(cbuf, modename[i]) == 0) {
+		if (strcmp(modname_buf, modename[i]) == 0) {
 			int val = modevalue[i];
 			/* finding a match, we process it */
 			if (kind == TRUE) {
@@ -438,7 +432,6 @@ int adjustmode(int kind, int global)
 				else
 					curbp->b_mode &= ~val;
 			}
-			/* display new mode line */
 			if (global == 0)
 				update_modelines();
 			mlerase();

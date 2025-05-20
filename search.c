@@ -98,10 +98,10 @@ int eq(unsigned char bc, unsigned char pc)
  */
 static int readpattern(char *prompt, char *apat, int srch)
 {
-	char tpat[NPAT + 64];
+	char tpat[NPAT + 64 /* prompt */ + 5 /* " (", "): " */ + 1];
 	int status;
 
-	strcpy(tpat, prompt);
+	strncpy(tpat, prompt, 64);
 	strcat(tpat, " (");
 	strcat(tpat, apat);
 	strcat(tpat, "): ");
