@@ -283,6 +283,8 @@ int ctoec(int c)
 
 void tputs(char *s)
 {
-	while (*s)
-		TTputc(*s++);
+	if (s != NULL) {
+		while (*s)
+			TTputc(*s++);
+	}
 }
