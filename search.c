@@ -17,9 +17,8 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 	struct line *curline = curwp->w_dotp;
 	int curoff = curwp->w_doto;
 	struct line *scanline;
-	int scanoff;
-	const char *patptr;		/* pointer into pattern */
-	int c;
+	const char *patptr;
+	int scanoff, c;
 
 	/*
 	 * If we are going in reverse, then the 'end' is actually the
@@ -35,19 +34,12 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 		matchline = curline;
 		matchoff = curoff;
 
-		/*
-		 * Get the character resolving newlines, and test it against
-		 * first char in pattern.
-		 */
 		c = nextch(&curline, &curoff, direct);
-
-		if (eq(c, patrn[0])) {	/* if we find it.. */
-			/* Setup scanning pointers. */
+		if (eq(c, patrn[0])) {
 			scanline = curline;
 			scanoff = curoff;
 			patptr = patrn;
 
-			/* Scan through the pattern for a match. */
 			while (*++patptr != '\0') {
 				c = nextch(&scanline, &scanoff, direct);
 				if (!eq(c, *patptr))
@@ -56,10 +48,10 @@ int scanner(const char *patrn, int direct, int beg_or_end)
 
 			/* A SUCCESSFULL MATCH!!! */
 
-			if (beg_or_end == PTEND) {	/* at end of string */
+			if (beg_or_end == PTEND) {
 				curwp->w_dotp = scanline;
 				curwp->w_doto = scanoff;
-			} else {	/* at beginning of string */
+			} else {
 				curwp->w_dotp = matchline;
 				curwp->w_doto = matchoff;
 			}
@@ -303,14 +295,6 @@ int boundry(struct line *curline, int curoff, int dir)
 			(lback(curline) == curbp->b_linep);
 }
 
-/*
- * Retrieve the next/previous character in the buffer, and advance/retreat the
- * point.
- * The order in which this is done is significant, and depends upon the
- * direction of the search.
- * Forward searches look at the current character and move;
- * Reverse searches move and look at the character.
- */
 static int nextch(struct line **pcurline, int *pcuroff, int dir)
 {
 	struct line *curline = *pcurline;
@@ -318,10 +302,10 @@ static int nextch(struct line **pcurline, int *pcuroff, int dir)
 	int c;
 
 	if (dir == FORWARD) {
-		if (curoff == llength(curline)) {	/* if at EOL */
+		if (curoff == llength(curline)) {
 			curline = lforw(curline);
 			curoff = 0;
-			c = '\n';	/* and return a <NL> */
+			c = '\n';
 		} else {
 			c = lgetc(curline, curoff++);
 		}

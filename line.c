@@ -49,8 +49,7 @@ void lfree(struct line *lp)
 	struct buffer *bp;
 	struct window *wp;
 
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_linep == lp)
 			wp->w_linep = lp->l_fp;
 		if (wp->w_dotp == lp) {
@@ -61,10 +60,8 @@ void lfree(struct line *lp)
 			wp->w_markp = lp->l_fp;
 			wp->w_marko = 0;
 		}
-		wp = wp->w_wndp;
 	}
-	bp = bheadp;
-	while (bp != NULL) {
+	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
 		if (bp->b_nwnd == 0) {
 			if (bp->b_dotp == lp) {
 				bp->b_dotp = lp->l_fp;
@@ -75,7 +72,6 @@ void lfree(struct line *lp)
 				bp->b_marko = 0;
 			}
 		}
-		bp = bp->b_bufp;
 	}
 	lp->l_bp->l_fp = lp->l_fp;
 	lp->l_fp->l_bp = lp->l_bp;
@@ -99,33 +95,28 @@ void lchange(int flag)
 		flag |= WFMODE;	/* update mode lines. */
 		curbp->b_flag |= BFCHG;
 	}
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_bufp == curbp)
 			wp->w_flag |= flag;
-		wp = wp->w_wndp;
 	}
 }
 
-/*
- * linstr -- Insert a string at the current point
- */
+/* linstr -- Insert a string at the current point. */
 int linstr(char *instr)
 {
 	int status = TRUE;
 	char tmpc;
 
-	if (instr != NULL)
+	if (instr != NULL) {
 		while ((tmpc = *instr) && status == TRUE) {
 			status = (tmpc == '\n' ? lnewline() : linsert(1, tmpc));
-
-			/* Insertion error? */
 			if (status != TRUE) {
 				mlwrite("%%Out of memory while inserting");
 				break;
 			}
 			++instr;
 		}
+	}
 	return status;
 }
 
@@ -169,7 +160,7 @@ int linsert(int n, int c)
 		curwp->w_doto = n;
 		return TRUE;
 	}
-	doto = curwp->w_doto;	/* Save for later. */
+	doto = curwp->w_doto;
 	if (lp1->l_used + n > lp1->l_size) {	/* Hard: reallocate */
 		if ((lp2 = lalloc(lp1->l_used + n)) == NULL)
 			return FALSE;
@@ -193,10 +184,11 @@ int linsert(int n, int c)
 		while (cp1 != &lp1->l_text[doto])
 			*--cp2 = *--cp1;
 	}
-	for (i = 0; i < n; ++i)	/* Add the characters */
+
+	for (i = 0; i < n; ++i)
 		lp2->l_text[doto + i] = c;
-	wp = wheadp;		/* Update windows */
-	while (wp != NULL) {
+
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_linep == lp1)
 			wp->w_linep = lp2;
 		if (wp->w_dotp == lp1) {
@@ -209,7 +201,6 @@ int linsert(int n, int c)
 			if (wp->w_marko > doto)
 				wp->w_marko += n;
 		}
-		wp = wp->w_wndp;
 	}
 	return TRUE;
 }
@@ -249,8 +240,7 @@ int lnewline(void)
 	lp1->l_bp = lp2;
 	lp2->l_bp->l_fp = lp2;
 	lp2->l_fp = lp1;
-	wp = wheadp;		/* Windows */
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_linep == lp1)
 			wp->w_linep = lp2;
 		if (wp->w_dotp == lp1) {
@@ -265,7 +255,6 @@ int lnewline(void)
 			else
 				wp->w_marko -= doto;
 		}
-		wp = wp->w_wndp;
 	}
 	return TRUE;
 }
@@ -319,8 +308,7 @@ int ldelete(long n, int kflag)
 		while (cp2 != &dotp->l_text[dotp->l_used])
 			*cp1++ = *cp2++;
 		dotp->l_used -= chunk;
-		wp = wheadp;	/* Fix windows */
-		while (wp != NULL) {
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 			if (wp->w_dotp == dotp && wp->w_doto >= doto) {
 				wp->w_doto -= chunk;
 				if (wp->w_doto < doto)
@@ -331,7 +319,6 @@ int ldelete(long n, int kflag)
 				if (wp->w_marko < doto)
 					wp->w_marko = doto;
 			}
-			wp = wp->w_wndp;
 		}
 		n -= chunk;
 	}
@@ -367,8 +354,7 @@ int ldelnewline(void)
 		cp2 = &lp2->l_text[0];
 		while (cp2 != &lp2->l_text[lp2->l_used])
 			*cp1++ = *cp2++;
-		wp = wheadp;
-		while (wp != NULL) {
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 			if (wp->w_linep == lp2)
 				wp->w_linep = lp1;
 			if (wp->w_dotp == lp2) {
@@ -379,7 +365,6 @@ int ldelnewline(void)
 				wp->w_markp = lp1;
 				wp->w_marko += lp1->l_used;
 			}
-			wp = wp->w_wndp;
 		}
 		lp1->l_used += lp2->l_used;
 		lp1->l_fp = lp2->l_fp;
@@ -400,23 +385,21 @@ int ldelnewline(void)
 	lp3->l_fp = lp2->l_fp;
 	lp2->l_fp->l_bp = lp3;
 	lp3->l_bp = lp1->l_bp;
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_linep == lp1 || wp->w_linep == lp2)
 			wp->w_linep = lp3;
-		if (wp->w_dotp == lp1)
+		if (wp->w_dotp == lp1) {
 			wp->w_dotp = lp3;
-		else if (wp->w_dotp == lp2) {
+		} else if (wp->w_dotp == lp2) {
 			wp->w_dotp = lp3;
 			wp->w_doto += lp1->l_used;
 		}
-		if (wp->w_markp == lp1)
+		if (wp->w_markp == lp1) {
 			wp->w_markp = lp3;
-		else if (wp->w_markp == lp2) {
+		} else if (wp->w_markp == lp2) {
 			wp->w_markp = lp3;
 			wp->w_marko += lp1->l_used;
 		}
-		wp = wp->w_wndp;
 	}
 	free(lp1);
 	free(lp2);
@@ -430,77 +413,60 @@ int ldelnewline(void)
  */
 void kdelete(void)
 {
-	struct kill *kp;		/* ptr to scan kill buffer chunk list */
+	struct kill *kp;
 
-	if (kbufh != NULL) {
+	if (kbufh == NULL)
+		return;
 
-		/* first, delete all the chunks */
-		kbufp = kbufh;
-		while (kbufp != NULL) {
-			kp = kbufp->d_next;
-			free(kbufp);
-			kbufp = kp;
-		}
-
-		/* and reset all the kill buffer pointers */
-		kbufh = kbufp = NULL;
-		kused = KBLOCK;
+	kbufp = kbufh;
+	while (kbufp != NULL) {
+		kp = kbufp->d_next;
+		free(kbufp);
+		kbufp = kp;
 	}
+	/* Reset all the kill buffer pointers */
+	kbufh = kbufp = NULL;
+	kused = KBLOCK;
 }
 
-/*
- * Insert a character to the kill buffer, allocating new chunks as needed.
- * Return TRUE if all is well, and FALSE on errors.
- */
+/* Insert a character to the kill buffer, allocating new chunks as needed. */
 int kinsert(int c)
 {
 	struct kill *nchunk;
 
-	/* check to see if we need a new chunk */
 	if (kused >= KBLOCK) {
 		if ((nchunk = malloc(sizeof(struct kill))) == NULL)
 			return FALSE;
-		if (kbufh == NULL)	/* set head ptr if first time */
+		if (kbufh == NULL)
 			kbufh = nchunk;
-		if (kbufp != NULL)	/* point the current to this new one */
+		if (kbufp != NULL)
 			kbufp->d_next = nchunk;
 		kbufp = nchunk;
 		kbufp->d_next = NULL;
 		kused = 0;
 	}
-
-	/* and now insert the character */
 	kbufp->d_chunk[kused++] = c;
 	return TRUE;
 }
 
-/*
- * Yank text back from the kill buffer.  This is really easy.  All of the work
- * is done by the standard insert routines.  All you do is run the loop, and
- * check for errors.  Bound to "C-Y".
- */
+/* Yank text back from the kill buffer.  Bound to "C-Y". */
 int yank(int f, int n)
 {
-	char *sp;		/* pointer into string to insert */
-	struct kill *kp;	/* pointer into kill buffer */
+	struct kill *kp;
+	char *sp;
 	int c, i;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
 	if (n < 0)
 		return FALSE;
-	/* make sure there is something to yank */
+
 	if (kbufh == NULL)
 		return TRUE;	/* not an error, just nothing */
 
-	/* for each time.... */
 	while (n--) {
-		kp = kbufh;
-		while (kp != NULL) {
-			if (kp->d_next == NULL)
-				i = kused;
-			else
-				i = KBLOCK;
+		for (kp = kbufh; kp != NULL; kp = kp->d_next) {
+			i = kp->d_next == NULL ? kused : KBLOCK;
 			sp = kp->d_chunk;
 			while (i--) {
 				if ((c = *sp++) == '\n') {
@@ -511,7 +477,6 @@ int yank(int f, int n)
 						return FALSE;
 				}
 			}
-			kp = kp->d_next;
 		}
 	}
 	return TRUE;

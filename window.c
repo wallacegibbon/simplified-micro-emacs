@@ -70,8 +70,9 @@ int nextwind(int f, int n)
 			mlwrite("Window number out of range");
 			return FALSE;
 		}
-	} else if ((wp = curwp->w_wndp) == NULL)
+	} else if ((wp = curwp->w_wndp) == NULL) {
 		wp = wheadp;
+	}
 	curwp = wp;
 	curbp = wp->w_bufp;
 	cknewwindow();
@@ -482,9 +483,10 @@ struct window *wpopup(void)
 	if (wheadp->w_wndp == NULL &&	/* Only 1 window */
 			splitwind(FALSE, 0) == FALSE) /* and it won't split */
 		return NULL;
-	wp = wheadp;		/* Find window to use */
-	while (wp != NULL && wp == curwp)
-		wp = wp->w_wndp;
+
+	/* Find window to use */
+	for (wp = wheadp; wp != NULL && wp == curwp; wp = wp->w_wndp);
+
 	return wp;
 }
 
@@ -519,15 +521,13 @@ int restwnd(int f, int n)
 	struct window *wp;
 
 	/* find the window */
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp == swindow) {
 			curwp = wp;
 			curbp = wp->w_bufp;
 			update_modelines();
 			return TRUE;
 		}
-		wp = wp->w_wndp;
 	}
 
 	mlwrite("(No such window exists)");
@@ -554,9 +554,7 @@ int newsize(int f, int n)
 		return TRUE;
 	} else if (term.t_nrow < n - 1) {
 		/* go to the last window */
-		wp = wheadp;
-		while (wp->w_wndp != NULL)
-			wp = wp->w_wndp;
+		for (wp = wheadp; wp->w_wndp != NULL; wp = wp->w_wndp);
 
 		/* and enlarge it as needed */
 		wp->w_ntrows = n - wp->w_toprow - 2;
@@ -633,11 +631,9 @@ int newwidth(int f, int n)
 	term.t_scrsiz = n - (term.t_margin * 2);
 
 	/* florce all windows to redraw */
-	wp = wheadp;
-	while (wp) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
 		wp->w_flag |= WFHARD | WFMOVE | WFMODE;
-		wp = wp->w_wndp;
-	}
+
 	sgarbf = TRUE;
 
 	return TRUE;

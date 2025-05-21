@@ -101,8 +101,7 @@ int swbuffer(struct buffer *bp)
 		cknewwindow();
 		return TRUE;
 	}
-	wp = wheadp;		/* Look for old. */
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp != curwp && wp->w_bufp == bp) {
 			curwp->w_dotp = wp->w_dotp;
 			curwp->w_doto = wp->w_doto;
@@ -110,7 +109,6 @@ int swbuffer(struct buffer *bp)
 			curwp->w_marko = wp->w_marko;
 			break;
 		}
-		wp = wp->w_wndp;
 	}
 	cknewwindow();
 	return TRUE;
@@ -210,8 +208,7 @@ int listbuffers(int f, int n)
 		wp->w_bufp = blistp;
 		++blistp->b_nwnd;
 	}
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 		if (wp->w_bufp == blistp) {
 			wp->w_linep = lforw(blistp->b_linep);
 			wp->w_dotp = lforw(blistp->b_linep);
@@ -220,7 +217,6 @@ int listbuffers(int f, int n)
 			wp->w_marko = 0;
 			wp->w_flag |= WFMODE | WFHARD;
 		}
-		wp = wp->w_wndp;
 	}
 	return TRUE;
 }
@@ -391,11 +387,9 @@ int anycb(void)
 {
 	struct buffer *bp;
 
-	bp = bheadp;
-	while (bp != NULL) {
+	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
 		if ((bp->b_flag & BFINVS) == 0 && (bp->b_flag & BFCHG) != 0)
 			return TRUE;
-		bp = bp->b_bufp;
 	}
 	return FALSE;
 }
@@ -411,11 +405,9 @@ struct buffer *bfind(char *bname, int cflag, int bflag)
 	struct buffer *bp, *sb;
 	struct line *lp;
 
-	bp = bheadp;
-	while (bp != NULL) {
+	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
 		if (strcmp(bname, bp->b_bname) == 0)
 			return bp;
-		bp = bp->b_bufp;
 	}
 
 	/* not existing buffer found */

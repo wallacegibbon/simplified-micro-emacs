@@ -150,9 +150,7 @@ proc_ctlxc:
  */
 int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 {
-	int cpos = 0;		/* current character position in string */
-	int quotef = FALSE;	/* are we quoting the next char? */
-	int c, expc;
+	int quotef = FALSE, cpos = 0, c, expc;
 
 	mlwrite(prompt);
 
@@ -162,8 +160,6 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 		/* if they hit the line terminate, wrap it up */
 		if (expc == eolchar && quotef == FALSE) {
 			buf[cpos++] = 0;
-
-			/* clear the message line */
 			mlwrite("");
 			TTflush();
 
@@ -175,13 +171,11 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 		}
 
 		if (expc == ABORTC && quotef == FALSE) {
-			/* Abort the input? */
 			ctrlg(FALSE, 0);
 			TTflush();
 			return ABORT;
 
 		} else if ((c == 0x7F || c == '\b') && quotef == FALSE) {
-			/* rubout/erase */
 			if (cpos != 0) {
 				tputs("\b \b");
 				--ttcol;
@@ -216,7 +210,6 @@ int (*getfn_byname(char *fname))(int, int)
 {
 	struct name_bind *ffp;
 
-	/* scan through the table, returning any match */
 	for (ffp = names; ffp->n_func != NULL; ++ffp) {
 		if (strcmp(fname, ffp->n_name) == 0)
 			return ffp->n_func;
@@ -224,12 +217,10 @@ int (*getfn_byname(char *fname))(int, int)
 	return NULL;
 }
 
-/*
- * Execute a named command even if it is not bound.
- */
+/* Execute a named command even if it is not bound. */
 int namedcmd(int f, int n)
 {
-	char buf[NSTRING];	/* buffer to hold tentative command name */
+	char buf[NSTRING];
 	fn_t fn;
 
 	if (getstring(": ", buf, NSTRING, ENTERC) != TRUE)

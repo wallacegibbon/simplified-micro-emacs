@@ -51,7 +51,6 @@ int next_col(int col, unsigned char c);
 
 /* random.c */
 int showcpos(int f, int n);
-int getcline(void);
 int getccol(int bflg);
 int setccol(int pos);
 int twiddle(int f, int n);

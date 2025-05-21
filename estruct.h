@@ -271,7 +271,6 @@ struct kill {
 /* Miscellaneous */
 #define TABMASK		0x07
 #define INDENT_NO_SPACE	1
-#define ISEARCH_FLAVOR	0
 
 #define PROGRAM_NAME	"me"
 #define PROGRAM_NAME_LONG	"Modified Micro Emacs"

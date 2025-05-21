@@ -91,10 +91,10 @@ int spawn(int f, int n)
  */
 int pipecmd(int f, int n)
 {
-	struct window *wp;	/* pointer to new window */
-	struct buffer *bp;	/* pointer to buffer to zot */
-	char line[NLINE];	/* command line send to shell */
-	int s;			/* return status from CLI */
+	struct window *wp;
+	struct buffer *bp;
+	char line[NLINE];
+	int s;
 
 	static char bname[] = "_me_cmd_tmp";
 	static char filename[NSTRING] = "_me_cmd_tmp";
@@ -106,8 +106,7 @@ int pipecmd(int f, int n)
 	/* get rid of the command output buffer if it exists */
 	if ((bp = bfind(bname, FALSE, 0)) != FALSE) {
 		/* try to make sure we are off screen */
-		wp = wheadp;
-		while (wp != NULL) {
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 			if (wp->w_bufp == bp) {
 				if (wp == curwp)
 					delwind(FALSE, 1);
@@ -115,7 +114,6 @@ int pipecmd(int f, int n)
 					onlywind(FALSE, 1);
 				break;
 			}
-			wp = wp->w_wndp;
 		}
 		if (zotbuf(bp) != TRUE)
 			return FALSE;
@@ -145,13 +143,9 @@ int pipecmd(int f, int n)
 	if (getfile(filename, FALSE) == FALSE)
 		return FALSE;
 
-	/* make this window in VIEW mode, update all mode lines */
 	curwp->w_bufp->b_mode |= MDVIEW;
-	wp = wheadp;
-	while (wp != NULL) {
+	for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
 		wp->w_flag |= WFMODE;
-		wp = wp->w_wndp;
-	}
 
 	/* and get rid of the temporary file */
 	unlink(filename);
@@ -164,10 +158,10 @@ int pipecmd(int f, int n)
  */
 int filter_buffer(int f, int n)
 {
-	struct buffer *bp;		/* pointer to buffer to zot */
-	char line[NLINE];		/* command line send to shell */
-	char tmpnam[NFILEN];		/* place to store real file name */
-	int s;				/* return status from CLI */
+	struct buffer *bp;
+	char line[NLINE];
+	char tmpnam[NFILEN];
+	int s;
 
 	static char bname[] = "_me_filter_tmp";
 	static char filename_in[] = "_me_filter_tmp_in";

@@ -52,23 +52,6 @@ int showcpos(int f, int n)
 	return TRUE;
 }
 
-/* get the current line number */
-int getcline(void)
-{
-	struct line *lp;
-	int numlines = 0;
-
-	for (lp = lforw(curbp->b_linep); lp != curbp->b_linep; lp = lforw(lp)) {
-		/* if we are on the current line, record it */
-		if (lp == curwp->w_dotp)
-			break;
-		++numlines;
-		lp = lforw(lp);
-	}
-
-	return numlines + 1;
-}
-
 /*
  * Return current column.  Stop at first non-blank given TRUE argument.
  */

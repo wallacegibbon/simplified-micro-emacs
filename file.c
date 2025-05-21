@@ -62,8 +62,8 @@ int insfile(int f, int n)
  */
 int filefind(int f, int n)
 {
-	char fname[NFILEN];	/* file user wishes to find */
-	int s;			/* status return */
+	char fname[NFILEN];
+	int s;
 
 	if ((s = mlreply("Find file: ", fname, NFILEN)) != TRUE)
 		return s;
@@ -72,22 +72,18 @@ int filefind(int f, int n)
 
 int viewfile(int f, int n)
 {
-	struct window *wp;	/* scan for windows that need updating */
-	char fname[NFILEN];	/* file user wishes to find */
-	int s;			/* status return */
+	struct window *wp;
+	char fname[NFILEN];
+	int s;
 
 	if ((s = mlreply("View file: ", fname, NFILEN)) != TRUE)
 		return s;
-	s = getfile(fname, FALSE);
-	if (s) {		/* if we succeed, put it in view mode */
-		curwp->w_bufp->b_mode |= MDVIEW;
 
-		/* scan through and update mode lines of all windows */
-		wp = wheadp;
-		while (wp != NULL) {
+	s = getfile(fname, FALSE);
+	if (s) {
+		curwp->w_bufp->b_mode |= MDVIEW;
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
 			wp->w_flag |= WFMODE;
-			wp = wp->w_wndp;
-		}
 	}
 	return s;
 }
@@ -96,7 +92,7 @@ int getfile(char *fname, int lockfl)
 {
 	struct buffer *bp;
 	struct line *lp;
-	char bname[NBUFN];	/* buffer name to put file */
+	char bname[NBUFN];
 	int i, s;
 
 	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
@@ -306,11 +302,9 @@ int filewrite(int f, int n)
 	if ((s = writeout(fname)) == TRUE) {
 		strcpy(curbp->b_fname, fname);
 		curbp->b_flag &= ~BFCHG;
-		wp = wheadp;	/* Update mode lines. */
-		while (wp != NULL) {
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 			if (wp->w_bufp == curbp)
 				wp->w_flag |= WFMODE;
-			wp = wp->w_wndp;
 		}
 	}
 	return s;
@@ -346,11 +340,9 @@ int filesave(int f, int n)
 
 	if ((s = writeout(curbp->b_fname)) == TRUE) {
 		curbp->b_flag &= ~BFCHG;
-		wp = wheadp;	/* Update mode lines. */
-		while (wp != NULL) {
+		for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
 			if (wp->w_bufp == curbp)
 				wp->w_flag |= WFMODE;
-			wp = wp->w_wndp;
 		}
 	}
 	return s;
@@ -371,9 +363,9 @@ int writeout(char *fn)
 	if ((s = ffwopen(fn)) != FIOSUC) {	/* Open writes message. */
 		return FALSE;
 	}
-	mlwrite("(Writing...)");	/* tell us were writing */
+	mlwrite("(Writing...)");
 	lp = lforw(curbp->b_linep);	/* First line. */
-	nline = 0;		/* Number of lines. */
+	nline = 0;
 	while (lp != curbp->b_linep) {
 		if ((s = ffputline(&lp->l_text[0], llength(lp))) != FIOSUC)
 			break;
@@ -388,10 +380,13 @@ int writeout(char *fn)
 			else
 				mlwrite("(Wrote %d lines)", nline);
 		}
-	} else			/* Ignore close error */
+	} else {		/* Ignore close error */
 		ffclose();	/* if a write error. */
+	}
+
 	if (s != FIOSUC)	/* Some sort of error. */
 		return FALSE;
+
 	return TRUE;
 }
 
@@ -426,19 +421,15 @@ int ifile(char *fname)
 	nline = 0;
 	while ((s = ffgetline(&nbytes)) == FIOSUC) {
 		if ((lp1 = lalloc(nbytes)) == NULL) {
-			s = FIOMEM;	/* Keep message on the */
-			break;	/* display. */
+			s = FIOMEM;
+			break;
 		}
-		lp0 = curwp->w_dotp;	/* line previous to insert */
-		lp2 = lp0->l_fp;	/* line after insert */
-
-		/* re-link new line between lp0 and lp2 */
+		lp0 = curwp->w_dotp;
+		lp2 = lp0->l_fp;
 		lp2->l_bp = lp1;
 		lp0->l_fp = lp1;
 		lp1->l_bp = lp0;
 		lp1->l_fp = lp2;
-
-		/* and advance and write out the current line */
 		curwp->w_dotp = lp1;
 		for (i = 0; i < nbytes; ++i)
 			lputc(lp1, i, fline[i]);
@@ -472,7 +463,8 @@ out:
 	curbp->b_markp = curwp->w_markp;
 	curbp->b_marko = curwp->w_marko;
 
-	if (s == FIOERR)	/* False if error. */
+	if (s == FIOERR)
 		return FALSE;
+
 	return TRUE;
 }

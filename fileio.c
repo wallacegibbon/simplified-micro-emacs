@@ -77,33 +77,25 @@ int ffputline(char *buf, int nbuf)
 	return FIOSUC;
 }
 
-/*
- * Read a line from a file, and store the bytes in the supplied buffer.  The
- * "nbuf" is the length of the buffer.  Complain about long lines and lines
- * at the end of the file that don't have a newline present.  Check for I/O
- * errors too.  Return status.
- */
 int ffgetline(int *count)
 {
-	char *tmpline;	/* temp storage for expanding line */
+	char *tmpline;
 	int c, i;
 
 	/* if we are at the end...return it */
 	if (eofflag)
 		return FIOEOF;
 
-	/* dump fline if it ended up too big */
 	if (flen > NSTRING) {
+		/* dump fline in case it ended up too big */
 		free(fline);
 		fline = NULL;
 	}
-
-	/* if we don't have an fline, allocate one */
-	if (fline == NULL)
+	if (fline == NULL) {
 		if ((fline = malloc(flen = NSTRING)) == NULL)
 			return FIOMEM;
+	}
 
-	/* read the line in */
 	i = 0;
 	while ((c = fgetc(ffp)) != EOF && c != '\n') {
 		fline[i++] = c;
@@ -117,7 +109,6 @@ int ffgetline(int *count)
 		}
 	}
 
-	/* test for any errors that may have occured */
 	if (c == EOF) {
 		if (ferror(ffp)) {
 			mlwrite("File read error");

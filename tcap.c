@@ -37,8 +37,7 @@ static void tcapscroll_delins(int from, int to, int linestoscroll);
 
 #define TCAPSLEN 315
 static char tcapbuf[TCAPSLEN];
-static char *UP, PC, *CM, *CE, *CL, *SO, *SE, *TI, *TE,
-		*CS, *DL, *AL, *SF, *SR;
+static char *UP, PC, *CM, *CE, *CL, *SO, *SE, *TI, *TE, *CS, *DL, *AL, *SF, *SR;
 
 struct terminal term = {
 	0,	/* These four values are set dynamically at open time. */

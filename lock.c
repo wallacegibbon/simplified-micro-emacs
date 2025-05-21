@@ -65,12 +65,13 @@ int lockrel(void)
 	int s1, s2, i;
 
 	s1 = TRUE;
-	if (numlocks > 0)
+	if (numlocks > 0) {
 		for (i = 0; i < numlocks; ++i) {
 			if ((s2 = unlock(lname[i])) != TRUE)
 				s1 = s2;
 			free(lname[i]);
 		}
+	}
 	numlocks = 0;
 	return s1;
 }

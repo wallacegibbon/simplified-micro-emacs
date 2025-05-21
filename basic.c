@@ -112,14 +112,9 @@ int forwchar(int f, int n)
 	return TRUE;
 }
 
-/*
- * Move to a particular line.
- *
- * @n: The specified line position at the current buffer.
- */
 int gotoline(int f, int n)
 {
-	char arg[NSTRING]; /* Buffer to hold argument. */
+	char arg[NSTRING];
 	int status;
 
 	/* Get an argument if one doesnt exist. */

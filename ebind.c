@@ -4,10 +4,6 @@
 #include "line.h"
 
 struct key_tab keytab[] = {
-	/* Normal chars (without prefix) can be rebind, too */
-	/*
-	{'A', backdel},
-	*/
 	{0x7F, backdel},
 
 	{CTL | 'A', gotobol},
@@ -97,11 +93,6 @@ struct key_tab keytab[] = {
 	{CTLX | CTL | 'W', filewrite},
 	{CTLX | CTL | 'X', swapmark},
 	{CTLX | CTL | 'Z', shrinkwind},
-
-	/* CTLX + META + CTL is also working in this version */
-	/*
-	{CTLX | META | CTL | 'G', ctrlg},
-	*/
 
 	{CTLX | META | CTL | 'Z', nullproc},
 
