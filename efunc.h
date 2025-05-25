@@ -122,7 +122,9 @@ int tgetc(void);
 int get1key(void);
 int getcmd(void);
 int getstring(char *prompt, char *buf, int nbuf, int eolchar);
+#if NAMED_CMD
 int namedcmd(int f, int n);
+#endif
 
 /* buffer.c */
 int usebuffer(int f, int n);

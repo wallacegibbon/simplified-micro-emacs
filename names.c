@@ -3,6 +3,7 @@
 #include "efunc.h"
 #include "line.h"
 
+#if NAMED_CMD
 struct name_bind names[] = {
 	{"abort-command", ctrlg},
 	{"add-mode", setemode},
@@ -88,3 +89,4 @@ struct name_bind names[] = {
 
 	{"", NULL}
 };
+#endif

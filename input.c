@@ -206,7 +206,8 @@ int getstring(char *prompt, char *buf, int nbuf, int eolchar)
 	}
 }
 
-int (*getfn_byname(char *fname))(int, int)
+#if NAMED_CMD
+static int (*getfn_byname(char *fname))(int, int)
 {
 	struct name_bind *ffp;
 
@@ -234,6 +235,7 @@ int namedcmd(int f, int n)
 
 	return fn(f, n);
 }
+#endif
 
 int mlreply(char *prompt, char *buf, int nbuf)
 {

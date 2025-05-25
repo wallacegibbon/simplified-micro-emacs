@@ -45,7 +45,9 @@ struct key_tab keytab[] = {
 	{META | 'U', upperword},
 	{META | 'V', backpage},
 	{META | 'W', copyregion},
+#if NAMED_CMD
 	{META | 'X', namedcmd},
+#endif
 	{META | 'Z', quickexit},
 	{META | 0x7F, delbword},
 
