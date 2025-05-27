@@ -158,8 +158,10 @@ static int vtputc(int c)
 		return 0;
 	}
 
-	if (!isvisible(c))
-		return put_c(c, vtputc);
+	if (!isvisible(c)) {
+		put_c(c, vtputc);
+		return 0;
+	}
 
 	if (vtcol >= 0)
 		vp->v_text[vtcol] = c;
@@ -1178,6 +1180,19 @@ int put_c(unsigned char c, int (*p)(int))
 	} else if (c >= 0x20 && c < 0x7F) {
 		p(c); return 1;
 	} else {
-		p('\\'); p(hex[(c >> 4) & 0xF]); p(hex[c & 0xF]); return 3;
+		p('<'); p(hex[c >> 4]); p(hex[c & 0xF]); p('>'); return 4;
 	}
+}
+
+/* Keep `next_col` sync with `put_c` */
+int next_col(int col, unsigned char c)
+{
+	if (c == '\t')
+		return col | TABMASK;
+	else if (c < 0x20 || c == 0x7F)
+		return col + 2;
+	else if (c >= 0x20 && c < 0x7F)
+		return col + 1;
+	else
+		return col + 4;
 }

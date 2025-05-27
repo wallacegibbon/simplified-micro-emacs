@@ -47,7 +47,6 @@ int forwpage(int f, int n);
 int backpage(int f, int n);
 int setmark(int f, int n);
 int swapmark(int f, int n);
-int next_col(int col, unsigned char c);
 
 /* random.c */
 int showcpos(int f, int n);
@@ -97,6 +96,7 @@ int mlputs(char *s);
 void getscreensize(int *widthp, int *heightp);
 void sizesignal(int signr);
 int put_c(unsigned char c, int (*p)(int));
+int next_col(int col, unsigned char c);
 
 /* region.c */
 int killregion(int f, int n);

@@ -29,23 +29,7 @@ static int getgoal(struct line *lp)
 	return dbo;
 }
 
-/*
- * Calculate the next column number.  'A', '\t', '^M', '\AB' are all covered.
- */
-int next_col(int col, unsigned char c)
-{
-	if (c == '\t')
-		col |= TABMASK;
-	else if (c < 0x20 || c == 0x7F)
-		++col;
-	else if (c >= 0x80)
-		col += 2;
-	return col + 1;
-}
-
-/*
- * Move the cursor to the beginning of the current line.
- */
+/* Move the cursor to the beginning of the current line. */
 int gotobol(int f, int n)
 {
 	curwp->w_doto = 0;
