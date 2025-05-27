@@ -132,63 +132,20 @@ void ttflush(void)
  */
 int ttgetc(void)
 {
-	static char buffer[32];
-	static int pending;
-	unsigned char c;
-	int count, bytes = 1, expected;
+	static unsigned char buf[32];
+	static int cursor = 0, len = 0;
 
-	count = pending;
-	if (!count) {
-		count = read(0, buffer, sizeof(buffer));
-		if (count <= 0)
+	if (cursor == len) {
+		len = read(0, buf, sizeof(buf));
+		if (len <= 0)
 			return 0;
-		pending = count;
+		cursor = 0;
 	}
 
-	c = (unsigned char)buffer[0];
-	if (c >= 32 && c < 128)
-		goto done;
-
-	/*
-	 * We don't bother calculating the exact expected length.
-	 * We want at least 2 chars for the special char case (ESC + [).
-	 */
-	expected = 2;
-
-	/* Special character - try to fill buffer */
-	if (count < expected) {
-		int n;
-		ntermios.c_cc[VMIN] = 0;
-		ntermios.c_cc[VTIME] = 1;		/* A .1 second lag */
-		tcsetattr(0, TCSANOW, &ntermios);
-
-		n = read(0, buffer + count, sizeof(buffer) - count);
-
-		/* Undo timeout */
-		ntermios.c_cc[VMIN] = 1;
-		ntermios.c_cc[VTIME] = 0;
-		tcsetattr(0, TCSANOW, &ntermios);
-
-		if (n > 0)
-			pending += n;
-	}
-	if (pending > 1) {
-		/* Turn ESC + '[' into CSI */
-		if (c == 27 && buffer[1] == '[') {
-			bytes = 2;
-			c = 128 + 27;
-		}
-	}
-
-done:
-	pending -= bytes;
-	memmove(buffer, buffer + bytes, pending);
-	return c;
+	return buf[cursor++];
 }
 
-/* typahead:	Check to see if any characters are already in the
-		keyboard buffer
-*/
+/* Check to see if any characters are already in the keyboard buffer. */
 int typahead(void)
 {
 	int x;			/* holds # of pending chars */

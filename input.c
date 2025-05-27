@@ -83,9 +83,6 @@ int getcmd(void)
 	int c = get1key();
 	int cmask = 0;
 
-	if (c == 128 + 27)
-		goto handle_CSI;
-
 	/* process META prefix */
 	if (c == METAC) {
 #if VT220
@@ -93,9 +90,9 @@ proc_metac:
 #endif
 		c = get1key();
 #if VT220
+		/* `ESC [` starts CSI */
+		/* `ESC O` is emitted by special keys like Arrow keys */
 		if (c == '[' || c == 'O') {
-		/* if CSI is not handled, events like scrolling won't work */
-handle_CSI:
 			c = get1key();
 			if (c >= 'A' && c <= 'z') {
 				return cmask | transform_csi_1(c);
