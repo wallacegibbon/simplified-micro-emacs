@@ -135,7 +135,7 @@ int ttgetc(void)
 	static unsigned char buf[32];
 	static int cursor = 0, len = 0;
 
-	if (cursor == len) {
+	if (cursor >= len) {
 		len = read(0, buf, sizeof(buf));
 		if (len <= 0)
 			return 0;
