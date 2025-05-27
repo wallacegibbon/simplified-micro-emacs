@@ -795,7 +795,7 @@ static void modeline(struct window *wp)
 
 	if ((bp->b_flag & BFTRUNC) != 0) {
 		firstm = FALSE;
-		strcat(tline, "Truncated");
+		strcat(tline, "TRUNC");
 	}
 	for (i = 0; i < NMODES; ++i) {
 		if (wp->w_bufp->b_mode & modevalue[i]) {
@@ -1188,7 +1188,7 @@ int put_c(unsigned char c, int (*p)(int))
 int next_col(int col, unsigned char c)
 {
 	if (c == '\t')
-		return col | TABMASK;
+		return (col | TABMASK) + 1;
 	else if (c < 0x20 || c == 0x7F)
 		return col + 2;
 	else if (c >= 0x20 && c < 0x7F)
