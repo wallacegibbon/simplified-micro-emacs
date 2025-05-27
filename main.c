@@ -246,8 +246,7 @@ int execute(int c, int f, int n)
 	if (c == (CTL | 'I'))
 		c = '\t';
 
-	/* If the key is unbound and invisible, no operation to do. */
-	if (!isvisible(c)) {
+	if (c > 0xFF) {
 		TTbeep();
 		mlwrite("(Key not bound)");
 		lastflag = 0;	/* Fake last flags. */
