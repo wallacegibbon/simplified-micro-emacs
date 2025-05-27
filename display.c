@@ -1141,8 +1141,7 @@ void getscreensize(int *widthp, int *heightp)
 #ifdef SIGWINCH
 void sizesignal(int signr)
 {
-	int w, h;
-	int old_errno = errno;
+	int w, h, old_errno = errno;
 
 	getscreensize(&w, &h);
 
@@ -1155,8 +1154,8 @@ void sizesignal(int signr)
 
 static int newscreensize(int h, int w)
 {
-	/* do the change later */
 	if (displaying) {
+		/* cache the values, which will be checked in update */
 		chg_width = w;
 		chg_height = h;
 		return FALSE;

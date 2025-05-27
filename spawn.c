@@ -4,14 +4,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#if UNIX
-#include <signal.h>
-#ifdef SIGWINCH
-extern int chg_width, chg_height;
-void sizesignal(int);
-#endif
-#endif
-
 /*
  * Create a subjob with a copy of the command intrepreter in it.  When the
  * command interpreter exits, mark the screen as garbage so that you do a full
@@ -21,10 +13,10 @@ int spawncli(int f, int n)
 {
 #if UNIX
 	char *cp;
-	movecursor(term.t_nrow, 0);	/* Seek to last line. */
+	movecursor(term.t_nrow, 0);
 	TTflush();
-	TTclose();		/* stty to old settings */
-	TTkclose();		/* Close "keyboard" */
+	TTclose();
+	TTkclose();
 	if ((cp = getenv("SHELL")) != NULL && *cp != '\0')
 		system(cp);
 	else
@@ -41,15 +33,7 @@ int spawncli(int f, int n)
 
 	TTopen();
 	TTkopen();
-#ifdef SIGWINCH
-	/*
-	 * This fools the update routines to force a full redraw with
-	 * complete window size checking.
-	 */
-	chg_width = term.t_ncol;
-	chg_height = term.t_nrow + 1;
-	term.t_nrow = term.t_ncol = 0;
-#endif
+	update(TRUE);
 	return TRUE;
 #endif
 }
@@ -68,13 +52,13 @@ int spawn(int f, int n)
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
 		return s;
 	TTflush();
-	TTclose();		/* stty to old modes */
+	TTclose();
 	TTkclose();
 	system(line);
-	fflush(stdout);		/* to be sure */
+	fflush(stdout);
 	TTopen();
 
-	mlputs("(End)");	/* Pause. */
+	mlputs("(End)");
 	TTflush();
 	while ((s = tgetc()) != '\r' && s != ' ');
 	mlputs("\r\n");
@@ -120,7 +104,7 @@ int pipecmd(int f, int n)
 	}
 #if UNIX
 	TTflush();
-	TTclose();		/* stty to old modes */
+	TTclose();
 	TTkclose();
 	strcat(line, ">");
 	strcat(line, filename);
@@ -147,7 +131,6 @@ int pipecmd(int f, int n)
 	for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
 		wp->w_flag |= WFMODE;
 
-	/* and get rid of the temporary file */
 	unlink(filename);
 	return TRUE;
 }
@@ -189,7 +172,7 @@ int filter_buffer(int f, int n)
 #if UNIX
 	TTputc('\n');			/* Already have '\r' */
 	TTflush();
-	TTclose();			/* stty to old modes */
+	TTclose();
 	TTkclose();
 	strcat(line, "<");
 	strcat(line, filename_in);
@@ -212,11 +195,9 @@ int filter_buffer(int f, int n)
 		return s;
 	}
 
-	/* reset file name */
-	strcpy(bp->b_fname, tmpnam);	/* restore name */
-	bp->b_flag |= BFCHG;		/* flag it as changed */
+	strcpy(bp->b_fname, tmpnam);
+	bp->b_flag |= BFCHG;
 
-	/* and get rid of the temporary file */
 	unlink(filename_in);
 	unlink(filename_out);
 	return TRUE;
