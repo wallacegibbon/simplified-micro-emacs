@@ -82,8 +82,8 @@ void vtinit(void)
 {
 	int i;
 
-	TTopen();		/* open the screen */
-	TTkopen();		/* open the keyboard */
+	TTopen();
+	TTkopen();
 	TTrev(FALSE);
 
 	vscreen = xmalloc(term.t_mrow * sizeof(struct video *));
@@ -134,7 +134,7 @@ void vttidy(void)
  */
 static int vtputc(int c)
 {
-	struct video *vp;	/* ptr to line being updated */
+	struct video *vp;
 
 	/* In case somebody passes us a signed char.. */
 	if (c < 0) {
@@ -598,9 +598,7 @@ static inline int texttest(int vrow, int prow)
 	return !memcmp(vpv->v_text, vpp->v_text, term.t_ncol);
 }
 
-/*
- * return the index of the first blank of trailing whitespace
- */
+/* return the index of the first blank of trailing whitespace */
 static int endofline(char *s, int n)
 {
 	int i;
@@ -646,63 +644,57 @@ static void update_extended(void)
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
 	char *cp1, *cp2, *cp3, *cp4, *cp5;
-	int rev, req, nbflag;
+	int rev, req, rev_stat, nbflag;
 
-	/* set up pointers to virtual and physical lines */
-	cp1 = &vp1->v_text[0];
-	cp2 = &vp2->v_text[0];
+	cp1 = vp1->v_text;
+	cp2 = vp2->v_text;
 
-	/*
-	 * if we need to change the reverse video status of the
-	 * current line, we need to re-write the entire line
-	 */
 	rev = (vp1->v_flag & VFREV) == VFREV;
 	req = (vp1->v_flag & VFREQ) == VFREQ;
 
 	if (rev != req) {
-		movecursor(row, 0);	/* Go to start of line. */
-		/* set rev video if needed */
-		if (rev != req)
-			TTrev(req);
-
-		/*
-		 * scan through the line and dump it to the screen and
-		 * the virtual screen array
-		 */
-		cp3 = &vp1->v_text[term.t_ncol];
-		while (cp1 < cp3) {
-			TTputc(*cp1);
-			++ttcol;
-			*cp2++ = *cp1++;
-		}
-		/* turn rev video off */
-		if (rev != req)
-			TTrev(FALSE);
-
-		/* update the needed flags */
-		vp1->v_flag &= ~VFCHG;
-		if (req)
-			vp1->v_flag |= VFREV;
-		else
-			vp1->v_flag &= ~VFREV;
-		return TRUE;
+		rev_stat = req;
+		goto do_rev;
+	} else if (rev) {
+		rev_stat = rev;
+		goto do_rev;
+	} else {
+		goto no_rev;
 	}
 
+do_rev:
+	movecursor(row, 0);
+	TTrev(rev_stat);
+
+	/* Dump virtual line to both physical line and the terminal */
+	cp3 = &vp1->v_text[term.t_ncol];
+	while (cp1 < cp3) {
+		TTputc(*cp1);
+		++ttcol;
+		*cp2++ = *cp1++;
+	}
+	TTrev(FALSE);
+
+	/* update the needed flags */
+	vp1->v_flag &= ~VFCHG;
+	if (req)
+		vp1->v_flag |= VFREV;
+	else
+		vp1->v_flag &= ~VFREV;
+
+	return TRUE;
+
+no_rev:
 	/* advance past any common chars at the left */
-	while (cp1 != &vp1->v_text[term.t_ncol] && cp1[0] == cp2[0]) {
+	while (cp1 != &vp1->v_text[term.t_ncol] && *cp1 == *cp2) {
 		++cp1;
 		++cp2;
+
 	}
 
-/* This can still happen, even though we only call this routine on changed
- * lines.  A hard update is always done when a line splits, a massive
- * change is done, or a buffer is displayed twice.  This optimizes out most
- * of the excess updating.  A lot of computes are used, but these tend to
- * be hard operations that do a lot of update, so I don't really care.
- */
 	/* if both lines are the same, no update needs to be done */
 	if (cp1 == &vp1->v_text[term.t_ncol]) {
-		vp1->v_flag &= ~VFCHG;	/* flag this line is changed */
+		vp1->v_flag &= ~VFCHG;
 		return TRUE;
 	}
 
@@ -730,7 +722,6 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 	}
 
 	movecursor(row, cp1 - &vp1->v_text[0]);	/* Go to start of line. */
-	TTrev(rev);
 
 	while (cp1 != cp5) {	/* Ordinary. */
 		TTputc(*cp1);
@@ -743,7 +734,6 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 		while (cp1 != cp3)
 			*cp2++ = *cp1++;
 	}
-	TTrev(FALSE);
 	vp1->v_flag &= ~VFCHG;	/* flag this line as updated */
 	return TRUE;
 }
@@ -757,15 +747,15 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 static void modeline(struct window *wp)
 {
 	struct buffer *bp;
-	char tline[NLINE];	/* buffer for part of mode line */
+	char tline[NLINE];
 	char *cp;
 	int firstm = TRUE, lchar, c, n, i;
 
-	n = wp->w_toprow + wp->w_ntrows;	/* Location. */
-	vscreen[n]->v_flag |= VFCHG | VFREQ;	/* Redraw next time. */
-	vtmove(n, 0);				/* Seek to right line. */
+	n = wp->w_toprow + wp->w_ntrows;
+	vscreen[n]->v_flag |= VFCHG | VFREQ;
+	vtmove(n, 0);
 
-	if (wp == curwp)	/* mark the current buffer */
+	if (wp == curwp)
 		lchar = '-';
 	else if (revexist)
 		lchar = ' ';

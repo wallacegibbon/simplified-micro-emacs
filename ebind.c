@@ -54,7 +54,6 @@ struct key_tab keytab[] = {
 	{META | CTL | 'H', delbword},
 	{META | CTL | 'L', reposition},
 	{META | CTL | 'M', delgmode},
-	{META | CTL | 'R', qreplace},
 	{META | CTL | 'V', scrnextdw},
 	{META | CTL | 'Z', scrnextup},
 
