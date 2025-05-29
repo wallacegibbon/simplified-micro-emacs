@@ -661,27 +661,21 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 	rev = (vp1->v_flag & VFREV) == VFREV;
 	req = (vp1->v_flag & VFREQ) == VFREQ;
 
-	/* Buffer content goto partial_update, modeline goto full_update. */
-
 	if (rev != req) {
+		/* Becoming modeline or becoming normal need a full update. */
 		should_send_rev = req;
-		goto full_update;
+		goto modeline_switching;
 	} else if (rev) {
+		/* Was modeline, and is still modeline. */
+		/* Partial update of modeline should send rev, too */
 		should_send_rev = 1;
-		/*
-		 * CAUTION: We goto full_update here as a workaround.
-		 * Some bugs cleaned unchanged modelines with spaces, we need
-		 * a full_update to make all modelines right.
-		 *
-		 * We should goto partial_update when that bug got fixed.
-		 */
-		goto full_update;
+		goto partial_update;
 	} else {
 		should_send_rev = 0;
 		goto partial_update;
 	}
 
-full_update:
+modeline_switching:
 	movecursor(row, 0);
 	if (should_send_rev)
 		TTrev(TRUE);
