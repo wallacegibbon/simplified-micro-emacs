@@ -644,7 +644,7 @@ static void update_extended(void)
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
 	char *cp1, *cp2, *cp3, *cp4, *cp5;
-	int rev, req, nbflag, should_send_rev = 0;
+	int rev, req, nbflag, should_send_rev;
 
 	cp1 = vp1->v_text;
 	cp2 = vp2->v_text;
@@ -668,8 +668,16 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 		goto full_update;
 	} else if (rev) {
 		should_send_rev = 1;
+		/*
+		 * CAUTION: We goto full_update here as a workaround.
+		 * Some bugs cleaned unchanged modelines with spaces, we need
+		 * a full_update to make all modelines right.
+		 *
+		 * We should goto partial_update when that bug got fixed.
+		 */
 		goto full_update;
 	} else {
+		should_send_rev = 0;
 		goto partial_update;
 	}
 
@@ -703,7 +711,6 @@ partial_update:
 	while (cp1 != &vp1->v_text[term.t_ncol] && *cp1 == *cp2) {
 		++cp1;
 		++cp2;
-
 	}
 
 	/* if both lines are the same, no update needs to be done */
@@ -736,6 +743,8 @@ partial_update:
 	}
 
 	movecursor(row, cp1 - &vp1->v_text[0]);	/* Go to start of line. */
+	if (should_send_rev)
+		TTrev(TRUE);
 
 	while (cp1 != cp5) {	/* Ordinary. */
 		TTputc(*cp1);
@@ -748,6 +757,10 @@ partial_update:
 		while (cp1 != cp3)
 			*cp2++ = *cp1++;
 	}
+
+	if (should_send_rev)
+		TTrev(FALSE);
+
 	vp1->v_flag &= ~VFCHG;	/* flag this line as updated */
 	return TRUE;
 }

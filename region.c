@@ -5,7 +5,7 @@
 
 /*
  * Kill the region.  Ask "getregion" to figure out the bounds of the region.
- * Move "." to the start, and kill the characters.  Bound to "C-W".
+ * Move "." to the start, and kill the characters.
  */
 int killregion(int f, int n)
 {
@@ -27,7 +27,6 @@ int killregion(int f, int n)
 /*
  * Copy all of the characters in the region to the kill buffer.
  * Don't move dot at all.  This is a bit like a kill region followed by a yank.
- * Bound to "M-W".
  */
 int copyregion(int f, int n)
 {
@@ -62,7 +61,7 @@ int copyregion(int f, int n)
  * Lower case region.  Zap all of the upper case characters in the region to
  * lower case.  Use the region code to set the limits.  Scan the buffer,
  * doing the changes.  Call "lchange" to ensure that redisplay is done in
- * all buffers.  Bound to "C-X C-L".
+ * all buffers.
  */
 int lowerregion(int f, int n)
 {
@@ -96,7 +95,6 @@ int lowerregion(int f, int n)
  * upper case.  Use the region code to set the limits.  Scan the buffer,
  * doing the changes.  Call "lchange" to ensure that redisplay is done in all
  * buffers.
- * Bound to "C-X C-L".
  */
 int upperregion(int f, int n)
 {

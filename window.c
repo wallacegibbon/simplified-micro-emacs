@@ -21,7 +21,7 @@ int reposition(int f, int n)
 
 /*
  * Refresh the screen.  With no argument, it just does the refresh.  With an
- * argument it recenters "." in the current window.  Bound to "C-L".
+ * argument it recenters "." in the current window.
  */
 int redraw(int f, int n)
 {
@@ -38,7 +38,7 @@ int redraw(int f, int n)
 /*
  * The command make the next window (next => down the screen) the current
  * window.  There are no real errors, although the command does nothing if
- * there is only 1 window on the screen.  Bound to "C-X C-N".
+ * there is only 1 window on the screen.
  *
  * with an argument this command finds the <n>th window from the top
  */
@@ -114,7 +114,7 @@ int prevwind(int f, int n)
  * top line in the window.  The move up and move down code is almost completely
  * the same; most of the work has to do with reframing the window, and picking
  * a new dot.  We share the code by having "move down" just be an interface to
- * "move up".  Magic.  Bound to "C-X C-N".
+ * "move up".  Magic.
  */
 int mvdnwind(int f, int n)
 {
@@ -125,8 +125,7 @@ int mvdnwind(int f, int n)
  * Move the current window up by "arg" lines.  Recompute the new top line of
  * the window.  Look to see if "." is still on the screen.  If it is, you win.
  * If it isn't, then move "." to center it in the new framing of the window
- * (this command does not really move "."; it moves the frame).  Bound to
- * "C-X C-P".
+ * (this command does not really move "."; it moves the frame).
  */
 int mvupwind(int f, int n)
 {
@@ -166,11 +165,11 @@ int mvupwind(int f, int n)
 }
 
 /*
- * This command makes the current window the only window on the screen.  Bound
- * to "C-X 1".  Try to set the framing so that "." does not have to move on the
- * display.  Some care has to be taken to keep the values of dot and mark in
- * the buffer structures right if the distruction of a window makes a buffer
- * become undisplayed.
+ * This command makes the current window the only window on the screen.
+ * Try to set the framing so that "." does not have to move on the display.
+ * Some care has to be taken to keep the values of dot and mark in the buffer
+ * structures right if the distruction of a window makes a buffer become
+ * undisplayed.
  */
 int onlywind(int f, int n)
 {
@@ -215,7 +214,7 @@ int onlywind(int f, int n)
 
 /*
  * Delete the current window, placing its space in the window above,
- * or, if it is the top window, the window below.  Bound to C-X 0.
+ * or, if it is the top window, the window below.
  *
  * int f, n;	arguments are ignored for this command
  */
@@ -293,7 +292,7 @@ int delwind(int f, int n)
  * split.  An argument of 1 forces the cursor into the upper window, an
  * argument of two forces the cursor to the lower window.  The only
  * other error that is possible is a "malloc" failure allocating the
- * structure for the new window.  Bound to "C-X 2".
+ * structure for the new window.
  */
 int splitwind(int f, int n)
 {
@@ -362,7 +361,6 @@ int splitwind(int f, int n)
 /*
  * Enlarge the current window.  Find the window that loses space.
  * Make sure it is big enough.
- * Bound to "C-X Z".
  */
 int enlargewind(int f, int n)
 {
@@ -398,10 +396,7 @@ int enlargewind(int f, int n)
 	return TRUE;
 }
 
-/*
- * Shrink the current window.  Find the window that gains space.
- * Bound to "C-X C-Z".
- */
+/* Shrink the current window.  Find the window that gains space */
 int shrinkwind(int f, int n)
 {
 	struct window *adjwp;

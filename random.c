@@ -8,7 +8,6 @@
  * the character that is under the cursor (in hex), and the fraction of the
  * text that is before the cursor.  The displayed column is not the current
  * column, but the column that would be used on an infinite width display.
- * Normally this is bound to "C-X =".
  */
 int showcpos(int f, int n)
 {
@@ -88,8 +87,8 @@ int setccol(int pos)
  * Twiddle the two characters on either side of dot.  If dot is at the end of
  * the line twiddle the two characters before it.  Return with an error if dot
  * is at the beginning of line; it seems to be a bit pointless to make this
- * work.  This fixes up a very common typo with a single stroke.  Normally bound
- * to "C-T".  This always works within a line, so "WFEDIT" is good enough.
+ * work.  This fixes up a very common typo with a single stroke.
+ * This always works within a line, so "WFEDIT" is good enough.
  */
 int twiddle(int f, int n)
 {
@@ -117,7 +116,7 @@ int twiddle(int f, int n)
  * Quote the next character, and insert it into the buffer.  All the characters
  * are taken literally, with the exception of the newline, which always has
  * its line splitting meaning.  The character is always read, even if it is
- * inserted 0 times, for regularity.  Bound to "C-Q"
+ * inserted 0 times, for regularity.
  */
 int quote(int f, int n)
 {
@@ -142,7 +141,7 @@ int quote(int f, int n)
 /*
  * Open up some blank space.  The basic plan is to insert a bunch of newlines,
  * and then back up over them.  Everything is done by the subcommand
- * procerssors.  They even handle the looping.  Normally this is bound to "C-O".
+ * procerssors.  They even handle the looping.
  */
 int openline(int f, int n)
 {
@@ -186,8 +185,7 @@ int newline(int f, int n)
  * sitting on a blank line.  If dot is sitting on a blank line, this command
  * deletes all the blank lines above and below the current line.  If it is
  * sitting on a non blank line then it deletes all of the blank lines after
- * the line.  Normally this command is bound to "C-X C-O".  Any argument is
- * ignored.
+ * the line.
  */
 int deblank(int f, int n)
 {
@@ -216,7 +214,7 @@ int deblank(int f, int n)
  * Figure out the indentation of the current line.  Insert a newline by calling
  * the standard routine.  Insert the indentation by inserting the right number
  * of tabs and spaces.  Return TRUE if all ok.  Return FALSE if one of the
- * subcomands failed.  Normally bound to "C-J".
+ * subcomands failed.
  */
 int newline_and_indent(int f, int n)
 {
@@ -259,7 +257,7 @@ int newline_and_indent(int f, int n)
  * Delete forward.  This is real easy, because the basic delete routine does
  * all of the work.  Watches for negative arguments, and does the right thing.
  * If any argument is present, it kills rather than deletes, to prevent loss
- * of text if typed with a big argument.  Normally bound to "C-D".
+ * of text if typed with a big argument.
  */
 int forwdel(int f, int n)
 {
@@ -278,8 +276,7 @@ int forwdel(int f, int n)
 /*
  * Delete backwards.  This is quite easy too, because it's all done with other
  * functions.  Just move the cursor back, and delete forwards.  Like delete
- * forward, this actually does a kill if presented with an argument.  Bound to
- * both "RUBOUT" and "C-H".
+ * forward, this actually does a kill if presented with an argument.
  */
 int backdel(int f, int n)
 {
@@ -309,7 +306,7 @@ int backdel(int f, int n)
  * If called with an argument of 0, it kills from the start of the line to dot.
  * If called with a positive argument, it kills from dot forward over that
  * number of newlines.  If called with a negative argument it kills backwards
- * that number of newlines.  Normally bound to "C-K".
+ * that number of newlines.
  */
 int killtext(int f, int n)
 {

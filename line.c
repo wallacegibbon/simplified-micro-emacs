@@ -449,7 +449,7 @@ int kinsert(int c)
 	return TRUE;
 }
 
-/* Yank text back from the kill buffer.  Bound to "C-Y". */
+/* Yank text back from the kill buffer. */
 int yank(int f, int n)
 {
 	struct kill *kp;

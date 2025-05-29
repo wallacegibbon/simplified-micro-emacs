@@ -120,8 +120,6 @@ int swbuffer(struct buffer *bp)
  * Get quite upset if the buffer is being displayed.
  * Clear the buffer (ask if the buffer has been changed).
  * Then free the header line and the buffer header.
- *
- * Bound to "C-X K".
  */
 int killbuffer(int f, int n)
 {
@@ -182,9 +180,6 @@ int zotbuf(struct buffer *bp)
  * buffer that holds the list.  Next make sure at least 1 window is displaying
  * the buffer list, splitting the screen if this is what it takes.
  * Lastly, repaint all of the windows that are displaying the list.
- *
- * Bound to "C-X C-B".
- *
  * A numeric argument forces it to list invisible buffers as well.
  */
 int listbuffers(int f, int n)

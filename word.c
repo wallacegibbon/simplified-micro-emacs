@@ -51,7 +51,7 @@ int forwword(int f, int n)
 /*
  * Move the cursor forward by the specified number of words.  As you move,
  * convert any characters to upper case.  Error if you try and move beyond the
- * end of the buffer.  Bound to "M-U".
+ * end of the buffer.
  */
 int upperword(int f, int n)
 {
@@ -84,7 +84,7 @@ int upperword(int f, int n)
 /*
  * Move the cursor forward by the specified number of words.  As you move
  * convert characters to lower case.  Error if you try and move over the end of
- * the buffer.  Bound to "M-L".
+ * the buffer.
  */
 int lowerword(int f, int n)
 {
@@ -118,7 +118,7 @@ int lowerword(int f, int n)
  * Move the cursor forward by the specified number of words.  As you move
  * convert the first character of the word to upper case, and subsequent
  * characters to lower case.  Error if you try and move past the end of the
- * buffer.  Bound to "M-C".
+ * buffer.
  */
 int capword(int f, int n)
 {

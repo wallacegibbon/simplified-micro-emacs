@@ -309,7 +309,7 @@ static void emergencyexit(int signr)
 
 /*
  * Quit command.  If an argument, always quit.  Otherwise confirm if a buffer
- * has been changed and not written out.  Normally bound to "C-X C-C".
+ * has been changed and not written out.
  */
 int quit(int f, int n)
 {

@@ -7,7 +7,7 @@
 /*
  * Create a subjob with a copy of the command intrepreter in it.  When the
  * command interpreter exits, mark the screen as garbage so that you do a full
- * repaint.  Bound to "^X C".
+ * repaint.
  */
 int spawncli(int f, int n)
 {
@@ -41,7 +41,7 @@ int spawncli(int f, int n)
 /*
  * Run a one-liner in a subjob.  When the command returns, wait for a single
  * character to be typed, then mark the screen as garbage so a full repaint is
- * done.  Bound to "C-X !".
+ * done.
  */
 int spawn(int f, int n)
 {
@@ -69,10 +69,7 @@ int spawn(int f, int n)
 #endif
 }
 
-/*
- * Pipe a one line command into a window
- * Bound to ^X @
- */
+/* Pipe a one line command into a window */
 int pipecmd(int f, int n)
 {
 	struct window *wp;
@@ -135,10 +132,7 @@ int pipecmd(int f, int n)
 	return TRUE;
 }
 
-/*
- * filter a buffer through an external program
- * Bound to ^X #
- */
+/* filter a buffer through an external program */
 int filter_buffer(int f, int n)
 {
 	struct buffer *bp;

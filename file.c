@@ -18,7 +18,6 @@
  * Read a file into the current buffer.
  * This is really easy; all you do it find the name of the file,
  * and call the standard "read a file into the current buffer" code.
- * Bound to "C-X C-R".
  */
 int fileread(int f, int n)
 {
@@ -35,7 +34,6 @@ int fileread(int f, int n)
  * Insert a file into the current buffer.
  * This is really easy; all you do it find the name of the file,
  * and call the standard "insert a file into the current buffer" code.
- * Bound to "C-X C-I".
  */
 int insfile(int f, int n)
 {
@@ -58,7 +56,6 @@ int insfile(int f, int n)
  * if you can find it just switch to the buffer.
  * If you cannot find the file, create a new buffer, read in the text,
  * and switch to the new buffer.
- * Bound to C-X C-F.
  */
 int filefind(int f, int n)
 {
@@ -149,10 +146,7 @@ int getfile(char *fname, int lockfl)
  * found there.  Called by both the read and find commands.  Return
  * the final status of the read.  Also called by the mainline, to
  * read in a file specified on the command line as an argument.
- * The command bound to M-FNR is called after the buffer is set up
- * and before it is read.
  *
- * char fname[];	name of file to read
  * int lockfl;		check for file locks?
  */
 int readin(char *fname, int lockfl)
@@ -289,7 +283,6 @@ void unqname(char *name)
  * file.  Update the remembered file name and clear the buffer changed flag.
  * This handling of file names is different from the earlier versions,
  * and is more compatable with Gosling EMACS than with ITS EMACS.
- * Bound to "C-X C-W".
  */
 int filewrite(int f, int n)
 {
@@ -314,7 +307,6 @@ int filewrite(int f, int n)
  * Save the contents of the current buffer in its associatd file.
  * No nothing if nothing has changed (this may be a bug, not a feature).
  * Error if there is no remembered file name for the buffer.
- * Bound to "C-X C-S".
  */
 int filesave(int f, int n)
 {
