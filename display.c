@@ -644,27 +644,39 @@ static void update_extended(void)
 static int update_line(int row, struct video *vp1, struct video *vp2)
 {
 	char *cp1, *cp2, *cp3, *cp4, *cp5;
-	int rev, req, rev_stat, nbflag;
+	int rev, req, nbflag, should_send_rev = 0;
 
 	cp1 = vp1->v_text;
 	cp2 = vp2->v_text;
 
+	/*
+	 * This is why we need 2 flags for `rev`:
+	 *
+	 * If we only have one flag, we can not tell the difference between
+	 * a line becoming normal from modeline (when some window got killed)
+	 * and a line who has always been normal, the former one need a full
+	 * redraw to cleanup color.
+	 */
+
 	rev = (vp1->v_flag & VFREV) == VFREV;
 	req = (vp1->v_flag & VFREQ) == VFREQ;
 
+	/* Buffer content goto partial_update, modeline goto full_update. */
+
 	if (rev != req) {
-		rev_stat = req;
-		goto do_rev;
+		should_send_rev = req;
+		goto full_update;
 	} else if (rev) {
-		rev_stat = rev;
-		goto do_rev;
+		should_send_rev = 1;
+		goto full_update;
 	} else {
-		goto no_rev;
+		goto partial_update;
 	}
 
-do_rev:
+full_update:
 	movecursor(row, 0);
-	TTrev(rev_stat);
+	if (should_send_rev)
+		TTrev(TRUE);
 
 	/* Dump virtual line to both physical line and the terminal */
 	cp3 = &vp1->v_text[term.t_ncol];
@@ -673,7 +685,9 @@ do_rev:
 		++ttcol;
 		*cp2++ = *cp1++;
 	}
-	TTrev(FALSE);
+
+	if (should_send_rev)
+		TTrev(FALSE);
 
 	/* update the needed flags */
 	vp1->v_flag &= ~VFCHG;
@@ -684,7 +698,7 @@ do_rev:
 
 	return TRUE;
 
-no_rev:
+partial_update:
 	/* advance past any common chars at the left */
 	while (cp1 != &vp1->v_text[term.t_ncol] && *cp1 == *cp2) {
 		++cp1;
