@@ -56,8 +56,7 @@ struct terminal term = {
 	vt52eeop,
 	vt52beep,
 	vt52rev,
-	vt52cres,
-	NULL
+	vt52cres
 };
 
 static void vt52move(int row, int col)

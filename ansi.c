@@ -57,8 +57,7 @@ struct terminal term = {
 	ansieeop,
 	ansibeep,
 	ansirev,
-	ansicres,
-	NULL
+	ansicres
 };
 
 static void ansimove(int row, int col)

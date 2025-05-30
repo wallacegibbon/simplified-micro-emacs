@@ -241,14 +241,7 @@ int forwpage(int f, int n)
 	struct line *lp;
 
 	if (f == FALSE) {
-		if (term.t_scroll != NULL) {
-			if (overlap == 0)
-				n = curwp->w_ntrows / 3 * 2;
-			else
-				n = curwp->w_ntrows - overlap;
-		} else {
-			n = curwp->w_ntrows - 2;  /* Default scroll. */
-		}
+		n = curwp->w_ntrows - 2;
 		if (n <= 0)	/* Forget the overlap on tiny window. */
 			n = 1;
 	} else if (n < 0) {
@@ -277,14 +270,7 @@ int backpage(int f, int n)
 	struct line *lp;
 
 	if (f == FALSE) {
-		if (term.t_scroll != NULL) {
-			if (overlap == 0)
-				n = curwp->w_ntrows / 3 * 2;
-			else
-				n = curwp->w_ntrows - overlap;
-		} else {
-			n = curwp->w_ntrows - 2; /* Default scroll. */
-		}
+		n = curwp->w_ntrows - 2;
 		if (n <= 0)	/* Don't blow up on tiny window. */
 			n = 1;
 	} else if (n < 0) {

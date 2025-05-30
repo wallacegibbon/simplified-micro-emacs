@@ -215,8 +215,6 @@ struct terminal {
 	void (*t_beep)(void);	/* Beep. */
 	void (*t_rev)(int);	/* set reverse video state */
 	int (*t_rez)(char *);	/* change screen resolution */
-	void (*t_scroll)(int, int, int);
-				/* scroll a region of the screen */
 };
 
 #define TTopen		(*term.t_open)
@@ -232,7 +230,6 @@ struct terminal {
 #define TTbeep		(*term.t_beep)
 #define TTrev		(*term.t_rev)
 #define TTrez		(*term.t_rez)
-#define TTscroll	(*term.t_scroll)
 
 struct key_tab {
 	int k_code;		 /* Key code */

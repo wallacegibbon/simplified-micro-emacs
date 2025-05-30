@@ -50,12 +50,6 @@ static void update_extended(void);
 static void update_de_extend(void);
 static void update_pos(void);
 
-static int scrolls(int inserts);
-static void scrscroll(int from, int to, int count);
-
-static inline int texttest(int vrow, int prow);
-static int endofline(char *s, int n);
-
 static int mlputi(int i, int r);
 static int mlputli(long l, int r);
 static int mlputf(int s);
@@ -277,8 +271,7 @@ static int reframe(struct window *wp)
 			if (lp == wp->w_dotp) {
 				/* if not _quite_ in, we'll reframe gently */
 				if (i < 0 || i == wp->w_ntrows) {
-					if (term.t_scroll == NULL)
-						i = wp->w_force;
+					i = wp->w_force;
 					break;
 				}
 				return TRUE;
@@ -449,164 +442,12 @@ static int flush_to_physcr()
 	struct video *vp1;
 	int i;
 
-	if (scrflags & WFKILLS)
-		scrolls(FALSE);
-	if (scrflags & WFINS)
-		scrolls(TRUE);
-	scrflags = 0;
-
 	for (i = 0; i < term.t_nrow; ++i) {
 		vp1 = vscreen[i];
 		if (vp1->v_flag & VFCHG)
 			update_line(i, vp1, pscreen[i]);
 	}
 	return TRUE;
-}
-
-/*
- * Optimize out scrolls (line breaks, and newlines) arg.
- * Chooses between looking for inserts or deletes.
- */
-static int scrolls(int inserts)
-{
-	struct video *vpv, *vpp;	/* virtual, physical screen */
-	int first, match, count, target, end;
-	int longmatch, longcount, from, to;
-	int rows, cols, i, j, k;
-
-	if (!term.t_scroll)
-		return FALSE;
-
-	rows = term.t_nrow;
-	cols = term.t_ncol;
-
-	first = -1;
-	for (i = 0; i < rows; ++i) {	/* find first wrong line */
-		if (!texttest(i, i)) {
-			first = i;
-			break;
-		}
-	}
-
-	if (first < 0)
-		return FALSE;	/* no text changes */
-
-	vpv = vscreen[first];
-	vpp = pscreen[first];
-
-	if (inserts) {
-		/* determine types of potential scrolls */
-		end = endofline(vpv->v_text, cols);
-		if (end == 0)
-			target = first;	/* newlines */
-		else if (memcmp(vpp->v_text, vpv->v_text, end) == 0)
-			target = first + 1;	/* broken line newlines */
-		else
-			target = first;
-	} else {
-		target = first + 1;
-	}
-
-	/* find the matching shifted area */
-	match = -1;
-	longmatch = -1;
-	longcount = 0;
-	from = target;
-	for (i = from + 1; i < rows - longcount; ++i) {
-		if (inserts ? texttest(i, from) : texttest(from, i)) {
-			match = i;
-			count = 1;
-			for (j = match + 1, k = from + 1;
-					j < rows && k < rows; ++j, ++k) {
-				if (inserts ? texttest(j, k) : texttest(k, j))
-					++count;
-				else
-					break;
-			}
-			if (longcount < count) {
-				longcount = count;
-				longmatch = match;
-			}
-		}
-	}
-	match = longmatch;
-	count = longcount;
-
-	if (!inserts) {
-		/* full kill case? */
-		if (match > 0 && texttest(first, match - 1)) {
-			--target;
-			--match;
-			++count;
-		}
-	}
-
-	/* do the scroll */
-	if (match > 0 && count > 2) {	/* got a scroll */
-		/* move the count lines starting at target to match */
-		if (inserts) {
-			from = target;
-			to = match;
-		} else {
-			from = match;
-			to = target;
-		}
-		if (2 * count < abs(from - to))
-			return FALSE;
-		scrscroll(from, to, count);
-		for (i = 0; i < count; ++i) {
-			vpp = pscreen[to + i];
-			vpv = vscreen[to + i];
-			memcpy(vpp->v_text, vpv->v_text, cols);
-			vpp->v_flag = vpv->v_flag;	/* XXX */
-			if (vpp->v_flag & VFREV) {
-				vpp->v_flag &= ~VFREV;
-				vpp->v_flag |= ~VFREQ;
-			}
-		}
-		if (inserts) {
-			from = target;
-			to = match;
-		} else {
-			from = target + count;
-			to = match + count;
-		}
-		for (i = from; i < to; ++i) {
-			char *txt = pscreen[i]->v_text;
-			for (j = 0; j < term.t_ncol; ++j)
-				txt[j] = ' ';
-			vscreen[i]->v_flag |= VFCHG;
-		}
-		return TRUE;
-	}
-	return FALSE;
-}
-
-/* move the "count" lines starting at "from" to "to" */
-static void scrscroll(int from, int to, int count)
-{
-	ttrow = ttcol = -1;
-	TTscroll(from, to, count);
-}
-
-/* return TRUE on text match */
-static inline int texttest(int vrow, int prow)
-{
-	struct video *vpv = vscreen[vrow];	/* virtual screen image */
-	struct video *vpp = pscreen[prow];	/* physical screen image */
-
-	return !memcmp(vpv->v_text, vpp->v_text, term.t_ncol);
-}
-
-/* return the index of the first blank of trailing whitespace */
-static int endofline(char *s, int n)
-{
-	int i;
-	for (i = n - 1; i >= 0; --i) {
-		if (s[i] != ' ')
-			return i + 1;
-	}
-	return 0;
 }
 
 /*
@@ -653,7 +494,8 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 	 * This is why we need 2 flags for `rev`:
 	 *
 	 * If we only have one flag, we can not tell the difference between
-	 * a line becoming normal from modeline (when some window got killed)
+	 * a line becoming normal from reversed (e.g. when a window got killed,
+	 * its modeline will be replaced by a normal line of another window)
 	 * and a line who has always been normal, the former one need a full
 	 * redraw to cleanup color.
 	 */
@@ -662,12 +504,12 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 	req = (vp1->v_flag & VFREQ) == VFREQ;
 
 	if (rev != req) {
-		/* Becoming modeline or becoming normal need a full update. */
+		/* Becoming reversed or becoming normal need a full update. */
 		should_send_rev = req;
-		goto modeline_switching;
+		goto full_update;
 	} else if (rev) {
-		/* Was modeline, and is still modeline. */
-		/* Partial update of modeline should send rev, too */
+		/* Was reversed, and is still reversed. */
+		/* Partial update of reversed content should send rev, too */
 		should_send_rev = 1;
 		goto partial_update;
 	} else {
@@ -675,7 +517,7 @@ static int update_line(int row, struct video *vp1, struct video *vp2)
 		goto partial_update;
 	}
 
-modeline_switching:
+full_update:
 	movecursor(row, 0);
 	if (should_send_rev)
 		TTrev(TRUE);
