@@ -550,22 +550,22 @@ int newsize(int f, int n)
 			if (wp == curwp)
 				curwp = wheadp;
 			curbp = curwp->w_bufp;
-			if (lastwp != NULL) {
+			if (lastwp != NULL)
 				lastwp->w_wndp = NULL;
-				lastwp->w_flag |= WFHARD | WFMODE;
-			}
 
 			free(wp);
 			wp = NULL;
-
 		} else {
 			/* need to change this window size? */
 			lastline = wp->w_toprow + wp->w_ntrows - 1;
-			if (lastline >= n - 2) {
+			if (lastline >= n - 2)
 				wp->w_ntrows = n - wp->w_toprow - 2;
-				wp->w_flag |= WFHARD | WFMODE;
-			}
 		}
+
+		/* Every window should be redrawn during resizing */
+		if (wp != NULL)
+			wp->w_flag |= WFHARD | WFMODE;
+
 		lastwp = wp;
 	}
 
