@@ -27,6 +27,7 @@ struct video {
 
 static struct video **vscreen;	/* Virtual screen. */
 static struct video **pscreen;	/* Physical screen. */
+static int screen_rows, screen_cols;
 
 static int displaying = TRUE;
 
@@ -65,6 +66,21 @@ static struct video *video_new(size_t text_size)
 	return vp;
 }
 
+static void screen_init(void)
+{
+	int i;
+	screen_rows = term.t_nrow;
+	screen_cols = term.t_ncol;
+
+	vscreen = xmalloc(screen_rows * sizeof(struct video *));
+	pscreen = xmalloc(screen_cols * sizeof(struct video *));
+
+	for (i = 0; i < screen_rows; ++i) {
+		vscreen[i] = video_new(screen_cols);
+		pscreen[i] = video_new(screen_cols);
+	}
+}
+
 /*
  * Initialize the data structures used by the display code.  The edge vectors
  * used to access the screens are set up.  The operating system's terminal I/O
@@ -74,33 +90,22 @@ static struct video *video_new(size_t text_size)
  */
 void vtinit(void)
 {
-	int i;
-
 	TTopen();
 	TTkopen();
 	TTrev(FALSE);
-
-	vscreen = xmalloc(term.t_mrow * sizeof(struct video *));
-	pscreen = xmalloc(term.t_mrow * sizeof(struct video *));
-
-	for (i = 0; i < term.t_mrow; ++i) {
-		vscreen[i] = video_new(term.t_mcol);
-		pscreen[i] = video_new(term.t_mcol);
-	}
+	screen_init();
 }
 
-#if CLEAN
 void vtfree(void)
 {
 	int i;
-	for (i = 0; i < term.t_mrow; ++i) {
+	for (i = 0; i < screen_rows; ++i) {
 		free(vscreen[i]);
 		free(pscreen[i]);
 	}
 	free(vscreen);
 	free(pscreen);
 }
-#endif
 
 /*
  * Clean up the virtual terminal system, in anticipation for a return to the
@@ -382,7 +387,7 @@ static void update_pos(void)
 		curcol = next_col(curcol, lgetc(lp, i));
 
 	/* if extended, flag so and update the virtual line image */
-	if (curcol >= term.t_ncol - 1) {
+	if (curcol >= screen_cols - 1) {
 		vscreen[currow]->v_flag |= (VFEXT | VFCHG);
 		update_extended();
 	} else {
@@ -423,7 +428,7 @@ void update_garbage(void)
 	char *txt;
 	int i, j;
 
-	for (i = 0; i < term.t_nrow; ++i) {
+	for (i = 0; i < screen_rows; ++i) {
 		vscreen[i]->v_flag |= VFCHG;
 		vscreen[i]->v_flag &= ~VFREV;
 		txt = pscreen[i]->v_text;
@@ -442,7 +447,7 @@ static int flush_to_physcr()
 	struct video *vp1;
 	int i;
 
-	for (i = 0; i < term.t_nrow; ++i) {
+	for (i = 0; i < screen_rows; ++i) {
 		vp1 = vscreen[i];
 		if (vp1->v_flag & VFCHG)
 			update_line(i, vp1, pscreen[i]);
@@ -996,10 +1001,13 @@ void sizesignal(int signr)
 {
 	int w, h, old_errno = errno;
 
-	getscreensize(&w, &h);
+	TTclose();
+	TTopen();
+	vtfree();
+	screen_init();
 
-	if (h && w && (h - 1 != term.t_nrow || w != term.t_ncol))
-		newscreensize(h, w);
+	getscreensize(&w, &h);
+	newscreensize(h, w);
 
 	signal(SIGWINCH, sizesignal);
 	errno = old_errno;
@@ -1013,11 +1021,12 @@ static int newscreensize(int h, int w)
 		chg_height = h;
 		return FALSE;
 	}
-	chg_width = chg_height = 0;
-	if (h - 1 < term.t_mrow)
-		newsize(TRUE, h);
-	if (w < term.t_mcol)
-		newwidth(TRUE, w);
+	chg_width = 0;
+	chg_height = 0;
+
+	/* Adjust windows */
+	newsize(TRUE, h);
+	newwidth(TRUE, w);
 
 	update(TRUE);
 	return TRUE;

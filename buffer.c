@@ -2,6 +2,7 @@
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
+#include "wrapper.h"
 
 /*
  * Attach a buffer to a window.
@@ -225,17 +226,18 @@ int listbuffers(int f, int n)
  *
  * int iflag;		list hidden buffer flag
  */
-#define MAXLINE	MAXCOL
 int makelist(int iflag)
 {
 #define CHAR_WIDTH_FOR_SIZE 10
 	struct buffer *bp;
 	struct line *lp;
-	char line[MAXLINE];
 	char b[CHAR_WIDTH_FOR_SIZE + 1];
-	char *cp1, *cp2;
+	char *cp1, *cp2, *line;
 	int c, s, i;
 	long nbytes;
+
+	if ((line = malloc(term.t_ncol)) == NULL)
+		return FALSE;
 
 	blistp->b_flag &= ~BFCHG;	/* Don't complain! */
 	if ((s = bclear(blistp)) != TRUE)	/* Blow old text away */
@@ -321,7 +323,7 @@ int makelist(int iflag)
 			while (cp1 < &line[3 + 1 + 4 + 1 + 10 + 1 + NBUFN])
 				*cp1++ = ' ';
 			while ((c = *cp2++) != 0) {
-				if (cp1 < &line[MAXLINE - 1])
+				if (cp1 < &line[term.t_ncol - 1])
 					*cp1++ = c;
 			}
 		}

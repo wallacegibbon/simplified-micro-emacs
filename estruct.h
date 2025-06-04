@@ -31,10 +31,6 @@
 #define VT52	0
 #define TCAP	UNIX
 
-/* Size of terminal for a 1080p screen with terminus-font-16x32 is 120x33 */
-#define MAXCOL	128
-#define MAXROW	64
-
 #define TYPEAH	1  /* type ahead causes update to be skipped */
 #define VISMAC	0  /* update display during keyboard macros */
 
@@ -193,9 +189,7 @@ struct region {
 };
 
 struct terminal {
-	short t_mrow;		/* max number of rows allowable */
 	short t_nrow;		/* current number of rows used */
-	short t_mcol;		/* max Number of columns. */
 	short t_ncol;		/* current Number of columns. */
 	short t_margin;		/* min margin for extended lines */
 	short t_scrsiz;		/* size of scroll region " */

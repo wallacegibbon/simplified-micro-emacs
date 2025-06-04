@@ -12,7 +12,6 @@
 #define NROW    25		/* Screen size. */
 #define NCOL    80		/* Edit if you want to. */
 
-#define MROW	64
 #define NPAUSE	100		/* # times thru update to pause */
 #define MARGIN	8		/* size of minimim margin and */
 #define SCRSIZ	64		/* scroll size for extended lines */
@@ -38,9 +37,7 @@ static int ansicres(char *);
  * "termio" code.
  */
 struct terminal term = {
-	MROW - 1,
 	NROW - 1,
-	NCOL,
 	NCOL,
 	MARGIN,
 	SCRSIZ,

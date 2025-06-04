@@ -304,7 +304,11 @@ int splitwind(int f, int n)
 		mlwrite("Cannot split a %d line window", curwp->w_ntrows);
 		return FALSE;
 	}
-	wp = xmalloc(sizeof(struct window));
+	if ((wp = malloc(sizeof(struct window))) == NULL) {
+		mlwrite("Failed allocating memory for new window");
+		return FALSE;
+	}
+
 	++curbp->b_nwnd;	/* Displayed twice. */
 	wp->w_bufp = curbp;
 	wp->w_dotp = curwp->w_dotp;
@@ -517,74 +521,59 @@ int restwnd(int f, int n)
 int newsize(int f, int n)
 {
 	struct window *wp, *nextwp, *lastwp;
-	int lastline;	/* screen line of last line of current window */
+	int lastline;
 
-	/* if the command defaults, assume the largest */
-	if (f == FALSE)
-		n = term.t_mrow + 1;
-
-	/* make sure it's in range */
-	if (n < 3 || n > term.t_mrow + 1) {
+	if (n < 3 || n > term.t_nrow + 1) {
 		mlwrite("%%Screen size out of range");
 		return FALSE;
 	}
 
-	if (term.t_nrow == n - 1) {
-		return TRUE;
-	} else if (term.t_nrow < n - 1) {
-		/* go to the last window */
-		for (wp = wheadp; wp->w_wndp != NULL; wp = wp->w_wndp);
+	/* rebuild the window structure */
+	nextwp = wheadp;
+	wp = NULL;
+	lastwp = NULL;
 
-		/* and enlarge it as needed */
-		wp->w_ntrows = n - wp->w_toprow - 2;
-		wp->w_flag |= WFHARD | WFMODE;
-
-	} else {
-
-		/* rebuild the window structure */
-		nextwp = wheadp;
-		wp = NULL;
-		lastwp = NULL;
-		while (nextwp != NULL) {
-			wp = nextwp;
-			nextwp = wp->w_wndp;
-
-			/* get rid of it if it is too low */
-			if (wp->w_toprow > n - 2) {
-
-				/* save the point/mark if needed */
-				if (--wp->w_bufp->b_nwnd == 0) {
-					wp->w_bufp->b_dotp = wp->w_dotp;
-					wp->w_bufp->b_doto = wp->w_doto;
-					wp->w_bufp->b_markp = wp->w_markp;
-					wp->w_bufp->b_marko = wp->w_marko;
-				}
-
-				/* update curwp and lastwp if needed */
-				if (wp == curwp)
-					curwp = wheadp;
-				curbp = curwp->w_bufp;
-				if (lastwp != NULL)
-					lastwp->w_wndp = NULL;
-
-				free(wp);
-				wp = NULL;
-
-			} else {
-				/* need to change this window size? */
-				lastline = wp->w_toprow + wp->w_ntrows - 1;
-				if (lastline >= n - 2) {
-					wp->w_ntrows = n - wp->w_toprow - 2;
-					wp->w_flag |= WFHARD | WFMODE;
-				}
+	while (nextwp != NULL) {
+		wp = nextwp;
+		nextwp = wp->w_wndp;
+		/* get rid of it if it is too low */
+		if (wp->w_toprow > n - 2) {
+			/* save the point/mark if needed */
+			if (--wp->w_bufp->b_nwnd == 0) {
+				wp->w_bufp->b_dotp = wp->w_dotp;
+				wp->w_bufp->b_doto = wp->w_doto;
+				wp->w_bufp->b_markp = wp->w_markp;
+				wp->w_bufp->b_marko = wp->w_marko;
 			}
 
-			lastwp = wp;
+			/* update curwp and lastwp if needed */
+			if (wp == curwp)
+				curwp = wheadp;
+			curbp = curwp->w_bufp;
+			if (lastwp != NULL)
+				lastwp->w_wndp = NULL;
+
+			free(wp);
+			wp = NULL;
+
+		} else {
+			/* need to change this window size? */
+			lastline = wp->w_toprow + wp->w_ntrows - 1;
+			if (lastline >= n - 2) {
+				wp->w_ntrows = n - wp->w_toprow - 2;
+				wp->w_flag |= WFHARD | WFMODE;
+			}
 		}
+		lastwp = wp;
 	}
 
-	/* screen is garbage */
-	term.t_nrow = n - 1;
+	/* free spaces are given to the bottom window */
+	wp = lastwp;
+	if (wp && (wp->w_toprow + wp->w_ntrows < n - 1)) {
+		wp->w_ntrows = n - wp->w_toprow - 2;
+		wp->w_flag |= WFHARD | WFMODE;
+	}
+
 	sgarbf = TRUE;
 	return TRUE;
 }
@@ -594,12 +583,7 @@ int newwidth(int f, int n)
 {
 	struct window *wp;
 
-	/* if the command defaults, assume the largest */
-	if (f == FALSE)
-		n = term.t_mcol;
-
-	/* make sure it's in range */
-	if (n < 10 || n > term.t_mcol) {
+	if (n < 10) {
 		mlwrite("%%Screen width out of range");
 		return FALSE;
 	}
@@ -614,7 +598,6 @@ int newwidth(int f, int n)
 		wp->w_flag |= WFHARD | WFMOVE | WFMODE;
 
 	sgarbf = TRUE;
-
 	return TRUE;
 }
 

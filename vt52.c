@@ -38,8 +38,6 @@ static int vt52cres(int, int);
  */
 struct terminal term = {
 	NROW - 1,
-	NROW - 1,
-	NCOL,
 	NCOL,
 	MARGIN,
 	SCRSIZ,

@@ -36,7 +36,7 @@ static char tcapbuf[TCAPSLEN];
 static char *UP, PC, *CM, *CE, *CL, *SO, *SE, *TI, *TE;
 
 struct terminal term = {
-	0, 0, 0, 0,	/* These four values are set at open time. */
+	0, 0,		/* These 2 values are set at open time. */
 	MARGIN,
 	SCRSIZ,
 	NPAUSE,
@@ -78,12 +78,6 @@ static void tcapopen(void)
 	term.t_nrow = int_row - 1;
 	term.t_ncol = int_col;
 
-	/* Fix cases when MAXROW and MAXCOL are smaller than terminal size */
-	if (term.t_nrow > MAXROW)
-		term.t_nrow = MAXROW;
-	if (term.t_ncol > MAXCOL)
-		term.t_ncol = MAXCOL;
-
 	if ((term.t_nrow <= 0) &&
 			(term.t_nrow = (short)tgetnum("li") - 1) == -1) {
 		puts("termcap entry incomplete (lines)");
@@ -95,13 +89,6 @@ static void tcapopen(void)
 		puts("Termcap entry incomplete (columns)");
 		exit(1);
 	}
-#ifdef SIGWINCH
-	term.t_mrow = MAXROW;
-	term.t_mcol = MAXCOL;
-#else
-	term.t_mrow = term.t_nrow;
-	term.t_mcol = term.t_ncol;
-#endif
 
 	p = tcapbuf;
 	t = tgetstr("pc", &p);
