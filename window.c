@@ -550,8 +550,10 @@ int newsize(int f, int n)
 			if (wp == curwp)
 				curwp = wheadp;
 			curbp = curwp->w_bufp;
-			if (lastwp != NULL)
+			if (lastwp != NULL) {
 				lastwp->w_wndp = NULL;
+				lastwp->w_flag |= WFHARD | WFMODE;
+			}
 
 			free(wp);
 			wp = NULL;
@@ -568,10 +570,12 @@ int newsize(int f, int n)
 	}
 
 	/* free spaces are given to the bottom window */
-	wp = lastwp;
-	if (wp && (wp->w_toprow + wp->w_ntrows < n - 1)) {
-		wp->w_ntrows = n - wp->w_toprow - 2;
-		wp->w_flag |= WFHARD | WFMODE;
+	if (wp != NULL) {
+		lastline = wp->w_toprow + wp->w_ntrows - 1;
+		if (lastline < n - 2) {
+			wp->w_ntrows = n - wp->w_toprow - 2;
+			wp->w_flag |= WFHARD | WFMODE;
+		}
 	}
 
 	sgarbf = TRUE;
