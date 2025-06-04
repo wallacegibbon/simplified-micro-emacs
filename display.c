@@ -73,7 +73,7 @@ static void screen_init(void)
 	screen_cols = term.t_ncol;
 
 	vscreen = xmalloc(screen_rows * sizeof(struct video *));
-	pscreen = xmalloc(screen_cols * sizeof(struct video *));
+	pscreen = xmalloc(screen_rows * sizeof(struct video *));
 
 	for (i = 0; i < screen_rows; ++i) {
 		vscreen[i] = video_new(screen_cols);
