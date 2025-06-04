@@ -578,29 +578,6 @@ int newsize(int f, int n)
 	return TRUE;
 }
 
-/* resize the screen, re-writing the screen */
-int newwidth(int f, int n)
-{
-	struct window *wp;
-
-	if (n < 10) {
-		mlwrite("%%Screen width out of range");
-		return FALSE;
-	}
-
-	/* otherwise, just re-width it (no big deal) */
-	term.t_ncol = n;
-	term.t_margin = n / 10;
-	term.t_scrsiz = n - (term.t_margin * 2);
-
-	/* florce all windows to redraw */
-	for (wp = wheadp; wp != NULL; wp = wp->w_wndp)
-		wp->w_flag |= WFHARD | WFMOVE | WFMODE;
-
-	sgarbf = TRUE;
-	return TRUE;
-}
-
 /* get screen offset of current line in current window */
 int getwpos(void)
 {

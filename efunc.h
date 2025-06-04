@@ -26,7 +26,6 @@ int scrnextdw(int f, int n);
 int savewnd(int f, int n);
 int restwnd(int f, int n);
 int newsize(int f, int n);
-int newwidth(int f, int n);
 int getwpos(void);
 void cknewwindow(void);
 struct window *wpopup(void);

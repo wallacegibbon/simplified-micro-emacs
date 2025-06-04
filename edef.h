@@ -15,6 +15,8 @@ extern int kbdm[];		/* Holds keyboard macro data */
 
 extern char hex[];
 
+extern int screen_usable;	/* Whether screen is big enough to run me */
+
 extern char pat[];		/* Search pattern */
 extern char rpat[];		/* Replacement pattern */
 

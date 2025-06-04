@@ -186,6 +186,11 @@ int update(int force)
 {
 	struct window *wp, *w;
 
+	if (!screen_usable) {
+		mlwrite("%%Screen is too small");
+		return FALSE;
+	}
+
 #if VISMAC == 0
 	if (force == FALSE && kbdmode == PLAY)
 		return TRUE;
@@ -1015,6 +1020,7 @@ void sizesignal(int signr)
 
 static int newscreensize(int h, int w)
 {
+	int status;
 	if (displaying) {
 		/* cache the values, which will be checked in update */
 		chg_width = w;
@@ -1025,11 +1031,14 @@ static int newscreensize(int h, int w)
 	chg_height = 0;
 
 	/* Adjust windows */
-	newsize(TRUE, h);
-	newwidth(TRUE, w);
+	status = newsize(TRUE, h);
+	if (status == TRUE) {
+		screen_usable = 1;
+		return update(TRUE);
+	}
 
-	update(TRUE);
-	return TRUE;
+	screen_usable = 0;
+	return FALSE;
 }
 
 #endif

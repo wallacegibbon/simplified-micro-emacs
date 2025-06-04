@@ -47,6 +47,14 @@ int main(int argc, char **argv)
 	}
 
 	vtinit();
+	if (term.t_nrow < 2) {
+		vtfree();
+		TTclose();
+		TTkclose();
+		fprintf(stderr, "Screen size is too small\n");
+		exit(2);
+	}
+
 	edinit("main");
 
 	for (i = 1; i < argc; ++i) {

@@ -7,6 +7,7 @@ char modecode[NMODES] = "EVA";
 
 char hex[] = "0123456789ABCDEF";
 
+int screen_usable = 1;		/* Whether screen is big enough to run me */
 int kbdm[NKBDM];		/* Keyboard Macro */
 int *kbdptr;			/* current position in keyboard buf */
 int *kbdend = kbdm;		/* ptr to end of the keyboard */
