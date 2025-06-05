@@ -21,20 +21,17 @@ int tgetc(void)
 		return c;
 	}
 
-	/* if we are playing a keyboard macro back, */
+	/* if we are playing a keyboard macro back */
 	if (kbdmode == PLAY) {
 		if (kbdptr < kbdend)
 			return (int)*kbdptr++;
 
-		/* at the end of last repitition? */
 		if (--kbdrep < 1) {
 			kbdmode = STOP;
 #if VISMAC == 0
-			/* force a screen update after all is done */
 			update(FALSE);
 #endif
 		} else {
-
 			/* reset the macro to the begining for the next rep */
 			kbdptr = kbdm;
 			return (int)*kbdptr++;
@@ -94,13 +91,11 @@ proc_metac:
 		/* `ESC O` is emitted by special keys like Arrow keys */
 		if (c == '[' || c == 'O') {
 			c = get1key();
-			if (c >= 'A' && c <= 'z') {
+			/* Only part of CSI cursor commands are handled */
+			if (c >= 'A' && c <= 'F')
 				return cmask | transform_csi_1(c);
-			} else {
-				/* There are many other CSI related keys */
-				get1key();
+			else
 				return NULLPROC_KEYS;
-			}
 		} else if (c == METAC) {
 			cmask |= META;
 			goto proc_metac;
@@ -110,7 +105,6 @@ proc_metac:
 			cmask |= META;
 		}
 #endif
-
 		/* Force to upper to match bind configurations */
 		if (islower(c))
 			c ^= DIFCASE;
@@ -137,6 +131,7 @@ proc_ctlxc:
 			c = ctoec(c);
 		return cmask | c;
 	}
+
 	/* otherwise, just return it */
 	return c;
 }
@@ -242,7 +237,6 @@ int mlreply(char *prompt, char *buf, int nbuf)
 int mlyesno(char *prompt)
 {
 	char buf[64 /* prompt */ + 8 /* " (y/n)? " */ + 1];
-
 	for (;;) {
 		strncpy(buf, prompt, 64);
 		strcat(buf, " (y/n)? ");
