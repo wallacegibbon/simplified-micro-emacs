@@ -7,7 +7,6 @@ char modecode[NMODES] = "EVA";
 
 char hex[] = "0123456789ABCDEF";
 
-int screen_usable = 1;		/* Whether screen is big enough to run me */
 int kbdm[NKBDM];		/* Keyboard Macro */
 int *kbdptr;			/* current position in keyboard buf */
 int *kbdend = kbdm;		/* ptr to end of the keyboard */
@@ -49,10 +48,10 @@ long envram;			/* # of bytes current in use by malloc */
 char *fline;			/* dynamic return line */
 int flen;			/* current length of fline */
 
-int rval;			/* return value of a subprocess */
-
 int overlap = 1;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
+
+int screen_too_small = 0;
 
 unsigned int matchlen;		/* The length of the matched string */
 unsigned int mlenold;

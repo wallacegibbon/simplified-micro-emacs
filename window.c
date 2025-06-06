@@ -520,22 +520,17 @@ int restwnd(int f, int n)
 /* resize the screen, re-writing the screen */
 int newsize(int f, int n)
 {
-	struct window *wp, *nextwp, *lastwp;
+	struct window *wp = NULL, *lastwp = NULL, *nextwp;
 	int lastline;
 
-	if (n < 3 || n > term.t_nrow + 1) {
-		mlwrite("%%Screen size out of range");
+	if (n < 3 || n > term.t_nrow + 1)
 		return FALSE;
-	}
 
-	/* rebuild the window structure */
-	nextwp = wheadp;
-	wp = NULL;
-	lastwp = NULL;
-
-	while (nextwp != NULL) {
+	for (nextwp = wheadp; nextwp != NULL;) {
 		wp = nextwp;
-		nextwp = wp->w_wndp;
+		/* Have to update nextwp here, since wp could change it. */
+		nextwp = nextwp->w_wndp;
+
 		/* get rid of it if it is too low */
 		if (wp->w_toprow > n - 2) {
 			/* save the point/mark if needed */
@@ -585,10 +580,9 @@ int newsize(int f, int n)
 /* get screen offset of current line in current window */
 int getwpos(void)
 {
-	struct line *lp;	/* scannile line pointer */
-	int sline;		/* screen line from top of window */
+	struct line *lp;
+	int sline;
 
-	/* search down the line we want */
 	lp = curwp->w_linep;
 	sline = 1;
 	while (lp != curwp->w_dotp) {
@@ -596,7 +590,6 @@ int getwpos(void)
 		lp = lforw(lp);
 	}
 
-	/* and return the value */
 	return sline;
 }
 

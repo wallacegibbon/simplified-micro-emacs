@@ -85,8 +85,8 @@ static void screen_init(void)
  * Initialize the data structures used by the display code.  The edge vectors
  * used to access the screens are set up.  The operating system's terminal I/O
  * channel is set up.  All the other things get initialized at compile time.
- * The original window has "WFCHG" set, so that it will get completely
- * redrawn on the first call to "update".
+ * The original window has "WFCHG" set, so that it will get completely redrawn
+ * on the first call to "update".
  */
 void vtinit(void)
 {
@@ -115,18 +115,20 @@ void vtfree(void)
  */
 void vttidy(void)
 {
+	int r;
 	mlerase();
 	movecursor(term.t_nrow, 0);
 	TTflush();
 	TTclose();
 	TTkclose();
-	write(1, "\r", 1);
+	r = write(1, "\r", 1);
+	(void)r;
 }
 
 /*
- * Write a character to the virtual screen.  The virtual row and
- * column are updated.  If we are not yet on left edge, don't print
- * it yet.  If the line is too long put a "$" in the last column.
+ * Write a character to the virtual screen.  The virtual row and column are
+ * updated.  If we are not yet on left edge, don't print it yet.
+ * If the line is too long put a "$" in the last column.
  *
  * This routine only puts printing characters into the virtual
  * terminal buffers.  Only column overflow is checked.
@@ -186,10 +188,8 @@ int update(int force)
 {
 	struct window *wp, *w;
 
-	if (!screen_usable) {
-		mlwrite("%%Screen is too small");
+	if (screen_too_small)
 		return FALSE;
-	}
 
 #if VISMAC == 0
 	if (force == FALSE && kbdmode == PLAY)
@@ -339,9 +339,8 @@ static void show_line(struct line *lp)
 static void update_one(struct window *wp)
 {
 	struct line *lp = wp->w_linep;
-	int i= wp->w_toprow;
+	int i = wp->w_toprow;
 
-	/* search down the line we want */
 	for (; lp != wp->w_dotp; lp = lforw(lp))
 		++i;
 
@@ -381,12 +380,10 @@ static void update_pos(void)
 	struct line *lp = curwp->w_linep;
 	int i;
 
-	/* find the current row */
 	currow = curwp->w_toprow;
 	for (; lp != curwp->w_dotp; lp = lforw(lp))
 		++currow;
 
-	/* find the current column */
 	curcol = 0;
 	for (i = 0; i < curwp->w_doto; ++i)
 		curcol = next_col(curcol, lgetc(lp, i));
@@ -415,7 +412,6 @@ static void update_de_extend(void)
 					vtmove(i, 0);
 					show_line(lp);
 					vteeol();
-					/* this line no longer is extended */
 					vscreen[i]->v_flag &= ~VFEXT;
 					vscreen[i]->v_flag |= VFCHG;
 				}
@@ -1033,11 +1029,11 @@ static int newscreensize(int h, int w)
 	/* Adjust windows */
 	status = newsize(TRUE, h);
 	if (status == TRUE) {
-		screen_usable = 1;
+		screen_too_small = 0;
 		return update(TRUE);
 	}
 
-	screen_usable = 0;
+	screen_too_small = 1;
 	return FALSE;
 }
 

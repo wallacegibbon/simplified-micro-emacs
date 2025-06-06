@@ -11,6 +11,7 @@
  */
 int spawncli(int f, int n)
 {
+	int r;
 #if UNIX
 	char *cp;
 	movecursor(term.t_nrow, 0);
@@ -18,12 +19,12 @@ int spawncli(int f, int n)
 	TTclose();
 	TTkclose();
 	if ((cp = getenv("SHELL")) != NULL && *cp != '\0')
-		system(cp);
+		r = system(cp);
 	else
 #if BSD
-		system("exec /bin/csh");
+		r = system("exec /bin/csh");
 #else
-		system("exec /bin/sh");
+		r = system("exec /bin/sh");
 #endif
 	sgarbf = TRUE;
 
@@ -34,7 +35,12 @@ int spawncli(int f, int n)
 	TTopen();
 	TTkopen();
 	update(TRUE);
-	return TRUE;
+
+	if (r == 0)
+		return TRUE;
+
+	mlwrite("Failed running external command");
+	return FALSE;
 #endif
 }
 
@@ -46,7 +52,7 @@ int spawncli(int f, int n)
 int spawn(int f, int n)
 {
 	char line[NLINE];
-	int s;
+	int s, r;
 
 #if UNIX
 	if ((s = mlreply("!", line, NLINE)) != TRUE)
@@ -54,7 +60,7 @@ int spawn(int f, int n)
 	TTflush();
 	TTclose();
 	TTkclose();
-	system(line);
+	r = system(line);
 	fflush(stdout);
 	TTopen();
 
@@ -65,7 +71,12 @@ int spawn(int f, int n)
 
 	TTkopen();
 	sgarbf = TRUE;
-	return TRUE;
+
+	if (r == 0)
+		return TRUE;
+
+	mlwrite("Failed running external command");
+	return FALSE;
 #endif
 }
 
@@ -75,7 +86,7 @@ int pipecmd(int f, int n)
 	struct window *wp;
 	struct buffer *bp;
 	char line[NLINE];
-	int s;
+	int s, r;
 
 	static char bname[] = "_me_cmd_tmp";
 	static char filename[NSTRING] = "_me_cmd_tmp";
@@ -105,7 +116,7 @@ int pipecmd(int f, int n)
 	TTkclose();
 	strcat(line, ">");
 	strcat(line, filename);
-	system(line);
+	r = system(line);
 	TTopen();
 	TTkopen();
 	TTflush();
@@ -129,7 +140,12 @@ int pipecmd(int f, int n)
 		wp->w_flag |= WFMODE;
 
 	unlink(filename);
-	return TRUE;
+
+	if (r == 0)
+		return TRUE;
+
+	mlwrite("Failed running external command");
+	return FALSE;
 }
 
 /* filter a buffer through an external program */
@@ -138,7 +154,7 @@ int filter_buffer(int f, int n)
 	struct buffer *bp;
 	char line[NLINE];
 	char tmpnam[NFILEN];
-	int s;
+	int s, r;
 
 	static char bname[] = "_me_filter_tmp";
 	static char filename_in[] = "_me_filter_tmp_in";
@@ -172,7 +188,7 @@ int filter_buffer(int f, int n)
 	strcat(line, filename_in);
 	strcat(line, ">");
 	strcat(line, filename_out);
-	system(line);
+	r = system(line);
 	TTopen();
 	TTkopen();
 	TTflush();
@@ -194,5 +210,10 @@ int filter_buffer(int f, int n)
 
 	unlink(filename_in);
 	unlink(filename_out);
-	return TRUE;
+
+	if (r == 0)
+		return TRUE;
+
+	mlwrite("Failed running external command");
+	return FALSE;
 }
