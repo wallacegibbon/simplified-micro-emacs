@@ -81,17 +81,19 @@ int getcmd(void)
 	int cmask = 0;
 
 	/* process META prefix */
+
+	/* META is not like CTLX, a META may not be a META, it can be a CSI */
+
 	if (c == METAC) {
-#if VT220
 proc_metac:
-#endif
 		c = get1key();
+
+		/* For VT220, We need to handle CSI (starts with `ESC [`) */
 #if VT220
-		/* `ESC [` starts CSI */
-		/* `ESC O` is emitted by special keys like Arrow keys */
+		/* CAUTION: Only parts of CSI cursor commands are handled */
+		/* `ESC O` is used by some terminals */
 		if (c == '[' || c == 'O') {
 			c = get1key();
-			/* Only part of CSI cursor commands are handled */
 			if (c >= 'A' && c <= 'F')
 				return cmask | transform_csi_1(c);
 			else
@@ -99,36 +101,26 @@ proc_metac:
 		} else if (c == METAC) {
 			cmask |= META;
 			goto proc_metac;
-		} else if (c == CTLXC) {
-			goto proc_ctlxc;
-		} else {
-			cmask |= META;
 		}
 #endif
-		/* Force to upper to match bind configurations */
+
+		cmask |= META;
+		if (c == CTLXC)
+			goto proc_ctlxc;
 		if (islower(c))
 			c ^= DIFCASE;
-		c = ctoec(c);
 		return cmask | c;
 	}
 
 	/* process CTLX prefix */
 	if (c == CTLXC) {
-#if VT220
 proc_ctlxc:
-#endif
-		cmask |= CTLX;
 		c = get1key();
-#if VT220
-		if (c == METAC) {
-			cmask |= META;
+		cmask |= CTLX;
+		if (c == METAC)
 			goto proc_metac;
-		}
-#endif
 		if (islower(c))
 			c ^= DIFCASE;
-		else
-			c = ctoec(c);
 		return cmask | c;
 	}
 
