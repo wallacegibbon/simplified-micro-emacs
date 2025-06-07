@@ -38,9 +38,7 @@ int taboff;			/* tab offset for display */
 
 struct kill *kbufp;		/* current kill buffer chunk pointer */
 struct kill *kbufh;		/* kill buffer header pointer */
-
 int kused = KBLOCK;		/* # of bytes used in kill buffer */
-struct window *swindow;		/* saved window pointer */
 
 int lastkey;			/* last keystoke */
 long envram;			/* # of bytes current in use by malloc */

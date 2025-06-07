@@ -32,8 +32,8 @@ sudo update-alternatives --set editor /usr/bin/me
 ## Debug
 
 There is a program for getting raw input from terminal, which is useful for
-debugging.  Compile it with ncurses:
+debugging.  Build it like this:
 
 ```sh
-gcc showkeys.c -lcurses
+make showkeys
 ```

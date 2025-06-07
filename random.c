@@ -51,9 +51,7 @@ int showcpos(int f, int n)
 	return TRUE;
 }
 
-/*
- * Return current column.  Stop at first non-blank given TRUE argument.
- */
+/* Return current column.  Stop at first non-blank given TRUE argument. */
 int getccol(int bflg)
 {
 	struct line *lp = curwp->w_dotp;
@@ -67,49 +65,6 @@ int getccol(int bflg)
 		col = next_col(col, c);
 	}
 	return col;
-}
-
-int setccol(int pos)
-{
-	int col = 0, i = 0, len;
-
-	/* scan the line until we are at or past the target column */
-	for (len = llength(curwp->w_dotp); i < len && col < pos; ++i)
-		col = next_col(col, lgetc(curwp->w_dotp, i));
-
-	curwp->w_doto = i;
-
-	/* Tell weather we made it */
-	return col >= pos;
-}
-
-/*
- * Twiddle the two characters on either side of dot.  If dot is at the end of
- * the line twiddle the two characters before it.  Return with an error if dot
- * is at the beginning of line; it seems to be a bit pointless to make this
- * work.  This fixes up a very common typo with a single stroke.
- * This always works within a line, so "WFEDIT" is good enough.
- */
-int twiddle(int f, int n)
-{
-	struct line *dotp;
-	int doto, cl, cr;
-
-	if (curbp->b_mode & MDVIEW)
-		return rdonly();
-
-	dotp = curwp->w_dotp;
-	doto = curwp->w_doto;
-	if (doto == llength(dotp) && --doto < 0)
-		return FALSE;
-	cr = lgetc(dotp, doto);
-	if (--doto < 0)
-		return FALSE;
-	cl = lgetc(dotp, doto);
-	lputc(dotp, doto + 0, cr);
-	lputc(dotp, doto + 1, cl);
-	lchange(WFEDIT);
-	return TRUE;
 }
 
 /*
@@ -171,7 +126,6 @@ int newline(int f, int n)
 	if (n < 0)
 		return FALSE;
 
-	/* insert some lines */
 	while (n--) {
 		if ((s = lnewline()) != TRUE)
 			return s;
@@ -180,42 +134,6 @@ int newline(int f, int n)
 	return TRUE;
 }
 
-/*
- * Delete blank lines around dot.  What this command does depends if dot is
- * sitting on a blank line.  If dot is sitting on a blank line, this command
- * deletes all the blank lines above and below the current line.  If it is
- * sitting on a non blank line then it deletes all of the blank lines after
- * the line.
- */
-int deblank(int f, int n)
-{
-	struct line *lp1, *lp2;
-	long nld;
-
-	if (curbp->b_mode & MDVIEW)
-		return rdonly();
-	lp1 = curwp->w_dotp;
-	while (llength(lp1) == 0 && (lp2 = lback(lp1)) != curbp->b_linep)
-		lp1 = lp2;
-	lp2 = lp1;
-	nld = 0;
-	while ((lp2 = lforw(lp2)) != curbp->b_linep && llength(lp2) == 0)
-		++nld;
-	if (nld == 0)
-		return TRUE;
-	curwp->w_dotp = lforw(lp1);
-	curwp->w_doto = 0;
-	return ldelete(nld, FALSE);
-}
-
-/*
- * Insert a newline, then enough tabs and spaces to duplicate the indentation
- * of the previous line.  Assumes tabs are every eight characters.  Quite simple.
- * Figure out the indentation of the current line.  Insert a newline by calling
- * the standard routine.  Insert the indentation by inserting the right number
- * of tabs and spaces.  Return TRUE if all ok.  Return FALSE if one of the
- * subcomands failed.
- */
 int newline_and_indent(int f, int n)
 {
 	int nicol, c, i;

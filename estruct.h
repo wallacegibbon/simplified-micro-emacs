@@ -211,19 +211,19 @@ struct terminal {
 	int (*t_rez)(char *);	/* change screen resolution */
 };
 
-#define TTopen		(*term.t_open)
-#define TTclose		(*term.t_close)
-#define TTkopen		(*term.t_kopen)
-#define TTkclose	(*term.t_kclose)
-#define TTgetc		(*term.t_getchar)
-#define TTputc		(*term.t_putchar)
-#define TTflush		(*term.t_flush)
-#define TTmove		(*term.t_move)
-#define TTeeol		(*term.t_eeol)
-#define TTeeop		(*term.t_eeop)
-#define TTbeep		(*term.t_beep)
-#define TTrev		(*term.t_rev)
-#define TTrez		(*term.t_rez)
+#define TTopen		(term.t_open)
+#define TTclose		(term.t_close)
+#define TTkopen		(term.t_kopen)
+#define TTkclose	(term.t_kclose)
+#define TTgetc		(term.t_getchar)
+#define TTputc		(term.t_putchar)
+#define TTflush		(term.t_flush)
+#define TTmove		(term.t_move)
+#define TTeeol		(term.t_eeol)
+#define TTeeop		(term.t_eeop)
+#define TTbeep		(term.t_beep)
+#define TTrev		(term.t_rev)
+#define TTrez		(term.t_rez)
 
 struct key_tab {
 	int k_code;		 /* Key code */

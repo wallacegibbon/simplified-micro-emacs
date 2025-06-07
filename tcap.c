@@ -8,11 +8,15 @@
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
-#include <curses.h>
 #include <term.h>
 #include <signal.h>
+#include <stdio.h>
 
 #if TCAP
+
+#ifdef SIGWINCH
+#include <sys/ioctl.h>
+#endif
 
 #define NPAUSE	10    /* # times thru update to pause. */
 #define MARGIN	8
@@ -34,6 +38,8 @@ static void tcapclose(void);
 #define TCAPSLEN 315
 static char tcapbuf[TCAPSLEN];
 static char *UP, PC, *CM, *CE, *CL, *SO, *SE, *TI, *TE;
+
+static void getscreensize(int *widthp, int *heightp);
 
 struct terminal term = {
 	0, 0,		/* These 2 values are set at open time. */
@@ -58,45 +64,27 @@ struct terminal term = {
 static void tcapopen(void)
 {
 	char tcbuf[1024];
-	char err_str[72];
 	char *tv_stype, *t, *p;
-	int int_col, int_row;
+	int cols, rows;
 
 	if ((tv_stype = getenv("TERM")) == NULL) {
-		puts("Environment variable TERM not defined!");
+		fputs("Environment variable TERM not defined!", stderr);
 		exit(1);
 	}
 
 	if ((tgetent(tcbuf, tv_stype)) != 1) {
-		sprintf(err_str, "Unknown terminal type %s!", tv_stype);
-		puts(err_str);
+		fprintf(stderr, "Unknown terminal type %s!", tv_stype);
 		exit(1);
 	}
 
 	/* Get screen size from system, or else from termcap. */
-	getscreensize(&int_col, &int_row);
-	term.t_nrow = int_row - 1;
-	term.t_ncol = int_col;
-
-	if ((term.t_nrow <= 0) &&
-			(term.t_nrow = (short)tgetnum("li") - 1) == -1) {
-		puts("termcap entry incomplete (lines)");
-		exit(1);
-	}
-
-	if ((term.t_ncol <= 0) &&
-			(term.t_ncol = (short)tgetnum("co")) == -1) {
-		puts("Termcap entry incomplete (columns)");
-		exit(1);
-	}
+	getscreensize(&cols, &rows);
+	term.t_nrow = atleast(rows, SCR_MIN_ROWS) - 1;
+	term.t_ncol = atleast(cols, SCR_MIN_COLS);
 
 	p = tcapbuf;
 	t = tgetstr("pc", &p);
-	if (t)
-		PC = *t;
-	else
-		PC = 0;
-
+	PC = t ? *t : 0;
 	CL = tgetstr("cl", &p);
 	CM = tgetstr("cm", &p);
 	CE = tgetstr("ce", &p);
@@ -114,7 +102,7 @@ static void tcapopen(void)
 	TE = tgetstr("te", &p);
 
 	if (CL == NULL || CM == NULL || UP == NULL) {
-		puts("Incomplete termcap entry\n");
+		fputs("Incomplete termcap entry\n", stderr);
 		exit(1);
 	}
 
@@ -122,10 +110,26 @@ static void tcapopen(void)
 		eolexist = FALSE;
 
 	if (p >= &tcapbuf[TCAPSLEN]) {
-		puts("Terminal description too big!\n");
+		fputs("Terminal description too big!\n", stderr);
 		exit(1);
 	}
 	ttopen();
+}
+
+static void getscreensize(int *widthp, int *heightp)
+{
+#ifdef TIOCGWINSZ
+	struct winsize size;
+	*widthp = 0;
+	*heightp = 0;
+	if (ioctl(0, TIOCGWINSZ, &size) < 0)
+		return;
+	*widthp = size.ws_col;
+	*heightp = size.ws_row;
+#else
+	*widthp = 0;
+	*heightp = 0;
+#endif
 }
 
 static void tcapclose(void)

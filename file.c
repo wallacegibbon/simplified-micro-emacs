@@ -129,14 +129,13 @@ int getfile(char *fname, int lockfl)
 		curbp->b_marko = curwp->w_marko;
 	}
 
-	/* Switch */
 	prevbp = curbp;
 	curbp = bp;
 
 	curwp->w_bufp = bp;
 	curbp->b_nwnd++;
 
-	s = readin(fname, lockfl);	/* Read it in. */
+	s = readin(fname, lockfl);
 	cknewwindow();
 	return s;
 }
@@ -146,10 +145,8 @@ int getfile(char *fname, int lockfl)
  * found there.  Called by both the read and find commands.  Return
  * the final status of the read.  Also called by the mainline, to
  * read in a file specified on the command line as an argument.
- *
- * int lockfl;		check for file locks?
  */
-int readin(char *fname, int lockfl)
+int readin(char *fname, int lockfl /* check for file locks ? */)
 {
 	struct line *lp1, *lp2;
 	struct window *wp;
@@ -165,7 +162,7 @@ int readin(char *fname, int lockfl)
 		goto out;
 	}
 #endif
-	bp = curbp;		/* Cheap. */
+	bp = curbp;
 	if ((s = bclear(bp)) != TRUE)	/* Might be old. */
 		return s;
 	bp->b_flag &= ~(BFINVS | BFCHG);
@@ -256,16 +253,13 @@ void makename(char *bname, char *fname)
 	*cp2 = 0;
 }
 
-/*
- * make sure a buffer name is unique
- */
+/* make sure a buffer name is unique */
 void unqname(char *name)
 {
 	char *sp;
 
 	/* check to see if it is in the buffer list */
 	while (bfind(name, 0, FALSE) != NULL) {
-
 		/* go to the end of the name */
 		sp = name;
 		while (*sp)
@@ -273,8 +267,9 @@ void unqname(char *name)
 		if (sp == name || (*(sp - 1) < '0' || *(sp - 1) > '8')) {
 			*sp++ = '0';
 			*sp = 0;
-		} else
+		} else {
 			*(--sp) += 1;
+		}
 	}
 }
 
@@ -344,8 +339,6 @@ int filesave(int f, int n)
  * This function performs the details of file writing.
  * Uses the file management routines in the "fileio.c" package.
  * The number of lines written is displayed.
- * Sadly, it looks inside a struct line; provide a macro for this.
- * Most of the grief is error checking of some sort.
  */
 int writeout(char *fn)
 {
@@ -372,8 +365,8 @@ int writeout(char *fn)
 			else
 				mlwrite("(Wrote %d lines)", nline);
 		}
-	} else {		/* Ignore close error */
-		ffclose();	/* if a write error. */
+	} else {
+		ffclose();
 	}
 
 	if (s != FIOSUC)	/* Some sort of error. */
@@ -393,9 +386,9 @@ int ifile(char *fname)
 	char mesg[NSTRING];
 	int nbytes, nline, i, s;
 
-	bp = curbp;		/* Cheap. */
-	bp->b_flag |= BFCHG;	/* we have changed */
-	bp->b_flag &= ~BFINVS;	/* and are not temporary */
+	bp = curbp;
+	bp->b_flag |= BFCHG;
+	bp->b_flag &= ~BFINVS;
 	if ((s = ffropen(fname)) == FIOERR)	/* Hard file open. */
 		goto out;
 	if (s == FIOFNF) {	/* File not found. */

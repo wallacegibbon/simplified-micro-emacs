@@ -29,15 +29,12 @@ static struct video **vscreen;	/* Virtual screen. */
 static struct video **pscreen;	/* Physical screen. */
 static int screen_rows, screen_cols;
 
-static int displaying = TRUE;
-
 #if UNIX
 #include <signal.h>
 #endif
 
 #ifdef SIGWINCH
-#include <sys/ioctl.h>
-int chg_width, chg_height;	/* for window size changes */
+int screen_size_changed = 0;
 #endif
 
 static int reframe(struct window *wp);
@@ -56,7 +53,7 @@ static int mlputli(long l, int r);
 static int mlputf(int s);
 
 #ifdef SIGWINCH
-static int newscreensize(int h, int w);
+static void newscreensize(void);
 #endif
 
 static struct video *video_new(size_t text_size)
@@ -69,7 +66,7 @@ static struct video *video_new(size_t text_size)
 static void screen_init(void)
 {
 	int i;
-	screen_rows = atleast(term.t_nrow, SCR_MIN_ROWS);
+	screen_rows = atleast(term.t_nrow, SCR_MIN_ROWS - 1);
 	screen_cols = atleast(term.t_ncol, SCR_MIN_COLS);
 
 	vscreen = xmalloc(screen_rows * sizeof(struct video *));
@@ -193,8 +190,6 @@ int update(int force)
 		return TRUE;
 #endif
 
-	displaying = TRUE;
-
 	/*
 	 * first, propagate mode line changes to all instances of a buffer
 	 * displayed in more than one window.
@@ -246,17 +241,14 @@ int update(int force)
 	movecursor(currow, curcol - lbound);
 
 	TTflush();
-	displaying = FALSE;
 #if SIGWINCH
-	while (chg_width || chg_height)
-		newscreensize(chg_height, chg_width);
+	if (screen_size_changed)
+		newscreensize();
 #endif
 	return TRUE;
 }
 
-/*
- * Check to see if the cursor is on in the window and re-frame it if needed.
- */
+/* Check to see if the cursor is on in the window and re-frame it if needed. */
 static int reframe(struct window *wp)
 {
 	struct line *lp, *lp0;
@@ -973,60 +965,31 @@ static int mlputf(int s)
 	return n + 3;
 }
 
-/*
- * Get terminal size from system.
- * Store number of lines into *heightp and width into *widthp.
- * If zero or a negative number is stored, the value is not valid.
- */
-void getscreensize(int *widthp, int *heightp)
-{
-#ifdef TIOCGWINSZ
-	struct winsize size;
-	*widthp = 0;
-	*heightp = 0;
-	if (ioctl(0, TIOCGWINSZ, &size) < 0)
-		return;
-	*widthp = size.ws_col;
-	*heightp = size.ws_row;
-#else
-	*widthp = 0;
-	*heightp = 0;
-#endif
-}
-
 #ifdef SIGWINCH
 void sizesignal(int signr)
 {
-	int w, h, old_errno = errno;
+	int old_errno = errno;
 
+	screen_size_changed = 1;
+	signal(SIGWINCH, sizesignal);
+
+	errno = old_errno;
+	update(TRUE);
+}
+
+static void newscreensize(void)
+{
+	screen_size_changed = 0;
+
+	/* Re-open the terminal to get the new size of the screen */
 	TTclose();
 	TTopen();
+
 	vtfree();
 	screen_init();
 
-	getscreensize(&w, &h);
-	newscreensize(h, w);
-
-	signal(SIGWINCH, sizesignal);
-	errno = old_errno;
-}
-
-static int newscreensize(int h, int w)
-{
-	if (displaying) {
-		/* cache the values, which will be checked in update */
-		chg_width = w;
-		chg_height = h;
-		return FALSE;
-	}
-	chg_width = 0;
-	chg_height = 0;
-
-	/* Adjust windows */
-	if (newsize(TRUE, h))
-		return update(TRUE);
-	else
-		return FALSE;
+	adjust_on_scr_resize();
+	update(TRUE);
 }
 
 #endif

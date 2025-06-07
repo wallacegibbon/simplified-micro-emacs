@@ -485,39 +485,12 @@ int scrnextdw(int f, int n)
 	return TRUE;
 }
 
-/* save ptr to current window */
-int savewnd(int f, int n)
-{
-	swindow = curwp;
-	return TRUE;
-}
-
-/* restore the saved screen */
-int restwnd(int f, int n)
-{
-	struct window *wp;
-
-	/* find the window */
-	for (wp = wheadp; wp != NULL; wp = wp->w_wndp) {
-		if (wp == swindow) {
-			curwp = wp;
-			curbp = wp->w_bufp;
-			update_modelines();
-			return TRUE;
-		}
-	}
-
-	mlwrite("(No such window exists)");
-	return FALSE;
-}
-
-/* Resize all windows.  Usually called on resize of the terminal screen */
-int newsize(int f, int n)
+int adjust_on_scr_resize(void)
 {
 	struct window *wp = NULL, *lastwp = NULL, *nextwp;
-	int lastline;
+	int scr_rows = term.t_nrow, lastline;
 
-	if (n < SCR_MIN_ROWS || n > term.t_nrow + 1)
+	if (scr_rows < SCR_MIN_ROWS - 1)
 		return FALSE;
 
 	for (nextwp = wheadp; nextwp != NULL;) {
@@ -526,7 +499,7 @@ int newsize(int f, int n)
 		nextwp = nextwp->w_wndp;
 
 		/* get rid of it if it is too low */
-		if (wp->w_toprow > n - 2) {
+		if (wp->w_toprow > scr_rows - 1) {
 			/* save the point/mark if needed */
 			if (--wp->w_bufp->b_nwnd == 0) {
 				wp->w_bufp->b_dotp = wp->w_dotp;
@@ -547,8 +520,8 @@ int newsize(int f, int n)
 		} else {
 			/* need to change this window size? */
 			lastline = wp->w_toprow + wp->w_ntrows - 1;
-			if (lastline >= n - 2)
-				wp->w_ntrows = n - wp->w_toprow - 2;
+			if (lastline >= scr_rows - 1)
+				wp->w_ntrows = scr_rows - wp->w_toprow - 1;
 		}
 
 		/* Every window should be redrawn during resizing */
@@ -561,8 +534,8 @@ int newsize(int f, int n)
 	/* free spaces are given to the bottom window */
 	if (wp != NULL) {
 		lastline = wp->w_toprow + wp->w_ntrows - 1;
-		if (lastline < n - 2) {
-			wp->w_ntrows = n - wp->w_toprow - 2;
+		if (lastline < scr_rows - 1) {
+			wp->w_ntrows = scr_rows - wp->w_toprow - 1;
 			wp->w_flag |= WFHARD | WFMODE;
 		}
 	}

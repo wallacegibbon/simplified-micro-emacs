@@ -1,26 +1,22 @@
-#include <ncurses.h>
+#include "estruct.h"
+#include "edef.h"
+#include <term.h>
 #include <unistd.h>
+#include <stdio.h>
 
-int main()
+int main(void)
 {
 	int ch = 0;
-
-	initscr();
-	raw();	/* Disable line buffering */
-	keypad(stdscr, TRUE); /* Enable special keys (F1, Arrow keys, etc.) */
-	refresh();
-
+	TTopen();
 	for (;;) {
-		/* Micro Emacs use `read`, which get 13 for Enter */
-		/* If we use `getch`, we will get 10 for Enter */
+		/* For Enter key, `read` get 13, while `getch` get 10 */
 		read(0, &ch, 1);
 		if (ch == 3)
 			break; /* stop on ^C */
-
-		printw(" <%d (0x%X)> ", ch, ch);
-		refresh();
+		printf("<%02X>", ch);
+		fflush(stdout);
 	}
-
-	endwin();
+	printf("\r\n");
+	TTclose();
 	return 0;
 }

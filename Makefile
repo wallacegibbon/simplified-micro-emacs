@@ -1,6 +1,7 @@
 UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 BINDIR = /usr/bin
 PROGRAM = me
+SHOWKEYS = showkeys
 
 SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
 	posix.c file.c fileio.c input.c search.c isearch.c lock.c \
@@ -36,17 +37,20 @@ DEFINES = -DPOSIX -DSYSV -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_SVID_SOURCE \
 	-D_DARWIN_C_SOURCE
 endif
 
+LIBS = -ltinfo
 #LIBS = -ltermcap
-LIBS = -lcurses
-#LIBS = -ltermlib
 #LIBS = -L/usr/lib/termcap -ltermcap
 
 $(PROGRAM): $(OBJ)
 	@echo "	LINK	$@"
-	@$(CC) $(LDFLAGS) $(DEFINES) -o $@ $(OBJ) $(LIBS)
+	@$(CC) $(LDFLAGS) $(DEFINES) -o $@ $^ $(LIBS)
+
+$(SHOWKEYS): showkeys.o tcap.o posix.o globals.o
+	@echo "	LINK	$@"
+	@$(CC) $(LDFLAGS) $(DEFINES) -o $@ $^ $(LIBS)
 
 clean:
-	@rm -f $(PROGRAM) core *.o
+	@rm -f $(PROGRAM) $(SHOWKEYS) core *.o
 
 install: $(PROGRAM)
 	@echo "	$(BINDIR)/$(PROGRAM)"
