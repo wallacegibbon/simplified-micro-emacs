@@ -47,14 +47,6 @@ int main(int argc, char **argv)
 	}
 
 	vtinit();
-	if (term.t_nrow < SCR_MIN_ROWS - 1 || term.t_ncol < SCR_MIN_COLS) {
-		vtfree();
-		TTclose();
-		TTkclose();
-		fprintf(stderr, "Screen size is too small\n");
-		exit(2);
-	}
-
 	edinit("main");
 
 	for (i = 1; i < argc; ++i) {

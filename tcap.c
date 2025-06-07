@@ -79,7 +79,7 @@ static void tcapopen(void)
 
 	/* Get screen size from system, or else from termcap. */
 	getscreensize(&cols, &rows);
-	term.t_nrow = atleast(rows, SCR_MIN_ROWS) - 1;
+	term.t_nrow = atleast(rows - 1, SCR_MIN_ROWS - 1);
 	term.t_ncol = atleast(cols, SCR_MIN_COLS);
 
 	p = tcapbuf;
