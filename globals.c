@@ -51,8 +51,6 @@ int flen;			/* current length of fline */
 int overlap = 1;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
 
-int screen_too_small = 0;
-
 unsigned int matchlen;		/* The length of the matched string */
 unsigned int mlenold;
 char *patmatch;			/* The string that satisfies the search */

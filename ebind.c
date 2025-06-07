@@ -74,7 +74,7 @@ struct key_tab keytab[] = {
 	{CTLX | 'M', setemode},
 	{CTLX | 'O', nextwind},
 	{CTLX | 'P', prevwind},
-	{CTLX | 'W', resize},
+	{CTLX | 'W', resize_cur_wind},
 	{CTLX | 'X', nextbuffer},
 	{CTLX | 'Z', enlargewind},
 

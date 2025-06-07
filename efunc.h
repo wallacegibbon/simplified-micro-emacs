@@ -20,7 +20,7 @@ int delwind(int f, int n);
 int splitwind(int f, int n);
 int enlargewind(int f, int n);
 int shrinkwind(int f, int n);
-int resize(int f, int n);
+int resize_cur_wind(int f, int n);
 int scrnextup(int f, int n);
 int scrnextdw(int f, int n);
 int savewnd(int f, int n);

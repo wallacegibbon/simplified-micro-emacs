@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 	}
 
 	vtinit();
-	if (term.t_nrow < 2) {
+	if (term.t_nrow + 1 < SCR_MIN_ROWS || term.t_ncol < SCR_MIN_COLS) {
 		vtfree();
 		TTclose();
 		TTkclose();

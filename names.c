@@ -69,7 +69,7 @@ struct name_bind names[] = {
 	{"quote-character", quote},
 	{"read-file", fileread},
 	{"redraw-display", reposition},
-	{"resize-window", resize},
+	{"resize-window", resize_cur_wind},
 	{"restore-window", restwnd},
 	{"reverse-incremental-search", risearch},
 	{"save-file", filesave},

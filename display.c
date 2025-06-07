@@ -69,8 +69,8 @@ static struct video *video_new(size_t text_size)
 static void screen_init(void)
 {
 	int i;
-	screen_rows = term.t_nrow;
-	screen_cols = term.t_ncol;
+	screen_rows = atleast(term.t_nrow, SCR_MIN_ROWS);
+	screen_cols = atleast(term.t_ncol, SCR_MIN_COLS);
 
 	vscreen = xmalloc(screen_rows * sizeof(struct video *));
 	pscreen = xmalloc(screen_rows * sizeof(struct video *));
@@ -187,9 +187,6 @@ static int scrflags;
 int update(int force)
 {
 	struct window *wp, *w;
-
-	if (screen_too_small)
-		return FALSE;
 
 #if VISMAC == 0
 	if (force == FALSE && kbdmode == PLAY)
@@ -1016,7 +1013,6 @@ void sizesignal(int signr)
 
 static int newscreensize(int h, int w)
 {
-	int status;
 	if (displaying) {
 		/* cache the values, which will be checked in update */
 		chg_width = w;
@@ -1027,14 +1023,10 @@ static int newscreensize(int h, int w)
 	chg_height = 0;
 
 	/* Adjust windows */
-	status = newsize(TRUE, h);
-	if (status == TRUE) {
-		screen_too_small = 0;
+	if (newsize(TRUE, h))
 		return update(TRUE);
-	}
-
-	screen_too_small = 1;
-	return FALSE;
+	else
+		return FALSE;
 }
 
 #endif

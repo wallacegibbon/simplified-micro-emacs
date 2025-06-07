@@ -259,6 +259,11 @@ struct kill {
 #define QUOTEC		(CTL | 'Q')	/* QUOTE char */
 #define REPTC		(CTL | 'U')	/* Universal repeat char */
 
+#define atleast(n, limit)	((n) > (limit) ? (n) : (limit))
+
+#define SCR_MIN_ROWS	3
+#define SCR_MIN_COLS	8
+
 /* Miscellaneous */
 #define TABMASK		0x07
 #define INDENT_NO_SPACE	1

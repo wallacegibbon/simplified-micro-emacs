@@ -55,8 +55,6 @@ extern int rval;		/* return value of a subprocess */
 extern int overlap;		/* line overlap in forw/back page */
 extern int scrollcount;		/* number of lines to scroll */
 
-extern int screen_too_small;
-
 /* Uninitialized global external declarations. */
 
 extern int currow;		/* Cursor row */

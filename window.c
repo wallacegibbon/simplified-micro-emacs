@@ -435,19 +435,13 @@ int shrinkwind(int f, int n)
 	return TRUE;
 }
 
-/* Resize the current window to the requested size */
-int resize(int f, int n)
+int resize_cur_wind(int f, int n)
 {
-	int clines;		/* current # of lines in window */
-
-	/* must have a non-default argument, else ignore call */
+	int clines;
 	if (f == FALSE)
 		return TRUE;
 
-	/* find out what to do */
 	clines = curwp->w_ntrows;
-
-	/* already the right size? */
 	if (clines == n)
 		return TRUE;
 
@@ -517,13 +511,13 @@ int restwnd(int f, int n)
 	return FALSE;
 }
 
-/* resize the screen, re-writing the screen */
+/* Resize all windows.  Usually called on resize of the terminal screen */
 int newsize(int f, int n)
 {
 	struct window *wp = NULL, *lastwp = NULL, *nextwp;
 	int lastline;
 
-	if (n < 3 || n > term.t_nrow + 1)
+	if (n < SCR_MIN_ROWS || n > term.t_nrow + 1)
 		return FALSE;
 
 	for (nextwp = wheadp; nextwp != NULL;) {
