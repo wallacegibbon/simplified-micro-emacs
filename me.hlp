@@ -62,12 +62,10 @@ Move window up ........   ^X ^P
 Move window down ......   ^X ^N
 -------------------------------------------------------------------------------
 =>                      BUFFER COMMANDS
-Next buffer ...........   ^X  X         Buffer position .......   ^X  = 
-Select buffer .........   ^X  B         Unmark buffer ......... Meta  ~
-List buffers ..........   ^X ^B
+Next buffer ...........   ^X  X         Filter buffer .........   ^X  #
+Select buffer .........   ^X  B         Pipe command ..........   ^X  @
+List buffers ..........   ^X ^B         Buffer position .......   ^X  =
 Delete buffer .........   ^X  K
-Filter buffer .........   ^X  #
-Pipe command ..........   ^X  @
 -------------------------------------------------------------------------------
 =>                      SEARCHING AND REPLACING
 Incremental search           ^S     ::  Search next ^X, stop Enter, cancel ^G.

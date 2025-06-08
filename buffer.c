@@ -482,11 +482,3 @@ int bclear(struct buffer *bp)
 	bp->b_marko = 0;
 	return TRUE;
 }
-
-/* unmark the current buffers change flag */
-int unmark(int f, int n)
-{
-	curbp->b_flag &= ~BFCHG;
-	curwp->w_flag |= WFMODE;
-	return TRUE;
-}

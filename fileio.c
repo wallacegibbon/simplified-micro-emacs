@@ -1,8 +1,3 @@
-/*
- * The routines in this file read and write ASCII files from the disk.  All of
- * the knowledge about files are here.
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -19,10 +14,6 @@ int ffropen(char *fn)
 	return FIOSUC;
 }
 
-/*
- * Open a file for writing.  Return TRUE if all is well, and FALSE on error
- * (cannot create).
- */
 int ffwopen(char *fn)
 {
 	if ((ffp = fopen(fn, "w")) == NULL) {
@@ -32,9 +23,6 @@ int ffwopen(char *fn)
 	return FIOSUC;
 }
 
-/*
- * Close a file.  Should look at the status in all systems.
- */
 int ffclose(void)
 {
 	/* free this since we do not need it anymore */
@@ -56,11 +44,6 @@ int ffclose(void)
 #endif
 }
 
-/*
- * Write a line to the already opened file.  The "buf" points to the buffer,
- * and the "nbuf" is its length, less the free newline.  Return the status.
- * Check only at the newline.
- */
 int ffputline(char *buf, int nbuf)
 {
 	int i;
@@ -82,7 +65,6 @@ int ffgetline(int *count)
 	char *tmpline;
 	int c, i;
 
-	/* if we are at the end...return it */
 	if (eofflag)
 		return FIOEOF;
 

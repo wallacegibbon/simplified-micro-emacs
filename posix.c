@@ -127,8 +127,8 @@ void ttflush(void)
 }
 
 /*
- * Read a character from the terminal, performing no editing and doing no echo
- * at all.
+ * Read a character from the terminal, performing no editing and doing no echo.
+ * (For the `ENTER` key, `read` get 13, while `getch` get 10)
  */
 int ttgetc(void)
 {

@@ -1,9 +1,3 @@
-/*
- * The routines in this file handle the reading, writing and lookup of disk
- * files.  All of details about the reading and writing of the disk are in
- * "fileio.c".
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
@@ -14,11 +8,6 @@
 /* Max number of lines from one file. */
 #define MAXNLINE 10000000
 
-/*
- * Read a file into the current buffer.
- * This is really easy; all you do it find the name of the file,
- * and call the standard "read a file into the current buffer" code.
- */
 int fileread(int f, int n)
 {
 	char fname[NFILEN];
@@ -30,11 +19,7 @@ int fileread(int f, int n)
 	return readin(fname, TRUE);
 }
 
-/*
- * Insert a file into the current buffer.
- * This is really easy; all you do it find the name of the file,
- * and call the standard "insert a file into the current buffer" code.
- */
+/* Insert a file into the current buffer. */
 int insfile(int f, int n)
 {
 	char fname[NFILEN];

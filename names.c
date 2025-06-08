@@ -80,7 +80,6 @@ struct name_bind names[] = {
 	{"shell-command", spawn},
 	{"shrink-window", shrinkwind},
 	{"split-current-window", splitwind},
-	{"unmark-buffer", unmark},
 	{"view-file", viewfile},
 	{"write-file", filewrite},
 	{"yank", yank},

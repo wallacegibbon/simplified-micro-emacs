@@ -31,7 +31,6 @@ struct key_tab keytab[] = {
 	{META | ' ', setmark},
 	{META | '>', gotoeob},
 	{META | '<', gotobob},
-	{META | '~', unmark},
 	{META | '%', qreplace},
 	{META | 'B', backword},
 	{META | 'C', capword},
@@ -42,7 +41,6 @@ struct key_tab keytab[] = {
 	{META | 'M', setgmode},
 	{META | 'P', prevbuffer},
 	{META | 'U', upperword},
-	{META | 'V', backpage},
 	{META | 'W', copyregion},
 #if NAMED_CMD
 	{META | 'X', namedcmd},
