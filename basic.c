@@ -1,25 +1,15 @@
-/*
- * The routines in this file move the cursor around on the screen.  They
- * compute a new value for the cursor, then adjust ".".  The display code
- * always updates the cursor location, so only moves between lines, or
- * functions that adjust the top line in the window and invalidate the
- * framing, are hard.
- */
-
 #include "estruct.h"
 #include "edef.h"
 #include "efunc.h"
 #include "line.h"
 
 /*
- * This routine, given a pointer to a struct line, and the current cursor goal
- * column, return the best choice for the offset.  The offset is returned.
- * Used by "C-N" and "C-P".
+ * Given a pointer to a struct line, and the current cursor goal column,
+ * return the best choice for the offset.
  */
 static int getgoal(struct line *lp)
 {
 	int col = 0, dbo, len;
-
 	for (dbo = 0, len = llength(lp); dbo != len; dbo++) {
 		int newcol = next_col(col, lgetc(lp, dbo));
 		if (newcol > curgoal)
@@ -36,12 +26,6 @@ int gotobol(int f, int n)
 	return TRUE;
 }
 
-/*
- * Move the cursor backwards by "n" characters.  If "n" is less than zero call
- * "forwchar" to actually do the move.  Otherwise compute the new cursor
- * location.  Error if you try and move out of the buffer.  Set the flag if the
- * line pointer for dot changes.
- */
 int backchar(int f, int n)
 {
 	struct line *lp;
@@ -62,21 +46,13 @@ int backchar(int f, int n)
 	return TRUE;
 }
 
-/*
- * Move the cursor to the end of the current line.  Trivial.  No errors.
- */
+/* Move the cursor to the end of the current line */
 int gotoeol(int f, int n)
 {
 	curwp->w_doto = llength(curwp->w_dotp);
 	return TRUE;
 }
 
-/*
- * Move the cursor forwards by "n" characters.  If "n" is less than zero call
- * "backchar" to actually do the move.  Otherwise compute the new cursor
- * location, and move ".".  Error if you try and move off the end of the
- * buffer.  Set the flag if the line pointer for dot changes.
- */
 int forwchar(int f, int n)
 {
 	if (n < 0)
@@ -103,18 +79,13 @@ int gotoline(int f, int n)
 
 	/* Get an argument if one doesnt exist. */
 	if (f == FALSE) {
-		if ((status = mlreply("Line to GOTO: ", arg, NSTRING))
-				!= TRUE) {
+		if ((status = mlreply("Line to GO: ", arg, NSTRING)) != TRUE) {
 			mlwrite("(Aborted)");
 			return status;
 		}
 		n = atoi(arg);
 	}
-        /*
-	 * Handle the case where the user may be passed something like this:
-	 * me filename +
-	 * In this case we just go to the end of the buffer.
-	 */
+        /* Handle the case where `me` is called like this: me filename + */
 	if (n == 0)
 		return gotoeob(f, n);
 
@@ -127,11 +98,7 @@ int gotoline(int f, int n)
 	return forwline(f, n - 1);
 }
 
-/*
- * Goto the beginning of the buffer.  Massive adjustment of dot.  This is
- * considered to be hard motion; it really isn't if the original value of dot
- * is the same as the new value of dot.
- */
+/* Goto the beginning of the buffer */
 int gotobob(int f, int n)
 {
 	curwp->w_dotp = lforw(curbp->b_linep);
@@ -140,10 +107,7 @@ int gotobob(int f, int n)
 	return TRUE;
 }
 
-/*
- * Move to the end of the buffer.  Dot is always put at the end of the file
- * (ZJ).  The standard screen code does most of the hard parts of update.
- */
+/* Move to the end of the buffer.  Dot is always put at the end of the file */
 int gotoeob(int f, int n)
 {
 	curwp->w_dotp = curbp->b_linep;
@@ -152,11 +116,6 @@ int gotoeob(int f, int n)
 	return TRUE;
 }
 
-/*
- * Move forward by full lines.  If the number of lines to move is less than
- * zero, call the backward line function to actually do it.  The last command
- * controls how the goal column is set.  No errors are possible.
- */
 int forwline(int f, int n)
 {
 	struct line *lp;
@@ -164,38 +123,24 @@ int forwline(int f, int n)
 	if (n < 0)
 		return backline(f, -n);
 
-	/* if we are on the last line as we start....fail the command */
 	if (curwp->w_dotp == curbp->b_linep)
 		return FALSE;
 
-	/*
-	 * if the last command was not note a line move,
-	 * reset the goal column
-	 */
+	/* if the last command was not note a line move */
 	if ((lastflag & CFCPCN) == 0)
 		curgoal = getccol(FALSE);
 
-	/* flag this command as a line move */
 	thisflag |= CFCPCN;
-
-	/* and move the point down */
 	lp = curwp->w_dotp;
 	while (n-- && lp != curbp->b_linep)
 		lp = lforw(lp);
 
-	/* reseting the current position */
 	curwp->w_dotp = lp;
 	curwp->w_doto = getgoal(lp);
 	curwp->w_flag |= WFMOVE;
 	return TRUE;
 }
 
-/*
- * This function is like "forwline", but goes backwards.  The scheme is exactly
- * the same.  Check for arguments that are less than zero and call your
- * alternate.  Figure out the new line and call "movedot" to perform the
- * motion.  No errors are possible.
- */
 int backline(int f, int n)
 {
 	struct line *lp;
@@ -203,39 +148,24 @@ int backline(int f, int n)
 	if (n < 0)
 		return forwline(f, -n);
 
-	/* if we are on the last line as we start....fail the command */
 	if (lback(curwp->w_dotp) == curbp->b_linep)
 		return FALSE;
 
-	/*
-	 * if the last command was not note a line move,
-	 * reset the goal column
-	 */
+	/* if the last command was not note a line move */
 	if ((lastflag & CFCPCN) == 0)
 		curgoal = getccol(FALSE);
 
-	/* flag this command as a line move */
 	thisflag |= CFCPCN;
-
-	/* and move the point up */
 	lp = curwp->w_dotp;
 	while (n-- && lback(lp) != curbp->b_linep)
 		lp = lback(lp);
 
-	/* reseting the current position */
 	curwp->w_dotp = lp;
 	curwp->w_doto = getgoal(lp);
 	curwp->w_flag |= WFMOVE;
 	return TRUE;
 }
 
-/*
- * Scroll forward by a specified number of lines, or by a full page if no
- * argument.  The "2" in the arithmetic on the window size is the overlap;
- * this value is the default overlap value in ITS EMACS.
- * Because this zaps the top line in the display window,
- * we have to do a hard update.
- */
 int forwpage(int f, int n)
 {
 	struct line *lp;
@@ -260,11 +190,6 @@ int forwpage(int f, int n)
 	return TRUE;
 }
 
-/*
- * This command is like "forwpage", but it goes backwards.  The "2", like
- * above, is the overlap between the two windows.  The value is from the ITS
- * EMACS manual.  We do a hard update for exactly the same reason.
- */
 int backpage(int f, int n)
 {
 	struct line *lp;
@@ -289,10 +214,6 @@ int backpage(int f, int n)
 	return TRUE;
 }
 
-/*
- * Set the mark in the current window to the value of "." in the window.  No
- * errors are possible.
- */
 int setmark(int f, int n)
 {
 	curwp->w_markp = curwp->w_dotp;
@@ -301,11 +222,7 @@ int setmark(int f, int n)
 	return TRUE;
 }
 
-/*
- * Swap the values of "." and "mark" in the current window.  This is pretty
- * easy, bacause all of the hard work gets done by the standard routine
- * that moves the mark about.  The only possible error is "no mark".
- */
+/* Swap the values of "." and "mark" in the current window */
 int swapmark(int f, int n)
 {
 	struct line *odotp;

@@ -133,7 +133,6 @@ static void ansiopen(void)
 		exit(1);
 	}
 #endif
-	strcpy(sres, "NORMAL");
 	revexist = TRUE;
 	ttopen();
 }

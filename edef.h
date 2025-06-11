@@ -43,22 +43,23 @@ extern int kbdmode;		/* current keyboard macro mode */
 extern int kbdrep;		/* number of repetitions */
 
 extern int lastkey;		/* last keystoke */
+
 extern long envram;		/* # of bytes current in use by malloc */
+
 extern int saveflag;		/* Flags, saved with the $target var */
+
 extern char *fline;		/* dynamic return line */
 extern int flen;		/* current length of fline */
-extern int rval;		/* return value of a subprocess */
 
-extern int overlap;		/* line overlap in forw/back page */
 extern int scrollcount;		/* number of lines to scroll */
-
-/* Uninitialized global external declarations. */
 
 extern int currow;		/* Cursor row */
 extern int curcol;		/* Cursor column */
 extern int thisflag;		/* Flags, this command */
 extern int lastflag;		/* Flags, last command */
+
 extern int curgoal;		/* Goal for C-P, C-N */
+
 extern struct window *curwp;	/* Current window */
 extern struct buffer *curbp;	/* Current buffer */
 extern struct buffer *prevbp;	/* Previous buffer */
@@ -66,7 +67,6 @@ extern struct window *wheadp;	/* Head of list of windows */
 extern struct buffer *bheadp;	/* Head of list of buffers */
 extern struct buffer *blistp;	/* Buffer for C-X C-B */
 
-extern char sres[NBUFN];	/* Current screen resolution. */
 extern char pat[];		/* Search pattern. */
 extern char tap[];		/* Reversed pattern array. */
 extern char rpat[];		/* Replacement pattern. */
@@ -77,12 +77,10 @@ extern char *patmatch;
 extern struct line *matchline;
 extern int matchoff;
 
-/* Terminal table defined only in term.c */
 extern struct terminal term;
 
 extern int reeat_char;
 
-/* Some global fuction declarations. */
 typedef int (*fn_t)(int, int);
 
 #endif

@@ -15,7 +15,6 @@ int kbdrep;			/* number of repetitions */
 
 int eolexist = TRUE;		/* does clear to EOL exist */
 int revexist = FALSE;		/* does reverse video exist? */
-int flickcode = FALSE;		/* do flicker supression? */
 
 int gmode = MDASAVE;		/* global editor mode */
 
@@ -41,12 +40,12 @@ struct kill *kbufh;		/* kill buffer header pointer */
 int kused = KBLOCK;		/* # of bytes used in kill buffer */
 
 int lastkey;			/* last keystoke */
+
 long envram;			/* # of bytes current in use by malloc */
 
 char *fline;			/* dynamic return line */
 int flen;			/* current length of fline */
 
-int overlap = 1;		/* line overlap in forw/back page */
 int scrollcount = 1;		/* number of lines to scroll */
 
 unsigned int matchlen;		/* The length of the matched string */
@@ -68,7 +67,6 @@ int thisflag;			/* Flags, this command */
 int lastflag;			/* Flags, last command */
 int saveflag;
 
-char sres[NBUFN];		/* Current screen resolution */
 char pat[NPAT];			/* Search pattern */
 char tap[NPAT];			/* Reversed pattern array. */
 char rpat[NPAT];		/* Replacement pattern */

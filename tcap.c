@@ -147,7 +147,6 @@ static void tcapkopen(void)
 	ttrow = 999;
 	ttcol = 999;
 	sgarbf = TRUE;
-	strcpy(sres, "NORMAL");
 }
 
 static void tcapkclose(void)

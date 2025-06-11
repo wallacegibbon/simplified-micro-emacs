@@ -235,13 +235,6 @@ int execute(int c, int f, int n)
 
 	/* No binding found, self inserting. */
 
-	/*
-	 * To support unicode or things like it, we need to take care of
-	 * unbound prefixed chars (like C-X C-A), they can overlap key codes.
-	 */
-
-	/* ASCII is enough for coding, let's keep things simple */
-
 	/* If C-I is not bound, turn it into untagged value */
 	if (c == (CTL | 'I'))
 		c = '\t';
@@ -286,8 +279,8 @@ int quickexit(int f, int n)
 	int status;
 
 	for (bp = bheadp; bp != NULL; bp = bp->b_bufp) {
-		if ((bp->b_flag & BFCHG) != 0 /* Changed. */
-				&& (bp->b_flag & BFTRUNC) == 0 /* Not truncated */
+		if ((bp->b_flag & BFCHG) != 0
+				&& (bp->b_flag & BFTRUNC) == 0
 				&& (bp->b_flag & BFINVS) == 0) {
 			curbp = bp;
 			mlwrite("(Saving %s)", bp->b_fname);
@@ -380,8 +373,7 @@ int ctlxe(int f, int n)
 }
 
 /*
- * Abort.
- * Beep the beeper.  Kill off any keyboard macro, etc., that is in progress.
+ * Abort.  Kill off any keyboard macro, etc., that is in progress.
  * Sometimes called as a routine, to do general aborting of stuff.
  */
 int ctrlg(int f, int n)
