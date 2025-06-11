@@ -29,14 +29,14 @@ static struct video **vscreen;	/* Virtual screen. */
 static struct video **pscreen;	/* Physical screen. */
 static int screen_rows, screen_cols;
 
-static volatile int is_updating = 0;
-
 #if UNIX
 #include <signal.h>
 #endif
 
 #ifdef SIGWINCH
+/* Variables that will be accessed by signal handler */
 static volatile sig_atomic_t screen_size_changed = 0;
+static volatile sig_atomic_t is_updating = 0;
 #endif
 
 static int reframe(struct window *wp);
@@ -192,7 +192,9 @@ int update(int force)
 		return TRUE;
 #endif
 
+#if SIGWINCH
 	is_updating = 1;
+#endif
 
 	/*
 	 * first, propagate mode line changes to all instances of a buffer
@@ -239,9 +241,9 @@ int update(int force)
 
 	TTflush();
 
+#if SIGWINCH
 	is_updating = 0;
 
-#if SIGWINCH
 	if (screen_size_changed)
 		newscreensize();
 #endif
