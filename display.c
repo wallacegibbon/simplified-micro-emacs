@@ -29,12 +29,14 @@ static struct video **vscreen;	/* Virtual screen. */
 static struct video **pscreen;	/* Physical screen. */
 static int screen_rows, screen_cols;
 
+static volatile int is_updating = 0;
+
 #if UNIX
 #include <signal.h>
 #endif
 
 #ifdef SIGWINCH
-int screen_size_changed = 0;
+static volatile sig_atomic_t screen_size_changed = 0;
 #endif
 
 static int reframe(struct window *wp);
@@ -190,6 +192,8 @@ int update(int force)
 		return TRUE;
 #endif
 
+	is_updating = 1;
+
 	/*
 	 * first, propagate mode line changes to all instances of a buffer
 	 * displayed in more than one window.
@@ -224,16 +228,9 @@ int update(int force)
 		}
 	}
 
-	/*
-	 * Recalculate the current hardware cursor location.
-	 * Make "currow" and "curcol" correct for the current window.
-	 */
 	update_pos();
-
-	/* check for lines to de-extend */
 	update_de_extend();
 
-	/* if screen is garbage, re-plot it */
 	if (sgarbf != FALSE)
 		update_garbage();
 
@@ -241,6 +238,9 @@ int update(int force)
 	movecursor(currow, curcol - lbound);
 
 	TTflush();
+
+	is_updating = 0;
+
 #if SIGWINCH
 	if (screen_size_changed)
 		newscreensize();
@@ -974,7 +974,10 @@ void sizesignal(int signr)
 	signal(SIGWINCH, sizesignal);
 
 	errno = old_errno;
-	update(TRUE);
+
+	/* Ensure that `newscreensize` will be called */
+	if (!is_updating)
+		update(TRUE);
 }
 
 static void newscreensize(void)
@@ -989,6 +992,7 @@ static void newscreensize(void)
 	screen_init();
 
 	adjust_on_scr_resize();
+
 	update(TRUE);
 }
 
