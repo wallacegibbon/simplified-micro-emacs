@@ -13,9 +13,9 @@ int showcpos(int f, int n)
 {
 	long numchars = 0, numlines = 0, predchars = 0, predlines = 0;
 	int ratio, col, ecol, saved_o, curchar = 0;
-	struct line *lp;
+	struct line *lp = lforw(curbp->b_linep);
 
-	for (lp = lforw(curbp->b_linep); lp != curbp->b_linep; lp = lforw(lp)) {
+	while (lp != curbp->b_linep) {
 		if (lp == curwp->w_dotp) {
 			predlines = numlines;
 			predchars = numchars + curwp->w_doto;
@@ -26,6 +26,7 @@ int showcpos(int f, int n)
 		}
 		++numlines;
 		numchars += llength(lp) + 1;
+		lp = lforw(lp);
 	}
 
 	if (curwp->w_dotp == curbp->b_linep) {
@@ -95,8 +96,7 @@ int quote(int f, int n)
 
 /*
  * Open up some blank space.  The basic plan is to insert a bunch of newlines,
- * and then back up over them.  Everything is done by the subcommand
- * procerssors.  They even handle the looping.
+ * and then back up over them.
  */
 int openline(int f, int n)
 {
@@ -108,12 +108,15 @@ int openline(int f, int n)
 		return FALSE;
 	if (n == 0)
 		return TRUE;
-	i = n;				/* Insert newlines. */
+
+	i = n;
 	do {
 		s = lnewline();
 	} while (s == TRUE && --i);
-	if (s == TRUE)			/* Then back up overtop of them all*/
+
+	if (s == TRUE)
 		s = backchar(f, n);
+
 	return s;
 }
 
@@ -171,12 +174,7 @@ int newline_and_indent(int f, int n)
 	return TRUE;
 }
 
-/*
- * Delete forward.  This is real easy, because the basic delete routine does
- * all of the work.  Watches for negative arguments, and does the right thing.
- * If any argument is present, it kills rather than deletes, to prevent loss
- * of text if typed with a big argument.
- */
+/* Delete forward.  If any argument is present, it kills rather than deletes. */
 int forwdel(int f, int n)
 {
 	if (curbp->b_mode & MDVIEW)
@@ -191,11 +189,7 @@ int forwdel(int f, int n)
 	return ldelete((long)n, f);
 }
 
-/*
- * Delete backwards.  This is quite easy too, because it's all done with other
- * functions.  Just move the cursor back, and delete forwards.  Like delete
- * forward, this actually does a kill if presented with an argument.
- */
+/* Delete backwards. */
 int backdel(int f, int n)
 {
 	int s = TRUE;
@@ -218,44 +212,24 @@ int backdel(int f, int n)
 	return s;
 }
 
-/*
- * Kill text.  If called without an argument, it kills from dot to the end of
- * the line, unless it is at the end of the line, when it kills the newline.
- * If called with an argument of 0, it kills from the start of the line to dot.
- * If called with a positive argument, it kills from dot forward over that
- * number of newlines.  If called with a negative argument it kills backwards
- * that number of newlines.
- */
+/* Kills from dot to the end of the line */
 int killtext(int f, int n)
 {
-	struct line *nextp;
 	long chunk;
 
 	if (curbp->b_mode & MDVIEW)
 		return rdonly();
-	if ((lastflag & CFKILL) == 0)	/* Clear kill buffer if */
-		kdelete();		/* last wasn't a kill. */
+
+	/* If last command is not a kill, clear the kill buffer */
+	if ((lastflag & CFKILL) == 0)
+		kdelete();
+
 	thisflag |= CFKILL;
-	if (f == FALSE) {
-		chunk = llength(curwp->w_dotp) - curwp->w_doto;
-		if (chunk == 0)
-			chunk = 1;
-	} else if (n == 0) {
-		chunk = curwp->w_doto;
-		curwp->w_doto = 0;
-	} else if (n > 0) {
-		chunk = llength(curwp->w_dotp) - curwp->w_doto + 1;
-		nextp = lforw(curwp->w_dotp);
-		while (--n) {
-			if (nextp == curbp->b_linep)
-				break;
-			chunk += llength(nextp) + 1;
-			nextp = lforw(nextp);
-		}
-	} else {
-		mlwrite("neg kill");
-		return FALSE;
-	}
+
+	chunk = llength(curwp->w_dotp) - curwp->w_doto;
+	if (chunk == 0)
+		chunk = 1;
+
 	return ldelete(chunk, TRUE);
 }
 
@@ -290,12 +264,15 @@ int adjustmode(int kind, int global)
 	char modname_buf[8];	/* 8 is enough for any mode name */
 	char prompt[32];	/* 32 is enough for prompt in this function */
 	char *scan;
-	int status, i;
+	int status, i, *pmode;
 
-	if (global)
+	if (global) {
 		strcpy(prompt, "Global mode to ");
-	else
+		pmode = &gmode;
+	} else {
 		strcpy(prompt, "Mode to ");
+		pmode = &curbp->b_mode;
+	}
 
 	if (kind == TRUE)
 		strcat(prompt, "add: ");
@@ -318,18 +295,10 @@ int adjustmode(int kind, int global)
 	for (i = 0; i < NMODES; ++i) {
 		if (strcmp(modname_buf, modename[i]) == 0) {
 			int val = modevalue[i];
-			/* finding a match, we process it */
-			if (kind == TRUE) {
-				if (global)
-					gmode |= val;
-				else
-					curbp->b_mode |= val;
-			} else {
-				if (global)
-					gmode &= ~val;
-				else
-					curbp->b_mode &= ~val;
-			}
+			if (kind == TRUE)
+				*pmode |= val;
+			else
+				*pmode &= ~val;
 			if (global == 0)
 				update_modelines();
 			mlerase();

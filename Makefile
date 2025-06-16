@@ -8,14 +8,14 @@ SRC = main.c buffer.c window.c line.c word.c display.c basic.c random.c \
 	region.c spawn.c tcap.c ebind.c names.c globals.c \
 	wrapper.c memory.c
 
-#SRC += termio.c vt52.c ansi.c
+#SRC += termio.c ansi.c
 
 OBJ = main.o buffer.o window.o line.o word.o display.o basic.o random.o \
 	posix.o file.o fileio.o input.o search.o isearch.o lock.o \
 	region.o spawn.o tcap.o ebind.o names.o globals.o \
 	wrapper.o memory.o
 
-#OBJ += termio.o vt52.o ansi.o
+#OBJ += termio.o ansi.o
 
 CC = gcc
 WARNINGS = -Wall -Wextra -Wstrict-prototypes -Wno-unused-parameter
@@ -85,7 +85,6 @@ search.o: search.c estruct.h edef.h line.h
 spawn.o: spawn.c estruct.h edef.h
 tcap.o: tcap.c estruct.h edef.h
 termio.o: termio.c estruct.h edef.h
-vt52.o: vt52.c estruct.h edef.h
 window.o: window.c estruct.h edef.h line.h
 word.o: word.c estruct.h edef.h line.h
 globals.o: estruct.h edef.h
